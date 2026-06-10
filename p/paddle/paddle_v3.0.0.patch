@@ -1,0 +1,120 @@
+diff --git a/paddle/phi/common/cpstring_impl.h b/paddle/phi/common/cpstring_impl.h
+index 33780d1538..4b6cfd7889 100644
+--- a/paddle/phi/common/cpstring_impl.h
++++ b/paddle/phi/common/cpstring_impl.h
+@@ -203,7 +203,6 @@ HOSTDEVICE static inline void *PD_Memcpy(void *dst,
+   }
+   return dst;
+ }
+-
+ HOSTDEVICE static inline void *PD_Malloc(size_t size) { return malloc(size); }
+ 
+ HOSTDEVICE static inline void *PD_Realloc(void *ptr,
+diff --git a/paddle/phi/core/platform/denormal.cc b/paddle/phi/core/platform/denormal.cc
+index 93c55e84be..f9c34c869a 100644
+--- a/paddle/phi/core/platform/denormal.cc
++++ b/paddle/phi/core/platform/denormal.cc
+@@ -30,7 +30,8 @@
+ 
+ #if !defined(GCC_WITHOUT_INTRINSICS) && !defined(PADDLE_WITH_ARM) && \
+     !defined(PADDLE_WITH_SW) && !defined(PADDLE_WITH_MIPS) &&        \
+-    !defined(_WIN32) && !defined(PADDLE_WITH_LOONGARCH)
++    !defined(_WIN32) && !defined(PADDLE_WITH_LOONGARCH) &&           \
++    !defined(__powerpc__) && !defined(__ppc__) && !defined(__PPC__)
+ #define DENORM_USE_INTRINSICS
+ #endif
+ 
+diff --git a/paddle/phi/kernels/funcs/search_compute.h b/paddle/phi/kernels/funcs/search_compute.h
+index b51f10cce9..ae25b45cfb 100644
+--- a/paddle/phi/kernels/funcs/search_compute.h
++++ b/paddle/phi/kernels/funcs/search_compute.h
+@@ -15,7 +15,8 @@
+ #pragma once
+ 
+ #if !defined(PADDLE_WITH_ARM) && !defined(PADDLE_WITH_SW) && \
+-    !defined(PADDLE_WITH_MIPS) && !defined(PADDLE_WITH_LOONGARCH)
++    !defined(PADDLE_WITH_MIPS) && !defined(PADDLE_WITH_LOONGARCH) && \
++    (defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || defined(_M_IX86))
+ #include <immintrin.h>
+ #endif
+ #include <cfloat>
+@@ -101,7 +102,8 @@ void call_gemm_batched(const Context& ctx,
+ }
+ 
+ #if !defined(PADDLE_WITH_ARM) && !defined(PADDLE_WITH_SW) && \
+-    !defined(PADDLE_WITH_MIPS) && !defined(PADDLE_WITH_LOONGARCH)
++    !defined(PADDLE_WITH_MIPS) && !defined(PADDLE_WITH_LOONGARCH) && \
++    (defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || defined(_M_IX86))
+ 
+ #define __m256x __m256
+ 
+@@ -144,7 +146,7 @@ inline void axpy(const T* x, T* y, size_t len, const T alpha) {
+ #elif defined(PADDLE_WITH_ARM) || defined(PADDLE_WITH_SW) || \
+     defined(PADDLE_WITH_MIPS) || defined(PADDLE_WITH_LOONGARCH)
+   PADDLE_THROW(common::errors::Unimplemented("axpy is not supported"));
+-#else
++#elif defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || defined(_M_IX86)
+   lll = len & ~SSE_CUT_LEN_MASK;
+   __m128x mm_alpha = _mm_load1_px(&alpha);
+   for (jjj = 0; jjj < lll; jjj += SSE_STEP_SIZE) {
+@@ -174,7 +176,7 @@ inline void axpy_noadd(const T* x, T* y, size_t len, const T alpha) {
+ #elif defined(PADDLE_WITH_ARM) || defined(PADDLE_WITH_SW) || \
+     defined(PADDLE_WITH_MIPS) || defined(PADDLE_WITH_LOONGARCH)
+   PADDLE_THROW(common::errors::Unimplemented("axpy_noadd is not supported"));
+-#else
++#elif defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || defined(_M_IX86)
+   lll = len & ~SSE_CUT_LEN_MASK;
+   __m128x mm_alpha = _mm_load1_px(&alpha);
+   for (jjj = 0; jjj < lll; jjj += SSE_STEP_SIZE) {
+diff --git a/paddle/phi/kernels/funcs/softmax_impl.h b/paddle/phi/kernels/funcs/softmax_impl.h
+index 8f6b0fdd32..9b094fd237 100644
+--- a/paddle/phi/kernels/funcs/softmax_impl.h
++++ b/paddle/phi/kernels/funcs/softmax_impl.h
+@@ -237,14 +237,16 @@ class SoftmaxFunctor<DeviceContext, T, enable_if_CPU<DeviceContext>> {
+                   const int axis_dim,
+                   const phi::DenseTensor* X,
+                   phi::DenseTensor* Y) {
++#if !defined(__powerpc__) && !defined(__ppc__) && !defined(__PPC__)
+     const auto& in_dims = X->dims();
+     constexpr int kBatchDim = 0;
+     constexpr int kClassDim = 1;
+-
+     const int num_classes = in_dims[kClassDim];
+     const int batch_size = in_dims[kBatchDim];
+     const int num_remain = num_classes / axis_dim;
+ 
++    const int batch_size = in_dims[kBatchDim];
++    const int num_remain = num_classes / axis_dim;
+     if (num_remain == 1 &&
+         phi::backends::cpu::MayIUse(phi::backends::cpu::avx)) {
+       const T* in_data = X->data<T>();
+@@ -267,7 +269,9 @@ class SoftmaxFunctor<DeviceContext, T, enable_if_CPU<DeviceContext>> {
+         in_data += num_classes;
+         out_data += num_classes;
+       }
+-    } else {
++    } else
++#endif
++    {
+       SoftmaxEigen<DeviceContext, T>()(context, axis_dim, X, Y);
+     }
+   }
+@@ -394,6 +398,7 @@ class SoftmaxGradFunctor<DeviceContext, T, enable_if_CPU<DeviceContext>> {
+                   const phi::DenseTensor* y,
+                   const phi::DenseTensor* y_grad,
+                   phi::DenseTensor* x_grad) {
++#if !defined(__powerpc__) && !defined(__ppc__) && !defined(__PPC__)
+     const auto& out_dims = y->dims();
+     constexpr int kBatchDim = 0;
+     constexpr int kClassDim = 1;
+@@ -419,7 +424,9 @@ class SoftmaxGradFunctor<DeviceContext, T, enable_if_CPU<DeviceContext>> {
+         out_grad += num_classes;
+         in_grad += num_classes;
+       }
+-    } else {
++    } else
++#endif
++    {
+       SoftmaxGradEigen<DeviceContext, T>()(
+           context, axis_dim, y, y_grad, x_grad);
+     }
