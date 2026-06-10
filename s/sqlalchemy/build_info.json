@@ -2,7 +2,7 @@
 	"maintainer": "vivek8123",
 	"package_name": "SQLAlchemy",
 	"github_url": "https://github.com/sqlalchemy/sqlalchemy.git",
-	"version": "2.0.50",
+	"version": "rel_2_0_50",
 	"default_branch": "master",
 	"build_script": "sqlalchemy_ubi_9.3.sh",
 	"package_dir": "s/sqlalchemy",
@@ -13,7 +13,7 @@
 	"*.*.*": {
 	   "build_script": "sqlalchemy_ubi_9.3.sh"
 	},
-	"2.0.50": {
+	"rel_2_0_50": {
 	   "build_script": "sqlalchemy_2.0.50_ubi_9.3.sh"
 	}
 }
