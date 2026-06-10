@@ -35,6 +35,25 @@ pip3 install mypy
 # Add /usr/local/bin to PATH
 export PATH=$PATH:/usr/local/bin/
 
+cwd=$(pwd)
+# --- Upgrade SQLite to >=3.35 (required for few sqlalchemy tests)
+cd /tmp && \
+    wget https://www.sqlite.org/2025/sqlite-autoconf-3510000.tar.gz && \
+    tar xzf sqlite-autoconf-3510000.tar.gz && \
+    cd sqlite-autoconf-3510000 && \
+    ./configure --prefix=/usr/local && \
+    make -j$(nproc) && make install && \
+    ln -sf /usr/local/bin/sqlite3 /usr/bin/sqlite3 && \
+    ldconfig && \
+    sqlite3 --version && cd .. && \
+    rm -rf /tmp/sqlite-autoconf-3510000 && \
+    rm -f /tmp/sqlite-autoconf-3510000.tar.gz
+
+# Return to original directory
+cd $cwd
+
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
 # Clone the repository
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
