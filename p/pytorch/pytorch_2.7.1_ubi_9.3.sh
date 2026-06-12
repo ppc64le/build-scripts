@@ -60,7 +60,7 @@ make -j$(nproc) \
     BINARY=64 \
     USE_OPENMP=1 \
     USE_THREAD=1 \
-    NUM_THREADS=$(nproc) \
+    NUM_THREADS=120 \
     DYNAMIC_ARCH=1 \
     INTERFACE64=0
 

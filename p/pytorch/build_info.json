@@ -6,7 +6,7 @@
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/pytorch",
-  "build_script": "pytorch_2.6.0_ubi_9.3.sh",
+  "build_script": "pytorch_2.7.1_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
@@ -15,10 +15,7 @@
     "build_script": "pytorch_ubi_9.3.sh"
   },
   "*": {
-    "patches":{
-      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.6.0.patch"
-    },
-     "build_script":"pytorch_2.6.0_ubi_9.3.sh"
+     "build_script":"pytorch_2.7.1_ubi_9.3.sh"
   },
   "v2.5.1":{
     "patches":{
@@ -26,8 +23,8 @@
     },
     "build_script":"pytorch_2.5.1_ubi_9.3.sh"
   },
-  "v2.7.1":{
-    "build_script":"pytorch_2.7.1_ubi_9.3.sh"
+  "v2.6.0":{
+    "build_script":"pytorch_2.6.0_ubi_9.3.sh"
   },
   "v2.0.1":{
     "patches": {
