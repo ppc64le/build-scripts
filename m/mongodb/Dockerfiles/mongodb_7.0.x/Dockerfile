@@ -1,5 +1,75 @@
-# This file has been adapted from the original work at "https://github.com/CrimsonGlory/mongo_ppc64le/blob/master/Dockerfile" to build on Power
-#
+# ------------------------------------------------------
+# Builder Stage
+# ------------------------------------------------------
+FROM ubuntu:jammy AS mongo-builder
+
+ARG PACKAGE_VERSION=r7.0.34
+ARG MONGO_MAJOR=7.0
+ARG MONGOSH_VERSION=2.8.3
+
+ENV MONGO_VERSION=${PACKAGE_VERSION}
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+        unzip \
+        git \
+        build-essential \
+        wget \
+        ca-certificates \
+        libcurl4-openssl-dev \
+        libssl-dev \
+        python3-dev \
+        python3-pip \
+        scons \
+        liblzma-dev \
+        cargo && \
+    rm -rf /var/lib/apt/lists/*
+
+# -----------------------------------
+# Build MongoDB
+# -----------------------------------
+RUN mkdir -p /tmp/mongodb-src-${MONGO_VERSION} /opt/mongo-install && \
+    cd /tmp/mongodb-src-${MONGO_VERSION} && \
+    git clone https://github.com/mongodb/mongo.git && \
+    cd mongo && \
+    git checkout ${MONGO_VERSION} && \
+    python3 -m pip install mongo-tooling-metrics && \
+    python3 -m pip install --upgrade pip setuptools wheel && \
+    python3 -m pip install cryptography==36.0.2 && \
+    python3 -m pip install -r etc/pip/compile-requirements.txt && \
+    ln -sf /usr/bin/python3 /usr/bin/python && \
+    python3 buildscripts/scons.py \
+        install-mongod \
+        install-mongos \
+        -j"$(nproc)" \
+        --separate-debug=on \
+        --disable-warnings-as-errors \
+        DESTDIR=/opt/mongo-install \
+        --ssl=on \
+        --no-cache \
+        --release \
+        --dbg=off \
+        --opt=on \
+        --linker=gold && \
+    rm -rf /root/.cache/pip
+
+# -----------------------------------
+# Download mongosh
+# -----------------------------------
+RUN mkdir -p /opt/mongosh && \
+    cd /tmp && \
+    echo "Installing mongosh shell..." && \
+    wget https://downloads.mongodb.com/compass/mongosh-${MONGOSH_VERSION}-linux-ppc64le.tgz && \
+    tar -zxvf mongosh-${MONGOSH_VERSION}-linux-ppc64le.tgz && \
+    cp mongosh-${MONGOSH_VERSION}-linux-ppc64le/bin/mongosh /opt/mongosh/mongosh && \
+    cp mongosh-${MONGOSH_VERSION}-linux-ppc64le/bin/mongosh_crypt_v1.so /opt/mongosh/mongosh_crypt_v1.so && \
+    chmod +x /opt/mongosh/mongosh && \
+    rm -rf /tmp/mongosh-${MONGOSH_VERSION}-linux-ppc64le* 
+    
+
 FROM ubuntu:jammy
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN set -eux; \
@@ -21,9 +91,9 @@ RUN set -eux; \
         rm -rf /var/lib/apt/lists/*
 
 # grab gosu for easy step-down from root (https://github.com/tianon/gosu/releases)
-ENV GOSU_VERSION 1.19
+ENV GOSU_VERSION=1.19
 # grab "js-yaml" for parsing mongod's YAML config files (https://github.com/nodeca/js-yaml/releases)
-ENV JSYAML_VERSION 3.13.1
+ENV JSYAML_VERSION=3.13.1
 
 RUN set -ex; \
         \
@@ -81,70 +151,18 @@ RUN set -ex; \
 
 ARG MONGO_MAJOR=7.0
 ARG MONGOSH_VERSION=2.8.3
-ARG PACKAGE_VERSION=r7.0.25
+ARG PACKAGE_VERSION=r7.0.34
 ENV MONGO_VERSION=${PACKAGE_VERSION}
 
-# We install the necesary tools to compile mongo on ppc64le
-RUN echo "Updating and installing build dependencies..." \
-        && apt-get update \
-        && apt-get upgrade -y \
-        && apt-get install -y --no-install-recommends \
-                unzip \
-                git \
-                build-essential \
-                wget \
-                ca-certificates \
-                libcurl4-openssl-dev \
-                libssl-dev python3-dev python3-pip \
-                scons \
-                liblzma-dev \
-                cargo \
-        && rm -rf /var/lib/apt/lists/* \
-        && mkdir -p /tmp/mongodb-src-${MONGO_VERSION} \
-        && cd /tmp/mongodb-src-${MONGO_VERSION} \
-        && git clone https://github.com/mongodb/mongo.git && cd mongo \
-        && git checkout ${MONGO_VERSION} \
-        && python3 -m pip install mongo-tooling-metrics \
-        && python3 -m pip install --upgrade pip setuptools wheel \
-        && python3 -m pip install cryptography==36.0.2 \
-        && python3 -m pip install -r etc/pip/compile-requirements.txt \
-        && ln -s /usr/bin/python3 /usr/bin/python \
-        && python3 buildscripts/scons.py install-mongod install-mongos -j$(nproc) --separate-debug=on --disable-warnings-as-errors DESTDIR=/usr/ --ssl=on --no-cache --release --dbg=off --opt=on --linker=gold \
-        && python3 -m pip uninstall -y cryptography setuptools wheel \
-        && rm -rf /root/.cache/pip \
-        && apt-get purge -y --auto-remove \
-                ca-certificates \
-                wget \
-                unzip \
-                git \
-                build-essential \
-                python3 \
-                python3-pip python3-setuptools \
-                libssl-dev \
-                scons \
-                liblzma-dev \
-                cargo \
-        && apt-get clean \
-        && rm -rf /var/lib/apt/lists/* \
-        && rm -rf /tmp/mongodb-src-r${MONGO_VERSION} \
-        && rm -f /tmp/mongodb.zip
+#Copy MongoDB binaries
+COPY --from=mongo-builder /opt/mongo-install/bin/mongod /usr/bin/mongod
+COPY --from=mongo-builder /opt/mongo-install/bin/mongos /usr/bin/mongos
 
+#Copy Mongosh 
+COPY --from=mongo-builder /opt/mongosh/mongosh /usr/bin/mongosh
+COPY --from=mongo-builder /opt/mongosh/mongosh_crypt_v1.so /usr/lib/mongosh_crypt_v1.so
 
-RUN apt-get update && \
-        apt-get install -y wget && \
-        mkdir -p /tmp/mongosh-$MONGOSH_VERSION && \
-        cd /tmp/mongosh-$MONGOSH_VERSION && \
-        echo "Installing mongosh shell..." && \
-        wget https://downloads.mongodb.com/compass/mongosh-$MONGOSH_VERSION-linux-ppc64le.tgz && \
-        tar -zxvf mongosh-$MONGOSH_VERSION-linux-ppc64le.tgz && \
-        cp /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le/bin/mongosh /usr/bin/mongosh && \
-        cp /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le/bin/mongosh_crypt_v1.so /usr/lib/ && \
-        chmod +x /usr/bin/mongosh && \
-        rm -rf /tmp/mongosh-* && \
-        apt-get purge -y --auto-remove wget && \
-        rm -rf /var/lib/apt/lists/* && \
-        apt-get clean
-
+RUN chmod +x /usr/bin/mongosh && ldconfig
 
 VOLUME /data/db /data/configdb
 
