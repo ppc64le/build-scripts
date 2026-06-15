@@ -227,16 +227,25 @@ jobs:
           bash ./gha-script/build_wheels.sh
 
           WORKSPACE=$(pwd)
-          LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py310_log.gz"
+          
+          # Determine log name based on whether wheel was generated
+          if ls "$WORKSPACE"/*.whl 1> /dev/null 2>&1; then
+            # Success: wheel generated - use wheel name without .whl extension
+            WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
+            WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
+            LOG_NAME="${WHEEL_BASE}_py310_log.gz"
+          else
+            # Failure: no wheel - use package_name_vversion_pyversion format
+            LOG_NAME="${PACKAGE_NAME}_v${VERSION}_py310_log.gz"
+          fi
 
           if [ -f "$WORKSPACE/wheel_build_log" ]; then
             gzip "$WORKSPACE/wheel_build_log"
             mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
           else
             echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python 3.10" \
-              > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py310_log"
-            gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py310_log"
-            LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py310_log.gz"
+              > "$WORKSPACE/${LOG_NAME%.gz}"
+            gzip "$WORKSPACE/${LOG_NAME%.gz}"
           fi
 
           chmod +x ./gha-script/upload-scripts/upload_file.sh
@@ -314,7 +323,16 @@ jobs:
           ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
           
           # ======= HANDLE LOG FILE SAFELY =======
-          LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py311_log.gz"
+          # Determine log name based on whether wheel was generated
+          if ls "$WORKSPACE"/*.whl 1> /dev/null 2>&1; then
+            # Success: wheel generated - use wheel name without .whl extension
+            WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
+            WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
+            LOG_NAME="${WHEEL_BASE}_py311_log.gz"
+          else
+            # Failure: no wheel - use package_name_vversion_pyversion format
+            LOG_NAME="${PACKAGE_NAME}_v${VERSION}_py311_log.gz"
+          fi
   
           if [ -f "$WORKSPACE/wheel_build_log" ]; then
             echo "Found wheel_build_log — compressing it"
@@ -323,9 +341,8 @@ jobs:
           else
             echo "wheel_build_log missing — creating fallback log"
             echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python 3.11" \
-              > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py311_log"
-            gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py311_log"
-            LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py311_log.gz"
+              > "$WORKSPACE/${LOG_NAME%.gz}"
+            gzip "$WORKSPACE/${LOG_NAME%.gz}"
           fi
   
           echo "Final log file to upload: $LOG_NAME"
@@ -405,7 +422,16 @@ jobs:
           ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
         
           # ======= HANDLE LOG FILE SAFELY =======
-          LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py312_log.gz"
+          # Determine log name based on whether wheel was generated
+          if ls "$WORKSPACE"/*.whl 1> /dev/null 2>&1; then
+            # Success: wheel generated - use wheel name without .whl extension
+            WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
+            WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
+            LOG_NAME="${WHEEL_BASE}_py312_log.gz"
+          else
+            # Failure: no wheel - use package_name_vversion_pyversion format
+            LOG_NAME="${PACKAGE_NAME}_v${VERSION}_py312_log.gz"
+          fi
 
           if [ -f "$WORKSPACE/wheel_build_log" ]; then
             echo "Found wheel_build_log — compressing it"
@@ -414,9 +440,8 @@ jobs:
           else
             echo "wheel_build_log missing — creating fallback log"
             echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python 3.12" \
-              > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py312_log"
-            gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py312_log"
-            LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py312_log.gz"
+              > "$WORKSPACE/${LOG_NAME%.gz}"
+            gzip "$WORKSPACE/${LOG_NAME%.gz}"
           fi
 
           echo "Final log file to upload: $LOG_NAME"
@@ -497,7 +522,16 @@ jobs:
           ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
           
           # ======= HANDLE LOG FILE SAFELY =======
-          LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py313_log.gz"
+          # Determine log name based on whether wheel was generated
+          if ls "$WORKSPACE"/*.whl 1> /dev/null 2>&1; then
+            # Success: wheel generated - use wheel name without .whl extension
+            WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
+            WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
+            LOG_NAME="${WHEEL_BASE}_py313_log.gz"
+          else
+            # Failure: no wheel - use package_name_vversion_pyversion format
+            LOG_NAME="${PACKAGE_NAME}_v${VERSION}_py313_log.gz"
+          fi
   
           if [ -f "$WORKSPACE/wheel_build_log" ]; then
             echo "Found wheel_build_log — compressing it"
@@ -506,10 +540,9 @@ jobs:
           else
             echo "wheel_build_log missing — creating fallback log"
             echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python 3.13" \
-              > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py313_log"
-            gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py313_log"
-            LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py313_log.gz"
-          fi 
+              > "$WORKSPACE/${LOG_NAME%.gz}"
+            gzip "$WORKSPACE/${LOG_NAME%.gz}"
+          fi
 
           echo "Final log file to upload: $LOG_NAME"
           chmod +x ./gha-script/upload-scripts/upload_file.sh
@@ -589,7 +622,16 @@ jobs:
           ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
           
           # ======= HANDLE LOG FILE SAFELY =======
-          LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py314_log.gz"
+          # Determine log name based on whether wheel was generated
+          if ls "$WORKSPACE"/*.whl 1> /dev/null 2>&1; then
+            # Success: wheel generated - use wheel name without .whl extension
+            WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
+            WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
+            LOG_NAME="${WHEEL_BASE}_py314_log.gz"
+          else
+            # Failure: no wheel - use package_name_vversion_pyversion format
+            LOG_NAME="${PACKAGE_NAME}_v${VERSION}_py314_log.gz"
+          fi
   
           if [ -f "$WORKSPACE/wheel_build_log" ]; then
             echo "Found wheel_build_log — compressing it"
@@ -598,10 +640,9 @@ jobs:
           else
             echo "wheel_build_log missing — creating fallback log"
             echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python 3.14" \
-              > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py314_log"
-            gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py314_log"
-            LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py314_log.gz"
-          fi 
+              > "$WORKSPACE/${LOG_NAME%.gz}"
+            gzip "$WORKSPACE/${LOG_NAME%.gz}"
+          fi
 
           echo "Final log file to upload: $LOG_NAME"
           chmod +x ./gha-script/upload-scripts/upload_file.sh
