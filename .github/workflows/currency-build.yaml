@@ -228,16 +228,10 @@ jobs:
 
           WORKSPACE=$(pwd)
           
-          # Determine log name based on whether wheel was generated
-          if ls "$WORKSPACE"/*.whl 1> /dev/null 2>&1; then
-            # Success: wheel generated - use wheel name without .whl extension
-            WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
-            WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
-            LOG_NAME="${WHEEL_BASE}_py310_log.gz"
-          else
-            # Failure: no wheel - use package_name_vversion_pyversion format
-            LOG_NAME="${PACKAGE_NAME}_v${VERSION}_py310_log.gz"
-          fi
+          # Use wheel name for log naming
+          WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
+          WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
+          LOG_NAME="${WHEEL_BASE}_py310_log.gz"
 
           # Compress and rename the log file
           gzip "$WORKSPACE/wheel_build_log"
@@ -318,16 +312,10 @@ jobs:
           ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
           
           # ======= HANDLE LOG FILE SAFELY =======
-          # Determine log name based on whether wheel was generated
-          if ls "$WORKSPACE"/*.whl 1> /dev/null 2>&1; then
-            # Success: wheel generated - use wheel name without .whl extension
-            WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
-            WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
-            LOG_NAME="${WHEEL_BASE}_py311_log.gz"
-          else
-            # Failure: no wheel - use package_name_vversion_pyversion format
-            LOG_NAME="${PACKAGE_NAME}_v${VERSION}_py311_log.gz"
-          fi
+          # Use wheel name for log naming
+          WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
+          WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
+          LOG_NAME="${WHEEL_BASE}_py311_log.gz"
   
           # Compress and rename the log file
           echo "Found wheel_build_log — compressing it"
@@ -411,16 +399,10 @@ jobs:
           ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
         
           # ======= HANDLE LOG FILE SAFELY =======
-          # Determine log name based on whether wheel was generated
-          if ls "$WORKSPACE"/*.whl 1> /dev/null 2>&1; then
-            # Success: wheel generated - use wheel name without .whl extension
-            WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
-            WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
-            LOG_NAME="${WHEEL_BASE}_py312_log.gz"
-          else
-            # Failure: no wheel - use package_name_vversion_pyversion format
-            LOG_NAME="${PACKAGE_NAME}_v${VERSION}_py312_log.gz"
-          fi
+          # Use wheel name for log naming
+          WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
+          WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
+          LOG_NAME="${WHEEL_BASE}_py312_log.gz"
 
           # Compress and rename the log file
           echo "Found wheel_build_log — compressing it"
@@ -505,16 +487,10 @@ jobs:
           ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
           
           # ======= HANDLE LOG FILE SAFELY =======
-          # Determine log name based on whether wheel was generated
-          if ls "$WORKSPACE"/*.whl 1> /dev/null 2>&1; then
-            # Success: wheel generated - use wheel name without .whl extension
-            WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
-            WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
-            LOG_NAME="${WHEEL_BASE}_py313_log.gz"
-          else
-            # Failure: no wheel - use package_name_vversion_pyversion format
-            LOG_NAME="${PACKAGE_NAME}_v${VERSION}_py313_log.gz"
-          fi
+          # Use wheel name for log naming
+          WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
+          WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
+          LOG_NAME="${WHEEL_BASE}_py313_log.gz"
   
           # Compress and rename the log file
           echo "Found wheel_build_log — compressing it"
@@ -599,16 +575,10 @@ jobs:
           ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
           
           # ======= HANDLE LOG FILE SAFELY =======
-          # Determine log name based on whether wheel was generated
-          if ls "$WORKSPACE"/*.whl 1> /dev/null 2>&1; then
-            # Success: wheel generated - use wheel name without .whl extension
-            WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
-            WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
-            LOG_NAME="${WHEEL_BASE}_py314_log.gz"
-          else
-            # Failure: no wheel - use package_name_vversion_pyversion format
-            LOG_NAME="${PACKAGE_NAME}_v${VERSION}_py314_log.gz"
-          fi
+          # Use wheel name for log naming
+          WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
+          WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
+          LOG_NAME="${WHEEL_BASE}_py314_log.gz"
   
           # Compress and rename the log file
           echo "Found wheel_build_log — compressing it"
