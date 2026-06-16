@@ -4,15 +4,17 @@
 # Stage 1: Build utilities from source using secure Go version (resolves stdlib CVEs)
 FROM registry.access.redhat.com/ubi9/ubi:9.7 AS setupbuilder
 
-ARG PACKAGE_VERSION=8.4.2
 ARG BITNAMI_VERSION=8.6.3
 ARG BITNAMI_COMMIT=c5bdf5e
 ARG GO_VERSION=1.26.3
+ARG PACKAGE_VERSION=8.4.2
 ENV REDIS_PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/r/redis-bv/redis-bv_${PACKAGE_VERSION}.patch
-
 
 # Install build dependencies and update system packages
 RUN yum update -y && yum install -y git wget tar gcc && yum clean all
+
+#Get the patch for redis 8.4.2
+RUN wget $REDIS_PATCH
 
 # Install secure Go version to fix stdlib CVEs (CVE-2025-68121, CVE-2025-58183, etc.)
 RUN wget -q https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
@@ -49,6 +51,7 @@ RUN cd /build/containers/bitnami/redis/8.6/debian-12 && \
 FROM registry.access.redhat.com/ubi9/ubi:9.7 AS redisbuilder
 
 WORKDIR /build
+ARG PACKAGE_VERSION=8.4.2
 
 RUN yum update -y && \
     yum install -y \
@@ -78,8 +81,7 @@ RUN yum update -y && \
     rm -rf /var/cache/yum
 
 #Copy patch
-RUN wget $REDIS_PATCH
-RUN cp redis-bv_${PACKAGE_VERSION}.patch /build/
+COPY --from=setupbuilder redis-bv_${PACKAGE_VERSION}.patch /build/
 
 RUN cd /build && \
     git clone https://github.com/redis/redis && \
