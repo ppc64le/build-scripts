@@ -60,7 +60,7 @@ make -j$(nproc) \
     BINARY=64 \
     USE_OPENMP=1 \
     USE_THREAD=1 \
-    NUM_THREADS=$(nproc) \
+    NUM_THREADS=120 \
     DYNAMIC_ARCH=1 \
     INTERFACE64=0
 
@@ -171,6 +171,12 @@ if [[ "$(printf '%s\n' "$ver" "2.9.1" | sort -V | tail -n1)" == "$ver" ]]; then
     PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch"
     PATCH_FILE="pytorch_v2.9.1.patch"
 fi
+
+if [[ "$(printf '%s\n' "$ver" "2.12.0" | sort -V | tail -n1)" == "$ver" ]]; then
+    PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.12.0.patch"
+    PATCH_FILE="pytorch_v2.12.0.patch"
+fi
+
 wget -q --spider "$PATCH_URL" && wget -q "$PATCH_URL" && git apply "$PATCH_FILE" || echo "Patch missing, skipped"
 
 

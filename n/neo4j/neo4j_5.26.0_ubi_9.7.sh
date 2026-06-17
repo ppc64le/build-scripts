@@ -4,11 +4,11 @@
 # Package       : neo4j
 # Version       : release/5.26.0
 # Source repo   : https://github.com/neo4j/neo4j.git
-# Tested on     : UBI 9.3 
+# Tested on     : UBI 9.7 
 # Language      : Java
 # Ci-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Siddesh Sangodkar <siddesh.sangodkar1@ibm.com>
+# Maintainer    : Manya Rusiya <Manya.Rusiya@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -25,6 +25,12 @@ PACKAGE_VERSION=${1:-release/5.26.0}
 
 MAVEN_VERSION=3.8.8
 GOSU_VERSION=1.16
+
+# Set Power10 CPU optimization flags
+export cpu_opt_arch="power9"
+export cpu_opt_tune="power10"
+export CFLAGS="-mcpu=${cpu_opt_arch} -mtune=${cpu_opt_tune}"
+export CXXFLAGS="-mcpu=${cpu_opt_arch} -mtune=${cpu_opt_tune}"
 
 export PATH=$PATH:/usr/local/bin
 ulimit -n 65536
@@ -45,10 +51,10 @@ yum -y install sbt
 
 
 #Install maven
-wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
-tar xvf apache-maven-${MAVEN_VERSION}-bin.tar.gz
-rm -rf apache-maven-${MAVEN_VERSION}-bin.tar.gz
-PATH=$CWD/apache-maven-${MAVEN_VERSION}/bin:$PATH
+wget https://archive.apache.org/dist/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
+tar xzf apache-maven-3.8.8-bin.tar.gz
+export PATH=$PWD/apache-maven-3.8.8/bin:$PATH
+mvn -version
 
 #Clone
 git clone ${PACKAGE_URL}
