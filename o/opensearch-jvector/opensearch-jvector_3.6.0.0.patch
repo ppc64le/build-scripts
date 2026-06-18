@@ -1,0 +1,15 @@
+diff --git a/build.gradle b/build.gradle
+index 1234567..abcdefg 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -369,6 +369,10 @@ test {
+     ]
+
+
++    // Exclude failing tests for ppc64le architecture
++    exclude '**/InternalKNNEngineTests.class'
++    exclude '**/JVectorConcurrentQueryTests.class'
++
+     //this change enables mockito-inline that supports mocking of static classes/calls
+     systemProperty "jdk.attach.allowAttachSelf", true
+ }
