@@ -56,7 +56,6 @@ git checkout $PACKAGE_VERSION
 # -----------------------------------------------------------------------------
 echo "**** Building Ollama with CMake..."
 cmake -B build_llama
-cmake --build build_llama -j$(nproc)
 if ! cmake --build build_llama -j$(nproc); then
     echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
     exit 1
@@ -68,6 +67,14 @@ fi
 # -----------------------------------------------------------------------------
 echo "**** Creating setup.py and package files ****"
 
+# Generate setup.py
+cat <<EOF > setup.py
+from setuptools import setup, find_packages
+from setuptools.command.build_py import build_py
+import os, shutil, stat
+
+PYTHON_PACKAGE_NAME = "llama_cpp_python_package"
+VERSION = "master"
 PKG_NAME="llama_cpp_python_package"
 mkdir -p ${PKG_NAME} ${PKG_NAME}/bin ${PKG_NAME}/lib
 
@@ -89,15 +96,6 @@ LIBRARIES = [
     "libggml-base.so.0",
 ]
 
-# Generate setup.py
-cat <<EOF > setup.py
-from setuptools import setup, find_packages
-from setuptools.command.build_py import build_py
-import os, shutil, stat
-
-PYTHON_PACKAGE_NAME = "llama_cpp_python_package"
-VERSION = "master"
-
 PKG_BIN_DIR = os.path.join(PYTHON_PACKAGE_NAME, "bin")
 PKG_LIB_DIR = os.path.join(PYTHON_PACKAGE_NAME, "lib")
 
@@ -111,7 +109,7 @@ class CustomBuild(build_py):
         os.makedirs(PKG_LIB_DIR, exist_ok=True)
 
         # Copy ollama binary
-        if os.path.exists(BIN_SRC):
+        if os.path.exists(BUILD_DIR):
             print(f"Copying binaries to {PKG_BIN_DIR}")
             for binary in BINARIES:
                 src = os.path.join(BUILD_DIR, binary)
@@ -127,7 +125,7 @@ class CustomBuild(build_py):
             print("Warning: llama.cpp binaries not found")
 
         # Copy .so libraries
-        if os.path.exists(LIB_SRC):
+        if os.path.exists(BUILD_DIR):
             for lib in LIBRARIES:
                 src = os.path.join(BUILD_DIR, lib)
 
