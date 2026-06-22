@@ -34,7 +34,8 @@ RUN git clone ${PACKAGE_URL} && \
     git checkout ${PACKAGE_VERSION} 
 
 WORKDIR /src/${PACKAGE_NAME}
-    
+
+RUN echo "b9692" > LLAMA_CPP_VERSION  
 ###############################################################################
 # Build Ollama (CMake)
 ###############################################################################
