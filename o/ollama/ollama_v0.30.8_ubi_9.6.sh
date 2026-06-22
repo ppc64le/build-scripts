@@ -43,6 +43,24 @@ gcc --version
 echo "**** Checking GCC version..."
 gcc -v || true
 
+# ----------------------------------------------------------------
+# Downlaod Go
+# -----------------------------------------------------------------
+GO_VERSION="1.26.1"
+GO_TAR="go${GO_VERSION}.linux-ppc64le.tar.gz"
+GO_DIR="go"
+
+if [ ! -d "${GO_DIR}" ]; then
+    echo "**** Downloading Go ${GO_VERSION}..."
+    wget -q https://go.dev/dl/${GO_TAR}
+    echo "**** Extracting Go binary..."
+    tar xzf ${GO_TAR}
+else
+    echo "**** Go already extracted, skipping..."
+fi
+
+export PATH="$(pwd)/go/bin:$PATH"
+
 # -----------------------------------------------------------------------------
 # Clone and Build Ollama
 # -----------------------------------------------------------------------------
