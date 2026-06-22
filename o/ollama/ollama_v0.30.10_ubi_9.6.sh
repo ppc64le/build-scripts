@@ -130,7 +130,7 @@ class CustomBuild(build_py):
         # Copy .so libraries
         if os.path.exists(LIB_SRC):
             for f in os.listdir(LIB_SRC):
-                if f.endswith(".so"):
+                if ".so" in f:
                     src = os.path.join(LIB_SRC, f)
                     dst = os.path.join(PKG_LIB_DIR, f)
                     print(f"Copying shared lib: {src}")
