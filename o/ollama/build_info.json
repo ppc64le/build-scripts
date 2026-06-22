@@ -2,7 +2,7 @@
   "maintainer": "shalinib-ibm",
   "package_name": "ollama",
   "github_url": "https://github.com/ollama/ollama",
-  "version": "v0.30.8",
+  "version": "v0.30.10",
   "wheel_build": true,
   "package_dir": "o/ollama",
   "default_branch": "main",
