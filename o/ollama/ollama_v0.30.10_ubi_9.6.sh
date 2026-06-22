@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package         : Ollama (Power10 optimized)
-# Version         : v0.30.8
+# Version         : v0.30.10
 # Source repo     : https://github.com/ollama/ollama
 # Tested on       : UBI:9.6
 # Language        : Go, C, Python
@@ -22,7 +22,7 @@ set -e
 
 # Variables
 PACKAGE_NAME=ollama
-PACKAGE_VERSION=${1:-v0.30.8}
+PACKAGE_VERSION=${1:-v0.30.10}
 PACKAGE_URL=https://github.com/ollama/ollama
 OLLAMA_VERSION=${PACKAGE_VERSION}
 CURRENT_DIR=$(pwd)
