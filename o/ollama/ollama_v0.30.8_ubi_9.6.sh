@@ -52,6 +52,8 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+echo "Upadting llama.cpp Version"
+echo "b9692" > LLAMA_CPP_VERSION
 
 # -----------------------------------------------------------------------------
 # Build Ollama
