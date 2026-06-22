@@ -8,7 +8,7 @@
   "wheel_build": true,
   "docker_build": true,
   "validate_build_script": true,
-  "dir" : "latest"
+  "dir" : "latest",
   "build_script": "llama_cpp_ubi_9.6.sh",
 
   "base_docker_image": "registry.access.redhat.com/ubi9/ubi:9.6",
