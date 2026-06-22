@@ -55,6 +55,10 @@ jobs:
           pip3 install --force-reinstall -v "requests==2.31.0"
           pip3 install --upgrade docker
 
+      - name: Fix gha-script permissions
+        run: sudo chown -R $USER:$USER ./gha-script
+
+
       - name: Set PR number
         run: echo "PR_NUMBER=${{ github.event.pull_request.number || inputs.pr_number }}" >> $GITHUB_ENV
 
