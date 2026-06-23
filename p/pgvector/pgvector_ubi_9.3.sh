@@ -69,8 +69,9 @@ su - postgres -c "source /home/postgres/.bash_profile"
 su - postgres -c "which psql"
 cd ..
 
-# Clone pgvector repository
-su - postgres -c "git clone $PACKAGE_URL && cd $PACKAGE_NAME && git checkout $PACKAGE_VERSION && sed -i 's/pg_config/\/local\/apps\/postgresql\/pgsql164\/bin\/pg_config/' Makefile"
+mkdir -p /home/postgres/build
+chown -R postgres:postgres /home/postgres/build
+cd /home/postgres/build
 
 # Build and install pgvector
 git clone $PACKAGE_URL
@@ -78,14 +79,14 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 sed -i 's/pg_config/\/local\/apps\/postgresql\/pgsql164\/bin\/pg_config/' Makefile
 # make
-if ! make ; then
+if ! make OPTFLAGS=""; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  build_Fails"
     exit 1
 fi
 # make install
-if ! make install; then
+if ! make OPTFLAGS="" install; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -95,7 +96,10 @@ fi
 # Run install check
 # su - postgres -c "cd pgvector && make installcheck"
 
-if ! su - postgres -c "cd pgvector && make installcheck"; then
+# Ensure postgres owns test directory
+chown -R postgres:postgres /home/postgres/build/${PACKAGE_NAME}
+
+if ! su - postgres -c "cd /home/postgres/build/${PACKAGE_NAME} && make installcheck"; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
