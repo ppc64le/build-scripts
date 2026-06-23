@@ -55,8 +55,19 @@ jobs:
           pip3 install --force-reinstall -v "requests==2.31.0"
           pip3 install --upgrade docker
 
-      - name: Fix gha-script permissions
-        run: sudo chown -R $USER:$USER ./gha-script
+      - name: Debug - Check user and workspace ownership
+        run: |
+          echo "Current user: $USER"
+          echo "Current user ID: $(id -u)"
+          echo "Current group ID: $(id -g)"
+          echo "Workspace directory: $(pwd)"
+          echo "Workspace ownership:"
+          ls -la . | head -20
+          echo "gha-script directory ownership:"
+          ls -la ./gha-script | head -10
+
+      - name: Fix workspace permissions
+        run: sudo chown -R $USER:$USER .
 
 
       - name: Set PR number
@@ -114,7 +125,7 @@ jobs:
 
       - name: Read build_info.json
         run: |
-          sudo chown -R $USER:$USER ./gha-script
+          sudo chown -R $USER:$USER .
           chmod +x ./gha-script/read_buildinfo.sh
           bash ./gha-script/read_buildinfo.sh
 
@@ -179,7 +190,7 @@ jobs:
           echo "------------------- scanner-env.sh -----------------------------"
           cat package-cache/scanner-env.sh
 
-          sudo chown -R $USER:$USER ./gha-script
+          sudo chown -R $USER:$USER .
           chmod +x ./gha-script/build_package.sh
           bash ./gha-script/build_package.sh
 
@@ -241,7 +252,7 @@ jobs:
             exit 0
           fi
 
-          sudo chown -R $USER:$USER ./gha-script
+          sudo chown -R $USER:$USER .
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
 
@@ -305,7 +316,7 @@ jobs:
             exit 0
           fi
 
-          sudo chown -R $USER:$USER ./gha-script
+          sudo chown -R $USER:$USER .
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
 
@@ -370,7 +381,7 @@ jobs:
             exit 0
           fi
 
-          sudo chown -R $USER:$USER ./gha-script
+          sudo chown -R $USER:$USER .
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
 
@@ -433,7 +444,7 @@ jobs:
             exit 0
           fi
 
-          sudo chown -R $USER:$USER ./gha-script
+          sudo chown -R $USER:$USER .
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
 
@@ -497,7 +508,7 @@ jobs:
             exit 0
           fi
 
-          sudo chown -R $USER:$USER ./gha-script
+          sudo chown -R $USER:$USER .
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
 
@@ -553,7 +564,7 @@ jobs:
           echo "Dockerfile change detected, proceeding with build..."
 
           echo "===== Starting Docker build ====="
-          sudo chown -R $USER:$USER ./gha-script
+          sudo chown -R $USER:$USER .
           chmod +x ./gha-script/build_docker.sh
           bash ./gha-script/build_docker.sh
 
