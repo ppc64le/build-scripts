@@ -29,7 +29,7 @@ BUILD_HOME=$(pwd)
 
 # Install update and deps
 yum update -y
-yum install -y make g++ wget git libpq-devel python3-devel.ppc64le python-psycopg2 zlib-devel libicu-devel
+yum install -y make g++ wget git libpq-devel python3-devel.ppc64le python-psycopg2 zlib-devel libicu-devel diffutils
 
 
 # Change to home directory
