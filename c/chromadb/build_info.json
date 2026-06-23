@@ -18,5 +18,5 @@
   },
   "*": {
     "build_script": "chromadb_1.5.9_ubi_9.6.sh"
-  }    
+  }
 }
