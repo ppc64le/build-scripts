@@ -8,7 +8,7 @@
 # Language       : Python
 # Ci-Check   : True
 # Script License : Apache License, Version 2 or later
-# Maintainer     : vivek sharma<vivek.sharma20@ibm.com>
+# Maintainer     : Vrusha Naik<Vrusha.Naik@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on the given
 # ==========  platform using the mentioned version of the package.
@@ -31,6 +31,7 @@ pip3 install greenlet
 pip3 install --upgrade pip setuptools wheel
 pip3 install pytest
 pip3 install mypy
+pip3 install "cython>=0.29.24"
 
 # Add /usr/local/bin to PATH
 export PATH=$PATH:/usr/local/bin/
@@ -59,32 +60,18 @@ git clone ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
 git checkout ${PACKAGE_VERSION}
 
-# Disable C extensions BEFORE installation
-export DISABLE_SQLALCHEMY_CEXT=1
-
 # Upgrade pip and setuptools within the virtual environment
 pip install --upgrade pip setuptools wheel
 
-# Enable legacy editable mode for setuptools
-export SETUPTOOLS_ENABLE_FEATURES="legacy-editable"
-
 #commenting out the tag_build so it creates wheel without .dev0
 sed -i '/^\[egg_info\]/,/\[/{s/^\(tag_build = dev\)/# \1/}' setup.cfg
-
-# Install the package in editable mode with testing dependencies
-pip install -e .[testing]
-
-# Check if setup.py file exists and install the package
-if [ -f "setup.py" ]; then
-    if ! python3 setup.py install; then
-        echo "------------------${PACKAGE_NAME}: Install_fails------------------"
-        echo "${PACKAGE_URL} ${PACKAGE_NAME}"
-        echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | GitHub | Fail | Install_Fails"
-        exit 1
-    fi
-    echo "setup.py file exists"
-else
-    echo "setup.py not present"
+   
+# Install SQLAlchemy 
+if ! python3 -m pip install .; then
+    echo "------------------${PACKAGE_NAME}: Install_fails------------------"
+    echo "${PACKAGE_URL} ${PACKAGE_NAME}"
+    echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | GitHub | Fail | Install_Fails"
+    exit 1
 fi
 
 # Run tests using pytest
