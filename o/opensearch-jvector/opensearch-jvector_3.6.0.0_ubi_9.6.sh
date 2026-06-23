@@ -4,7 +4,7 @@
 # Package          : opensearch-jvector
 # Version          : 3.6.0.0
 # Source repo      : https://github.com/opensearch-project/opensearch-jvector.git
-# Tested on        : UBI 9.6
+# Tested on        : UBI:9.6
 # Language         : Java
 # Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
