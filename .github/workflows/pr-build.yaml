@@ -114,6 +114,7 @@ jobs:
 
       - name: Read build_info.json
         run: |
+          sudo chown -R $USER:$USER ./gha-script
           chmod +x ./gha-script/read_buildinfo.sh
           bash ./gha-script/read_buildinfo.sh
 
@@ -178,6 +179,7 @@ jobs:
           echo "------------------- scanner-env.sh -----------------------------"
           cat package-cache/scanner-env.sh
 
+          sudo chown -R $USER:$USER ./gha-script
           chmod +x ./gha-script/build_package.sh
           bash ./gha-script/build_package.sh
 
@@ -239,6 +241,7 @@ jobs:
             exit 0
           fi
 
+          sudo chown -R $USER:$USER ./gha-script
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
 
@@ -302,6 +305,7 @@ jobs:
             exit 0
           fi
 
+          sudo chown -R $USER:$USER ./gha-script
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
 
@@ -366,6 +370,7 @@ jobs:
             exit 0
           fi
 
+          sudo chown -R $USER:$USER ./gha-script
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
 
@@ -428,6 +433,7 @@ jobs:
             exit 0
           fi
 
+          sudo chown -R $USER:$USER ./gha-script
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
 
@@ -491,6 +497,7 @@ jobs:
             exit 0
           fi
 
+          sudo chown -R $USER:$USER ./gha-script
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
 
@@ -546,6 +553,7 @@ jobs:
           echo "Dockerfile change detected, proceeding with build..."
 
           echo "===== Starting Docker build ====="
+          sudo chown -R $USER:$USER ./gha-script
           chmod +x ./gha-script/build_docker.sh
           bash ./gha-script/build_docker.sh
 
