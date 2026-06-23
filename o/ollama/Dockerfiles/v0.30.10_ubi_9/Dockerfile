@@ -7,7 +7,8 @@ ARG PACKAGE_NAME=ollama
 ARG PACKAGE_VERSION=v0.30.10
 ARG PACKAGE_URL=https://github.com/ollama/ollama
 ENV CMAKE_VERSION=3.31.5
-
+ENV GO_VERSION=1.26.4
+ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Install dependencies
 RUN yum update -y && \
@@ -22,6 +23,16 @@ ENV PATH="/opt/rh/gcc-toolset-15/root/usr/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:${LD_LIBRARY_PATH}"
 ENV CC=/opt/rh/gcc-toolset-15/root/usr/bin/gcc
 ENV CXX=/opt/rh/gcc-toolset-15/root/usr/bin/g++
+
+# Install CMake (system)
+RUN yum install -y cmake
+
+# Install Go
+RUN wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
+    rm -rf /usr/local/go && \
+    tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz && \
+    rm -rf go${GO_VERSION}.linux-ppc64le.tar.gz && \
+    go version
 
 ###############################################################################
 # Clone and Build Ollama
