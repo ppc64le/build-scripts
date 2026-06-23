@@ -10,6 +10,13 @@
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": false,
+  "auditwheel_exclude": [
+    "libc10.so",
+    "libtorch.so",
+    "libtorch_cpu.so",
+    "libtorch_python.so",
+    "libshm.so"
+  ],
   "*": {
     "build_script": "polars_py-1.38.1_ubi_9.7.sh"
   }
