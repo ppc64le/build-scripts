@@ -18,9 +18,8 @@
 #
 # ----------------------------------------------------------------------------
 set -e 
-SCRIPT_PACKAGE_VERSION=v0.7.4
 PACKAGE_NAME=pgvector
-PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
+PACKAGE_VERSION=${1:-v0.7.4}
 PACKAGE_URL=https://github.com/pgvector/pgvector.git
 POSTGRES_SOURCE_URL=https://ftp.postgresql.org/pub/source/v16.4/postgresql-16.4.tar.gz
 POSTGRES_SOURCE=postgresql-16.4.tar.gz
