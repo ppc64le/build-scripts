@@ -18,9 +18,8 @@
 #
 # ----------------------------------------------------------------------------
 set -e 
-SCRIPT_PACKAGE_VERSION=0.7.4
 PACKAGE_NAME=pgvector
-PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
+PACKAGE_VERSION=${1:-v0.7.4}
 PACKAGE_URL=https://github.com/pgvector/pgvector.git
 POSTGRES_SOURCE_URL=https://ftp.postgresql.org/pub/source/v16.4/postgresql-16.4.tar.gz
 POSTGRES_SOURCE=postgresql-16.4.tar.gz
@@ -76,7 +75,7 @@ cd /home/postgres/build
 # Build and install pgvector
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-git checkout v${PACKAGE_VERSION}
+git checkout $PACKAGE_VERSION
 sed -i 's/pg_config/\/local\/apps\/postgresql\/pgsql164\/bin\/pg_config/' Makefile
 # make
 if ! make OPTFLAGS=""; then
