@@ -13,5 +13,5 @@
   "base_docker_image": "registry.access.redhat.com/ubi9/ubi:9.6",
   "base_docker_variant": "redhat",
   "docker_cmd": "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
-  "use_non_root_user": false,
+  "use_non_root_user": false
 }
