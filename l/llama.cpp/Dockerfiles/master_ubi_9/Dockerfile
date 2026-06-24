@@ -53,11 +53,21 @@ RUN yum update -y && \
     yum clean all
 
 COPY --from=build /src/llama.cpp/build/bin/llama-cli /usr/bin/llama-cli
-COPY --from=build /src/llama.cpp/build/bin/ /usr/lib/llama
+COPY --from=build /src/llama.cpp/build/bin/llama-cli /usr/bin/llama-server
+COPY --from=build /src/llama.cpp/build/bin/llama-cli /usr/bin/llama-bench
+COPY --from=build /src/llama.cpp/build/bin/llama-cli /usr/bin/llama-batched-bench
+
+COPY --from=build /src/llama.cpp/build/bin/libllama-bench-impl.so /usr/lib/llama
+COPY --from=build /src/llama.cpp/build/bin/libllama-common.so.0 /usr/lib/llama
+COPY --from=build /src/llama.cpp/build/bin/libllama.so.0 /usr/lib/llama
+COPY --from=build /src/llama.cpp/build/bin/libggml.so.0 /usr/lib/llama
+COPY --from=build /src/llama.cpp/build/bin/libggml-base.so.0 /usr/lib/llama
+COPY --from=build /src/llama.cpp/build/bin/libggml-cpu.so.0 /usr/lib/llama
+
 
 ENV LD_LIBRARY_PATH=/usr/lib/llama:$LD_LIBRARY_PATH
 ENV PATH="/usr/bin:${PATH}"
 
 EXPOSE 11434
-ENTRYPOINT ["/usr/bin/llama-cli"]
-CMD ["serve"]
+ENTRYPOINT ["/usr/bin/llama-server"]
+CMD ["--help"]
