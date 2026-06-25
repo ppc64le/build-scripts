@@ -5,6 +5,7 @@
   "version": "latest",
   "wheel_build": true,
   "docker_build": true,
+  "build_script": "llama_cpp_ubi_9.6.sh",
   "validate_build_script": true,
   "package_dir": "l/llama.cpp",
   "default_branch": "master",
