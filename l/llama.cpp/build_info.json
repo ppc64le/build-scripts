@@ -2,7 +2,7 @@
   "maintainer": "shalinib-ibm",
   "package_name": "llama.cpp",
   "github_url": "https://github.com/ggml-org/llama.cpp",
-  "version": "latest",
+  "version": "master",
   "wheel_build": true,
   "docker_build": true,
   "build_script": "llama_cpp_ubi_9.6.sh",
@@ -12,7 +12,7 @@
   "docker_cmd": "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
   "use_non_root_user": false,
 
-  "latest": {
+  "master": {
     "dir": "master_ubi_9",
     "build_script": "llama_cpp_ubi_9.6.sh",
     "base_docker_image": "registry.access.redhat.com/ubi9/ubi:9.6",
