@@ -10,23 +10,6 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "auditwheel_exclude": [
-    "libtensorflow_framework.so.2",
-    "libpython3.10.so.1.0",
-    "libpython3.11.so.1.0",
-    "libpython3.12.so.1.0",
-    "libpython3.13.so.1.0",
-    "libpython3.14.so.1.0",
-    "libavutil-ffmpeg.so.54",
-    "libavformat-ffmpeg.so.56",
-    "libswscale-ffmpeg.so.3",
-    "libavcodec-ffmpeg.so.56",
-    "libavformat.so.57",
-    "libswscale.so.4",
-    "libavutil.so.55",
-    "libswscale.so.5",
-    "libavformat.so.58"
-  ],
   "*": {
     "patches": {
       "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow-io-gcs-filesystem/tf-io-gcs-filesystem.patch"
