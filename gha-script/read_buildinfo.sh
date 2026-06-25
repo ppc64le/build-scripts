@@ -148,8 +148,8 @@ fi
 
 # Extract auditwheel exclusions
 AUDITWHEEL_EXCLUDE=""
-if $(jq 'has("auditwheel_exclude")' $config_file); then
-  AUDITWHEEL_EXCLUDE=$(jq -r '.auditwheel_exclude[]' $config_file | tr '\n' ' ')
+if jq -e 'has("auditwheel_exclude")' "$config_file" >/dev/null; then
+  AUDITWHEEL_EXCLUDE=$(jq -r '.auditwheel_exclude | join(" ")' "$config_file")
 fi
 
 # Export variables

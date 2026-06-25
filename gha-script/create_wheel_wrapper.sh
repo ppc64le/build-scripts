@@ -246,21 +246,22 @@ WHEELHOUSE="$CURRENT_DIR/wheelhouse"
 mkdir -p "$WHEELHOUSE"
 
 # Build auditwheel exclusion arguments from build_info.json
-EXCLUDE_ARGS=""
+EXCLUDE_ARGS=()
 if [ -n "$AUDITWHEEL_EXCLUDE" ]; then
   echo "Adding package-specific auditwheel exclusions: $AUDITWHEEL_EXCLUDE"
-  for lib in $AUDITWHEEL_EXCLUDE; do
-    EXCLUDE_ARGS="$EXCLUDE_ARGS --exclude $lib"
+  read -ra exclude_libs <<< "$AUDITWHEEL_EXCLUDE"
+  for lib in "${exclude_libs[@]}"; do
+    EXCLUDE_ARGS+=("--exclude" "$lib")
   done
 else
   echo "No auditwheel exclusions defined in build_info.json"
 fi
 
-echo "Auditwheel exclusion arguments: $EXCLUDE_ARGS"
+echo "Auditwheel exclusion arguments: ${EXCLUDE_ARGS[*]}"
 
 # run auditwheel
 set +e
-audit_output=$(auditwheel repair "$wheel_file" --wheel-dir "$WHEELHOUSE" $EXCLUDE_ARGS 2>&1)
+audit_output=$(auditwheel repair "$wheel_file" --wheel-dir "$WHEELHOUSE" "${EXCLUDE_ARGS[@]}" 2>&1)
 audit_status=$?
 set -e
 
