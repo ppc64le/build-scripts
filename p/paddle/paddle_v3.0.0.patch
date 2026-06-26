@@ -1,15 +1,31 @@
-diff --git a/paddle/phi/common/cpstring_impl.h b/paddle/phi/common/cpstring_impl.h
-index 33780d1538..4b6cfd7889 100644
---- a/paddle/phi/common/cpstring_impl.h
-+++ b/paddle/phi/common/cpstring_impl.h
-@@ -203,7 +203,6 @@ HOSTDEVICE static inline void *PD_Memcpy(void *dst,
-   }
-   return dst;
- }
--
- HOSTDEVICE static inline void *PD_Malloc(size_t size) { return malloc(size); }
- 
- HOSTDEVICE static inline void *PD_Realloc(void *ptr,
+diff --git a/paddle/phi/backends/cpu/cpu_info.cc b/paddle/phi/backends/cpu/cpu_info.cc
+index 3c492aa97c..2a5dab0809 100644
+--- a/paddle/phi/backends/cpu/cpu_info.cc
++++ b/paddle/phi/backends/cpu/cpu_info.cc
+@@ -151,7 +151,8 @@ bool MayIUse(const cpu_isa_t cpu_isa) {
+   } else {
+ #if !defined(WITH_NV_JETSON) && !defined(PADDLE_WITH_ARM) &&  \
+     !defined(PADDLE_WITH_SW) && !defined(PADDLE_WITH_MIPS) && \
+-    !defined(PADDLE_WITH_LOONGARCH)
++    !defined(PADDLE_WITH_LOONGARCH) &&                         \
++    !defined(__powerpc__) && !defined(__ppc__) && !defined(__PPC__)
+     std::array<int, 4> reg;
+     cpuid(reg.data(), 0);
+     int nIds = reg[0];
+diff --git a/paddle/phi/backends/cpu/cpu_info.h b/paddle/phi/backends/cpu/cpu_info.h
+index 3fcb5538e8..06ed178c8e 100644
+--- a/paddle/phi/backends/cpu/cpu_info.h
++++ b/paddle/phi/backends/cpu/cpu_info.h
+@@ -42,7 +42,8 @@
+ #else
+ #if !defined(WITH_NV_JETSON) && !defined(PADDLE_WITH_ARM) &&  \
+     !defined(PADDLE_WITH_SW) && !defined(PADDLE_WITH_MIPS) && \
+-    !defined(PADDLE_WITH_LOONGARCH)
++    !defined(PADDLE_WITH_LOONGARCH) &&                         \
++    !defined(__powerpc__) && !defined(__ppc__) && !defined(__PPC__)
+ #include <cpuid.h>
+ inline void cpuid(int reg[4], int x) {
+   __cpuid_count(x, 0, reg[0], reg[1], reg[2], reg[3]);
 diff --git a/paddle/phi/core/platform/denormal.cc b/paddle/phi/core/platform/denormal.cc
 index 93c55e84be..f9c34c869a 100644
 --- a/paddle/phi/core/platform/denormal.cc
@@ -25,7 +41,7 @@ index 93c55e84be..f9c34c869a 100644
  #endif
  
 diff --git a/paddle/phi/kernels/funcs/search_compute.h b/paddle/phi/kernels/funcs/search_compute.h
-index b51f10cce9..ae25b45cfb 100644
+index b51f10cce9..cf921d3361 100644
 --- a/paddle/phi/kernels/funcs/search_compute.h
 +++ b/paddle/phi/kernels/funcs/search_compute.h
 @@ -15,7 +15,8 @@
@@ -34,7 +50,7 @@ index b51f10cce9..ae25b45cfb 100644
  #if !defined(PADDLE_WITH_ARM) && !defined(PADDLE_WITH_SW) && \
 -    !defined(PADDLE_WITH_MIPS) && !defined(PADDLE_WITH_LOONGARCH)
 +    !defined(PADDLE_WITH_MIPS) && !defined(PADDLE_WITH_LOONGARCH) && \
-+    (defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || defined(_M_IX86))
++    !defined(__powerpc__) && !defined(__ppc__) && !defined(__PPC__)
  #include <immintrin.h>
  #endif
  #include <cfloat>
@@ -44,37 +60,39 @@ index b51f10cce9..ae25b45cfb 100644
  #if !defined(PADDLE_WITH_ARM) && !defined(PADDLE_WITH_SW) && \
 -    !defined(PADDLE_WITH_MIPS) && !defined(PADDLE_WITH_LOONGARCH)
 +    !defined(PADDLE_WITH_MIPS) && !defined(PADDLE_WITH_LOONGARCH) && \
-+    (defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || defined(_M_IX86))
++    !defined(__powerpc__) && !defined(__ppc__) && !defined(__PPC__)
  
  #define __m256x __m256
  
-@@ -144,7 +146,7 @@ inline void axpy(const T* x, T* y, size_t len, const T alpha) {
+@@ -142,7 +144,8 @@ inline void axpy(const T* x, T* y, size_t len, const T alpha) {
+                       _mm256_mul_px(mm_alpha, _mm256_load_px(x + jjj))));
+   }
  #elif defined(PADDLE_WITH_ARM) || defined(PADDLE_WITH_SW) || \
-     defined(PADDLE_WITH_MIPS) || defined(PADDLE_WITH_LOONGARCH)
+-    defined(PADDLE_WITH_MIPS) || defined(PADDLE_WITH_LOONGARCH)
++    defined(PADDLE_WITH_MIPS) || defined(PADDLE_WITH_LOONGARCH) || \
++    defined(__powerpc__) || defined(__ppc__) || defined(__PPC__)
    PADDLE_THROW(common::errors::Unimplemented("axpy is not supported"));
--#else
-+#elif defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || defined(_M_IX86)
+ #else
    lll = len & ~SSE_CUT_LEN_MASK;
-   __m128x mm_alpha = _mm_load1_px(&alpha);
-   for (jjj = 0; jjj < lll; jjj += SSE_STEP_SIZE) {
-@@ -174,7 +176,7 @@ inline void axpy_noadd(const T* x, T* y, size_t len, const T alpha) {
+@@ -172,7 +175,8 @@ inline void axpy_noadd(const T* x, T* y, size_t len, const T alpha) {
+     _mm256_store_px(y + jjj, _mm256_mul_px(mm_alpha, _mm256_load_px(x + jjj)));
+   }
  #elif defined(PADDLE_WITH_ARM) || defined(PADDLE_WITH_SW) || \
-     defined(PADDLE_WITH_MIPS) || defined(PADDLE_WITH_LOONGARCH)
+-    defined(PADDLE_WITH_MIPS) || defined(PADDLE_WITH_LOONGARCH)
++    defined(PADDLE_WITH_MIPS) || defined(PADDLE_WITH_LOONGARCH) || \
++    defined(__powerpc__) || defined(__ppc__) || defined(__PPC__)
    PADDLE_THROW(common::errors::Unimplemented("axpy_noadd is not supported"));
--#else
-+#elif defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || defined(_M_IX86)
+ #else
    lll = len & ~SSE_CUT_LEN_MASK;
-   __m128x mm_alpha = _mm_load1_px(&alpha);
-   for (jjj = 0; jjj < lll; jjj += SSE_STEP_SIZE) {
 diff --git a/paddle/phi/kernels/funcs/softmax_impl.h b/paddle/phi/kernels/funcs/softmax_impl.h
-index 8f6b0fdd32..9b094fd237 100644
+index 8f6b0fdd32..b27ed69f36 100644
 --- a/paddle/phi/kernels/funcs/softmax_impl.h
 +++ b/paddle/phi/kernels/funcs/softmax_impl.h
-@@ -237,14 +237,16 @@ class SoftmaxFunctor<DeviceContext, T, enable_if_CPU<DeviceContext>> {
+@@ -237,10 +237,10 @@ class SoftmaxFunctor<DeviceContext, T, enable_if_CPU<DeviceContext>> {
                    const int axis_dim,
                    const phi::DenseTensor* X,
                    phi::DenseTensor* Y) {
-+#if !defined(__powerpc__) && !defined(__ppc__) && !defined(__PPC__)
++#if defined(__AVX__) && !defined(__powerpc__) && !defined(__ppc__) && !defined(__PPC__)
      const auto& in_dims = X->dims();
      constexpr int kBatchDim = 0;
      constexpr int kClassDim = 1;
@@ -82,13 +100,7 @@ index 8f6b0fdd32..9b094fd237 100644
      const int num_classes = in_dims[kClassDim];
      const int batch_size = in_dims[kBatchDim];
      const int num_remain = num_classes / axis_dim;
- 
-+    const int batch_size = in_dims[kBatchDim];
-+    const int num_remain = num_classes / axis_dim;
-     if (num_remain == 1 &&
-         phi::backends::cpu::MayIUse(phi::backends::cpu::avx)) {
-       const T* in_data = X->data<T>();
-@@ -267,7 +269,9 @@ class SoftmaxFunctor<DeviceContext, T, enable_if_CPU<DeviceContext>> {
+@@ -267,7 +267,9 @@ class SoftmaxFunctor<DeviceContext, T, enable_if_CPU<DeviceContext>> {
          in_data += num_classes;
          out_data += num_classes;
        }
@@ -99,15 +111,22 @@ index 8f6b0fdd32..9b094fd237 100644
        SoftmaxEigen<DeviceContext, T>()(context, axis_dim, X, Y);
      }
    }
-@@ -394,6 +398,7 @@ class SoftmaxGradFunctor<DeviceContext, T, enable_if_CPU<DeviceContext>> {
+@@ -394,13 +396,13 @@ class SoftmaxGradFunctor<DeviceContext, T, enable_if_CPU<DeviceContext>> {
                    const phi::DenseTensor* y,
                    const phi::DenseTensor* y_grad,
                    phi::DenseTensor* x_grad) {
-+#if !defined(__powerpc__) && !defined(__ppc__) && !defined(__PPC__)
++#if defined(__AVX__) && !defined(__powerpc__) && !defined(__ppc__) && !defined(__PPC__)
      const auto& out_dims = y->dims();
      constexpr int kBatchDim = 0;
      constexpr int kClassDim = 1;
-@@ -419,7 +424,9 @@ class SoftmaxGradFunctor<DeviceContext, T, enable_if_CPU<DeviceContext>> {
+     const int num_classes = out_dims[kClassDim];
+     const int batch_size = out_dims[kBatchDim];
+     const int num_remain = num_classes / axis_dim;
+-
+     if (num_remain == 1 &&
+         phi::backends::cpu::MayIUse(phi::backends::cpu::avx)) {
+       const T* out_data = y->data<T>();
+@@ -419,7 +421,9 @@ class SoftmaxGradFunctor<DeviceContext, T, enable_if_CPU<DeviceContext>> {
          out_grad += num_classes;
          in_grad += num_classes;
        }
