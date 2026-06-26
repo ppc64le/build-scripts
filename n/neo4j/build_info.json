@@ -6,11 +6,11 @@
   "package_dir": "n/neo4j",
   "default_branch": "release/5.26.0",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "build_script": "neo4j_5.26.0_ubi_9.3.sh",
+  "build_script": "neo4j_5.26.0_ubi_9.7.sh",
   "docker_build": "true",
   "validate_build_script": "true",
   "use_non_root_user": false,
   "release/5.2*.*": {
-    "build_script": "neo4j_5.26.0_ubi_9.3.sh"
+    "build_script": "neo4j_5.26.0_ubi_9.7.sh"
   }
 }

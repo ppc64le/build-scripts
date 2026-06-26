@@ -22,13 +22,17 @@
 set -ex 
 
 PACKAGE_NAME=vision
-PACKAGE_VERSION=${1:-v0.26.0}
+PACKAGE_VERSION=${1:-v0.27.0}
 PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
 VERSION=${PACKAGE_VERSION#v}
 PYTHON_VERSION=${2:-3.12}
-PYTORCH_VERSION=${3:-v2.11.0}
+if [[ "$PACKAGE_VERSION" == "v0.27.0" ]]; then
+    PYTORCH_VERSION=${3:-v2.12.0}
+else
+    PYTORCH_VERSION=${3:-v2.11.0}
+fi
 
 CURRENT_DIR=$(pwd)
 
@@ -230,6 +234,11 @@ PATCH_FILE="pytorch_${PYTORCH_VERSION}.patch"
 if [[ "$(printf '%s\n' "$ver" "2.9.1" | sort -V | tail -n1)" == "$ver" ]]; then
     PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch"
     PATCH_FILE="pytorch_v2.9.1.patch"
+fi
+
+if [[ "$(printf '%s\n' "$ver" "2.12.0" | sort -V | tail -n1)" == "$ver" ]]; then
+    PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.12.0.patch"
+    PATCH_FILE="pytorch_v2.12.0.patch"
 fi
 wget -q --spider "$PATCH_URL" && wget -q "$PATCH_URL" && git apply "$PATCH_FILE"
 
