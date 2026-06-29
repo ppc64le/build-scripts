@@ -1,0 +1,39 @@
+diff --git a/agents/chat/pyproject.toml b/agents/chat/pyproject.toml
+index 83cfeaf2..a3acc468 100644
+--- a/agents/chat/pyproject.toml
++++ b/agents/chat/pyproject.toml
+@@ -7,7 +7,7 @@ authors = [
+ ]
+ requires-python = ">=3.13,<3.14"
+ dependencies = [
+-    "beeai-framework[duckduckgo,wikipedia,a2a]>=0.1.70",
++    "beeai-framework[wikipedia,a2a]>=0.1.70",
+     "tiktoken>=0.12.0",  # constraint for beeai-framework dependency (first version with musl arm64 wheel)
+     "fastuuid>=0.14.0",  # constraint for beeai-framework dependency (first version with musl arm64 wheel)
+     "openai>=1.107.1",
+diff --git a/agents/rag/pyproject.toml b/agents/rag/pyproject.toml
+index 8b8c3867..c6dc9e9a 100644
+--- a/agents/rag/pyproject.toml
++++ b/agents/rag/pyproject.toml
+@@ -7,7 +7,7 @@ authors = [
+ ]
+ requires-python = ">=3.13,<3.14"
+ dependencies = [
+-    "beeai-framework[duckduckgo,wikipedia,a2a]>=0.1.70",
++    "beeai-framework[wikipedia,a2a]>=0.1.70",
+     "tiktoken>=0.12.0",  # constraint for beeai-framework dependency (first version with musl arm64 wheel)
+     "fastuuid>=0.14.0",  # constraint for beeai-framework dependency (first version with musl arm64 wheel)
+     "agentstack-sdk",
+diff --git a/apps/agentstack-sdk-py/pyproject.toml b/apps/agentstack-sdk-py/pyproject.toml
+index 36544359..b275fb3f 100644
+--- a/apps/agentstack-sdk-py/pyproject.toml
++++ b/apps/agentstack-sdk-py/pyproject.toml
+@@ -26,7 +26,7 @@ dependencies = [
+ 
+ [dependency-groups]
+ dev = [
+-    "beeai-framework[duckduckgo,wikipedia]>=0.1.70",
++    "beeai-framework[wikipedia]>=0.1.70",
+     "pyright>=1.1.403",
+     "pytest>=8.4.1",
+     "pytest-asyncio>=1.1.0",
