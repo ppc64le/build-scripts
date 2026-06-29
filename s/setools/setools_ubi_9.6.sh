@@ -28,7 +28,7 @@ PACKAGE_DIR=setools
 CURRENT_DIR="${PWD}"
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make cmake python3.11 python3.11-devel libselinux-devel libsepol-devel python3-setuptools
+yum install -y git gcc gcc-c++ make cmake python3 python3-devel libselinux-devel libsepol-devel python3-setuptools
 
 # Clone source
 git clone $PACKAGE_URL
@@ -37,11 +37,11 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 # Install Python dependencies
-python3.11 -m ensurepip --upgrade || true
-python3.11 -m pip install --upgrade pip setuptools wheel
+python3 -m ensurepip --upgrade || true
+python3 -m pip install --upgrade pip setuptools wheel
 
 # Build and install
-if ! python3.11 -m pip install . ; then
+if ! python3 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
@@ -49,13 +49,13 @@ if ! python3.11 -m pip install . ; then
 fi
 
 # Verify installation
-python3.11 -c "from setools import SELinuxPolicy; print('SELinuxPolicy import successful')"
+python3 -c "from setools import SELinuxPolicy; print('SELinuxPolicy import successful')"
 
 # Install test dependencies
-python3.11 -m pip install pytest
+python3 -m pip install pytest
 
 # Run tests
-if ! python3.11 -m pytest -v ; then
+if ! python3 -m pytest -v ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_success_but_test_Fails"
