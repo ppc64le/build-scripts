@@ -41,10 +41,12 @@ LLVM_PROJECT_GIT_URL="https://github.com/llvm/llvm-project.git"
 LLVM_PROJECT_GIT_TAG="llvmorg-20.1.8"
 
 LLVMLITE_PACKAGE_URL="https://github.com/numba/llvmlite"
-if [[ "$(printf '%s\n' "0.64.0" "$PACKAGE_VERSION" | sort -V | head -n1)" == "0.64.0" ]]; then
-    LLVMLITE_VERSION="v0.46.0"
+if [[ "$PACKAGE_VERSION" == 0.65.* ]]; then
+    LLVMLITE_VERSION="v0.47.0"
+elif [[ "$PACKAGE_VERSION" == 0.64.* ]]; then
+    LLVMLITE_VERSION="v0.47.0"
 else
-    LLVMLITE_VERSION="v0.46.0dev0"
+    LLVMLITE_VERSION="v0.46.0"
 fi
 
 LLVM_SRC_DIR=$WORKING_DIR/llvm-project
