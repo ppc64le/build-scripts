@@ -44,9 +44,9 @@ LLVMLITE_PACKAGE_URL="https://github.com/numba/llvmlite"
 if [[ "$PACKAGE_VERSION" == 0.65.* ]]; then
     LLVMLITE_VERSION="v0.47.0"
 elif [[ "$PACKAGE_VERSION" == 0.64.* ]]; then
-    LLVMLITE_VERSION="v0.47.0"
-else
     LLVMLITE_VERSION="v0.46.0"
+else
+    LLVMLITE_VERSION="v0.46.0dev0"
 fi
 
 LLVM_SRC_DIR=$WORKING_DIR/llvm-project
