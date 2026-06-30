@@ -26,7 +26,6 @@ WORKING_DIR=$(pwd)
 NUMERIC_VERSION=$(echo "$PACKAGE_VERSION" | grep -oP '^\d+(\.\d+){0,2}')
 
 # Install necessary  dependencies
-
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip gcc-toolset-13 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
