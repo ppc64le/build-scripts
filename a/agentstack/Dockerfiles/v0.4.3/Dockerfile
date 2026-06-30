@@ -169,8 +169,17 @@ RUN git fetch --all --tags && \
 
 WORKDIR /root/agentstack/apps/agentstack-sdk-py
 
-RUN uv python install 3.13 && \
-    uv sync --all-groups
+RUN uv python install 3.12 && \
+    deactivate 2>/dev/null || true && \
+    unset VIRTUAL_ENV && \
+    hash -r && \
+    rm -rf .venv && \
+    uv venv .venv --python 3.12 && \
+    source .venv/bin/activate && \
+    rm -f uv.lock
+
+RUN uv lock && \
+    uv sync
 
 ############################################################
 # Build CLI
@@ -178,8 +187,9 @@ RUN uv python install 3.13 && \
 
 WORKDIR /root/agentstack/apps/agentstack-cli
 
-RUN uv python install 3.13 && \
-    uv sync --all-groups
+RUN rm -f uv.lock && \
+    uv lock && \
+    uv sync
 
 ############################################################
 # Build Server
@@ -187,8 +197,9 @@ RUN uv python install 3.13 && \
 
 WORKDIR /root/agentstack/apps/agentstack-server
 
-RUN uv python install 3.13 && \
-    uv sync --all-groups && \
+RUN rm -f uv.lock && \
+    uv lock && \
+    uv sync && \
     uv add "pydantic==2.11.7" && \
     uv sync
 
@@ -198,8 +209,9 @@ RUN uv python install 3.13 && \
 
 WORKDIR /root/agentstack/agents/chat
 
-RUN uv python install 3.13 && \
-    uv sync --all-groups
+RUN rm -f uv.lock && \
+    uv lock && \
+    uv sync
 
 ############################################################
 # Build Form Agent
@@ -207,8 +219,9 @@ RUN uv python install 3.13 && \
 
 WORKDIR /root/agentstack/agents/form
 
-RUN uv python install 3.13 && \
-    uv sync --all-groups
+RUN rm -f uv.lock && \
+    uv lock && \
+    uv sync
 
 ############################################################
 # Build RAG Agent
@@ -216,8 +229,9 @@ RUN uv python install 3.13 && \
 
 WORKDIR /root/agentstack/agents/rag
 
-RUN uv python install 3.13 && \
-    uv sync --all-groups
+RUN rm -f uv.lock && \
+    uv lock && \
+    uv sync
 
 ############################################################
 # Server configuration

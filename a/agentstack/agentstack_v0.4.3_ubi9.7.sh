@@ -72,7 +72,6 @@ chmod 1777 /tmp
 dnf install -y wget
 
 ret=0
-dnf config-manager --set-enabled codeready-builder-for-rhel-9-$(arch)-rpms || ret=$?
 
 if [ $ret -ne 0 ]; then
     dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
@@ -335,8 +334,19 @@ echo "==========================================================================
 
 cd "${AGENTSTACK_ROOT}/apps/agentstack-sdk-py"
 
+uv python install 3.12
+deactivate 2>/dev/null || true
+unset VIRTUAL_ENV
+hash -r
+
+rm -rf .venv
+uv venv .venv --python 3.12
+source .venv/bin/activate
+rm -f uv.lock
+uv pip install primp==0.15.0 --index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+
 if ! (
-    uv python install 3.13 &&
+    uv lock &&
     uv sync --all-groups
 ); then
     echo "------------------${PACKAGE_NAME}:agentstack_sdk_build_fails---------------------"
@@ -356,7 +366,8 @@ echo "==========================================================================
 cd "${AGENTSTACK_ROOT}/apps/agentstack-cli"
 
 if ! (
-    uv python install 3.13 &&
+    rm -f uv.lock &&
+    uv lock &&
     uv sync --all-groups
 ); then
     echo "------------------${PACKAGE_NAME}:agentstack_cli_build_fails---------------------"
@@ -376,7 +387,8 @@ echo "==========================================================================
 cd "${AGENTSTACK_ROOT}/apps/agentstack-server"
 
 if ! (
-    uv python install 3.13 &&
+    rm -f uv.lock &&
+    uv lock &&
     uv sync --all-groups &&
     uv add "pydantic==2.11.7" &&
     uv sync
@@ -398,7 +410,8 @@ echo "==========================================================================
 cd "${AGENTSTACK_ROOT}/agents/chat"
 
 if ! (
-    uv python install 3.13 &&
+    rm -f uv.lock &&
+    uv lock &&
     uv sync --all-groups
 ); then
     echo "------------------${PACKAGE_NAME}:chat_agent_build_fails---------------------"
@@ -418,7 +431,8 @@ echo "==========================================================================
 cd "${AGENTSTACK_ROOT}/agents/form"
 
 if ! (
-    uv python install 3.13 &&
+    rm -f uv.lock &&
+    uv lock &&
     uv sync --all-groups
 ); then
     echo "------------------${PACKAGE_NAME}:form_agent_build_fails---------------------"
@@ -438,7 +452,8 @@ echo "==========================================================================
 cd "${AGENTSTACK_ROOT}/agents/rag"
 
 if ! (
-    uv python install 3.13 &&
+    rm -f uv.lock &&
+    uv lock &&
     uv sync --all-groups
 ); then
     echo "------------------${PACKAGE_NAME}:rag_agent_build_fails---------------------"
