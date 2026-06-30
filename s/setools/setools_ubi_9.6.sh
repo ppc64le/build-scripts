@@ -48,6 +48,10 @@ if ! python3 -m pip install . ; then
     exit 1
 fi
 
+python3 -m pip install Cython
+python3 setup.py build_ext --inplace
+cd /
+
 # Verify installation
 python3 -c "from setools import SELinuxPolicy; print('SELinuxPolicy import successful')"
 
