@@ -25,7 +25,10 @@ PACKAGE_VERSION=${1:-v3.0.0}
 PYTHON_VERSION=${2:-3.12}
 export wdir=`pwd`
 
-yum install -y git wget python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip java-17-openjdk java-17-openjdk-devel openblas-devel gcc gcc-c++ make gcc-gfortran patch zlib-devel libjpeg-devel libtiff-devel freetype-devel cmake
+yum install -y dnf-plugins-core
+yum config-manager --set-enabled crb || yum config-manager --set-enabled codeready-builder-for-rhel-9-ppc64le-rpms || true
+
+yum install -y git wget python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip java-17-openjdk java-17-openjdk-devel gcc gcc-c++ make gcc-gfortran patch zlib-devel libjpeg-devel libtiff-devel freetype-devel libwebp-devel openjpeg2-devel openblas-devel cmake
 
 ln /usr/bin/pip${PYTHON_VERSION} /usr/bin/pip3 -f && ln /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 -f &&  ln /usr/bin/pip${PYTHON_VERSION} /usr/bin/pip -f && ln /usr/bin/python${PYTHON_VERSION} /usr/bin/python -f
 
