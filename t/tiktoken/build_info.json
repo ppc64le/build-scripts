@@ -10,7 +10,7 @@
    "docker_build": false,
    "validate_build_script": true,
    "use_non_root_user": false,
-   "v0.13.0":{
+   "0.13.0":{
 	   "build_script": "tiktoken_v0.13.0_ubi_9.6.sh"
    },
    "v0.9.0" :{
