@@ -26,11 +26,19 @@ PACKAGE_URL=https://github.com/duckdb/duckdb-python.git
 # Install necessary system packages
 dnf install -y gcc-toolset-13 make cmake ninja-build libomp-devel git
 
+if [ -z "$VIRTUAL_ENV" ]; then
+    dnf install -y python3.12 python3.12-pip python3.12-devel
+    PYTHON=python3.12
+else
+    PYTHON=python
+fi
+
 # Enable GCC toolset
 source /opt/rh/gcc-toolset-13/enable
 export CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
 
-pip install build wheel setuptools ninja pybind11
+$PYTHON -m pip install --upgrade pip
+$PYTHON -m pip install build wheel setuptools ninja pybind11
 
 # Clone the repository
 git clone ${PACKAGE_URL}
@@ -43,7 +51,7 @@ export DUCKDB_BUILD_PYTHON=1
 export DUCKDB_BUILD_STATIC=1
 
 echo "Building duckdb wheel..."
-if ! python${PYTHON_VERSION} -m build --wheel; then
+if ! $PYTHON -m build --wheel; then
     echo "------------------$PACKAGE_NAME: build_fail------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fail"
     exit 1
@@ -52,13 +60,13 @@ fi
 echo "Installing duckdb wheel..."
 WHEEL_FILE=$(find dist -name "*.whl" | head -n1)
 if [ -n "$WHEEL_FILE" ]; then
-    python${PYTHON_VERSION} -m pip install "$WHEEL_FILE"
+    $PYTHON -m pip install "$WHEEL_FILE"
 fi
 
 # Run tests
 cd /
 
-if ! python${PYTHON_VERSION} - <<EOF
+if ! $PYTHON - <<EOF
 import duckdb
 
 # Ensure correct package loaded
