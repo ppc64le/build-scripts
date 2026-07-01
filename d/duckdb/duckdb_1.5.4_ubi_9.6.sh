@@ -22,17 +22,15 @@ PACKAGE_NAME=duckdb-python
 PACKAGE_VERSION=${1:-v1.5.4}
 PACKAGE_DIR=duckdb-python
 PACKAGE_URL=https://github.com/duckdb/duckdb-python.git
-PYTHON_VERSION=3.12
 
 # Install necessary system packages
-dnf install -y gcc-toolset-13 make cmake ninja-build libomp-devel git python${PYTHON_VERSION} python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-devel
+dnf install -y gcc-toolset-13 make cmake ninja-build libomp-devel git
 
 # Enable GCC toolset
 source /opt/rh/gcc-toolset-13/enable
 export CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
 
-
-python${PYTHON_VERSION} -m pip install build wheel setuptools ninja pybind11
+pip install build wheel setuptools ninja pybind11
 
 # Clone the repository
 git clone ${PACKAGE_URL}
