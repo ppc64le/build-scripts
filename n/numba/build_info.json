@@ -23,7 +23,9 @@
 	"0.62.*": {
         "build_script": "numba_0.62.0_ubi_9.3.sh"
     },
-    "*": {
+    "0.64.*": {
         "build_script": "numba_0.64.0_ubi_9.3.sh"
-    }
+    },
+	"*": {
+		"build_script": "numba_0.65.0_ubi_9.3.sh"
 }
