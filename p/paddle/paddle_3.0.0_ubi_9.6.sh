@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : Paddle
-# Version       : 3.0.0
+# Version       : v3.0.0
 # Source repo   : https://github.com/PaddlePaddle/Paddle.git
-# Tested on     : registry.access.redhat.com/ubi9/ubi:9.6
+# Tested on     : UBI:9.6
 # Language      : Python , C++
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
@@ -25,10 +25,7 @@ PACKAGE_VERSION=${1:-v3.0.0}
 PYTHON_VERSION=${2:-3.12}
 export wdir=`pwd`
 
-yum install -y dnf-plugins-core
-yum config-manager --set-enabled crb || yum config-manager --set-enabled codeready-builder-for-rhel-9-ppc64le-rpms || true
-
-yum install -y git wget python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip java-17-openjdk java-17-openjdk-devel gcc gcc-c++ make gcc-gfortran patch zlib-devel libjpeg-devel libtiff-devel freetype-devel libwebp-devel openjpeg2-devel openblas-devel cmake
+yum install -y git wget python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip java-17-openjdk java-17-openjdk-devel openblas-devel gcc gcc-c++ make gcc-gfortran patch zlib-devel libjpeg-devel libtiff-devel freetype-devel cmake
 
 ln /usr/bin/pip${PYTHON_VERSION} /usr/bin/pip3 -f && ln /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 -f &&  ln /usr/bin/pip${PYTHON_VERSION} /usr/bin/pip -f && ln /usr/bin/python${PYTHON_VERSION} /usr/bin/python -f
 
@@ -50,3 +47,14 @@ mkdir build
 cd build
 cmake -DCMAKE_CXX_FLAGS="-Wno-stringop-overflow -Wno-error=overloaded-virtual" .. 
 make -j$(nproc)
+
+echo "------------------Installing Paddle wheel------------------------"
+pip install python/dist/paddlepaddle*.whl
+
+echo "------------------Testing Paddle import------------------------"
+if python -c "import paddle; print('paddle version:', paddle.__version__)"; then
+    echo "TEST PASSED"
+else
+    echo "TEST FAILED"
+    exit 1
+fi
