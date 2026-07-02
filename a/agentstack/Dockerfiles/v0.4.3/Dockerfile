@@ -7,7 +7,7 @@ FROM registry.access.redhat.com/ubi9/ubi:9.7 AS builder
 ARG AGENTSTACK_VERSION=v0.4.3
 ARG POSTGRES_VERSION=16.4
 ARG PGVECTOR_VERSION=v0.7.4
-ARG GO_VERSION=1.24.4
+ARG GO_VERSION=1.26.4
 
 ENV POSTGRES_INSTALL_DIR=/local/apps/postgresql/pgsql164
 ENV POSTGRES_DATA_DIR=/local/apps/postgresql/pgsql164/data
@@ -24,14 +24,12 @@ WORKDIR /root
 
 RUN mkdir -p /tmp && chmod 1777 /tmp
 
-RUN dnf install -y dnf-plugins-core wget && \
-    if ! dnf config-manager --set-enabled codeready-builder-for-rhel-9-$(arch)-rpms; then \
-        echo "CodeReady Builder not available. Falling back to CentOS Stream repositories."; \
-        dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os && \
-        dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os && \
-        dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os && \
-        rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256; \
-    fi
+#RUN dnf update -y && \
+ #   dnf install -y dnf-plugins-core wget && \
+ #   dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os && \
+ #   dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os && \
+ #   dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os && \
+ #   rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256;
 
 RUN dnf install -y \
     wget \
@@ -45,7 +43,7 @@ RUN dnf install -y \
     clang-devel \
     llvm-devel \
     curl-devel \
-    readline-devel \
+    readline \
     openssl-devel \
     pkgconfig \
     ca-certificates \
@@ -60,7 +58,13 @@ RUN dnf install -y \
     freetype-devel \
     libpng-devel \
     dnf-plugins-core \
+    rust \
+    cargo \
  && dnf clean all
+
+RUN dnf update -y acl attr expat glib2 gnutls libcap openssl && \
+    dnf remove -y vim-minimal java-17-openjdk-headless 2>/dev/null || true && \
+    dnf clean all
 
 ############################################################
 # Docker CLI
@@ -77,9 +81,9 @@ RUN dnf config-manager \
 # Rust
 ############################################################
 
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+#RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 
-ENV PATH="/root/.cargo/bin:${PATH}"
+#ENV PATH="/root/.cargo/bin:${PATH}"
 
 ############################################################
 # uv
@@ -163,22 +167,29 @@ RUN git fetch --all --tags && \
     git checkout ${AGENTSTACK_VERSION} && \
     git apply /root/agentstack.patch
 
+
+############################################################
+# Create ONE shared virtual environment
+############################################################
+
+WORKDIR /root/agentstack
+
+# Create single venv for entire project
+RUN uv python install 3.12 && \
+    uv venv /root/.venv --python 3.12
+
+# Activate it globally
+ENV VIRTUAL_ENV=/root/.venv
+ENV PATH="/root/.venv/bin:$PATH"
+
 ############################################################
 # Build SDK
 ############################################################
 
 WORKDIR /root/agentstack/apps/agentstack-sdk-py
 
-RUN uv python install 3.12 && \
-    deactivate 2>/dev/null || true && \
-    unset VIRTUAL_ENV && \
-    hash -r && \
-    rm -rf .venv && \
-    uv venv .venv --python 3.12 && \
-    source .venv/bin/activate && \
-    rm -f uv.lock
-
-RUN uv lock && \
+RUN rm -f uv.lock && \
+    uv lock && \
     uv sync
 
 ############################################################
@@ -234,6 +245,13 @@ RUN rm -f uv.lock && \
     uv sync
 
 ############################################################
+# FIX VULNERABILITIES ONCE FOR ALL COMPONENTS
+############################################################
+
+RUN uv pip install --upgrade pip>=24.3.1 urllib3>=2.7.0 && \
+    (uv pip list | grep -q pyo3 && uv pip install --upgrade pyo3>=0.29.0 || true)
+
+############################################################
 # Server configuration
 ############################################################
 
@@ -246,7 +264,7 @@ RUN cp template.env .env && \
 
 ENV DATABASE_URL=postgresql+asyncpg://agentstack-user:agentstack@localhost:5433/agentstack
 ENV PERSISTENCE__DB_URL=postgresql+asyncpg://agentstack-user:agentstack@localhost:5433/agentstack
-
+RUN rm -rf /var/cache/dnf /var/tmp/*
 ############################################################
 # STAGE 2 - Runtime image
 ############################################################
@@ -267,31 +285,29 @@ WORKDIR /root
 
 RUN mkdir -p /tmp && chmod 1777 /tmp
 
-RUN dnf install -y dnf-plugins-core wget && \
-    if ! dnf config-manager --set-enabled codeready-builder-for-rhel-9-$(arch)-rpms; then \
-        dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os && \
-        dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os && \
-        dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os && \
-        rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256; \
-    fi
+#RUN dnf install -y dnf-plugins-core wget && \
+ #   dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os && \
+ #   dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os && \
+ #   dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os && \
+ #   rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256; 
 
-RUN dnf install -y \
+
+RUN dnf update -y && \
+    dnf install -y \
     python3 \
-    python3-devel \
-    git \
-    wget \
-    curl-devel \
     libpq-devel \
     postgresql \
     postgresql-devel \
     openssl-devel \
-    readline-devel \
+    readline \
     zlib-devel \
     libicu-devel \
     libjpeg-turbo-devel \
     freetype-devel \
     libpng-devel \
  && dnf clean all
+
+RUN rm -rf /var/cache/dnf /var/tmp/*
 
 ############################################################
 # Copy tools
@@ -300,6 +316,8 @@ RUN dnf install -y \
 COPY --from=builder /root/.cargo /root/.cargo
 COPY --from=builder /root/.local /root/.local
 COPY --from=builder /usr/local/go /usr/local/go
+
+COPY --from=builder /root/.venv /root/.venv
 
 ENV PATH="/root/.cargo/bin:/root/.local/bin:/usr/local/go/bin:/root/go/bin:${PATH}"
 ENV GOROOT=/usr/local/go

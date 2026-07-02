@@ -70,16 +70,12 @@ mkdir -p /tmp
 chmod 1777 /tmp
 
 dnf install -y wget
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
 
-ret=0
+rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
 
-if [ $ret -ne 0 ]; then
-    dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
-    dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os
-    dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
-
-    rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
-fi
 
 dnf install -y \
     git \
@@ -164,7 +160,7 @@ echo "==========================================================================
 echo "Installing Go"
 echo "=============================================================================="
 
-GO_VERSION="1.24.4"
+GO_VERSION="1.26.4"
 GO_TAR="go${GO_VERSION}.linux-ppc64le.tar.gz"
 
 cd "$BUILD_HOME"
