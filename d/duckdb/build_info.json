@@ -1,16 +1,19 @@
 {
-  "maintainer": "puneetsharma21",
+  "maintainer": "jason.cho2",
   "package_name": "duckdb",
   "github_url": "https://github.com/duckdb/duckdb-python.git",
-  "version": "v1.4.3",
+  "version": "v1.5.4",
   "default_branch": "main",
   "package_dir": "d/duckdb",
-  "build_script": "duckdb_ubi_9.6.sh",
+  "build_script": "duckdb_1.5.4_ubi_9.6.sh",
   "docker_build": false,
   "validate_build_script": true,
   "wheel_build" : true,
   "use_non_root_user": false,
+  "1.5.4": {
+     "build_script": "duckdb_1.5.4_ubi_9.6.sh"
+  },
   "*": {
      "build_script": "duckdb_ubi_9.6.sh"
-        }
+  }
 }
