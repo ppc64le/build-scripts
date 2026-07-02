@@ -119,7 +119,7 @@ cd "${PACKAGE_DIR}"
 git checkout "${PACKAGE_VERSION}"
 
 
-    if ! python -m pip install '.[torch]'; then
+    if ! python -m pip install '.[torch,serving]'; then
         echo "${PACKAGE_DIR} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | ${OS_NAME} | GitHub | Fail | Install_Fails"
         cd "${BUILD_HOME}"
         return 1
