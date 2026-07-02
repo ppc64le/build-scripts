@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package         : llama.cpp
-# Version         : latest ( HEAD from master branch)
+# Version         : latest release TAG from master branch)
 # Source repo     : https://github.com/ggml-org/llama.cpp
 # Tested on       : UBI:9.6
 # Language        : C, C++
@@ -23,7 +23,6 @@ set -e
 # Variables
 PACKAGE_NAME=llama.cpp
 PACKAGE_URL=https://github.com/ggml-org/llama.cpp
-PACKAGE_VERSION=master
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=llama.cpp
 SCRIPT_PATH=$(dirname $(realpath $0))
@@ -46,15 +45,18 @@ gcc -v || true
 # Clone latest llama.cpp 
 # -----------------------------------------------------------------------------
 
-echo "**** Cloning Ollama repository..."
+echo "**** Cloning llama.cpp repository..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+git fetch --tags
+
+PACKAGE_VERSION=$(git describe --tags --abbrev=0)
+
+echo "Building llama.cpp version: ${PACKAGE_VERSION}"
 
 # -----------------------------------------------------------------------------
 # Build llama.cpp
 # -----------------------------------------------------------------------------
-echo "**** Building Ollama with CMake..."
 cmake -B build_llama
 if ! cmake --build build_llama -j$(nproc); then
     echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
@@ -74,8 +76,8 @@ from setuptools.command.build_py import build_py
 import os, shutil, stat
 
 PYTHON_PACKAGE_NAME = "llama_cpp_python_package"
-VERSION = "master"
-PKG_NAME="llama_cpp_python_package"
+VERSION = "${PACKAGE_VERSION}"
+PKG_NAME = "llama_cpp_python_package"
 mkdir -p ${PKG_NAME} ${PKG_NAME}/bin ${PKG_NAME}/lib
 
 BUILD_DIR = os.path.join(os.getcwd(), "build_llama", "bin")
@@ -138,7 +140,7 @@ class CustomBuild(build_py):
 
 setup(
     name=PYTHON_PACKAGE_NAME,
-    version="master",
+    version=VERSION,
     author="Shalini Salomi Bodapati",
     author_email="Shalini.Salomi.Bodapati@ibm.com",
     description="llama.cpp binaries + shared libs as Python package",
