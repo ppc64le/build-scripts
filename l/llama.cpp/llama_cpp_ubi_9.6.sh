@@ -23,6 +23,7 @@ set -e
 # Variables
 PACKAGE_NAME=llama.cpp
 PACKAGE_URL=https://github.com/ggml-org/llama.cpp
+BRANCH=master
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=llama.cpp
 SCRIPT_PATH=$(dirname $(realpath $0))
@@ -48,6 +49,7 @@ gcc -v || true
 echo "**** Cloning llama.cpp repository..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
+git checkout $BRANCH
 git fetch --tags
 
 PACKAGE_VERSION=$(git describe --tags --abbrev=0)
