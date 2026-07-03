@@ -14,8 +14,7 @@ set -eo pipefail
 #                  platform and package version. Functionality with newer
 #                  versions of the package or OS is not guaranteed.
 # -------------------------------------------------------------------------------
-
-PACKAGE_VERSION="v5.1.0"
+PACKAGE_VERSION=${1:-v5.1.0}
 PACKAGE_URL="https://github.com/huggingface/transformers.git"
 PACKAGE_DIR="transformers"
 TORCHCODEC_VERSION="v0.9.0"
