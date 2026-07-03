@@ -11,16 +11,6 @@ index ca13dade..dc4d0584 100644
      }
  
      repositories {
-diff --git a/gradle.properties b/gradle.properties
-new file mode 100644
-index 00000000..4d41702b
---- /dev/null
-+++ b/gradle.properties
-@@ -0,0 +1,4 @@
-+org.gradle.native=false
-+
-+#Use plain console output (no rich formatting that requires native platform)
-+org.gradle.console=plain
 diff --git a/alerting/build.gradle b/alerting/build.gradle
 index 30b28dec..43e21d35 100644
 --- a/alerting/build.gradle
