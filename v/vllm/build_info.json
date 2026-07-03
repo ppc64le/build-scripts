@@ -5,7 +5,7 @@
   "version": "v0.24.0",
   "wheel_build": true,
   "default_branch": "main",
-  "build_script": "vllm_v0.24.0_ubi_9.5.sh",
+  "build_script": "vllm_v0.23.0_ubi_9.5.sh",
   "package_dir": "v/vllm",
   "docker_build": false,
   "validate_build_script": true,
@@ -45,9 +45,9 @@
     "build_script": "vllm_v0.23.0_ubi_9.5.sh"
   },
   "v0.24.0": {
-    "build_script": "vllm_v0.24.0_ubi_9.5.sh"
+    "build_script": "vllm_v0.23.0_ubi_9.5.sh"
   },
   "*": {
-    "build_script": "vllm_v0.24.0_ubi_9.5.sh"
+    "build_script": "vllm_v0.23.0_ubi_9.5.sh"
   }
 }
