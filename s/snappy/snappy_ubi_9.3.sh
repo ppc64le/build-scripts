@@ -39,8 +39,8 @@ git submodule update --init
 
 mkdir -p local/snappy
 export PREFIX=$(pwd)/local/snappy
-mkdir build
-cd build
+mkdir cmake-build
+cd cmake-build
 
 cmake -DCMAKE_INSTALL_PREFIX=$PREFIX \
       -DBUILD_SHARED_LIBS=ON \
@@ -49,6 +49,9 @@ cmake -DCMAKE_INSTALL_PREFIX=$PREFIX \
 make -j$(nproc)
 make install
 cd ..
+
+#set path to find all the .so files for auditwheel repair to work
+export LD_LIBRARY_PATH="$(pwd)/local/snappy/lib:$LD_LIBRARY_PATH"
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/s/snappy/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
@@ -64,7 +67,7 @@ if ! (pip install .) ; then
 fi
 
 #run tests
-if !(./build/snappy_unittest); then
+if !(./cmake-build/snappy_unittest); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
