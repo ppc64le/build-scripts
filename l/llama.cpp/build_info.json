@@ -9,7 +9,7 @@
   "validate_build_script": true,
   "package_dir": "l/llama.cpp",
   "default_branch": "master",
-  "docker_cmd": "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
+  "docker_cmd": "docker build --build-arg PACKAGE_VERSION=$PACKAGE_VERSION -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
   "use_non_root_user": false,
 
   "b9882": {
