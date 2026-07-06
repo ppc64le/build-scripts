@@ -52,7 +52,8 @@ cd $PACKAGE_NAME
 git checkout $BRANCH
 git fetch --tags
 
-PACKAGE_VERSION=$(git describe --tags --abbrev=0)
+PACKAGE_TAG=$(git describe --tags --abbrev=0)
+PACKAGE_VERSION=${PACKAGE_TAG#b}
 
 echo "Building llama.cpp version: ${PACKAGE_VERSION}"
 
