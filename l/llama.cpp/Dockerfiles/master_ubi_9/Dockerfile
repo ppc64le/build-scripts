@@ -33,9 +33,8 @@ WORKDIR /src
 
 RUN git clone ${PACKAGE_URL} && \
     cd ${PACKAGE_NAME} && \
-    git checkout ${BRANCH} && \
     git fetch --tags && \
-    PACKAGE_VERSION=$(git describe --tags --abbrev=0) && \
+    git checkout ${PACKAGE_VERSION} && \
     echo "Building release ${PACKAGE_VERSION}"
 
 WORKDIR /src/${PACKAGE_NAME}
