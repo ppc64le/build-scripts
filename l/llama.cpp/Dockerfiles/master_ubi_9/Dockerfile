@@ -5,6 +5,7 @@ FROM registry.access.redhat.com/ubi9/ubi:9.7 AS build
 
 ARG PACKAGE_NAME=llama.cpp
 ARG BRANCH=master
+ARG PACKAGE_VERSION
 ARG PACKAGE_URL=https://github.com/ggml-org/llama.cpp
 ENV CMAKE_VERSION=3.31.5
 
