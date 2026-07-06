@@ -21,13 +21,13 @@
 set -eo pipefail
 
 PACKAGE_NAME=vllm
-PACKAGE_VERSION=v0.23.0
+PACKAGE_VERSION=${1:-v0.23.0}
 PACKAGE_URL=https://github.com/vllm-project/vllm.git
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=vllm
 
 echo "==============================================================="
-echo "       vLLM FULL BUILD START (UBI 9.5 / POWER / v0.23.0)"
+echo "       vLLM FULL BUILD START (UBI 9.5 / POWER / ${PACKAGE_VERSION})"
 echo "==============================================================="
 
 # ===============================================================
@@ -267,6 +267,6 @@ then
 fi
 
 echo "==============================================================="
-echo "   vLLM v0.23.0 BUILD AND TEST COMPLETED SUCCESSFULLY"
+echo "   vLLM ${PACKAGE_VERSION} BUILD AND TEST COMPLETED SUCCESSFULLY"
 echo "==============================================================="
 
