@@ -13,7 +13,7 @@
   "use_non_root_user": false,
 
   "b9882": {
-    "dir": "master_ubi_9",
+    "dir": "b9882_ubi_9",
     "build_script": "llama_cpp_ubi_9.6.sh",
     "base_docker_image": "registry.access.redhat.com/ubi9/ubi:9.6",
     "base_docker_variant": "redhat"
