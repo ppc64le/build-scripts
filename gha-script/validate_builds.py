@@ -315,14 +315,20 @@ def trigger_build_validation_ci(pr_number):
             # perform basic validation check
             trigger_basic_validation_checks(file_name)
 
-            #check ci-check from package header  
+            #check ci-check from package header
             ci_check=package_data['ci_check'].lower()
-            if ci_check=="true":
 
-                # Build/test script files
-                trigger_script_validation_checks(file_name)
-            else:
-                print("Skipping Build script validation for {} as CI-Check flag is set to False".format(file_name))
+            # COMMENTED OUT: Script execution moved to build job via execute_changed_scripts.py
+            # This avoids duplicate execution - validation happens here, actual build happens in build job
+            # if ci_check=="true":
+            #     # Build/test script files
+            #     trigger_script_validation_checks(file_name)
+            # else:
+            #     print("Skipping Build script validation for {} as CI-Check flag is set to False".format(file_name))
+
+            print("✅ Basic validation passed for {} (headers, license, line endings)".format(file_name))
+            print("   Script execution will happen in build job with proper version parameter")
+
             # Keep track of validated files.
             validated_file_list.append(file_name)
         elif file_name.lower().endswith('build_info.json') and status != "removed":
