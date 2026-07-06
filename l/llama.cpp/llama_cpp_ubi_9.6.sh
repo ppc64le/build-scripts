@@ -80,7 +80,6 @@ import os, shutil, stat
 PYTHON_PACKAGE_NAME = "llama_cpp_python_package"
 VERSION = "${PACKAGE_VERSION}"
 PKG_NAME = "llama_cpp_python_package"
-mkdir -p ${PKG_NAME} ${PKG_NAME}/bin ${PKG_NAME}/lib
 
 BUILD_DIR = os.path.join(os.getcwd(), "build_llama", "bin")
 
