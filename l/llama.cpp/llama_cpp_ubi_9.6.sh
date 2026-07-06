@@ -49,8 +49,8 @@ gcc -v || true
 echo "**** Cloning llama.cpp repository..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-git checkout $BRANCH
 git fetch --tags
+git checkout $PACKAGE_VERSION
 
 WHEEL_VERSION=${PACKAGE_VERSION#b}
 
