@@ -9,7 +9,7 @@
   "build_script": "param_ubi_9.3.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
-  "docker_build": "true",
+  "docker_build": "false",
   "v*.*.*": {
     "dir": "v2.1.0_ubi_9",
     "build_script": "param_ubi_9.3.sh"
