@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package         : llama.cpp
-# Version         : latest release TAG from master branch)
+# Version         : Release TAG from build_info.json.
 # Source repo     : https://github.com/ggml-org/llama.cpp
 # Tested on       : UBI:9.6
 # Language        : C, C++
@@ -22,8 +22,8 @@ set -e
 
 # Variables
 PACKAGE_NAME=llama.cpp
+PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/ggml-org/llama.cpp
-BRANCH=master
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=llama.cpp
 SCRIPT_PATH=$(dirname $(realpath $0))
@@ -52,8 +52,7 @@ cd $PACKAGE_NAME
 git checkout $BRANCH
 git fetch --tags
 
-PACKAGE_TAG=$(git describe --tags --abbrev=0)
-PACKAGE_VERSION=${PACKAGE_TAG#b}
+WHEEL_VERSION=${PACKAGE_VERSION#b}
 
 echo "Building llama.cpp version: ${PACKAGE_VERSION}"
 
@@ -79,7 +78,7 @@ from setuptools.command.build_py import build_py
 import os, shutil, stat
 
 PYTHON_PACKAGE_NAME = "llama_cpp_python_package"
-VERSION = "${PACKAGE_VERSION}"
+VERSION = "${WHEEL_VERSION}"
 PKG_NAME = "llama_cpp_python_package"
 
 BUILD_DIR = os.path.join(os.getcwd(), "build_llama", "bin")
