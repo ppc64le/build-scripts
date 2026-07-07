@@ -1,8 +1,8 @@
 {
-   "maintainer": "aastha-sharma2",
+   "maintainer": "varsha.kumar@ibm.com",
    "package_name": "tiktoken",
    "github_url": "https://github.com/openai/tiktoken",
-   "version": "0.7.0",
+   "version": "0.13.0",
    "default_branch": "main",
    "build_script": "tiktoken_ubi_9.3.sh",
    "wheel_build" : true,
@@ -10,6 +10,9 @@
    "docker_build": false,
    "validate_build_script": true,
    "use_non_root_user": false,
+   "0.13.0":{
+	   "build_script": "tiktoken_v0.13.0_ubi_9.6.sh"
+   },
    "v0.9.0" :{
         "build_script": "tiktoken_v0.9.0_ubi_9.6.sh"
    },

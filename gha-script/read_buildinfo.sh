@@ -146,6 +146,12 @@ if [ -f "$stripped_build_script" ]; then
   echo "Tested on value: $tested_on"
 fi
 
+# Extract auditwheel exclusions
+AUDITWHEEL_EXCLUDE=""
+if jq -e 'has("auditwheel_exclude")' "$config_file" >/dev/null; then
+  AUDITWHEEL_EXCLUDE=$(jq -r '.auditwheel_exclude | join(" ")' "$config_file")
+fi
+
 # Export variables
 
 echo "export VERSION=$VERSION" > $CUR_DIR/variable.sh
@@ -158,6 +164,7 @@ echo "export VARIANT=$variant" >> $CUR_DIR/variable.sh
 echo "export BASENAME=$basename" >> $CUR_DIR/variable.sh
 echo "export NON_ROOT_BUILD=$nonRootBuild" >> $CUR_DIR/variable.sh
 echo "export TESTED_ON=$tested_on" >> $CUR_DIR/variable.sh
+echo "export AUDITWHEEL_EXCLUDE=\"$AUDITWHEEL_EXCLUDE\"" >> $CUR_DIR/variable.sh
 
 chmod +x $CUR_DIR/variable.sh
 cat $CUR_DIR/variable.sh
