@@ -38,6 +38,7 @@ git checkout $PACKAGE_VERSION
 # Install Python dependencies
 python3.11 -m ensurepip --upgrade || true
 python3.11 -m pip install --upgrade pip setuptools wheel cython
+python3.11 -m pip install "setuptools<81"
 
 python3.11 setup.py build_ext --inplace
 
