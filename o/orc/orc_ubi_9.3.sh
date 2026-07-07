@@ -33,7 +33,7 @@ echo " --------------------------------------------------- Installing dependenci
 yum install -y wget git make cmake binutils lz4-devel zlib-devel \
     python3 python3-pip python3-devel \
     gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-gcc-c++ \
-    ninja-build
+    ninja-build tzdata
 
 python3 -m pip install --upgrade pip
 python3 -m pip install setuptools wheel ninja
