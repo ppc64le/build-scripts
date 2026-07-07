@@ -4,7 +4,7 @@
 # Package       : duckdb
 # Version       : v1.5.4
 # Source repo   : https://github.com/duckdb/duckdb-python.git
-# Tested on     : UBI:9.6
+# Tested on     : UBI:10.2
 # Language      : Python, C++
 # Ci-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -25,37 +25,32 @@ PACKAGE_URL=https://github.com/duckdb/duckdb-python.git
 PYTHON_VERSION=3.12
 
 # Install necessary system packages
-dnf install -y gcc-toolset-13 make cmake ninja-build libomp-devel git python${PYTHON_VERSION} python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-devel
+dnf install -y \
+    gcc-toolset-15 \
+    cmake \
+    ninja-build \
+    python3.12 \
+    python3.12-devel \
+    python3.12-pip
 
-# Enable GCC toolset
-source /opt/rh/gcc-toolset-13/enable
-export CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
+export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
+gcc --version
 
+python3.12 -m pip install --upgrade pip setuptools
 
-python${PYTHON_VERSION} -m pip install build wheel setuptools ninja pybind11
+# -- Build wheel --------------------------------------------------------------
+pip3.12 wheel --no-cache-dir --only-binary :none "duckdb==${PACKAGE_VERSION}" -w "${CURRENT_DIR}/dist/"
 
-# Clone the repository
-git clone ${PACKAGE_URL}
-cd ${PACKAGE_NAME}
-git checkout ${PACKAGE_VERSION}
-
-git submodule update --init --recursive
-
-export DUCKDB_BUILD_PYTHON=1
-export DUCKDB_BUILD_STATIC=1
-
-echo "Building duckdb wheel..."
-if ! python${PYTHON_VERSION} -m build --wheel; then
-    echo "------------------$PACKAGE_NAME: build_fail------------------"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fail"
+WHEEL=$(find "${CURRENT_DIR}/dist" -name "duckdb-*.whl" | head -1)
+if [ -z "$WHEEL" ]; then
+    echo "ERROR: wheel not found after build"
     exit 1
 fi
+echo "Wheel: $WHEEL"
 
-echo "Installing duckdb wheel..."
-WHEEL_FILE=$(find dist -name "*.whl" | head -n1)
-if [ -n "$WHEEL_FILE" ]; then
-    python${PYTHON_VERSION} -m pip install "$WHEEL_FILE"
-fi
+# -- Install ------------------------------------------------------------------
+cd dist
+pip3.12 install "$WHEEL"
 
 # Run tests
 cd /
@@ -89,4 +84,3 @@ else
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
-
