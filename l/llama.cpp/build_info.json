@@ -3,7 +3,7 @@
   "package_name": "llama.cpp",
   "github_url": "https://github.com/ggml-org/llama.cpp",
   "version": "b9882",
-  "wheel_build": true,
+  "wheel_build": false,
   "docker_build": true,
   "build_script": "llama_cpp_ubi_9.6.sh",
   "validate_build_script": true,
