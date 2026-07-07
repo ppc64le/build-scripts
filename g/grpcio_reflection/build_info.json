@@ -1,0 +1,17 @@
+{
+  "maintainer": "VivekSharma",
+  "package_name": "grpcio-reflection",
+  "github_url": "https://github.com/grpc/grpc",
+  "version": "v1.78.0",
+  "wheel_build": true,
+  "package_dir": "grpc/src/python/grpcio_reflection",
+  "default_branch": "master",
+  "build_script": "grpcio_reflection_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "auditwheel_exclude": [],
+  "*": {
+    "build_script": "grpcio_reflection_ubi_9.6.sh" 
+  }
+}
