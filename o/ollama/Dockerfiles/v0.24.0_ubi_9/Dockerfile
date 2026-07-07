@@ -1,41 +1,31 @@
 ###############################################################################
-# Stage 1: Build Ollama (Power10 optimized)
+# Stage 1: Build Ollama
 ###############################################################################
-FROM registry.access.redhat.com/ubi9/ubi:9.6 AS build
+FROM registry.access.redhat.com/ubi9/ubi:9.7 AS build
 
 ARG PACKAGE_NAME=ollama
 ARG PACKAGE_VERSION=v0.24.0
 ARG PACKAGE_URL=https://github.com/ollama/ollama
-ENV CMAKE_VERSION=3.30.5
-ENV GO_VERSION=1.26.1
-ENV PATH="/usr/local/go/bin:/usr/local/cmake/bin:${PATH}"
+ENV CMAKE_VERSION=3.31.5
+ENV GO_VERSION=1.26.4
+ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Install dependencies
 RUN yum update -y && \
     yum install -y \
-    python3 python3-pip python3-devel \
-    gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-gcc-c++ \
+    python3.12 python3.12-devel \
+    gcc-toolset-15 gcc-toolset-15-binutils gcc-toolset-15-gcc-c++ \
     git make cmake binutils wget patch tar gzip openssl-devel \
     && yum clean all
 
-# Enable GCC toolset 13
-ENV PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
-ENV LD_LIBRARY_PATH="/opt/rh/gcc-toolset-13/root/usr/lib64:${LD_LIBRARY_PATH}"
-ENV CC=/opt/rh/gcc-toolset-13/root/usr/bin/gcc
-ENV CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
+# Enable GCC toolset 15
+ENV PATH="/opt/rh/gcc-toolset-15/root/usr/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:${LD_LIBRARY_PATH}"
+ENV CC=/opt/rh/gcc-toolset-15/root/usr/bin/gcc
+ENV CXX=/opt/rh/gcc-toolset-15/root/usr/bin/g++
 
-# Install CMake
-WORKDIR /tmp
-RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz && \
-    tar -xzf cmake-${CMAKE_VERSION}.tar.gz && \
-    cd cmake-${CMAKE_VERSION} && \
-    ./bootstrap --prefix=/usr/local/cmake --parallel=2 -- \
-        -DBUILD_TESTING:BOOL=OFF \
-        -DCMAKE_BUILD_TYPE:STRING=Release \
-        -DCMAKE_USE_OPENSSL:BOOL=ON && \
-    make -j$(nproc) && \
-    make install && \
-    cmake --version
+# Install CMake (system)
+RUN yum install -y cmake
 
 # Install Go
 RUN wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
@@ -70,26 +60,64 @@ RUN patch -Np1 < ppc_sync1.patch && \
     patch -Np1 < ppc_sync2.patch && \
     patch -Np1 < build_fix_ppc.patch && \
     patch -Np1 < set_threads_env.patch
-    
-    
-###############################################################################
-# Build Ollama (CMake + Go)
-###############################################################################
-RUN cmake -B build -DCMAKE_BUILD_TYPE=Release && \
-    cmake --build build -j$(nproc)
-
-# Link GGML Power10 libs
-ENV CGO_LDFLAGS="-L/src/ollama/build/lib/ollama -lggml-cpu-power10"
-
-RUN go build --tags ppc64le.power10 -o /src/ollama/ollama .
 
 ###############################################################################
-# Stage 2: Small runtime image
+# Detect CPU and set appropriate flags
 ###############################################################################
-FROM registry.access.redhat.com/ubi9/ubi:9.6
+RUN echo '#!/bin/bash' > /tmp/detect_cpu.sh && \
+    echo 'CPU_MODEL=$(grep -m1 "cpu" /proc/cpuinfo | cut -d: -f2 | xargs)' >> /tmp/detect_cpu.sh && \
+    echo 'if echo "$CPU_MODEL" | grep -qi "POWER10"; then' >> /tmp/detect_cpu.sh && \
+    echo '  echo "power10"' >> /tmp/detect_cpu.sh && \
+    echo 'elif echo "$CPU_MODEL" | grep -qi "POWER9"; then' >> /tmp/detect_cpu.sh && \
+    echo '  echo "power9"' >> /tmp/detect_cpu.sh && \
+    echo 'else' >> /tmp/detect_cpu.sh && \
+    echo '  echo "power9"' >> /tmp/detect_cpu.sh && \
+    echo 'fi' >> /tmp/detect_cpu.sh && \
+    chmod +x /tmp/detect_cpu.sh
+
+###############################################################################
+# Build Ollama (CMake + Go) - Power9/Power10 Compatible
+###############################################################################
+# Detect CPU and set flags accordingly
+RUN CPU_ARCH=$(/tmp/detect_cpu.sh) && \
+    echo "Detected CPU: $CPU_ARCH" && \
+    if [ "$CPU_ARCH" = "power10" ]; then \
+        export CFLAGS="-mcpu=power10 -mtune=power10 -O3 -fno-finite-math-only -funroll-loops -ftree-vectorize"; \
+        export CXXFLAGS="-mcpu=power10 -mtune=power10 -O3 -fno-finite-math-only -funroll-loops -ftree-vectorize"; \
+        export CGO_CFLAGS="-mcpu=power10 -mtune=power10 -O3"; \
+        export CGO_CXXFLAGS="-mcpu=power10 -mtune=power10 -O3"; \
+        export GGML_CPU_FLAG="-DGGML_CPU_POWER10=ON"; \
+        export GO_BUILD_TAGS="ppc64le.power10"; \
+        export GGML_LIB="ggml-cpu-power10"; \
+    else \
+        export CFLAGS="-mcpu=power9 -mtune=power9 -O3 -fno-finite-math-only -funroll-loops -ftree-vectorize"; \
+        export CXXFLAGS="-mcpu=power9 -mtune=power9 -O3 -fno-finite-math-only -funroll-loops -ftree-vectorize"; \
+        export CGO_CFLAGS="-mcpu=power9 -mtune=power9 -O3"; \
+        export CGO_CXXFLAGS="-mcpu=power9 -mtune=power9 -O3"; \
+        export GGML_CPU_FLAG="-DGGML_CPU_POWER9=ON"; \
+        export GO_BUILD_TAGS="ppc64le.power9"; \
+        export GGML_LIB="ggml-cpu-power9"; \
+    fi && \
+    echo "CFLAGS: $CFLAGS" && \
+    echo "GGML_CPU_FLAG: $GGML_CPU_FLAG" && \
+    echo "GO_BUILD_TAGS: $GO_BUILD_TAGS" && \
+    cmake -B build \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_C_FLAGS="${CFLAGS}" \
+        -DCMAKE_CXX_FLAGS="${CXXFLAGS}" \
+        -DGGML_NATIVE=ON \
+        ${GGML_CPU_FLAG} && \
+    cmake --build build -j$(nproc) && \
+    export CGO_LDFLAGS="-L/src/ollama/build/lib/ollama -l${GGML_LIB}" && \
+    go build --tags ${GO_BUILD_TAGS} -ldflags="-s -w" -o /src/ollama/ollama .
+
+###############################################################################
+# Stage 2: Small runtime image (Power9/Power10 compatible)
+###############################################################################
+FROM registry.access.redhat.com/ubi9/ubi:9.7
 
 RUN yum update -y && \
-    yum install -y libatomic openblas-devel && \
+    yum install -y libatomic openblas openblas-threads && \
     yum clean all
 
 COPY --from=build /src/ollama/ollama /usr/bin/ollama

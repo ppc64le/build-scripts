@@ -122,6 +122,8 @@ allprojects {
             force 'org.eclipse.jetty:jetty-util:12.0.33'
             force 'org.eclipse.jetty:jetty-client:12.0.33'
         }
+        // Exclude mxparser due to Indiana-University-Extreme-Lab-1.2 license issue
+        exclude group: 'io.github.x-stream', module: 'mxparser'
     }
 }
 EOF
@@ -171,6 +173,8 @@ rm -f lz4-java-1.8.0.jar || true
 rm -f mina-core-2.0.16.jar || true
 rm -f velocity-engine-core-2.3.jar || true
 rm -f commons-beanutils-1.9.4.jar || true
+# Remove mxparser due to Indiana-University-Extreme-Lab-1.2 license issue
+rm -f mxparser-1.2.2.jar || true
 
 ls -lh /root/kafka/libs/
 echo "Total JARs after cleanup: $(ls -1 /root/kafka/libs/*.jar | wc -l)"

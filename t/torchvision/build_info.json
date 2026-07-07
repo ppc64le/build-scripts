@@ -10,6 +10,13 @@
   "validate_build_script": true,
   "use_non_root_user": false,
   "wheel_build": true,
+  "auditwheel_exclude": [
+    "libc10.so",
+    "libtorch.so",
+    "libtorch_cpu.so",
+    "libtorch_python.so",
+    "libshm.so"
+  ],
   "v*.*.*": {
     "build_script": "torchvision_0.26.0_ubi_9.6.sh"
   },

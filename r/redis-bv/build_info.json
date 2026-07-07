@@ -1,0 +1,23 @@
+{
+  "maintainer": "Prachi.Gaonkar@ibm.com",
+  "package_name": "redis-bv",
+  "github_url": "https://github.com/redis/redis",
+  "version": "8.4.2",
+  "default_branch": "unstable",
+  "package_dir": "r/redis-bv/",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "build_script": "redis-bv_8.4.2_ubi_9.7.sh",
+  "use_non_root_user": false,
+  "docker_build": true,
+  "8.4.1": {
+    "dir": "8.4.1_ubi_9.7",
+    "build_script": "redis-bv_8.4.1_ubi_9.7.sh"
+  },
+  "8.4.2": {
+    "dir": "8.4.2_ubi_9.7",
+    "build_script": "redis-bv_8.4.2_ubi_9.7.sh"
+  },
+  "*.*.*": {
+    "dir": "8.4.2_ubi_9.7"
+  }
+}

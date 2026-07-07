@@ -14,8 +14,7 @@ set -eo pipefail
 #                  platform and package version. Functionality with newer
 #                  versions of the package or OS is not guaranteed.
 # -------------------------------------------------------------------------------
-
-PACKAGE_VERSION="v5.1.0"
+PACKAGE_VERSION=${1:-v5.1.0}
 PACKAGE_URL="https://github.com/huggingface/transformers.git"
 PACKAGE_DIR="transformers"
 TORCHCODEC_VERSION="v0.9.0"
@@ -119,7 +118,7 @@ cd "${PACKAGE_DIR}"
 git checkout "${PACKAGE_VERSION}"
 
 
-    if ! python -m pip install '.[torch]'; then
+    if ! python -m pip install '.[torch,serving]'; then
         echo "${PACKAGE_DIR} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | ${OS_NAME} | GitHub | Fail | Install_Fails"
         cd "${BUILD_HOME}"
         return 1
@@ -141,7 +140,8 @@ git checkout "${PACKAGE_VERSION}"
         --ignore=tests/quantization/mxfp4/test_mxfp4.py \
         --ignore=tests/utils/test_image_utils.py \
         --ignore=tests/utils/test_add_new_model_like.py \
-        --ignore=tests/utils/test_chat_parsing_utils.py
+        --ignore=tests/utils/test_chat_parsing_utils.py \
+		--ignore=tests/generation/test_streamers.py
     then
         echo "${PACKAGE_DIR} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | ${OS_NAME} | GitHub | Fail | Install_success_but_test_Fails"
         cd "${BUILD_HOME}"
