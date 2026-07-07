@@ -104,7 +104,7 @@ rpm -e --nodeps openssl-fips-provider-so || true
 python -m pip install clearml phonemizer tiktoken
 python -m pip install -U "pydantic>=2"
 python -m pip install GitPython
-python -m pip install sentencepiece==0.1.97 parameterized datasets==4.0.0 setuptools wheel pytest timeout_decorator evaluate GitPython ruff psutil packaging pyyaml
+python -m pip install sentencepiece==0.1.97 parameterized datasets==4.0.0 setuptools wheel pytest timeout_decorator evaluate GitPython ruff psutil packaging pyyaml rich
 python -m pip install ruff
 python -m pip install "numpy<2"
 python -m pip install --no-cache-dir evaluate sacrebleu
