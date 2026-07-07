@@ -203,8 +203,12 @@ python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 
 echo "----------------------------------------------Testing pkg-------------------------------------------------------"
 cd build
+export LD_LIBRARY_PATH=$CURRENT_DIR/orc/prefix/lib:$LD_LIBRARY_PATH
+
 # Test package
 if ! (ninja test) ; then
+    ln -sf /usr/share/zoneinfo/Etc/UTC /etc/localtime
+    export TZDIR=/usr/share/zoneinfo
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
