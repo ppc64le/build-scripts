@@ -35,10 +35,17 @@ CURRENT_DIR=$(pwd)
 yum install -y \
     git \
     wget \
+    gcc-toolset-13 \
+    gcc-toolset-13-gcc \
+    gcc-toolset-13-gcc-c++ \
     python3.12 \
     python3.12-devel \
     python3.12-pip
 
+source /opt/rh/gcc-toolset-13/enable
+
+export CC=gcc
+export CXX=g++
 # -----------------------------------------------------------------------------
 # Upgrade Python packaging tools
 # -----------------------------------------------------------------------------
