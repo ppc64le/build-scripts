@@ -23,7 +23,6 @@ PACKAGE_NAME=pyzmq
 PACKAGE_VERSION=${1:-v25.1.2}
 PACKAGE_URL=https://github.com/zeromq/pyzmq.git
 PACKAGE_DIR=pyzmq
-PYTHON_VERSION=${2:-3.12}
 CURRENT_DIR="${PWD}"
 
 # Install dependencies
@@ -65,7 +64,7 @@ if ! pip install -e . ; then
 fi
 
 export PYTHONPATH=$PWD/tests:$PWD
-if ! pytest -v --timeout=60 --capture=no -p no:warnings --override-ini="mypy-ini-file=" --python-version=$PYTHON_VERSION; then
+if ! pytest -v --timeout=60 --capture=no -p no:warnings --override-ini="mypy-ini-file="; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
