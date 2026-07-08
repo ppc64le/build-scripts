@@ -13,10 +13,10 @@
   "v2.8.2": {
     "build_script":"numexpr_ubi_9.3.sh"
   },
-  "v2.10.2": {
-     "build_script": "numexpr_2.10.2_ubi_9.3.sh"
+  "v2.8.7": {
+     "build_script": "numexpr_2.8.7_ubi_9.3.sh"
    },
   "*": {
-    "build_script":"numexpr_2.11.0_ubi_9.3.sh"
+     "build_script": "numexpr_2.10.2_ubi_9.3.sh"
   }
 }
