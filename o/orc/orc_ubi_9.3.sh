@@ -200,10 +200,6 @@ cp -r prefix/* local/$PACKAGE_NAME
 export LD_LIBRARY_PATH=$PREFIX/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH
 
 echo "LD_LIBRARY_PATH for auditwheel:"
-echo "$LD_LIBRARY_PATH"
-
-ls -l "$PREFIX/lib/liborc.so"
-ls -l "$LIBPROTO_INSTALL/lib64/libabsl_bad_optional_access.so"* || true
 
 # During wheel creation for this package we need exported cmake-args. Once script gets exit, and if we build wheel through wrapper script, then those are not applicable during wheel creation. So we are generating wheel for this package in script itself.
 echo "---------------------------------------------------Building the wheel--------------------------------------------------"
