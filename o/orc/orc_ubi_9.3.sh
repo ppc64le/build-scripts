@@ -199,8 +199,6 @@ cp -r prefix/* local/$PACKAGE_NAME
 # Export library paths needed by auditwheel
 export LD_LIBRARY_PATH=$PREFIX/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH
 
-echo "LD_LIBRARY_PATH for auditwheel:"
-
 # During wheel creation for this package we need exported cmake-args. Once script gets exit, and if we build wheel through wrapper script, then those are not applicable during wheel creation. So we are generating wheel for this package in script itself.
 echo "---------------------------------------------------Building the wheel--------------------------------------------------"
 python3 -m pip install --upgrade build setuptools wheel
