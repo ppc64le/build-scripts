@@ -36,6 +36,7 @@ git apply opensearch-build.patch
 git clone https://github.com/opensearch-project/opensearch-build.git
 cd opensearch-build
 git checkout 3.5.0
+git apply opensearch-docker-build.patch
 ```
 
 
@@ -76,7 +77,7 @@ Ensure all artifacts exist before proceeding.
 
 
 
-## Place fallowing script under opensearch-build/docker/release/
+## Replace existing build-image-single-arch.sh with below file under opensearch-build/docker/release/
 
 ```
 build-image-single-arch.sh

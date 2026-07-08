@@ -1,0 +1,21 @@
+diff --git a/docker/release/config/opensearch/opensearch-docker-entrypoint-3.x.sh b/docker/release/config/opensearch/opensearch-docker-entrypoint-3.x.sh
+index d9986638..34a5f93d 100755
+--- a/docker/release/config/opensearch/opensearch-docker-entrypoint-3.x.sh
++++ b/docker/release/config/opensearch/opensearch-docker-entrypoint-3.x.sh
+@@ -12,6 +12,12 @@
+ export OPENSEARCH_HOME=/usr/share/opensearch
+ export OPENSEARCH_PATH_CONF=$OPENSEARCH_HOME/config
+ 
++# Ensure FIPS mode is disabled for BouncyCastle to allow standard passwords
++# This must be set before any Java operations that use the keystore
++if [[ ! "$OPENSEARCH_JAVA_OPTS" =~ "org.bouncycastle.fips.approved_only" ]]; then
++    export OPENSEARCH_JAVA_OPTS="-Dorg.bouncycastle.fips.approved_only=false $OPENSEARCH_JAVA_OPTS"
++fi
++
+ # The virtual file /proc/self/cgroup should list the current cgroup
+ # membership. For each hierarchy, you can follow the cgroup path from
+ # this file to the cgroup filesystem (usually /sys/fs/cgroup/) and
+@@ -114,3 +120,4 @@ else
+     # Otherwise, just exec the command.
+     exec "$@"
+ fi
