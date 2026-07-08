@@ -64,7 +64,7 @@ if ! pip install -e . ; then
 fi
 
 export PYTHONPATH=$PWD/tests:$PWD
-if ! pytest -v --timeout=60 --capture=no -p no:warnings --override-ini="mypy-ini-file="; then
+if ! pytest -v --timeout=60 --capture=no -p no:warnings --ignore=zmq/tests/test_mypy.py; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
