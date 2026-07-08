@@ -52,7 +52,7 @@ git checkout $PACKAGE_VERSION
 
 #install python dependencies
 pip install cython==3.0.12 packaging pathspec==0.12.1 scikit-build-core==0.11.1 cmake==3.27.9 ninja==1.11.1.4 build
-pip install "setuptools_scm[toml]" pytest==6.2.5 pytest-asyncio==0.20.3 "pytest-timeout<2.0" tornado mypy
+pip install "setuptools_scm[toml]" pytest==6.2.5 pytest-asyncio==0.20.3 "pytest-timeout<2.0" tornado mypy==1.16.1
 
 
 #install
