@@ -23,6 +23,7 @@ PACKAGE_NAME=pyzmq
 PACKAGE_VERSION=${1:-v25.1.2}
 PACKAGE_URL=https://github.com/zeromq/pyzmq.git
 PACKAGE_DIR=pyzmq
+PYTHON_VERSION=${2:-3.12}
 CURRENT_DIR="${PWD}"
 
 # Install dependencies
