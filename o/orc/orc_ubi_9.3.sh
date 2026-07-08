@@ -181,8 +181,6 @@ cmake ${CMAKE_ARGS} \
     -DCMAKE_CXX_COMPILER=$(type -p ${CXX})  \
     -DCMAKE_C_FLAGS="$CFLAGS"  \
     -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wno-unused-parameter" \
-    -DCMAKE_INSTALL_RPATH="$PREFIX/lib:$PROTOBUF_PREFIX/lib:$CURRENT_DIR/local/abseilcpp/lib:/usr/local/lib" \
-    -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
     "${_CMAKE_EXTRA_CONFIG[@]}" \
     -GNinja ..
 
