@@ -12,6 +12,9 @@
   "use_non_root_user": "false",
   "auditwheel_exclude": [],
   "*": {
-    "build_script": "grpcio_reflection_ubi_9.6.sh" 
+    "build_script": "grpcio_reflection_ubi_9.6.sh"
+  },
+  "v1.78.0": {
+    "build_script": "grpcio_reflection_ubi_9.6.sh"
   }
 }
