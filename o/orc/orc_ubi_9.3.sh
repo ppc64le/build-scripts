@@ -196,6 +196,15 @@ cd ..
 mkdir -p local/$PACKAGE_NAME
 cp -r prefix/* local/$PACKAGE_NAME
 
+# Export library paths needed by auditwheel
+export LD_LIBRARY_PATH=$PREFIX/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH
+
+echo "LD_LIBRARY_PATH for auditwheel:"
+echo "$LD_LIBRARY_PATH"
+
+ls -l "$PREFIX/lib/liborc.so"
+ls -l "$LIBPROTO_INSTALL/lib64/libabsl_bad_optional_access.so"* || true
+
 # During wheel creation for this package we need exported cmake-args. Once script gets exit, and if we build wheel through wrapper script, then those are not applicable during wheel creation. So we are generating wheel for this package in script itself.
 echo "---------------------------------------------------Building the wheel--------------------------------------------------"
 python3 -m pip install --upgrade build setuptools wheel
@@ -203,7 +212,7 @@ python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 
 echo "----------------------------------------------Testing pkg-------------------------------------------------------"
 cd build
-export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
+
 # Test package
 if ! (ninja test) ; then
     ln -sf /usr/share/zoneinfo/Etc/UTC /etc/localtime
