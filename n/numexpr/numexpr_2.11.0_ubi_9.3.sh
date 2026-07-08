@@ -41,7 +41,7 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #install pytest
-python3.11 -m pip install --upgrade pip setuptools wheel numpy
+python3.11 -m pip  install --upgrade pip setuptools wheel "numpy<2.0"
 python3.11 -m pip install -e .
 export PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 
