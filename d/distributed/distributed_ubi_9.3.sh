@@ -40,6 +40,8 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION 
 
+export SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION}
+
 if ! pip3.12 install -e . ;  then  
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
