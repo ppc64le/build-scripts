@@ -1,0 +1,15 @@
+{
+    "maintainer": "Sunidhi-Gaonkar1",
+    "package_name": "luajit2",
+    "github_url": "https://github.com/openresty/luajit2",
+    "version": "master",
+    "default_branch": "v2.1-agentzh",
+    "build_script": "luajit2_master_ubi_9.6.sh",
+    "package_dir": "l/luajit2",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*": {
+      "build_script": "luajit2_master_ubi_9.6.sh"
+   }
+ }
