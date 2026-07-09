@@ -6,7 +6,7 @@
 # Source repo       : https://github.com/ansible/ansible.git
 # Tested on         : UBI:9.7
 # Language          : Python
-# Ci-Check          : True
+# Ci-Check          : False
 # Script License    : Apache License, Version 2 or later
 # Maintainer        : Prabhu K(Prabhu.K@ibm.com)
 #
@@ -324,5 +324,6 @@ fi
 ##Other dependency images for integration tests
 ##quay.io/ansible/cloudstack-test-container        1.7.0
 ##quay.io/pulp/galaxy                              4.7.1
-##quay.io/ansible/acme-test-container              2.1.0
+
+#Todo: If in future starting a container with privilages mode enabled then need to enbale this script on CI check, aslo need to enable ppc64le support for remaining cloudstack, pulp/galaxy images and debug excluded test cases
 
