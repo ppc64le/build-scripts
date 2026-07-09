@@ -4,7 +4,7 @@
   "github_url": "https://github.com/grpc/grpc",
   "version": "v1.78.0",
   "wheel_build": true,
-  "package_dir": "grpc/src/python/grpcio_reflection",
+  "package_dir": "g/grpcio-reflection",
   "default_branch": "master",
   "build_script": "grpcio_reflection_ubi_9.6.sh",
   "docker_build": false,
