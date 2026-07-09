@@ -1,0 +1,15 @@
+{
+    "maintainer": "Simran-Sirsat",
+    "package_name": "opentofu",
+    "github_url": "https://github.com/opentofu/opentofu",
+    "version": "v1.8.0",
+    "default_branch": "main",
+    "package_dir": "o/opentofu",
+    "build_script": "opentofu_v1.8.0_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*": {
+      "build_script": "opentofu_v1.8.0_ubi_9.3.sh"
+    } 
+  }
