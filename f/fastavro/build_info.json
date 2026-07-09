@@ -11,7 +11,7 @@
    "validate_build_script": true,
    "use_non_root_user": false,
    "1.9.7": {
-             "build_script": "tiktoken_v0.13.0_ubi_9.6.sh"
+             "build_script": "fastavro_1.9.7_ubi_9.6.sh"
    },
    "*": {
          "build_script":"fastavro_ubi_9.6.sh"
