@@ -43,12 +43,12 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 # Pre-install pydantic-core from PyPI wheel to avoid source compilation.
-# Building from source uses PyO3 0.22.x (bundled in the sdist) which caps at Python 3.13.
-# PyPI ships prebuilt cp314 wheels for all pydantic-core versions, so this avoids the build.
+# Without this, pip builds pydantic-core from source using the bundled PyO3,
+# which caps at Python 3.13 for versions prior to pydantic v2.13.0.
 PYDANTIC_CORE_VERSION=$(grep -oP "pydantic-core==\K[0-9]+\.[0-9]+\.[0-9]+" pyproject.toml | head -1)
-python3 -m pip install "pydantic-core==${PYDANTIC_CORE_VERSION}"
+python -m pip install "pydantic-core==${PYDANTIC_CORE_VERSION}" hatch-fancy-pypi-readme
 
-if ! python3 -m pip install -e . --no-build-isolation; then
+if ! python -m pip install -e . --no-deps; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
