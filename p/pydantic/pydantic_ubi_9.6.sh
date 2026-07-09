@@ -46,9 +46,9 @@ git checkout $PACKAGE_VERSION
 # Without this, pip builds pydantic-core from source using the bundled PyO3,
 # which caps at Python 3.13 for versions prior to pydantic v2.13.0.
 PYDANTIC_CORE_VERSION=$(grep -oP "pydantic-core==\K[0-9]+\.[0-9]+\.[0-9]+" pyproject.toml | head -1)
-python -m pip install "pydantic-core==${PYDANTIC_CORE_VERSION}" hatch-fancy-pypi-readme
+python3 -m pip install "pydantic-core==${PYDANTIC_CORE_VERSION}" hatch-fancy-pypi-readme
 
-if ! python -m pip install -e . --no-deps; then
+if ! python3 -m pip install -e . --no-deps; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
