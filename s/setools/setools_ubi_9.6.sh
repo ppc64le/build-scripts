@@ -27,7 +27,7 @@ PACKAGE_DIR=setools
 CURRENT_DIR="${PWD}"
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make cmake python3.11 python3.11-devel libselinux-devel libsepol-devel python3-setuptools
+yum install -y git gcc gcc-c++ make cmake python3.11 python3.11-devel libselinux-devel libsepol-devel python3-setuptools checkpolicy
 
 # Clone source
 git clone $PACKAGE_URL
