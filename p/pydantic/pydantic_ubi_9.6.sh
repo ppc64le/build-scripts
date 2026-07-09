@@ -42,7 +42,13 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-if ! python3 -m pip install -e .; then
+# Pre-install pydantic-core from PyPI wheel to avoid source compilation.
+# Building from source uses PyO3 0.22.x (bundled in the sdist) which caps at Python 3.13.
+# PyPI ships prebuilt cp314 wheels for all pydantic-core versions, so this avoids the build.
+PYDANTIC_CORE_VERSION=$(grep -oP "pydantic-core==\K[0-9]+\.[0-9]+\.[0-9]+" pyproject.toml | head -1)
+python3 -m pip install "pydantic-core==${PYDANTIC_CORE_VERSION}"
+
+if ! python3 -m pip install -e . --no-build-isolation; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
