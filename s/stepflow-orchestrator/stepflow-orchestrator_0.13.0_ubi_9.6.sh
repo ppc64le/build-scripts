@@ -20,6 +20,7 @@ PACKAGE_NAME="stepflow"
 PACKAGE_VERSION=${1:-stepflow-0.13.0}
 PACKAGE_URL="https://github.com/stepflow-ai/stepflow.git"
 SOURCE_ROOT="$(pwd)"
+SCRIPT_PATH=$(dirname $(realpath $0))
 
 echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 
