@@ -79,7 +79,7 @@ Please follow the below rules while contributing your build script to this repo.
 - Runs only if:
   - `wheel_build = true`
   - Build script (`.sh`) is modified
-- Builds wheels across multiple Python versions (3.9 – 3.14)
+- Builds wheels across multiple Python versions (3.10 – 3.14)
 
 **Docker Build**
 - Runs only if:

@@ -42,12 +42,13 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
             environment={
                "GHA_CURRENCY_SERVICE_ID_API_KEY": os.getenv("GHA_CURRENCY_SERVICE_ID_API_KEY"),
                "GHA_CURRENCY_SERVICE_ID": os.getenv("GHA_CURRENCY_SERVICE_ID"),
+               "AUDITWHEEL_EXCLUDE": os.getenv("AUDITWHEEL_EXCLUDE", ""),
             }
         )
         
         #  STREAM logs in real-time
         for log in container.logs(stream=True, stdout=True, stderr=True, follow=True):
-            print(log.decode("utf-8").rstrip())
+            print(log.decode("utf-8", errors="replace").rstrip())
 
         # Wait until it's done
         result = container.wait()
