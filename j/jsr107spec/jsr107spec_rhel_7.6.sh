@@ -1,11 +1,14 @@
-#----------------------------------------------------------------------------
+#!/bin/bash
+# -----------------------------------------------------------------------------
 #
-# Package			: cache-api
-# Version			: 1.0.0, 1.1.0
-# Source repo		: https://github.com/jsr107/jsr107spec
-# Tested on			: RHEL 7.6
-# Script License	: Apache License Version 2.0
-# Maintainer		: Pratham Murkute <prathamm@us.ibm.com>
+# Package       : jsr107spec
+# Version       : 1.0.0
+# Source repo   : https://github.com/jsr107/jsr107spec.git
+# Tested on     : RHEL 7.6
+# Language      : Java
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Pratham Murkute <prathamm@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -14,9 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-#!/bin/bash
-
+set -e
 # install tools and dependent packages
 #yum -y update
 yum install -y git wget curl unzip nano vim make build-essential
