@@ -24,6 +24,8 @@
 # ----------------------------------------------------------------------------
 # Note: As docker in docker is not supported on currecny, this script only verified locally  
 
+#ToDo: If in future docker in docker support enabled in currency then need to execute the script and build the images accordingly.  
+
 set -e
 
 PACKAGE_URL=https://github.com/che-incubator/che-code
