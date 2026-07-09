@@ -48,7 +48,7 @@ git checkout $PACKAGE_VERSION
 PYDANTIC_CORE_VERSION=$(grep -oP "pydantic-core==\K[0-9]+\.[0-9]+\.[0-9]+" pyproject.toml | head -1)
 python3 -m pip install "pydantic-core==${PYDANTIC_CORE_VERSION}" hatch-fancy-pypi-readme
 
-if ! python3 -m pip install -e . --no-deps; then
+if ! python3 -m pip install -e . --no-build-isolation; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
@@ -69,7 +69,7 @@ if [ "$MAJOR" -eq 2 ] && \
     PYTEST_DESELECT="--deselect tests/test_missing_sentinel.py::test_missing_sentinel_pickle"
 fi
 
-if ! (pytest $PYTEST_DESELECT); then
+if ! (python3 -m pytest $PYTEST_DESELECT); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
