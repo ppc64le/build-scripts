@@ -1,0 +1,16 @@
+{
+    "maintainer":"Jenkins-J",
+    "package_name" : "pyhive",
+    "github_url" : "https://github.com/apache/kyuubi",
+    "version": "0.7.0",
+    "package_dir": "p/pyhive",
+    "default_branch": "master",
+    "build_script": "pyhive_ubi_9.3.sh",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "wheel_build": "true",
+    "*": {
+        "build_script": "pyhive_ubi_9.3.sh"
+    }
+}
