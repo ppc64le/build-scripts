@@ -1,0 +1,13 @@
+{
+   "maintainer": "James-Jenkins",
+   "package_name": "ansible-runner-http",
+   "github_url": "https://github.com/ansible/ansible-runner-http",
+   "version": "1.0.0",
+   "default_branch": "master",
+   "build_script": "ansible-runner-http_ubi_9.3.sh",
+   "package_dir": "a/ansible-runner-http",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
