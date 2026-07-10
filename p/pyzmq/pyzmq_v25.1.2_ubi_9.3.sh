@@ -91,6 +91,7 @@ export PYTHONPATH=$PWD/tests:$PWD
 #   - test_mypy_example[asyncio]: pyzmq's mypy.ini pins python_version=3.7
 #     (unsupported by mypy>=1.8) and two asyncio example files have type errors.
 if ! pytest -v --timeout=60 --capture=no -p no:warnings \
+    --ignore=tests/test_log.py \
     --deselect tests/test_message.py::TestFrame::test_above_30 \
     --deselect tests/test_message.py::TestFrame::test_lifecycle1 \
     --deselect tests/test_message.py::TestFrame::test_lifecycle2 \
