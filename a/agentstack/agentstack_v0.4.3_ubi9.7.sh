@@ -33,8 +33,7 @@ PACKAGE_VERSION="${1:-${SCRIPT_PACKAGE_VERSION}}"
 PGVECTOR_VERSION="${PGVECTOR_VERSION:-v0.7.4}"
 POSTGRES_VERSION="${POSTGRES_VERSION:-16.4}"
 
-WORKDIR="${WORKDIR:-/root/agentstack}"
-BUILD_HOME="${BUILD_HOME:-$(pwd)}"
+BUILD_HOME=$(pwd)
 
 POSTGRES_INSTALL_DIR="${POSTGRES_INSTALL_DIR:-/local/apps/postgresql/pgsql164}"
 POSTGRES_DATA_DIR="${POSTGRES_DATA_DIR:-${POSTGRES_INSTALL_DIR}/data}"
@@ -65,14 +64,7 @@ echo "==========================================================================
 echo "Installing system dependencies"
 echo "=============================================================================="
 
-# Ensure /tmp has correct permissions
-mkdir -p /tmp
-chmod 1777 /tmp
-
-dnf install -y wget
-
 ret=0
-dnf config-manager --set-enabled codeready-builder-for-rhel-9-$(arch)-rpms || ret=$?
 
 if [ $ret -ne 0 ]; then
     dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
@@ -83,6 +75,7 @@ if [ $ret -ne 0 ]; then
 fi
 
 dnf install -y \
+    wget \
     git \
     curl-devel \
     gcc \
@@ -100,16 +93,12 @@ dnf install -y \
     ca-certificates \
     dnf-plugins-core \
     libpq-devel \
-    python3 \
-    python3-devel \
     zlib-devel \
     libicu-devel \
     libjpeg-turbo-devel \
     libjpeg-turbo \
     postgresql \
     postgresql-devel \
-    python3.12-devel \
-    python3.12-pip \
     freetype-devel \
     freetype \
     libpng-devel 
@@ -302,17 +291,11 @@ echo "==========================================================================
 echo "Cloning AgentStack"
 echo "=============================================================================="
 
-mkdir -p "${WORKDIR}"
-cd "${WORKDIR}"
-
-if [ ! -d agentstack ]; then
-    git clone "${PACKAGE_URL}"
-fi
-
+cd "${BUILD_HOME}"
+git clone "${PACKAGE_URL}"
 cd $PACKAGE_NAME
-git fetch --all --tags
 git checkout "${PACKAGE_VERSION}"
-AGENTSTACK_ROOT="${WORKDIR}/agentstack"
+AGENTSTACK_ROOT="${BUILD_HOME}/agentstack"
 
 wget https://raw.githubusercontent.com/Simran-Sirsat/build-scripts/agentstack/a/agentstack/agentstack_v0.4.3.patch
 #wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/agentstack/agentstack_v0.4.3.patch
@@ -333,8 +316,6 @@ echo "==========================================================================
 cd "${AGENTSTACK_ROOT}/apps/agentstack-sdk-py"
 
 uv python install 3.12
-#uv venv --python 3.12
-#source .venv/bin/activate
 deactivate 2>/dev/null || true
 unset VIRTUAL_ENV
 hash -r
