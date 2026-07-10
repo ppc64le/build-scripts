@@ -21,7 +21,7 @@
 set -ex
 # Variables
 PACKAGE_NAME=pydantic-core
-PACKAGE_VERSION=${1:-v2.27.1}
+PACKAGE_VERSION=${1:-v2.41.5}
 PACKAGE_URL=https://github.com/pydantic/pydantic-core
 PACKAGE_DIR=pydantic-core
 
