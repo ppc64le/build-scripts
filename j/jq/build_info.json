@@ -1,6 +1,6 @@
 {
   "maintainer": "rcarino5",
-  "package_name": "jq.py",
+  "package_name": "jq",
   "github_url": "https://github.com/mwilliamson/jq.py",
   "version": "1.11.0",
   "default_branch": "master",
