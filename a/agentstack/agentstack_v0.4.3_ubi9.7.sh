@@ -70,23 +70,26 @@ mkdir -p /tmp
 chmod 1777 /tmp
 
 dnf install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
 
-rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
+ret=0
+dnf config-manager --set-enabled codeready-builder-for-rhel-9-$(arch)-rpms || ret=$?
 
+if [ $ret -ne 0 ]; then
+    dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
+    dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os
+    dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
+
+    rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
+fi
 
 dnf install -y \
     git \
     curl-devel \
-    wget \
     gcc \
     gcc-c++ \
     make \
     cmake \
     patch \
-    clang \
     llvm-devel \
     clang \
     clang-devel \
@@ -104,10 +107,9 @@ dnf install -y \
     libjpeg-turbo-devel \
     libjpeg-turbo \
     postgresql \
-    postgresql-devel
-
-dnf install -y \
-    libjpeg-turbo-devel \
+    postgresql-devel \
+    python3.12-devel \
+    python3.12-pip \
     freetype-devel \
     freetype \
     libpng-devel 
@@ -160,7 +162,7 @@ echo "==========================================================================
 echo "Installing Go"
 echo "=============================================================================="
 
-GO_VERSION="1.26.4"
+GO_VERSION="1.24.4"
 GO_TAR="go${GO_VERSION}.linux-ppc64le.tar.gz"
 
 cd "$BUILD_HOME"
@@ -310,12 +312,12 @@ fi
 cd $PACKAGE_NAME
 git fetch --all --tags
 git checkout "${PACKAGE_VERSION}"
+AGENTSTACK_ROOT="${WORKDIR}/agentstack"
 
 wget https://raw.githubusercontent.com/Simran-Sirsat/build-scripts/agentstack/a/agentstack/agentstack_v0.4.3.patch
 #wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/agentstack/agentstack_v0.4.3.patch
 
 git apply agentstack_v0.4.3.patch
-AGENTSTACK_ROOT="${WORKDIR}/agentstack"
 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
 export GRPC_PYTHON_BUILD_SYSTEM_ZLIB=1
@@ -331,6 +333,8 @@ echo "==========================================================================
 cd "${AGENTSTACK_ROOT}/apps/agentstack-sdk-py"
 
 uv python install 3.12
+#uv venv --python 3.12
+#source .venv/bin/activate
 deactivate 2>/dev/null || true
 unset VIRTUAL_ENV
 hash -r
@@ -339,11 +343,10 @@ rm -rf .venv
 uv venv .venv --python 3.12
 source .venv/bin/activate
 rm -f uv.lock
-uv pip install primp==0.15.0 --index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
 
 if ! (
     uv lock &&
-    uv sync --all-groups
+    uv sync
 ); then
     echo "------------------${PACKAGE_NAME}:agentstack_sdk_build_fails---------------------"
     echo "${PACKAGE_URL} ${PACKAGE_NAME}"
@@ -364,7 +367,7 @@ cd "${AGENTSTACK_ROOT}/apps/agentstack-cli"
 if ! (
     rm -f uv.lock &&
     uv lock &&
-    uv sync --all-groups
+    uv sync
 ); then
     echo "------------------${PACKAGE_NAME}:agentstack_cli_build_fails---------------------"
     echo "${PACKAGE_URL} ${PACKAGE_NAME}"
@@ -385,7 +388,7 @@ cd "${AGENTSTACK_ROOT}/apps/agentstack-server"
 if ! (
     rm -f uv.lock &&
     uv lock &&
-    uv sync --all-groups &&
+    uv sync &&
     uv add "pydantic==2.11.7" &&
     uv sync
 ); then
@@ -408,7 +411,7 @@ cd "${AGENTSTACK_ROOT}/agents/chat"
 if ! (
     rm -f uv.lock &&
     uv lock &&
-    uv sync --all-groups
+    uv sync
 ); then
     echo "------------------${PACKAGE_NAME}:chat_agent_build_fails---------------------"
     echo "${PACKAGE_URL} ${PACKAGE_NAME}"
@@ -429,7 +432,7 @@ cd "${AGENTSTACK_ROOT}/agents/form"
 if ! (
     rm -f uv.lock &&
     uv lock &&
-    uv sync --all-groups
+    uv sync
 ); then
     echo "------------------${PACKAGE_NAME}:form_agent_build_fails---------------------"
     echo "${PACKAGE_URL} ${PACKAGE_NAME}"
@@ -450,7 +453,7 @@ cd "${AGENTSTACK_ROOT}/agents/rag"
 if ! (
     rm -f uv.lock &&
     uv lock &&
-    uv sync --all-groups
+    uv sync
 ); then
     echo "------------------${PACKAGE_NAME}:rag_agent_build_fails---------------------"
     echo "${PACKAGE_URL} ${PACKAGE_NAME}"
@@ -532,40 +535,72 @@ if [ "${RUN_KIND_SETUP}" = "true" ]; then
     mv kubectl /usr/local/bin/
     kubectl version --client
 
-    cat > /root/kind-config.yaml <<YAML
+    VSI_IP=$(ip -4 route show default | awk '{print $3}')
+
+KIND_IMAGE='quay.io/powercloud/kind-node'
+KIND_CLUSTER_NAME='mkpod'
+
+cat <<YAML > /root/kind-config.yaml
 apiVersion: kind.x-k8s.io/v1alpha4
 kind: Cluster
 name: ${KIND_CLUSTER_NAME}
+networking:
+  apiServerAddress: "${VSI_IP}"
+  apiServerPort: 6443
 nodes:
-- image: ${KIND_IMAGE}:${KUBECTL_VERSION}
+- extraMounts:
+  - containerPath: /var/lib/kubelet/config.json
+    hostPath: /root/config.json
+  image: ${KIND_IMAGE}:${KUBECTL_VERSION}
   role: control-plane
-  extraPortMappings:
-  - containerPort: 6443
-    hostPort: 6443
-    listenAddress: "127.0.0.1"
-    protocol: TCP
-- image: ${KIND_IMAGE}:${KUBECTL_VERSION}
+  kubeadmConfigPatches:
+  - |
+    kind: ClusterConfiguration
+    apiServer:
+      certSANs:
+      - "127.0.0.1"
+      - "${VSI_IP}"
+      - "localhost"
+- extraMounts:
+  - containerPath: /var/lib/kubelet/config.json
+    hostPath: /root/config.json
+  image: ${KIND_IMAGE}:${KUBECTL_VERSION}
   role: worker
 YAML
+
 
     kind delete cluster --name "${KIND_CLUSTER_NAME}" || true
     kind create cluster --config=/root/kind-config.yaml
 
-# ------------------------------------------------------------------
-# Configure kubeconfig
-# ------------------------------------------------------------------
+###############################################################################
+# Export kubeconfig
+###############################################################################
 
 mkdir -p "$HOME/.agentstack/docker/agentstack-local-test/copied-from-guest"
-
-kind get kubeconfig --name "${KIND_CLUSTER_NAME}" > \
-"$HOME/.agentstack/docker/agentstack-local-test/copied-from-guest/kubeconfig.yaml"
-
 export KUBECONFIG="$HOME/.agentstack/docker/agentstack-local-test/copied-from-guest/kubeconfig.yaml"
+
+kind get kubeconfig --name "${KIND_CLUSTER_NAME}" > "$KUBECONFIG"
+kubectl config use-context "kind-${KIND_CLUSTER_NAME}"
 
 echo "Using kubeconfig:"
 echo "$KUBECONFIG"
 
-kubectl cluster-info
+kubectl config current-context
+
+###############################################################################
+# Wait for cluster
+###############################################################################
+
+echo "Waiting for Kubernetes API..."
+
+for i in $(seq 1 60); do
+    if kubectl cluster-info >/dev/null 2>&1; then
+        break
+    fi
+    sleep 5
+done
+
+echo "Waiting for nodes..."
 
 kubectl wait \
     --for=condition=Ready \
@@ -573,39 +608,11 @@ kubectl wait \
     --all \
     --timeout=300s
 
-kubectl get nodes
-
-echo "Using kubeconfig: $KUBECONFIG"
-
 kubectl cluster-info
-
-echo "Waiting for Kubernetes nodes to become Ready..."
-
-kubectl wait \
-    --for=condition=Ready \
-    node \
-    --all \
-    --timeout=300s
-
 kubectl get nodes
 
-python3 - <<'EOF'
-import os
-print("KUBECONFIG =", os.environ.get("KUBECONFIG"))
-EOF
 fi
 
-mkdir -p "$HOME/.agentstack/docker/agentstack-local-test/copied-from-guest"
-
-kind get kubeconfig --name "${KIND_CLUSTER_NAME}" > \
-"$HOME/.agentstack/docker/agentstack-local-test/copied-from-guest/kubeconfig.yaml"
-
-export KUBECONFIG="$HOME/.agentstack/docker/agentstack-local-test/copied-from-guest/kubeconfig.yaml"
-
-echo "KUBECONFIG=$KUBECONFIG"
-
-kubectl cluster-info
-kubectl get nodes
 
 ###############################################################################
 # UNIT TESTS
