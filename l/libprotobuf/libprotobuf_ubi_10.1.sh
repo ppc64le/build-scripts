@@ -84,7 +84,7 @@ cmake --build . --verbose
 cmake --install .
 
 cd ..
-wget -O pyproject.toml https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/main/l/libprotobuf/pyproject_v6.31.1.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/main/l/libprotobuf/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
 
 python -m pip wheel -w $WORK_DIR -vv --no-build-isolation --no-deps .
