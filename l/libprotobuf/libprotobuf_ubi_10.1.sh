@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/protocolbuffers/protobuf
 # Tested on        : UBI:10.1
 # Language         : Python
-# Travis-Check     : True
+# Ci-Check         : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : tejasBadjateIBM <Tejas.Badjate@ibm.com>
 #
