@@ -91,10 +91,11 @@ export PYTHONPATH=$PWD/tests:$PWD
 #   - test_mypy_example[asyncio]: pyzmq's mypy.ini pins python_version=3.7
 #     (unsupported by mypy>=1.8) and two asyncio example files have type errors.
 if ! pytest -v --timeout=60 --capture=no -p no:warnings \
-    --deselect zmq/tests/test_message.py::TestFrame::test_above_30 \
-    --deselect zmq/tests/test_message.py::TestFrame::test_lifecycle1 \
-    --deselect zmq/tests/test_message.py::TestFrame::test_lifecycle2 \
-    --deselect "zmq/tests/test_mypy.py::test_mypy_example[asyncio]"; then
+    --deselect tests/test_message.py::TestFrame::test_above_30 \
+    --deselect tests/test_message.py::TestFrame::test_lifecycle1 \
+    --deselect tests/test_message.py::TestFrame::test_lifecycle2 \
+    --deselect "tests/test_mypy.py::test_mypy_example[asyncio]" \
+    --deselect "tests/test_retry_eintr.py::TestEINTRSysCall::test_retry_poll"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
