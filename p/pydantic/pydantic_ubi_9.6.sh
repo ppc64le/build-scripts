@@ -69,6 +69,12 @@ if [ "$MAJOR" -eq 2 ] && \
     PYTEST_DESELECT="--deselect tests/test_missing_sentinel.py::test_missing_sentinel_pickle"
 fi
 
+# test_deferred_annotations_nested_model is xfail(strict=True) in v2.12.x but passes on
+# Python 3.14.1+ due to CPython fix (cpython#138164). The xfail marker was removed in v2.13.0.
+if [ "$MAJOR" -eq 2 ] && [ "$MINOR" -eq 12 ]; then
+    PYTEST_DESELECT="$PYTEST_DESELECT --deselect tests/test_deferred_annotations.py::test_deferred_annotations_nested_model"
+fi
+
 if ! (python3 -m pytest $PYTEST_DESELECT); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
