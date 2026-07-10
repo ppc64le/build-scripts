@@ -27,13 +27,14 @@ PACKAGE_DIR=pydantic-core
 
 # Install dependencies
 yum install -y git python3 python3-devel.ppc64le gcc-toolset-13 make wget sudo cmake
-pip3 install pytest maturin
+# Align pytest version with pydantic script for consistency
+pip3 install "pytest<9" maturin
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-# Install Rust (required for some dependencies)
+# Install Rust (required for building pydantic-core)
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"
 
@@ -42,6 +43,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
+# Build pydantic-core wheel (architecture-specific Rust extension)
 if ! python3 -m pip install -e .; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
