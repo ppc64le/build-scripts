@@ -28,14 +28,15 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
 
 # Install system dependencies
-yum install -y git python3 python3-devel gcc-toolset-13 make wget sudo
+# python3.12 required: zeroconf 0.150.0 requires Python >=3.10; UBI 9 default is 3.9
+yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13 make wget sudo
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 # Install Python build and test dependencies
-pip3 install \
+python3.12 -m pip install \
     "setuptools>=77.0" \
     "Cython>=3.0.8" \
     "poetry-core>=2.1.0" \
@@ -61,7 +62,7 @@ else
 fi
 
 # Install the package (builds Cython extensions via build_ext.py)
-if ! python3 -m pip install ./; then
+if ! python3.12 -m pip install ./; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
@@ -72,7 +73,7 @@ fi
 # SKIP_IPV6=1: the build container can bind ::1 but has no IPv6 multicast routing
 # (ff02::fb is unreachable), so the IPv6 integration test is skipped via its own
 # built-in guard: @unittest.skipIf(os.environ.get("SKIP_IPV6"), ...)
-if ! SKIP_IPV6=1 python3 -m pytest tests/; then
+if ! SKIP_IPV6=1 python3.12 -m pytest tests/; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
