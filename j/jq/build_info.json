@@ -1,0 +1,16 @@
+{
+  "maintainer": "rcarino5",
+  "package_name": "jq.py",
+  "github_url": "https://github.com/mwilliamson/jq.py",
+  "version": "1.11.0",
+  "default_branch": "master",
+  "build_script": "jq_ubi_9.6.sh",
+  "package_dir": "j/jq",
+  "docker_build": false,
+  "wheel_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "jq_ubi_9.6.sh"
+  }
+}
