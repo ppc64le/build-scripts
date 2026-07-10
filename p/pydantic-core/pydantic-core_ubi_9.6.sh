@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : pydantic-core
-# Version          : v2.27.1
+# Version          : v2.41.5
 # Source repo      : https://github.com/pydantic/pydantic-core
 # Tested on     : UBI:9.6
 # Language      : Python
