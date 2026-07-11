@@ -1,0 +1,16 @@
+{
+  "maintainer": "rcarino",
+  "package_name": "cykhash",
+  "github_url": "https://github.com/realead/cykhash",
+  "version": "2.0.1",
+  "default_branch": "master",
+  "build_script": "cykhash_ubi_9.6.sh",
+  "package_dir": "c/cykhash",
+  "docker_build": false,
+  "wheel_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "cykhash_ubi_9.6.sh"
+  }
+}
