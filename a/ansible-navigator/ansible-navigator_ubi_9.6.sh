@@ -29,9 +29,12 @@ yum install -y git gcc python3.11 python3.11-devel python3.11-pip gcc-toolset-13
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-# If the active Python is missing _curses (built from source without
-# ncurses-devel by the wrapper), rebuild it now that ncurses-devel is present.
-PYTHON_CMD=$(command -v python3.11 || command -v python3 || command -v python)
+# Determine the active Python: the wrapper venv always exposes 'python';
+# direct validation (validate_builds.py) only has 'python3.11' from yum.
+# python3.11 from yum already includes _curses so the rebuild is a no-op for
+# it; for wrapper-built 3.10/3.13 'python' points to the venv and may lack
+# _curses since the wrapper installs ncurses runtime but not ncurses-devel.
+PYTHON_CMD=$(command -v python 2>/dev/null || command -v python3.11)
 if ! $PYTHON_CMD -c "import _curses" 2>/dev/null; then
     PY_PATCH=$($PYTHON_CMD -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')")
     echo "Rebuilding Python ${PY_PATCH} with ncurses-devel to enable _curses..."
