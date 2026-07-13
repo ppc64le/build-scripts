@@ -265,7 +265,7 @@ echo "Resetting PostgreSQL credentials"
 echo "=============================================================================="
 
 su - postgres -c "${POSTGRES_INSTALL_DIR}/bin/psql postgres <<'SQL'
-ALTER ROLE "agentstack-user"
+ALTER ROLE \"agentstack-user\"
 WITH LOGIN PASSWORD 'agentstack';
 SQL
 "
@@ -477,7 +477,8 @@ EOF
 ###############################################################################
 export PERSISTENCE__DB_URL="postgresql+asyncpg://agentstack-user:agentstack@localhost:5433/agentstack"
 export DATABASE_URL="$PERSISTENCE__DB_URL"
-export DB_URL="postgresql+asyncpg://agentstack-user:agentstack@localhost:5433/agentstack"
+#export DB_URL="postgresql+asyncpg://agentstack-user:agentstack@localhost:5433/agentstack"
+export DB_URL="postgresql+asyncpg://agentstack-user:agentstack@127.0.0.1:5433/agentstack"
 
 python3 - <<'EOF'
 import os
