@@ -16,7 +16,9 @@
 #                    contact "Maintainer" of this script.
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME="stepflow"
+PACKAGE_DIR="stepflow/sdks/python/stepflow-orchestrator"
+PACKAGE_NAME="stepflow-orchestrator"
+REPO_NAME="stepflow"
 PACKAGE_VERSION=${1:-stepflow-0.13.0}
 PACKAGE_URL="https://github.com/stepflow-ai/stepflow.git"
 SOURCE_ROOT="$(pwd)"
@@ -37,14 +39,13 @@ python3.12 -m pip install --upgrade pip setuptools wheel build
 
 # Clone and checkout
 cd "$SOURCE_ROOT"
-rm -rf "$PACKAGE_NAME"
+rm -rf "$REPO_NAME"
 git clone "$PACKAGE_URL"
-cd "${PACKAGE_NAME}"
+cd "$PACKAGE_DIR"
 git checkout "$PACKAGE_VERSION"
 git submodule update --init --depth 1
 
 # Build wheel
-cd "sdks/python/stepflow-orchestrator"
 python3.12 -m build --wheel --outdir "${SOURCE_ROOT}/dist/"
 
 WHEEL=$(find "${SOURCE_ROOT}/dist" -name "stepflow_orchestrator-*.whl" | head -1)
@@ -79,9 +80,9 @@ export PATH="/usr/local/bin:$PATH"
 
 # Build stepflow-server for testing
 echo "=== Building stepflow-server for Testing ==="
-cd "${SOURCE_ROOT}/${PACKAGE_NAME}/stepflow-rs"
+cd "${SOURCE_ROOT}/${REPO_NAME}/stepflow-rs"
 cargo build --release --bin stepflow-server
-export STEPFLOW_DEV_BINARY="${SOURCE_ROOT}/${PACKAGE_NAME}/stepflow-rs/target/release/stepflow-server"
+export STEPFLOW_DEV_BINARY="${SOURCE_ROOT}/${REPO_NAME}/stepflow-rs/target/release/stepflow-server"
 
 # Run tests
 echo "=== Running Tests ==="
