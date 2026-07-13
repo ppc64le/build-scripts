@@ -5,7 +5,7 @@
   "version": "stepflow-0.13.0",
   "wheel_build" : true,
   "default_branch": "main",
-  "package_dir": "s/stepflow-orchestrator",
+  "package_dir": "stepflow/sdks/python/stepflow-orchestrator",
   "build_script": "stepflow-orchestrator_0.13.0_ubi_9.6.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
