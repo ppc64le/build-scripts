@@ -89,9 +89,10 @@ cd src/python/grpcio_reflection
 
 # Generate Python files from .proto definitions
 python3.12 setup.py preprocess
+python3.12 setup.py bdist_wheel
 
 # Build and install
-if ! python3.12 -m pip install . ; then
+if ! python3.12 -m pip install dist/*.whl ; then
     echo "------------------${PACKAGE_NAME}: Install_Fails------------------"
     echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | GitHub | Fail | Install_Fails"
     exit 1
