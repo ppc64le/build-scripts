@@ -552,7 +552,7 @@ nodes:
 YAML
 
 
-    kind delete cluster --name "${KIND_CLUSTER_NAME}" || true
+   # kind delete cluster --name "${KIND_CLUSTER_NAME}" || true
     kind create cluster --config=/root/kind-config.yaml
 
 ###############################################################################
