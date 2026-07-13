@@ -65,6 +65,7 @@ echo "Installing system dependencies"
 echo "=============================================================================="
 
 ret=0
+dnf config-manager --set-enabled codeready-builder-for-rhel-9-$(arch)-rpms || ret=$?
 
 if [ $ret -ne 0 ]; then
     dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
