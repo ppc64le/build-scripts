@@ -2,11 +2,11 @@
   "maintainer": "akash-kaothalkar",
   "package_name": "opencv-python-headless",
   "github_url": "https://github.com/opencv/opencv-python.git",
-  "version": "4.13.0.92",
+  "version": "5.0.0.93",
   "wheel_build": true,
   "package_dir": "o/opencv-python-headless",
   "default_branch": "4.x",
-  "build_script": "opencv-python-headless_4.13.0.92_ubi_9.5.sh",
+  "build_script": "opencv-python-headless_5.0.0.93_ubi_9.5.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
@@ -16,7 +16,10 @@
   "92": {
     "build_script": "opencv-python-headless_4.13.0.92_ubi_9.5.sh"
   },
+  "93": {
+    "build_script": "opencv-python-headless_5.0.0.93_ubi_9.5.sh"
+  },
   "*": {
-    "build_script": "opencv-python-headless_4.13.0.92_ubi_9.5.sh"
+    "build_script": "opencv-python-headless_5.0.0.93_ubi_9.5.sh"
   }
 }
