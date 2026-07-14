@@ -3,48 +3,51 @@
 validate_build_script=$VALIDATE_BUILD_SCRIPT
 cloned_package=$CLONED_PACKAGE
 
+# Use pre-installed grype from the cached artifact
+# $GRYPE_BIN is set by the workflow (points to scan-tools-bin/grype)
+if [ -z "$GRYPE_BIN" ]; then
+  echo "Error: GRYPE_BIN environment variable not set"
+  exit 1
+fi
+
 sudo apt update -y && sudo apt install -y jq
-GRYPE_VERSION=$(curl -s https://api.github.com/repos/anchore/grype/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
-wget https://github.com/anchore/grype/releases/download/$GRYPE_VERSION/grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz
-tar -xzf grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz
-chmod +x grype
-sudo mv grype /usr/bin 
-echo "------------- Installed grype---------------"
-grype --version
 
+echo "------------- Using cached grype ---------------"
+$GRYPE_BIN version
+
+# Wheels are built into the workspace root by build_wheels.sh
+WHEEL_DIR=$(pwd)
 
 echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
-ls 
+echo "Looking for wheels in: $WHEEL_DIR"
+ls "$WHEEL_DIR"/*.whl 2>/dev/null || { echo "No .whl files found in $WHEEL_DIR"; exit 1; }
 echo "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
-cd package-cache/wheels
 
-
-for wheel in *.whl; do
+for wheel in "$WHEEL_DIR"/*.whl; do
   echo "Processing: $wheel"
-  
-  base_name="${wheel%.whl}"  # Strip .whl extension
-  extract_dir="${base_name}_extract"
-  output_json="${base_name}_grype_output.json"
 
+  base_name=$(basename "${wheel%.whl}")
+  extract_dir="${WHEEL_DIR}/${base_name}_extract"
+  output_json="${WHEEL_DIR}/${base_name}_grype_output.json"
 
   echo "base name : $base_name"
   echo "extract_dir : $extract_dir"
   echo "output_json : $output_json"
- 
 
   # Unzip the wheel
   unzip -q "$wheel" -d "$extract_dir"
-  echo "------------- unzippied wheel ------------------------------"
-  ls
-  
-  
-  # Run grype scanner
-  echo "------------------------------------------------------------"
-  grype "$extract_dir" -o json | jq . > "$output_json"
+  echo "------------- unzipped wheel ------------------------------"
+  ls "$WHEEL_DIR"
 
-  # Zip the result
+  # Run grype scanner using the cached binary
+  echo "------------------------------------------------------------"
+  $GRYPE_BIN "$extract_dir" -o json | jq . > "$output_json"
+
+  # Cleanup extract dir to save space
+  rm -rf "$extract_dir"
+
   echo "------------------------- output files ---------------------"
-  ls
+  ls "$WHEEL_DIR"
   echo "------------------------------------------------------------"
   echo "Finished: $wheel"
 done
