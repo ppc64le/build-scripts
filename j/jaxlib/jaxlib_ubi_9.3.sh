@@ -18,7 +18,6 @@
 #
 # ---------------------------------------------------------------------------
 
-
 # Variables
 PACKAGE_NAME=jax
 PACKAGE_VERSION=${1:-jaxlib-v0.4.23}
@@ -31,11 +30,8 @@ yum install -y python-devel python-pip git gcc gcc-c++ gcc-toolset-13 make cmake
 
 echo "Installing dependencies -------------------------------------------------------------"
 yum install -y zlib-devel freetype-devel procps-ng openblas-devel meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel  
-
 echo "Installing dependencies -------------------------------------------------------------"
 yum install -y java-11-openjdk-devel  libtool xz  libevent-devel  clang java-11-openjdk java-11-openjdk-headless zip openblas
-
-
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
@@ -62,10 +58,7 @@ mkdir bazel
 cd bazel
 wget https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-dist.zip
 unzip bazel-${BAZEL_VERSION}-dist.zip
-env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
-cp output/bazel /usr/local/bin
-export PATH=/usr/local/bin:$PATH
-bazel --version
+cd ..
 
 echo "Installing dependencies via pip3-------------------------------------------------------------"
 pip3 install numpy==1.26.4 scipy wheel pytest build
