@@ -3,7 +3,6 @@ on:
   workflow_dispatch:
     branches:
       - master
-      - replica-master
 
     inputs:
       package_name:
@@ -117,7 +116,45 @@ jobs:
         with:
           name: package-cache
           path: package-cache.tar.gz
-                
+
+  # ---------------------------------------------------------------------------
+  # install_scan_tools: Installs grype ONCE (static Go binary — fully portable)
+  # and caches it as an artifact for all wheel_build_pyXXX jobs.
+  # Scancode-toolkit is installed fresh per wheel_build job using pip cache
+  # (Option 1) — pip downloads are cached so reinstall is fast.
+  # ---------------------------------------------------------------------------
+  install_scan_tools:
+    needs: build_info
+    if: ${{ inputs.wheel_build == 'true' }}
+    runs-on: ubuntu-24.04-ppc64le-p10
+    steps:
+      - name: Install system dependencies
+        run: |
+          sudo apt update -y
+          sudo apt install -y wget curl tar jq
+
+      - name: Install grype
+        run: |
+          GRYPE_VERSION=$(curl -s --retry 3 https://api.github.com/repos/anchore/grype/releases/latest | jq -r '.tag_name')
+          echo "Installing grype $GRYPE_VERSION for ppc64le..."
+          wget --tries=3 https://github.com/anchore/grype/releases/download/$GRYPE_VERSION/grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz
+          tar -xzf grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz
+          mkdir -p scan-tools-bin
+          mv grype scan-tools-bin/grype
+          chmod +x scan-tools-bin/grype
+          echo "Grype version:"
+          scan-tools-bin/grype version
+
+      - name: Archive grype binary
+        run: tar -czf scan-tools-cache.tar.gz scan-tools-bin/
+
+      - name: Upload scan-tools-cache artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: scan-tools-cache
+          path: scan-tools-cache.tar.gz
+
+        
   build:
     needs: build_info
     if: ${{ inputs.validate_build_script == 'true' }}
@@ -182,8 +219,18 @@ jobs:
           path: package-cache.tar.gz
 
           
+  # ---------------------------------------------------------------------------
+  # wheel_build_pyXXX jobs: build wheel → run scancode scan → run grype scan →
+  # upload scan results to COS → upload wheel to COS (only if scans pass).
+  # Grype is reused from the install_scan_tools artifact (static binary).
+  # Scancode is installed fresh per job via git clone; pip download cache
+  # (actions/cache on ~/.cache/pip) makes reinstalls fast after the first run.
+  # ---------------------------------------------------------------------------
+
   wheel_build_py310:
-    needs: build_info
+    needs:
+      - build_info
+      - install_scan_tools
     if: ${{ inputs.wheel_build == 'true' }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     env:
@@ -197,20 +244,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # required for getting all the commits not just the latest commits
+          fetch-depth: 0
 
       - name: Install system dependencies
         run: |
           sudo apt update -y
 
-      - name: Download package-cache from previous step
+      - name: Download package-cache
         uses: actions/download-artifact@v7
         with:
           name: package-cache
 
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-  
+
+      - name: Download scan-tools-cache
+        uses: actions/download-artifact@v7
+        with:
+          name: scan-tools-cache
+
+      - name: Extract scan tools
+        run: |
+          tar -xzf scan-tools-cache.tar.gz
+          echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+
+      - name: Cache pip downloads for scancode-toolkit
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: scancode-pip-ppc64le-v32.4.0
+
       - name: Run build_wheels.sh
         run: |
           ls
@@ -240,7 +303,48 @@ jobs:
           chmod +x ./gha-script/upload-scripts/upload_file.sh
           bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
 
-      - name: Upload wheel artifact using custom script
+      - name: Run scancode scan on wheel
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          echo "-------------------------scancode outputs-----------------------------------------"
+          ls *.json 2>/dev/null || echo "No JSON output files yet"
+
+      - name: Run grype scan on wheel
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
+          chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          echo "-------------------------grype outputs-----------------------------------------"
+          ls *.json 2>/dev/null || echo "No JSON output files yet"
+
+      - name: Collect and upload wheel scan results to COS
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+
+          mkdir -p wheel_scancode_py310
+          find . -maxdepth 1 -type f -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py310/ \;
+          echo "Scancode outputs:"
+          ls -lh wheel_scancode_py310
+
+          tar cvzf wheel_scancode_py310.tar.gz wheel_scancode_py310
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py310.tar.gz
+
+          mkdir -p grype_wheel_py310
+          find . -maxdepth 1 -type f -name "*_grype_output.json" -exec cp {} grype_wheel_py310/ \;
+          echo "Grype outputs:"
+          ls -lh grype_wheel_py310
+
+          tar cvzf grype_wheel_py310.tar.gz grype_wheel_py310
+          bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py310.tar.gz
+
+      - name: Upload wheel to COS
         run: |
           if ls *.whl 1> /dev/null 2>&1; then
             sudo chmod a+r *.whl
@@ -254,7 +358,9 @@ jobs:
           fi
 
   wheel_build_py311:
-    needs: build_info
+    needs:
+      - build_info
+      - install_scan_tools
     if: ${{ inputs.wheel_build == 'true' }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     env:
@@ -268,20 +374,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # required for getting all the commits not just the latest commits
+          fetch-depth: 0
 
       - name: Install system dependencies
         run: |
           sudo apt update -y
 
-      - name: Download package-cache from previous step
+      - name: Download package-cache
         uses: actions/download-artifact@v7
         with:
           name: package-cache
 
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-  
+
+      - name: Download scan-tools-cache
+        uses: actions/download-artifact@v7
+        with:
+          name: scan-tools-cache
+
+      - name: Extract scan tools
+        run: |
+          tar -xzf scan-tools-cache.tar.gz
+          echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+
+      - name: Cache pip downloads for scancode-toolkit
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: scancode-pip-ppc64le-v32.4.0
+
       - name: Run build_wheels.sh
         run: |
           ls
@@ -311,13 +433,11 @@ jobs:
           echo "----- specifically checking for wheel_build_log -----"
           ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
           
-          # ======= HANDLE LOG FILE SAFELY =======
           # Use wheel name for log naming
           WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
           WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
           LOG_NAME="${WHEEL_BASE}_py311_log.gz"
   
-          # Compress and rename the log file
           echo "Found wheel_build_log — compressing it"
           gzip "$WORKSPACE/wheel_build_log"
           mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
@@ -326,8 +446,49 @@ jobs:
           chmod +x ./gha-script/upload-scripts/upload_file.sh
           bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
           ls -lh "$WORKSPACE/$LOG_NAME"
-  
-      - name: Upload wheel artifact using custom script
+
+      - name: Run scancode scan on wheel
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          echo "-------------------------scancode outputs-----------------------------------------"
+          ls *.json 2>/dev/null || echo "No JSON output files yet"
+
+      - name: Run grype scan on wheel
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
+          chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          echo "-------------------------grype outputs-----------------------------------------"
+          ls *.json 2>/dev/null || echo "No JSON output files yet"
+
+      - name: Collect and upload wheel scan results to COS
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+
+          mkdir -p wheel_scancode_py311
+          find . -maxdepth 1 -type f -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py311/ \;
+          echo "Scancode outputs:"
+          ls -lh wheel_scancode_py311
+
+          tar cvzf wheel_scancode_py311.tar.gz wheel_scancode_py311
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py311.tar.gz
+
+          mkdir -p grype_wheel_py311
+          find . -maxdepth 1 -type f -name "*_grype_output.json" -exec cp {} grype_wheel_py311/ \;
+          echo "Grype outputs:"
+          ls -lh grype_wheel_py311
+
+          tar cvzf grype_wheel_py311.tar.gz grype_wheel_py311
+          bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py311.tar.gz
+
+      - name: Upload wheel to COS
         run: |
           if ls *.whl 1> /dev/null 2>&1; then
             sudo chmod a+r *.whl
@@ -341,7 +502,9 @@ jobs:
           fi
 
   wheel_build_py312:
-    needs: build_info
+    needs:
+      - build_info
+      - install_scan_tools
     if: ${{ inputs.wheel_build == 'true' }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     env:
@@ -355,19 +518,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # required for getting all the commits not just the latest commits
+          fetch-depth: 0
 
       - name: Install system dependencies
         run: |
           sudo apt update -y
 
-      - name: Download package-cache from previous step
+      - name: Download package-cache
         uses: actions/download-artifact@v7
         with:
           name: package-cache
-  
+
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
+
+      - name: Download scan-tools-cache
+        uses: actions/download-artifact@v7
+        with:
+          name: scan-tools-cache
+
+      - name: Extract scan tools
+        run: |
+          tar -xzf scan-tools-cache.tar.gz
+          echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+
+      - name: Cache pip downloads for scancode-toolkit
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: scancode-pip-ppc64le-v32.4.0
 
       - name: Run build_wheels.sh
         run: |
@@ -398,13 +577,11 @@ jobs:
           echo "----- specifically checking for wheel_build_log -----"
           ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
         
-          # ======= HANDLE LOG FILE SAFELY =======
           # Use wheel name for log naming
           WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
           WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
           LOG_NAME="${WHEEL_BASE}_py312_log.gz"
 
-          # Compress and rename the log file
           echo "Found wheel_build_log — compressing it"
           gzip "$WORKSPACE/wheel_build_log"
           mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
@@ -413,8 +590,49 @@ jobs:
           chmod +x ./gha-script/upload-scripts/upload_file.sh
           bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
           ls -lh "$WORKSPACE/$LOG_NAME"
-  
-      - name: Upload wheel artifact using custom script
+
+      - name: Run scancode scan on wheel
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          echo "-------------------------scancode outputs-----------------------------------------"
+          ls *.json 2>/dev/null || echo "No JSON output files yet"
+
+      - name: Run grype scan on wheel
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
+          chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          echo "-------------------------grype outputs-----------------------------------------"
+          ls *.json 2>/dev/null || echo "No JSON output files yet"
+
+      - name: Collect and upload wheel scan results to COS
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+
+          mkdir -p wheel_scancode_py312
+          find . -maxdepth 1 -type f -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py312/ \;
+          echo "Scancode outputs:"
+          ls -lh wheel_scancode_py312
+
+          tar cvzf wheel_scancode_py312.tar.gz wheel_scancode_py312
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py312.tar.gz
+
+          mkdir -p grype_wheel_py312
+          find . -maxdepth 1 -type f -name "*_grype_output.json" -exec cp {} grype_wheel_py312/ \;
+          echo "Grype outputs:"
+          ls -lh grype_wheel_py312
+
+          tar cvzf grype_wheel_py312.tar.gz grype_wheel_py312
+          bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py312.tar.gz
+
+      - name: Upload wheel to COS
         run: |
           if ls *.whl 1> /dev/null 2>&1; then
             sudo chmod a+r *.whl
@@ -428,35 +646,53 @@ jobs:
           fi
   
   wheel_build_py313:
-   needs: build_info
-   if: ${{ inputs.wheel_build == 'true' }}
-   runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
-   continue-on-error: true
-   env:
+    needs:
+      - build_info
+      - install_scan_tools
+    if: ${{ inputs.wheel_build == 'true' }}
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
+    continue-on-error: true
+    env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
       GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
       PYTHON_VERSION: "3.13"
       PACKAGE_NAME: ${{ inputs.package_name }}
       VERSION: ${{ inputs.version }}
       
-   steps:
+    steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # required for getting all the commits not just the latest commits
+          fetch-depth: 0
 
       - name: Install system dependencies
         run: |
           sudo apt update -y
   
-      - name: Download package-cache from previous step
+      - name: Download package-cache
         uses: actions/download-artifact@v7
         with:
           name: package-cache
 
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-  
+
+      - name: Download scan-tools-cache
+        uses: actions/download-artifact@v7
+        with:
+          name: scan-tools-cache
+
+      - name: Extract scan tools
+        run: |
+          tar -xzf scan-tools-cache.tar.gz
+          echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+
+      - name: Cache pip downloads for scancode-toolkit
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: scancode-pip-ppc64le-v32.4.0
+
       - name: Run build_wheels.sh
         run: |
           ls
@@ -486,13 +722,11 @@ jobs:
           echo "----- specifically checking for wheel_build_log -----"
           ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
           
-          # ======= HANDLE LOG FILE SAFELY =======
           # Use wheel name for log naming
           WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
           WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
           LOG_NAME="${WHEEL_BASE}_py313_log.gz"
   
-          # Compress and rename the log file
           echo "Found wheel_build_log — compressing it"
           gzip "$WORKSPACE/wheel_build_log"
           mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
@@ -501,8 +735,49 @@ jobs:
           chmod +x ./gha-script/upload-scripts/upload_file.sh
           bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
           ls -lh "$WORKSPACE/$LOG_NAME"
-  
-      - name: Upload wheel artifact using custom script
+
+      - name: Run scancode scan on wheel
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          echo "-------------------------scancode outputs-----------------------------------------"
+          ls *.json 2>/dev/null || echo "No JSON output files yet"
+
+      - name: Run grype scan on wheel
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
+          chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          echo "-------------------------grype outputs-----------------------------------------"
+          ls *.json 2>/dev/null || echo "No JSON output files yet"
+
+      - name: Collect and upload wheel scan results to COS
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+
+          mkdir -p wheel_scancode_py313
+          find . -maxdepth 1 -type f -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py313/ \;
+          echo "Scancode outputs:"
+          ls -lh wheel_scancode_py313
+
+          tar cvzf wheel_scancode_py313.tar.gz wheel_scancode_py313
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py313.tar.gz
+
+          mkdir -p grype_wheel_py313
+          find . -maxdepth 1 -type f -name "*_grype_output.json" -exec cp {} grype_wheel_py313/ \;
+          echo "Grype outputs:"
+          ls -lh grype_wheel_py313
+
+          tar cvzf grype_wheel_py313.tar.gz grype_wheel_py313
+          bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py313.tar.gz
+
+      - name: Upload wheel to COS
         run: |
           if ls *.whl 1> /dev/null 2>&1; then
             sudo chmod a+r *.whl
@@ -516,35 +791,53 @@ jobs:
           fi
 
   wheel_build_py314:
-   needs: build_info
-   if: ${{ inputs.wheel_build == 'true' }}
-   runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
-   continue-on-error: true
-   env:
+    needs:
+      - build_info
+      - install_scan_tools
+    if: ${{ inputs.wheel_build == 'true' }}
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
+    continue-on-error: true
+    env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
       GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
       PYTHON_VERSION: "3.14"
       PACKAGE_NAME: ${{ inputs.package_name }}
       VERSION: ${{ inputs.version }}
       
-   steps:
+    steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # required for getting all the commits not just the latest commits
+          fetch-depth: 0
 
       - name: Install system dependencies
         run: |
           sudo apt update -y
   
-      - name: Download package-cache from previous step
+      - name: Download package-cache
         uses: actions/download-artifact@v7
         with:
           name: package-cache
 
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-  
+
+      - name: Download scan-tools-cache
+        uses: actions/download-artifact@v7
+        with:
+          name: scan-tools-cache
+
+      - name: Extract scan tools
+        run: |
+          tar -xzf scan-tools-cache.tar.gz
+          echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+
+      - name: Cache pip downloads for scancode-toolkit
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: scancode-pip-ppc64le-v32.4.0
+
       - name: Run build_wheels.sh
         run: |
           ls
@@ -574,13 +867,11 @@ jobs:
           echo "----- specifically checking for wheel_build_log -----"
           ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
           
-          # ======= HANDLE LOG FILE SAFELY =======
           # Use wheel name for log naming
           WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
           WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
           LOG_NAME="${WHEEL_BASE}_py314_log.gz"
   
-          # Compress and rename the log file
           echo "Found wheel_build_log — compressing it"
           gzip "$WORKSPACE/wheel_build_log"
           mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
@@ -589,8 +880,49 @@ jobs:
           chmod +x ./gha-script/upload-scripts/upload_file.sh
           bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
           ls -lh "$WORKSPACE/$LOG_NAME"
-  
-      - name: Upload wheel artifact using custom script
+
+      - name: Run scancode scan on wheel
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          echo "-------------------------scancode outputs-----------------------------------------"
+          ls *.json 2>/dev/null || echo "No JSON output files yet"
+
+      - name: Run grype scan on wheel
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
+          chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          echo "-------------------------grype outputs-----------------------------------------"
+          ls *.json 2>/dev/null || echo "No JSON output files yet"
+
+      - name: Collect and upload wheel scan results to COS
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+
+          mkdir -p wheel_scancode_py314
+          find . -maxdepth 1 -type f -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py314/ \;
+          echo "Scancode outputs:"
+          ls -lh wheel_scancode_py314
+
+          tar cvzf wheel_scancode_py314.tar.gz wheel_scancode_py314
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py314.tar.gz
+
+          mkdir -p grype_wheel_py314
+          find . -maxdepth 1 -type f -name "*_grype_output.json" -exec cp {} grype_wheel_py314/ \;
+          echo "Grype outputs:"
+          ls -lh grype_wheel_py314
+
+          tar cvzf grype_wheel_py314.tar.gz grype_wheel_py314
+          bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py314.tar.gz
+
+      - name: Upload wheel to COS
         run: |
           if ls *.whl 1> /dev/null 2>&1; then
             sudo chmod a+r *.whl
@@ -601,118 +933,71 @@ jobs:
           else
             echo "No wheel file found!"
             exit 1
-          fi  
+          fi
 
-  wheel_licenses:
-    if: ${{ always() && inputs.wheel_build == 'true' }}
+  # ---------------------------------------------------------------------------
+  # wheel_license_extract: Runs after all wheel builds complete. Downloads the
+  # per-Python-version scancode JSON files from COS (uploaded by each
+  # wheel_build_pyXXX job) and runs extract_licenses.py against each one to
+  # produce a comma-separated list of SPDX license identifiers.
+  # ---------------------------------------------------------------------------
+  wheel_license_extract:
+    if: ${{ inputs.wheel_build == 'true' && (needs.wheel_build_py310.result == 'success' || needs.wheel_build_py311.result == 'success' || needs.wheel_build_py312.result == 'success' || needs.wheel_build_py313.result == 'success' || needs.wheel_build_py314.result == 'success') }}
     needs:
-    - wheel_build_py310
-    - wheel_build_py311
-    - wheel_build_py312
-    - wheel_build_py313
-    - wheel_build_py314
+      - wheel_build_py310
+      - wheel_build_py311
+      - wheel_build_py312
+      - wheel_build_py313
+      - wheel_build_py314
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v6
 
       - name: Download package-cache
         uses: actions/download-artifact@v7
         with:
           name: package-cache
-          
+
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-            
-      - name: Downloading Wheels and Running Scancode Scanner
-        env: 
-            GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-        run: | 
-            source package-cache/variable.sh
-            source package-cache/scanner-env.sh
-            chmod +x ./gha-script/download-scripts/download_wheels.sh
-            bash ./gha-script/download-scripts/download_wheels.sh
-            echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
-            ls package-cache/wheels
-            echo "------------------------------------------------------------------"
-            chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
-            bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
-            echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
-            ls package-cache/wheels
-            echo "------------------------------------------------------------------"
-         
-      - name: Collect wheel scan outputs
-        run: |
-          mkdir -p wheel_scancode
-          echo "Looking for *_output.json files in package-cache/wheels/"
-          find package-cache/wheels -type f -name "*_output.json" -exec mv {} wheel_scancode/ \;
-          echo "Contents to be zipped:"
-          ls -lh wheel_scancode
 
-      - name: Upload Wheel Scanner Results
+      - name: Download scancode JSON outputs from COS
         env:
-            GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
-            source package-cache/variable.sh
-            source package-cache/scanner-env.sh
-            tar cvzf wheel_scanner.tar.gz wheel_scancode
-            chmod +x ./gha-script/upload-scripts/upload_file.sh
-            bash ./gha-script/upload-scripts/upload_file.sh wheel_scanner.tar.gz
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
 
-  wheel_scanner:
-    if: ${{ always() && inputs.wheel_build == 'true' }}
-    needs:
-    - wheel_build_py310
-    - wheel_build_py311
-    - wheel_build_py312
-    - wheel_build_py313
-    - wheel_build_py314
-    runs-on: ubuntu-24.04-ppc64le-p10
-    steps:
-      - uses: actions/checkout@v6
+          echo "Downloading per-version scancode archives from COS..."
+          mkdir -p all_wheel_scancode
 
-      - name: Download package-cache
-        uses: actions/download-artifact@v7
-        with:
-          name: package-cache
-          
-      - name: Extract package cache
-        run: tar -xzf package-cache.tar.gz
-           
-      - name: Downloading Wheels and Running Scancode Scanner
-        env: 
-            GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-        run: | 
-            source package-cache/variable.sh
-            source package-cache/scanner-env.sh
-            chmod +x ./gha-script/download-scripts/download_wheels.sh
-            bash ./gha-script/download-scripts/download_wheels.sh
-            echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
-            ls package-cache/wheels
-            echo "------------------------------------------------------------------"
-            chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
-            bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
-            echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
-            ls package-cache/wheels
-            echo "------------------------------------------------------------------"
+          chmod +x ./gha-script/download-scripts/download_file.sh
+          for PY_VER in py310 py311 py312 py313 py314; do
+            ARCHIVE="wheel_scancode_${PY_VER}.tar.gz"
+            echo "Attempting to download $ARCHIVE..."
+            bash ./gha-script/download-scripts/download_file.sh "$ARCHIVE" \
+              || echo "Warning: $ARCHIVE not found on COS (skipped)"
+            if [ -f "$ARCHIVE" ]; then
+              tar -xzf "$ARCHIVE"
+              find "wheel_scancode_${PY_VER}" -type f -name "*.json" \
+                -exec cp {} all_wheel_scancode/ \; 2>/dev/null || true
+              echo "Collected JSON files from $ARCHIVE"
+            fi
+          done
 
-      - name: Collect grype wheel scan outputs
+          echo "All scancode JSON files available:"
+          ls -lh all_wheel_scancode
+
+      - name: Extract licenses from each scancode JSON
         run: |
-          mkdir -p grype_wheel_scan
-          echo "Looking for *_output.json files in package-cache/wheels/"
-          find package-cache/wheels -type f -name "*_output.json" -exec mv {} grype_wheel_scan/ \;
-          echo "Contents to be zipped:"
-          ls -lh grype_wheel_scan
-
-     
-      - name: Upload grype wheel Scanner Results
-        env:
-            GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-        run: |
-            source package-cache/variable.sh
-            source package-cache/scanner-env.sh
-            tar cvzf grype_wheel_scanner.tar.gz grype_wheel_scan
-            chmod +x ./gha-script/upload-scripts/upload_file.sh
-            bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_scanner.tar.gz
+          echo "===== License extraction per wheel ====="
+          for JSON_FILE in all_wheel_scancode/*.json; do
+            [ -f "$JSON_FILE" ] || { echo "No JSON files found — skipping."; break; }
+            echo "--- $JSON_FILE ---"
+            python3 ./gha-script/licenses_extract_script.py "$JSON_FILE"
+          done
+          echo "========================================"
 
   
   source_scanner:
@@ -913,6 +1198,7 @@ jobs:
         - wheel_build_py312 
         - wheel_build_py313
         - wheel_build_py314
+        - wheel_license_extract
 
       if: |
         always() &&
