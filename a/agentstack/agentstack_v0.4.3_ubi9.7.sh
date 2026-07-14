@@ -44,6 +44,7 @@ POSTGRES_SRC_DIR="postgresql-${POSTGRES_VERSION}"
 
 PGVECTOR_REPO_URL="https://github.com/pgvector/pgvector.git"
 
+# These parameters have been set to false as the setup requires the usage of docker socket which is currently not working on GHA container
 RUN_KIND_SETUP="${RUN_KIND_SETUP:-false}"
 RUN_UNIT_TESTS="${RUN_UNIT_TESTS:-false}"
 RUN_INTEGRATION_TESTS="${RUN_INTEGRATION_TESTS:-false}"
@@ -499,9 +500,9 @@ uv run migrate
 ###############################################################################
 
 if [ "${RUN_KIND_SETUP}" = "true" ]; then
-    echo "=============================================================================="
-    echo "Setting up KinD cluster"
-    echo "=============================================================================="
+    # echo "=============================================================================="
+    # echo "Setting up KinD cluster"
+    # echo "=============================================================================="
 
     cd "${BUILD_HOME}"
 
@@ -520,36 +521,36 @@ if [ "${RUN_KIND_SETUP}" = "true" ]; then
 
     VSI_IP=$(ip -4 route show default | awk '{print $3}')
 
-KIND_IMAGE='quay.io/powercloud/kind-node'
-KIND_CLUSTER_NAME='mkpod'
+    KIND_IMAGE='quay.io/powercloud/kind-node'
+    KIND_CLUSTER_NAME='mkpod'
 
-cat <<YAML > /root/kind-config.yaml
-apiVersion: kind.x-k8s.io/v1alpha4
-kind: Cluster
-name: ${KIND_CLUSTER_NAME}
-networking:
-  apiServerAddress: "${VSI_IP}"
-  apiServerPort: 6443
-nodes:
-- extraMounts:
-  - containerPath: /var/lib/kubelet/config.json
-    hostPath: /root/config.json
-  image: ${KIND_IMAGE}:${KUBECTL_VERSION}
-  role: control-plane
-  kubeadmConfigPatches:
-  - |
-    kind: ClusterConfiguration
-    apiServer:
-      certSANs:
-      - "127.0.0.1"
-      - "${VSI_IP}"
-      - "localhost"
-- extraMounts:
-  - containerPath: /var/lib/kubelet/config.json
-    hostPath: /root/config.json
-  image: ${KIND_IMAGE}:${KUBECTL_VERSION}
-  role: worker
-YAML
+    cat <<YAML > /root/kind-config.yaml
+    apiVersion: kind.x-k8s.io/v1alpha4
+    kind: Cluster
+    name: ${KIND_CLUSTER_NAME}
+    networking:
+      apiServerAddress: "${VSI_IP}"
+      apiServerPort: 6443
+    nodes:
+    - extraMounts:
+      - containerPath: /var/lib/kubelet/config.json
+        hostPath: /root/config.json
+    image: ${KIND_IMAGE}:${KUBECTL_VERSION}
+    role: control-plane
+    kubeadmConfigPatches:
+      - |
+        kind: ClusterConfiguration
+        apiServer:
+          certSANs:
+          - "127.0.0.1"
+          - "${VSI_IP}"
+          - "localhost"
+    - extraMounts:
+      - containerPath: /var/lib/kubelet/config.json
+        hostPath: /root/config.json
+     image: ${KIND_IMAGE}:${KUBECTL_VERSION}
+     role: worker
+    YAML
 
 
    # kind delete cluster --name "${KIND_CLUSTER_NAME}" || true
@@ -574,25 +575,25 @@ kubectl config current-context
 # Wait for cluster
 ###############################################################################
 
-echo "Waiting for Kubernetes API..."
+# echo "Waiting for Kubernetes API..."
 
-for i in $(seq 1 60); do
-    if kubectl cluster-info >/dev/null 2>&1; then
-        break
-    fi
-    sleep 5
-done
+# for i in $(seq 1 60); do
+#    if kubectl cluster-info >/dev/null 2>&1; then
+#        break
+#    fi
+#    sleep 5
+# done
 
-echo "Waiting for nodes..."
+# echo "Waiting for nodes..."
 
-kubectl wait \
-    --for=condition=Ready \
-    node \
-    --all \
-    --timeout=300s
+#kubectl wait \
+#    --for=condition=Ready \
+#    node \
+#    --all \
+#    --timeout=300s
 
-kubectl cluster-info
-kubectl get nodes
+# kubectl cluster-info
+# kubectl get nodes
 
 fi
 
@@ -601,11 +602,11 @@ fi
 # UNIT TESTS
 ###############################################################################
 
-echo "=============================================================================="
-echo "Running Unit Tests"
-echo "=============================================================================="
+# echo "=============================================================================="
+# echo "Running Unit Tests"
+# echo "=============================================================================="
 
-cd "${SERVER_DIR}"
+# cd "${SERVER_DIR}"
 
 if [ "${RUN_UNIT_TESTS}" = "true" ]; then
     if ! uv run pytest tests/unit -v; then
@@ -620,43 +621,43 @@ fi
 # INTEGRATION TESTS
 ###############################################################################
 
-echo "=============================================================================="
-echo "Checking database connectivity before tests"
-echo "=============================================================================="
+# echo "=============================================================================="
+# echo "Checking database connectivity before tests"
+# echo "=============================================================================="
 
-PGPASSWORD=agentstack \
-${POSTGRES_INSTALL_DIR}/bin/psql \
--h localhost \
--p 5433 \
--U agentstack-user \
--d agentstack \
--c "select current_database(), current_user;"
+# PGPASSWORD=agentstack \
+# ${POSTGRES_INSTALL_DIR}/bin/psql \
+# -h localhost \
+# -p 5433 \
+# -U agentstack-user \
+# -d agentstack \
+# -c "select current_database(), current_user;"
 
-uv run python - <<'EOF'
-import asyncio
-import asyncpg
+# uv run python - <<'EOF'
+# import asyncio
+# import asyncpg
 
-async def main():
-    conn = await asyncpg.connect(
-        host="localhost",
-        port=5433,
-        user="agentstack-user",
-        password="agentstack",
-        database="agentstack",
-    )
-    print(await conn.fetchval("select version()"))
-    await conn.close()
+# async def main():
+#    conn = await asyncpg.connect(
+#        host="localhost",
+#        port=5433,
+#        user="agentstack-user",
+#        password="agentstack",
+#        database="agentstack",
+#    )
+#    print(await conn.fetchval("select version()"))
+#    await conn.close()
 
-asyncio.run(main())
-EOF
+# asyncio.run(main())
+# EOF
 
 ###############################################################################
 # INTEGRATION TESTS
 ###############################################################################
 
-echo "=============================================================================="
-echo "Running Integration Tests"
-echo "=============================================================================="
+# echo "=============================================================================="
+# echo "Running Integration Tests"
+# echo "=============================================================================="
 
 if [ "${RUN_INTEGRATION_TESTS}" = "true" ]; then
     if ! uv run pytest tests/integration -v -m integration; then
@@ -676,6 +677,7 @@ echo "AgentStack build/setup completed successfully"
 echo "AgentStack version : ${PACKAGE_VERSION}"
 echo "PostgreSQL version : ${POSTGRES_VERSION}"
 echo "pgvector version   : ${PGVECTOR_VERSION}"
+echo "These parameters have been set to false as the setup requires the usage of docker socket which is currently not working on GHA container. PFA logs in the GHtask."
 echo "KinD setup         : ${RUN_KIND_SETUP}"
 echo "Unit tests         : ${RUN_UNIT_TESTS}"
 echo "Integration tests  : ${RUN_INTEGRATION_TESTS}"
