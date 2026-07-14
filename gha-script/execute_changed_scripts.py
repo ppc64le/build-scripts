@@ -131,10 +131,13 @@ def main():
         print(f"   Command: bash gha-script/build_package.sh")
 
         # Execute build_package.sh which will run the script
-        exit_code = os.system('bash gha-script/build_package.sh')
+        raw_exit = os.system('bash gha-script/build_package.sh')
+        # os.system() returns waitpid status — shift right 8 bits to get the real exit code
+        # Without this, exit code 256 wraps to 0 via sys.exit() and the job shows green on failure
+        exit_code = raw_exit >> 8
 
         if exit_code != 0:
-            print(f"\n❌ Script execution failed for {script_path} with exit code {exit_code}")
+            print(f"\n❌ Script execution failed for {script_path} with exit code {exit_code} (raw waitpid: {raw_exit})")
             return exit_code
         else:
             print(f"\n✅ Script execution completed successfully for {script_path}")
