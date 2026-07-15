@@ -28,7 +28,11 @@ OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
 VERSION=${PACKAGE_VERSION#v}
 PYTHON_VERSION=${2:-3.12}
-if [[ "$PACKAGE_VERSION" == "v0.27.0" ]]; then
+if [[ "$PACKAGE_VERSION" == "v0.28.0" ]]; then
+    PYTORCH_VERSION=${3:-v2.13.0}
+elif [[ "$PACKAGE_VERSION" == "v0.27.1" ]]; then
+    PYTORCH_VERSION=${3:-v2.12.1}
+elif [[ "$PACKAGE_VERSION" == "v0.27.0" ]]; then
     PYTORCH_VERSION=${3:-v2.12.0}
 else
     PYTORCH_VERSION=${3:-v2.11.0}
