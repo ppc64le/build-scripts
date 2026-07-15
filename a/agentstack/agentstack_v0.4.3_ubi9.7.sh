@@ -499,62 +499,62 @@ uv run migrate
 # KIND SETUP
 ###############################################################################
 
-if [ "${RUN_KIND_SETUP}" = "true" ]; then
+# if [ "${RUN_KIND_SETUP}" = "true" ]; then
     # echo "=============================================================================="
     # echo "Setting up KinD cluster"
     # echo "=============================================================================="
 
-    cd "${BUILD_HOME}"
+  #  cd "${BUILD_HOME}"
 
-    rm -rf kind
-    git clone https://github.com/kubernetes-sigs/kind.git
-    cd kind
-    make build
-    cp "${BUILD_HOME}/kind/bin/kind" /usr/local/bin/kind
-    chmod +x /usr/local/bin/kind
+   # rm -rf kind
+   # git clone https://github.com/kubernetes-sigs/kind.git
+   # cd kind
+   # make build
+   # cp "${BUILD_HOME}/kind/bin/kind" /usr/local/bin/kind
+   # chmod +x /usr/local/bin/kind
 
-    cd "${BUILD_HOME}"
-    curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/ppc64le/kubectl"
-    chmod +x kubectl
-    mv kubectl /usr/local/bin/
-    kubectl version --client
+   # cd "${BUILD_HOME}"
+   # curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/ppc64le/kubectl"
+   # chmod +x kubectl
+   # mv kubectl /usr/local/bin/
+   # kubectl version --client
 
-    VSI_IP=$(ip -4 route show default | awk '{print $3}')
+   # VSI_IP=$(ip -4 route show default | awk '{print $3}')
 
-    KIND_IMAGE='quay.io/powercloud/kind-node'
-    KIND_CLUSTER_NAME='mkpod'
+   # KIND_IMAGE='quay.io/powercloud/kind-node'
+   # KIND_CLUSTER_NAME='mkpod'
 
-    cat <<YAML > /root/kind-config.yaml
-    apiVersion: kind.x-k8s.io/v1alpha4
-    kind: Cluster
-    name: ${KIND_CLUSTER_NAME}
-    networking:
-      apiServerAddress: "${VSI_IP}"
-      apiServerPort: 6443
-    nodes:
-    - extraMounts:
-      - containerPath: /var/lib/kubelet/config.json
-        hostPath: /root/config.json
-    image: ${KIND_IMAGE}:${KUBECTL_VERSION}
-    role: control-plane
-    kubeadmConfigPatches:
-      - |
-        kind: ClusterConfiguration
-        apiServer:
-          certSANs:
-          - "127.0.0.1"
-          - "${VSI_IP}"
-          - "localhost"
-    - extraMounts:
-      - containerPath: /var/lib/kubelet/config.json
-        hostPath: /root/config.json
-     image: ${KIND_IMAGE}:${KUBECTL_VERSION}
-     role: worker
-    YAML
+   # cat <<YAML > /root/kind-config.yaml
+   # apiVersion: kind.x-k8s.io/v1alpha4
+   # kind: Cluster
+   # name: ${KIND_CLUSTER_NAME}
+   # networking:
+   #  apiServerAddress: "${VSI_IP}"
+   #   apiServerPort: 6443
+   # nodes:
+   # - extraMounts:
+   #  - containerPath: /var/lib/kubelet/config.json
+   #     hostPath: /root/config.json
+   # image: ${KIND_IMAGE}:${KUBECTL_VERSION}
+   # role: control-plane
+   # kubeadmConfigPatches:
+   #   - |
+   #     kind: ClusterConfiguration
+   #    apiServer:
+   #       certSANs:
+   #       - "127.0.0.1"
+   #      - "${VSI_IP}"
+   #        - "localhost"
+   # - extraMounts:
+   #   - containerPath: /var/lib/kubelet/config.json
+   #    hostPath: /root/config.json
+   #  image: ${KIND_IMAGE}:${KUBECTL_VERSION}
+   #  role: worker
+   # YAML
 
 
    # kind delete cluster --name "${KIND_CLUSTER_NAME}" || true
-    kind create cluster --config=/root/kind-config.yaml
+   # kind create cluster --config=/root/kind-config.yaml
 
 ###############################################################################
 # Export kubeconfig
@@ -563,13 +563,13 @@ if [ "${RUN_KIND_SETUP}" = "true" ]; then
 mkdir -p "$HOME/.agentstack/docker/agentstack-local-test/copied-from-guest"
 export KUBECONFIG="$HOME/.agentstack/docker/agentstack-local-test/copied-from-guest/kubeconfig.yaml"
 
-kind get kubeconfig --name "${KIND_CLUSTER_NAME}" > "$KUBECONFIG"
-kubectl config use-context "kind-${KIND_CLUSTER_NAME}"
+# kind get kubeconfig --name "${KIND_CLUSTER_NAME}" > "$KUBECONFIG"
+# kubectl config use-context "kind-${KIND_CLUSTER_NAME}"
 
-echo "Using kubeconfig:"
-echo "$KUBECONFIG"
+# echo "Using kubeconfig:"
+# echo "$KUBECONFIG"
 
-kubectl config current-context
+# kubectl config current-context
 
 ###############################################################################
 # Wait for cluster
@@ -595,7 +595,7 @@ kubectl config current-context
 # kubectl cluster-info
 # kubectl get nodes
 
-fi
+# fi
 
 
 ###############################################################################
