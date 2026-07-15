@@ -44,12 +44,12 @@ OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 # -----------------------------------------------------------------------------
 # Python tooling
 # opencv-python-headless pyproject.toml requires setuptools==59.2.0 for
-# Python <= 3.10; newer Pythons are compatible with setuptools<70.
+# Python <= 3.11; newer Pythons are compatible with setuptools<70.
 # pip and wheel are upgraded first so the pin only affects setuptools.
 # -----------------------------------------------------------------------------
 python3.12 -m pip install --upgrade pip wheel
 PYTHON_MINOR=$(python3.12 -c "import sys; print(sys.version_info.minor)")
-if [ "$PYTHON_MINOR" -le 10 ]; then
+if [ "$PYTHON_MINOR" -le 11 ]; then
     python3.12 -m pip install --no-cache-dir "setuptools==59.2.0"
 else
     python3.12 -m pip install --no-cache-dir "setuptools<70.0.0"
@@ -60,12 +60,20 @@ fi
 # -----------------------------------------------------------------------------
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 
+if [ "$PYTHON_MINOR" -ge 14 ]; then
+    NUMPY_VERSION="2.3.2"
+elif [ "$PYTHON_MINOR" -ge 13 ]; then
+    NUMPY_VERSION="2.1.3"
+else
+    NUMPY_VERSION="2.0.2"
+fi
+
 python3.12 -m pip install \
   --prefer-binary \
   --trusted-host wheels.developerfirst.ibm.com \
   --extra-index-url ${IBM_WHEELS} \
   openblas==0.3.29 \
-  numpy==2.0.2
+  numpy==${NUMPY_VERSION}
 
 python3.12 -m pip install cython pytest scikit-build build wheel cmake
 
