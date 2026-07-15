@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-v2.14.1}
 PACKAGE_URL=https://github.com/pydata/numexpr.git
 
 # Install dependencies
-dnf install -y git gcc gcc-c++ make wget openssl-devel \
+dnf install -y git python3.12 gcc gcc-c++ make wget openssl-devel \
     python3.12-devel python3.12-pip bzip2-devel libffi-devel \
     wget xz zlib-devel cmake openblas-devel
 
