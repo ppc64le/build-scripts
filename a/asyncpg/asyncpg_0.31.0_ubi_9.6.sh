@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/MagicStack/asyncpg
 PACKAGE_DIR=asyncpg
 
 # Install dependencies
-dnf install -y git python3.12 python3.12-pip python3.12-setuptools python3.12-devel.ppc64le gcc-toolset-13 make wget sudo cmake
+dnf install -y git python3.12 python3.12-pip python3.12-setuptools python3.12-devel gcc-toolset-13 make wget sudo cmake
 python3.12 -m pip install pytest tox nox
 
 export PATH=$PATH:/usr/local/bin/
