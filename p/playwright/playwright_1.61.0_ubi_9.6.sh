@@ -46,7 +46,7 @@ git submodule update --init --depth 1
 # Find where patch is stored
 PATCH_PATH=$(find "${SOURCE_ROOT}" -name "${PATCH_NAME}.patch" | head -1)
 if [ -z "${PATCH_PATH}" ]; then
-    echo "ERROR: patch not found after build"
+    echo "ERROR: patch not found"
     exit 1
 fi
 echo "Patch: ${PATCH_PATH}"
