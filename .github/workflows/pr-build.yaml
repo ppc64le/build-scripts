@@ -29,7 +29,7 @@ run-name: >
 jobs:
 
   check_changes:
-    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
+    runs-on: ubuntu-latest
     outputs:
       should_build: ${{ steps.filter.outputs.should_build }}
       changed_files: ${{ steps.filter.outputs.changed_files }}
@@ -39,9 +39,6 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Fix workspace permissions
-        run: sudo chown -R $USER:$USER .
 
       - name: Check for relevant file changes
         id: filter
@@ -192,6 +189,15 @@ jobs:
       - name: Set job control flags
         id: set_flags
         run: |
+          if [ -z "$BUILD_INFO_FILE" ]; then
+            echo "❌ BUILD_INFO_FILE is not set — cannot determine job control flags"
+            exit 1
+          fi
+          if [ ! -f "$BUILD_INFO_FILE" ]; then
+            echo "❌ BUILD_INFO_FILE does not exist: $BUILD_INFO_FILE"
+            exit 1
+          fi
+
           PACKAGE_DIR=$(jq -r '.package_dir // ""' $BUILD_INFO_FILE)
           # Strip trailing slash if present — prevents double-slash in regex (e.g. "m/multidict/" → "m/multidict")
           PACKAGE_DIR="${PACKAGE_DIR%/}"
@@ -316,7 +322,7 @@ jobs:
           sudo chown -R $USER:$USER .
           echo "------------------- Executing changed scripts -----------------------------"
           chmod +x ./gha-script/execute_changed_scripts.py
-          python3 ./gha-script/execute_changed_scripts.py
+          python3 -u ./gha-script/execute_changed_scripts.py
 
 # ===================== WHEEL JOBS =====================
 
