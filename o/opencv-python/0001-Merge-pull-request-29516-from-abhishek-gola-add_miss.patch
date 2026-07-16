@@ -1,0 +1,609 @@
+From 42f41f749ae6aee85cc0c59608baafe98afc06d1 Mon Sep 17 00:00:00 2001
+From: Abhishek Gola <abhishek.gola@bigvisionllc.com>
+Date: Tue, 14 Jul 2026 13:15:06 +0530
+Subject: [PATCH] Merge pull request #29516 from
+ abhishek-gola:add_missing_mlas_support
+
+3rdparty(mlas): add missing power (ppc64le) kernel headers #29516
+
+Closes: https://github.com/opencv/opencv/issues/29465
+
+### Pull Request Readiness Checklist
+
+See details at https://github.com/opencv/opencv/wiki/How_to_contribute#making-a-good-pull-request
+
+- [x] I agree to contribute to the project under Apache 2 License.
+- [x] To the best of my knowledge, the proposed patch is not based on a code under GPL or another license that is incompatible with OpenCV
+- [x] The PR is proposed to the proper branch
+- [x] There is a reference to the original bug report and related work
+- [x] There is accuracy test, performance test and test data in opencv_extra repository, if applicable
+      Patch to opencv_extra has the same branch name.
+- [x] The feature is well documented and sample code can be built with the project CMake
+---
+ 3rdparty/mlas/lib/power/FgemmKernelpower.h    | 333 ++++++++++++++++++
+ .../mlas/lib/power/SgemmKernelPOWER10.cpp     |   1 +
+ 3rdparty/mlas/lib/power/SgemmKernelpower.h    | 139 ++++++++
+ 3rdparty/mlas/lib/power/asmmacro.h            |  47 +++
+ modules/imgproc/src/warp_kernels.simd.hpp     |  12 +-
+ 5 files changed, 526 insertions(+), 6 deletions(-)
+ create mode 100644 3rdparty/mlas/lib/power/FgemmKernelpower.h
+ create mode 100644 3rdparty/mlas/lib/power/SgemmKernelpower.h
+ create mode 100644 3rdparty/mlas/lib/power/asmmacro.h
+
+diff --git a/3rdparty/mlas/lib/power/FgemmKernelpower.h b/3rdparty/mlas/lib/power/FgemmKernelpower.h
+new file mode 100644
+index 0000000000..3746dbc82b
+--- /dev/null
++++ b/3rdparty/mlas/lib/power/FgemmKernelpower.h
+@@ -0,0 +1,333 @@
++/*++
++
++Copyright (c) Microsoft Corporation. All rights reserved.
++
++Licensed under the MIT License.
++
++Module Name:
++
++    FgemmKernelPower.h
++
++Abstract:
++
++    This module implements the kernels for the single/double precision matrix/matrix
++    multiply operation (DGEMM/SGEMM).
++
++--*/
++
++#include "mlasi.h"
++#if defined(SINGLE)
++#define MLAS_FLOATTYPE MLAS_FLOAT32X4
++#define MLAS_GEMMTYPE float 
++#define MLAS_LOAD_FLOAT MlasLoadFloat32x4
++#define MLAS_ZERO_FLOAT MlasZeroFloat32x4
++#define MLAS_STORE_FLOAT MlasStoreFloat32x4
++#define MLAS_EXTRACT_FLOAT MlasExtractLaneFloat32x4
++#define MLAS_MUL_FLOAT MlasMultiplyFloat32x4
++#define MLAS_MULADD_FLOAT MlasMultiplyAddFloat32x4
++#define MLAS_BROADCAST_FLOAT MlasBroadcastFloat32x4
++#else
++#define MLAS_FLOATTYPE MLAS_FLOAT64X2
++#define MLAS_GEMMTYPE double
++#define MLAS_LOAD_FLOAT MlasLoadFloat64x2
++#define MLAS_ZERO_FLOAT MlasZeroFloat64x2
++#define MLAS_STORE_FLOAT MlasStoreFloat64x2
++#define MLAS_EXTRACT_FLOAT MlasExtractLaneFloat64x2
++#define MLAS_MUL_FLOAT MlasMultiplyFloat64x2
++#define MLAS_MULADD_FLOAT MlasMultiplyAddFloat64x2
++#define MLAS_BROADCAST_FLOAT MlasBroadcastFloat64x2
++#endif
++//
++// Templates to ensure that a loop is unrolled.
++//
++
++template<size_t Count, size_t Index>
++struct MlasLoopUnrollStep
++{
++    template<typename IterationType, typename... IterationArgs>
++    MLAS_FORCEINLINE
++    static
++    void
++    Step(
++        IterationArgs&&... Arguments
++        )
++    {
++        IterationType::template Iteration<Count, Index>(Arguments...);
++        MlasLoopUnrollStep<Count, Index + 1>::template Step<IterationType>(Arguments...);
++    }
++};
++
++template<size_t Count>
++struct MlasLoopUnrollStep<Count, Count>
++{
++    template<typename IterationType, typename... IterationArgs>
++    MLAS_FORCEINLINE
++    static
++    void
++    Step(
++        IterationArgs&&...
++        )
++    {
++        // Terminate the loop.
++    }
++};
++
++template<size_t Count, typename IteratorType>
++struct MlasLoopUnroll
++{
++    template<typename... IterationArgs>
++    MLAS_FORCEINLINE
++    void
++    operator()(
++        IterationArgs&&... Arguments
++        )
++    {
++        MlasLoopUnrollStep<Count, 0>::template Step<IteratorType>(Arguments...);
++    }
++};
++
++//
++// Templates used with loop unrolling to perform an action on one row of the
++// output.
++//
++
++struct MlasFgemmZeroAccumulators
++{
++    template<size_t RowCount, size_t Row>
++    MLAS_FORCEINLINE
++    static
++    void
++    Iteration(
++        MLAS_FLOATTYPE Accumulators[RowCount][4]
++        )
++    {
++        Accumulators[Row][0] = MLAS_ZERO_FLOAT();
++        Accumulators[Row][1] = MLAS_ZERO_FLOAT();
++        Accumulators[Row][2] = MLAS_ZERO_FLOAT();
++        Accumulators[Row][3] = MLAS_ZERO_FLOAT();
++    }
++};
++
++struct MlasFgemmLoadAElements
++{
++    template<size_t RowCount, size_t Row>
++    MLAS_FORCEINLINE
++    static
++    void
++    Iteration(
++        MLAS_FLOATTYPE AElements[RowCount],
++        const MLAS_GEMMTYPE* A,
++        size_t lda
++        )
++    {
++        AElements[Row] = MLAS_LOAD_FLOAT(A + Row * lda);
++    }
++};
++
++struct MlasFgemmBroadcastAElements
++{
++    template<size_t RowCount, size_t Row>
++    MLAS_FORCEINLINE
++    static
++    void
++    Iteration(
++        MLAS_FLOATTYPE ABroadcast[RowCount],
++        const MLAS_GEMMTYPE* A,
++        size_t lda
++        )
++    {
++        ABroadcast[Row] = MLAS_BROADCAST_FLOAT(A + Row * lda);
++    }
++};
++
++template<unsigned Lane>
++struct MlasFgemmSplatAElements
++{
++    template<size_t RowCount, size_t Row>
++    MLAS_FORCEINLINE
++    static
++    void
++    Iteration(
++        MLAS_FLOATTYPE AElements[RowCount],
++        MLAS_FLOATTYPE ABroadcast[RowCount]
++        )
++    {
++        ABroadcast[Row] = vec_splat(AElements[Row], Lane);
++    }
++};
++
++struct MlasFgemmMultiplyAddRow
++{
++    template<size_t RowCount, size_t Row>
++    MLAS_FORCEINLINE
++    static
++    void
++    Iteration(
++        MLAS_FLOATTYPE Accumulators[RowCount][4],
++        MLAS_FLOATTYPE ABroadcast[RowCount],
++        MLAS_FLOATTYPE BElements[4]
++        )
++    {
++        Accumulators[Row][0] = MLAS_MULADD_FLOAT(ABroadcast[Row], BElements[0], Accumulators[Row][0]);
++        Accumulators[Row][1] = MLAS_MULADD_FLOAT(ABroadcast[Row], BElements[1], Accumulators[Row][1]);
++        Accumulators[Row][2] = MLAS_MULADD_FLOAT(ABroadcast[Row], BElements[2], Accumulators[Row][2]);
++        Accumulators[Row][3] = MLAS_MULADD_FLOAT(ABroadcast[Row], BElements[3], Accumulators[Row][3]);
++    }
++};
++
++template<size_t RowCount>
++MLAS_FORCEINLINE
++void
++MlasFgemmComputeBlock(
++    MLAS_FLOATTYPE Accumulators[RowCount][4],
++    MLAS_FLOATTYPE ABroadcast[RowCount],
++    const MLAS_GEMMTYPE* B
++    )
++{
++    MLAS_FLOATTYPE BElements[4];
++#if defined(SINGLE)
++    BElements[0] = MLAS_LOAD_FLOAT(B);
++    BElements[1] = MLAS_LOAD_FLOAT(B + 4);
++    BElements[2] = MLAS_LOAD_FLOAT(B + 8);
++    BElements[3] = MLAS_LOAD_FLOAT(B + 12);
++#else
++    BElements[0] = MLAS_LOAD_FLOAT(B);
++    BElements[1] = MLAS_LOAD_FLOAT(B + 2);
++    BElements[2] = MLAS_LOAD_FLOAT(B + 4);
++    BElements[3] = MLAS_LOAD_FLOAT(B + 6);
++#endif
++
++    MlasLoopUnroll<RowCount, MlasFgemmMultiplyAddRow>()(Accumulators, ABroadcast, BElements);
++}
++
++struct MlasFgemmMultiplyAlphaRow
++{
++    template<size_t Count, size_t Index>
++    MLAS_FORCEINLINE
++    static
++    void
++    Iteration(
++        MLAS_FLOATTYPE Accumulators[4],
++        MLAS_FLOATTYPE AlphaBroadcast
++        )
++    {
++        Accumulators[Index] = MLAS_MUL_FLOAT(Accumulators[Index], AlphaBroadcast);
++    }
++};
++
++struct MlasFgemmMultiplyAlphaAddRow
++{
++    template<size_t Count, size_t Index>
++    MLAS_FORCEINLINE
++    static
++    void
++    Iteration(
++        MLAS_FLOATTYPE Accumulators[4],
++        MLAS_FLOATTYPE AlphaBroadcast,
++        const MLAS_GEMMTYPE* C
++        )
++    {
++#if defined(SINGLE)
++        Accumulators[Index] = MLAS_MULADD_FLOAT(Accumulators[Index],
++            AlphaBroadcast, MLAS_LOAD_FLOAT(C + Index * 4));
++#else
++        Accumulators[Index] = MLAS_MULADD_FLOAT(Accumulators[Index],
++            AlphaBroadcast, MLAS_LOAD_FLOAT(C + Index * 2));
++#endif
++    }
++};
++
++struct MlasFgemmStoreRow
++{
++    template<size_t Count, size_t Index>
++    MLAS_FORCEINLINE
++    static
++    void
++    Iteration(
++        MLAS_FLOATTYPE Accumulators[4],
++        MLAS_GEMMTYPE* C
++        )
++    {
++#if defined(SINGLE)
++        MLAS_STORE_FLOAT(C + Index * 4, Accumulators[Index]);
++#else
++        MLAS_STORE_FLOAT(C + Index * 2, Accumulators[Index]);
++#endif
++    }
++};
++
++template<size_t VectorCount>
++struct MlasFgemmStoreVector
++{
++    template<size_t RowCount, size_t Row>
++    MLAS_FORCEINLINE
++    static
++    void
++    Iteration(
++        MLAS_FLOATTYPE Accumulators[RowCount][4],
++        MLAS_GEMMTYPE* C,
++        size_t ldc,
++        MLAS_FLOATTYPE AlphaBroadcast,
++        bool ZeroMode
++        )
++    {
++        MLAS_GEMMTYPE* c = C + Row * ldc;
++
++        if (ZeroMode) {
++            MlasLoopUnroll<VectorCount, MlasFgemmMultiplyAlphaRow>()(Accumulators[Row], AlphaBroadcast);
++        } else {
++            MlasLoopUnroll<VectorCount, MlasFgemmMultiplyAlphaAddRow>()(Accumulators[Row], AlphaBroadcast, c);
++        }
++
++        MlasLoopUnroll<VectorCount, MlasFgemmStoreRow>()(Accumulators[Row], c);
++
++        //
++        // Shift down any unaligned elements to the bottom for further processing.
++        //
++
++        if (VectorCount < 4) {
++            Accumulators[Row][0] = Accumulators[Row][VectorCount];
++        }
++    }
++};
++
++struct MlasFgemmMultiplyAlphaTrailing
++{
++    template<size_t RowCount, size_t Row>
++    MLAS_FORCEINLINE
++    static
++    void
++    Iteration(
++        MLAS_FLOATTYPE Accumulators[RowCount][4],
++        MLAS_FLOATTYPE AlphaBroadcast
++        )
++    {
++        Accumulators[Row][0] = MLAS_MUL_FLOAT(Accumulators[Row][0], AlphaBroadcast);
++    }
++};
++
++template<unsigned Lane>
++struct MlasFgemmStoreScalar
++{
++    template<size_t RowCount, size_t Row>
++    MLAS_FORCEINLINE
++    static
++    void
++    Iteration(
++        MLAS_FLOATTYPE Accumulators[RowCount][4],
++        MLAS_GEMMTYPE* C,
++        size_t ldc,
++        bool ZeroMode
++        )
++    {
++        MLAS_GEMMTYPE* c = C + Row * ldc + Lane;
++        MLAS_GEMMTYPE Value = MLAS_EXTRACT_FLOAT<Lane>(Accumulators[Row][0]);
++
++        if (!ZeroMode) {
++            Value += *c;
++        }
++
++        *c = Value;
++    }
++};
++
+diff --git a/3rdparty/mlas/lib/power/SgemmKernelPOWER10.cpp b/3rdparty/mlas/lib/power/SgemmKernelPOWER10.cpp
+index 9ecfa3d984..cadc694f4e 100644
+--- a/3rdparty/mlas/lib/power/SgemmKernelPOWER10.cpp
++++ b/3rdparty/mlas/lib/power/SgemmKernelPOWER10.cpp
+@@ -19,6 +19,7 @@ Abstract:
+     asm volatile("dcbt 0, %0" ::"r"(addr) : "memory");
+ 
+ #include "SgemmKernelpower.h"
++#include <cstring>  // memset; OpenCV's vendored mlasi.h subset does not pull in <cstring>
+ extern "C" void
+ PackAKernelPOWER10(__vector float* D, const float* A, size_t lda, size_t k, size_t RowCount);
+ struct MlasSgemmBroadcastAElementsMMA
+diff --git a/3rdparty/mlas/lib/power/SgemmKernelpower.h b/3rdparty/mlas/lib/power/SgemmKernelpower.h
+new file mode 100644
+index 0000000000..53be544bdb
+--- /dev/null
++++ b/3rdparty/mlas/lib/power/SgemmKernelpower.h
+@@ -0,0 +1,139 @@
++/*++
++
++Copyright (c) Microsoft Corporation. All rights reserved.
++
++Licensed under the MIT License.
++
++Module Name:
++
++    SgemmKernelpower.h
++
++Abstract:
++
++    This module implements the kernels for the single precision matrix/matrix
++    multiply operation (SGEMM).
++
++--*/
++
++#include "FgemmKernelpower.h"
++
++template<size_t RowCount>
++MLAS_FORCEINLINE
++size_t
++MlasSgemmProcessCount(
++    const float* A,
++    const float* B,
++    float* C,
++    size_t CountK,
++    size_t CountN,
++    size_t lda,
++    size_t ldc,
++    MLAS_FLOAT32X4 AlphaBroadcast,
++    bool ZeroMode
++    )
++{
++    do {
++
++        const float* a = A;
++        size_t k = CountK;
++
++        MLAS_FLOAT32X4 Accumulators[RowCount][4];
++        MLAS_FLOAT32X4 AElements[RowCount];
++        MLAS_FLOAT32X4 ABroadcast[RowCount];
++
++        //
++        // Clear the block accumulators.
++        //
++
++        MlasLoopUnroll<RowCount, MlasFgemmZeroAccumulators>()(Accumulators);
++
++        //
++        // Compute the output block.
++        //
++
++        while (k >= 4) {
++
++            MlasLoopUnroll<RowCount, MlasFgemmLoadAElements>()(AElements, a, lda);
++
++            MlasLoopUnroll<RowCount, MlasFgemmSplatAElements<0>>()(AElements, ABroadcast);
++            MlasFgemmComputeBlock<RowCount>(Accumulators, ABroadcast, B);
++
++            MlasLoopUnroll<RowCount, MlasFgemmSplatAElements<1>>()(AElements, ABroadcast);
++            MlasFgemmComputeBlock<RowCount>(Accumulators, ABroadcast, B + 16);
++
++            MlasLoopUnroll<RowCount, MlasFgemmSplatAElements<2>>()(AElements, ABroadcast);
++            MlasFgemmComputeBlock<RowCount>(Accumulators, ABroadcast, B + 32);
++
++            MlasLoopUnroll<RowCount, MlasFgemmSplatAElements<3>>()(AElements, ABroadcast);
++            MlasFgemmComputeBlock<RowCount>(Accumulators, ABroadcast, B + 48);
++
++            a += 4;
++            B += 16 * 4;
++            k -= 4;
++        }
++
++        while (k > 0) {
++
++            MlasLoopUnroll<RowCount, MlasFgemmBroadcastAElements>()(ABroadcast, a, lda);
++            MlasFgemmComputeBlock<RowCount>(Accumulators, ABroadcast, B);
++
++            a += 1;
++            B += 16;
++            k -= 1;
++        }
++
++        if (CountN >= 16) {
++
++            //
++            // Store the entire output block.
++            //
++
++            MlasLoopUnroll<RowCount, MlasFgemmStoreVector<4>>()(Accumulators, C, ldc, AlphaBroadcast, ZeroMode);
++
++        } else {
++
++            //
++            // Store the partial output block.
++            //
++
++            if (CountN >= 12) {
++                MlasLoopUnroll<RowCount, MlasFgemmStoreVector<3>>()(Accumulators, C, ldc, AlphaBroadcast, ZeroMode);
++            } else if (CountN >= 8) {
++                MlasLoopUnroll<RowCount, MlasFgemmStoreVector<2>>()(Accumulators, C, ldc, AlphaBroadcast, ZeroMode);
++            } else if (CountN >= 4) {
++                MlasLoopUnroll<RowCount, MlasFgemmStoreVector<1>>()(Accumulators, C, ldc, AlphaBroadcast, ZeroMode);
++            }
++
++            //
++            // Store the remaining unaligned columns.
++            //
++
++            C += (CountN & ~3);
++            CountN &= 3;
++
++            if (CountN > 0) {
++
++                MlasLoopUnroll<RowCount, MlasFgemmMultiplyAlphaTrailing>()(Accumulators, AlphaBroadcast);
++
++                MlasLoopUnroll<RowCount, MlasFgemmStoreScalar<0>>()(Accumulators, C, ldc, ZeroMode);
++
++                if (CountN >= 2) {
++                    MlasLoopUnroll<RowCount, MlasFgemmStoreScalar<1>>()(Accumulators, C, ldc, ZeroMode);
++                }
++
++                if (CountN >= 3) {
++                    MlasLoopUnroll<RowCount, MlasFgemmStoreScalar<2>>()(Accumulators, C, ldc, ZeroMode);
++                }
++            }
++
++            break;
++        }
++
++        C += 16;
++        CountN -= 16;
++
++    } while (CountN > 0);
++
++    return RowCount;
++}
++
+diff --git a/3rdparty/mlas/lib/power/asmmacro.h b/3rdparty/mlas/lib/power/asmmacro.h
+new file mode 100644
+index 0000000000..18b39b5b32
+--- /dev/null
++++ b/3rdparty/mlas/lib/power/asmmacro.h
+@@ -0,0 +1,47 @@
++/*++
++
++Copyright (c) Microsoft Corporation. All rights reserved.
++
++Licensed under the MIT License.
++
++Module Name:
++
++    asmmacro.h
++
++Abstract:
++
++    This module implements common macros for the assembly modules.
++
++--*/
++
++#if defined(__APPLE__)
++#define C_UNDERSCORE(symbol) _##symbol
++#else
++#define C_UNDERSCORE(symbol) symbol
++#endif
++
++/*++
++
++Macro Description:
++
++    This macro emits the assembler directives to annotate a new function.
++
++Arguments:
++
++    FunctionName - Supplies the name of the function.
++
++--*/
++
++        .macro FUNCTION_ENTRY FunctionName
++
++        .p2align 4
++#if defined(__APPLE__)
++        .globl  _\FunctionName\()
++_\FunctionName\():
++#else
++        .globl  \FunctionName\()
++        .type   \FunctionName\(),@function
++\FunctionName\():
++#endif
++
++        .endm
+diff --git a/modules/imgproc/src/warp_kernels.simd.hpp b/modules/imgproc/src/warp_kernels.simd.hpp
+index 4f6679e2fd..bda168095e 100644
+--- a/modules/imgproc/src/warp_kernels.simd.hpp
++++ b/modules/imgproc/src/warp_kernels.simd.hpp
+@@ -24,14 +24,14 @@
+     v_float32 dst_y = vx_setall_f32(float(y));
+ 
+ #define CV_WARP_VECTOR_GET_ADDR_C1() \
+-    v_int32 addr_0 = v_fma(v_srcstep, src_iy0, src_ix0), \
+-            addr_1 = v_fma(v_srcstep, src_iy1, src_ix1);
++    v_int32 addr_0 = v_muladd(v_srcstep, src_iy0, src_ix0), \
++            addr_1 = v_muladd(v_srcstep, src_iy1, src_ix1);
+ #define CV_WARP_VECTOR_GET_ADDR_C3() \
+-    v_int32 addr_0 = v_fma(v_srcstep, src_iy0, v_mul(src_ix0, three)), \
+-            addr_1 = v_fma(v_srcstep, src_iy1, v_mul(src_ix1, three));
++    v_int32 addr_0 = v_muladd(v_srcstep, src_iy0, v_mul(src_ix0, three)), \
++            addr_1 = v_muladd(v_srcstep, src_iy1, v_mul(src_ix1, three));
+ #define CV_WARP_VECTOR_GET_ADDR_C4() \
+-    v_int32 addr_0 = v_fma(v_srcstep, src_iy0, v_mul(src_ix0, four)), \
+-            addr_1 = v_fma(v_srcstep, src_iy1, v_mul(src_ix1, four));
++    v_int32 addr_0 = v_muladd(v_srcstep, src_iy0, v_mul(src_ix0, four)), \
++            addr_1 = v_muladd(v_srcstep, src_iy1, v_mul(src_ix1, four));
+ #define CV_WARP_VECTOR_GET_ADDR(CN) \
+     CV_WARP_VECTOR_GET_ADDR_##CN() \
+     vx_store(addr, addr_0); \
+-- 
+2.51.2
+
