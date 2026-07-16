@@ -96,8 +96,14 @@ python3.12 -m pip install \
     --prefer-binary \
     --trusted-host wheels.developerfirst.ibm.com \
     --extra-index-url ${IBM_WHEELS} \
-    "abseil-cpp==20240116.2" \
     "libprotobuf==4.25.8"
+
+IBM_WHEELS_1="https://wheels.developerfirst.ibm.com/ppc64le/linux-1.0.0/+simple/"
+python3.12 -m pip install \
+    --prefer-binary \
+    --trusted-host wheels.developerfirst.ibm.com \
+    --extra-index-url ${IBM_WHEELS_1} \
+    "abseil-cpp==20240116.2" \
 
 ABSEILCPP_PREFIX=$(python3.12 -c "import sysconfig, os; print(os.path.join(sysconfig.get_path('purelib'), 'abseilcpp'))")
 LIBPROTOBUF_PREFIX=$(python3.12 -c "import sysconfig, os; print(os.path.join(sysconfig.get_path('purelib'), 'libprotobuf'))")
