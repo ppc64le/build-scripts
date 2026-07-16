@@ -72,7 +72,7 @@ python3.12 -m pip install \
   --prefer-binary \
   --trusted-host wheels.developerfirst.ibm.com \
   --extra-index-url ${IBM_WHEELS} \
-  openblas==0.3.29 \
+  openblas==0.3.33 \
   numpy==${NUMPY_VERSION}
 
 python3.12 -m pip install cython pytest scikit-build build wheel cmake
