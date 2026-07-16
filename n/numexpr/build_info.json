@@ -2,7 +2,7 @@
   "maintainer": "Varsha Kumar",
   "package_name": "numexpr",
   "github_url": "https://github.com/pydata/numexpr.git",
-  "version": "v2.14.2",
+  "version": "v2.14.1",
   "wheel_build" : true,
   "package_dir": "n/numexpr",
   "default_branch": "master",
