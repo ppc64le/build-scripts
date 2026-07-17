@@ -26,5 +26,8 @@
   },
   "*": {
     "build_script": "torchaudio_v2.9_ubi_9.3.sh"
+  },
+  "v2.11.*": {
+    "build_script": "torchaudio_v2.9_ubi_9.3.sh"
   }
 }
