@@ -61,7 +61,7 @@ RUN git fetch --all --tags && \
 # Apply patch
 ############################################################
 
-RUN wget -O /tmp/agentstack.patch https://raw.githubusercontent.com/Simran-Sirsat/build-scripts/agentstack/a/agentstack-chat/agentstack_v0.4.3.patch && \
+RUN wget -O /tmp/agentstack.patch https://raw.githubusercontent.com/Simran-Sirsat/build-scripts/agentstack-chat/a/agentstack/agentstack_v0.4.3.patch && \
     git apply /tmp/agentstack.patch
 
 ############################################################
