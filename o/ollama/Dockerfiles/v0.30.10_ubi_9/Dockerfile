@@ -50,7 +50,7 @@ RUN echo "b9692" > LLAMA_CPP_VERSION
 ###############################################################################
 # Build Ollama (CMake)
 ###############################################################################
-RUN cmake -B build -DCMAKE_BUILD_TYPE=Release && \
+RUN cmake -B build -DCMAKE_BUILD_TYPE=Release -DOLLAMA_VERSION=${PACKAGE_VERSION} && \
     cmake --build build -j$(nproc)
 
 ###############################################################################
