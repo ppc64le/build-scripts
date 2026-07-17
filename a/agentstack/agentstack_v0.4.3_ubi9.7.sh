@@ -299,8 +299,7 @@ cd $PACKAGE_NAME
 git checkout "${PACKAGE_VERSION}"
 AGENTSTACK_ROOT="${BUILD_HOME}/agentstack"
 
-wget https://raw.githubusercontent.com/Simran-Sirsat/build-scripts/agentstack/a/agentstack/agentstack_v0.4.3.patch
-#wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/agentstack/agentstack_v0.4.3.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/agentstack/agentstack_v0.4.3.patch
 
 git apply agentstack_v0.4.3.patch
 
