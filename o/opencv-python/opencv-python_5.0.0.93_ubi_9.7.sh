@@ -30,11 +30,30 @@ PACKAGE_DIR=opencv-python
 # -----------------------------------------------------------------------------
 # System dependencies
 # -----------------------------------------------------------------------------
-yum install -y wget gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++
-yum install -y gcc-toolset-13-gcc-gfortran gcc-toolset-13-binutils gcc-toolset-13-binutils-devel
-yum install -y python3.12 python3.12-devel python3.12-pip
-yum install -y git ninja-build make cmake pkgconfig autoconf automake libtool
-yum install -y zlib-devel freetype-devel gmp-devel openssl openssl-devel
+yum install -y \
+    wget \
+    gcc-toolset-13 \
+    gcc-toolset-13-gcc \
+    gcc-toolset-13-gcc-c++ \
+    gcc-toolset-13-gcc-gfortran \
+    gcc-toolset-13-binutils \
+    gcc-toolset-13-binutils-devel \
+    python3.12 \
+    python3.12-devel \
+    python3.12-pip \
+    git \
+    ninja-build \
+    make \
+    cmake \
+    pkgconfig \
+    autoconf \
+    automake \
+    libtool \
+    zlib-devel \
+    freetype-devel \
+    gmp-devel \
+    openssl \
+    openssl-devel
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
