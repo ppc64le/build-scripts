@@ -356,16 +356,27 @@ echo
 echo "=== Post Processing wheel ${wheel_final} with SHA: ${SHA256_VALUE} ==="
 echo
 
+# Save CVE report name before post-processing renames the wheel
+cve_report_old="${wheel_final%.whl}_cve_report.json"
+
 # post processing of wheels (Suffix addition, license addition, metadata addition)
 if python ${POST_PROCESS_SCRIPT_PATH} ${wheel_final} ${SHA256_VALUE}; then
-    echo 
+    echo
     echo "===> SUCCESS: Wheels post process successfully."
     echo
 else
     echo
     echo "===> ERROR: Failed to post process wheels."
     echo
-    exit 1  
+    exit 1
+fi
+
+# Rename CVE report to match the post-processed wheel filename
+wheel_post_processed=(*.whl)
+cve_report_new="${wheel_post_processed[0]%.whl}_cve_report.json"
+if [ -f "$cve_report_old" ] && [ "$cve_report_old" != "$cve_report_new" ]; then
+    mv "$cve_report_old" "$cve_report_new"
+    echo "===> CVE report renamed: $cve_report_old → $cve_report_new"
 fi
 
 echo
