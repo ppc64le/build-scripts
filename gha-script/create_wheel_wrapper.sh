@@ -328,8 +328,9 @@ echo
 # Run CVE scanner — passes wheel + original build script so Lane 3 can parse
 # git clone/checkout lines for source-built lib names and versions.
 # Scanner is non-blocking — failure does not stop the build.
-if [ -f "generalized_wheel_scanner.py" ]; then
-    if python generalized_wheel_scanner.py "${wheel_final}" "${BUILD_SCRIPT_PATH}"; then
+SCANNER_PATH="gha-script/generalized_wheel_scanner.py"
+if [ -f "$SCANNER_PATH" ]; then
+    if python "$SCANNER_PATH" "${wheel_final}" "${BUILD_SCRIPT_PATH}"; then
         echo
         echo "===> CVE scan completed successfully."
         echo
@@ -339,7 +340,7 @@ if [ -f "generalized_wheel_scanner.py" ]; then
         echo
     fi
 else
-    echo "===> WARNING: generalized_wheel_scanner.py not found, skipping CVE scan."
+    echo "===> WARNING: $SCANNER_PATH not found, skipping CVE scan."
 fi
 
 echo
