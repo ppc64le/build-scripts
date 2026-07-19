@@ -245,23 +245,9 @@ echo
 WHEELHOUSE="$CURRENT_DIR/wheelhouse"
 mkdir -p "$WHEELHOUSE"
 
-# Build auditwheel exclusion arguments from build_info.json
-EXCLUDE_ARGS=()
-if [ -n "$AUDITWHEEL_EXCLUDE" ]; then
-  echo "Adding package-specific auditwheel exclusions: $AUDITWHEEL_EXCLUDE"
-  read -ra exclude_libs <<< "$AUDITWHEEL_EXCLUDE"
-  for lib in "${exclude_libs[@]}"; do
-    EXCLUDE_ARGS+=("--exclude" "$lib")
-  done
-else
-  echo "No auditwheel exclusions defined in build_info.json"
-fi
-
-echo "Auditwheel exclusion arguments: ${EXCLUDE_ARGS[*]}"
-
 # run auditwheel
 set +e
-audit_output=$(auditwheel repair "$wheel_file" --wheel-dir "$WHEELHOUSE" "${EXCLUDE_ARGS[@]}" 2>&1)
+audit_output=$(auditwheel repair "$wheel_file" --wheel-dir "$WHEELHOUSE" --exclude libtvm_ffi.so --exclude libtensorflow_framework.so.2 --exclude libpython3.11.so.1.0 --exclude libpython3.10.so.1.0 --exclude libpython3.12.so.1.0 --exclude libpython3.13.so.1.0 --exclude libc10.so --exclude libtorch.so --exclude libtorch_cpu.so --exclude libtorch_python.so --exclude libshm.so --exclude libtorchaudio.so --exclude libtorchtext.so --exclude libavutil-ffmpeg.so.54 --exclude libavformat-ffmpeg.so.56 --exclude libswscale-ffmpeg.so.3 --exclude libavcodec-ffmpeg.so.56 --exclude libavformat.so.57 --exclude libswscale.so.4 --exclude libavutil.so.55 --exclude libswscale.so.5 --exclude libavformat.so.58 2>&1)
 audit_status=$?
 set -e
 
@@ -320,6 +306,27 @@ fi
 
 cd "$CURRENT_DIR"
 wheel_final=(*.whl)
+
+echo
+echo "============== Running CVE scan on: ${wheel_final} =============="
+echo
+
+# Run CVE scanner — passes wheel + original build script so Lane 3 can parse
+# git clone/checkout lines for source-built lib names and versions.
+# Scanner is non-blocking — failure does not stop the build.
+if [ -f "generalized_wheel_scanner.py" ]; then
+    if python generalized_wheel_scanner.py "${wheel_final}" "${BUILD_SCRIPT_PATH}"; then
+        echo
+        echo "===> CVE scan completed successfully."
+        echo
+    else
+        echo
+        echo "===> WARNING: CVE scan failed. Continuing build."
+        echo
+    fi
+else
+    echo "===> WARNING: generalized_wheel_scanner.py not found, skipping CVE scan."
+fi
 
 echo
 echo "============== Generating sha for: ${wheel_final} =============="
