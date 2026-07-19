@@ -24,7 +24,6 @@ PACKAGE_NAME=opencv-python
 PACKAGE_VERSION=${1:-93}
 PACKAGE_URL=https://github.com/opencv/opencv-python
 CURRENT_DIR=$(pwd)
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
 PACKAGE_DIR=opencv-python
 
 # -----------------------------------------------------------------------------
@@ -103,8 +102,10 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 cd opencv
-git apply "$SCRIPT_DIR/0001-Merge-pull-request-29516-from-abhishek-gola-add_miss.patch"
-echo "Applied OpenCV submodule patch successfully"
+# TO-DO : change patch file URL to map to build-script dir - PR - https://github.com/ppc64le/build-scripts/pull/8435
+PATCH_URL="https://raw.githubusercontent.com/irapandey/build-scripts/a596f0fd62212410a0e1de5e4d1e3293f7a319a0/o/opencv-python/0001-Merge-pull-request-29516-from-abhishek-gola-add_miss.patch"
+PATCH_FILE="0001-Merge-pull-request-29516-from-abhishek-gola-add_miss.patch"
+wget -q --spider "$PATCH_URL" && wget -q "$PATCH_URL" && git apply "$PATCH_FILE" || echo "Patch missing, skipped"
 cd ..
 
 # -----------------------------------------------------------------------------
