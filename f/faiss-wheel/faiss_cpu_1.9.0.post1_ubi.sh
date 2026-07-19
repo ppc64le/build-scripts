@@ -31,9 +31,7 @@ dnf install -y epel-release-latest-9.noarch.rpm
 dnf update -y 
 dnf install -y  \
      python3.13 python3.13-devel python3.13-pip \
-     openblas-devel make gcc g++ cmake git automake autoconf #libtool pcre2-devel ninja-build
-     
-#yum install -y https://rpmfind.net/linux/centos-stream/9-stream/AppStream/ppc64le/os/Packages/bison-3.7.4-5.el9.ppc64le.rpm 
+     openblas-devel make gcc g++ cmake git automake autoconf
 
 echo "Upgrading Python tools..."
 python3.13 -m pip install --upgrade setuptools wheel build  uv
