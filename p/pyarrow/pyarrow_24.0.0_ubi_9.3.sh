@@ -817,6 +817,13 @@ fi
 cd python
 python3.11 -m pip cache purge
 python3.11 -m pip install --upgrade pip setuptools wheel
+export PIP_USE_DEPRECATED=legacy-resolver
+
+# Pre-install compatible versions
+python3.11 -m pip install --no-cache-dir \
+    "setuptools>=68.0" \
+    "wheel>=0.43.0" \
+    "packaging" || true
 
 if ! PIP_NO_CACHE_DIR=1 python3.11 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
