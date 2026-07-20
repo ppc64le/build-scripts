@@ -1,0 +1,19 @@
+{
+    "maintainer":"Ethan Choe <ethanchoe@ibm.com>",
+    "package_name" : "clevercsv",
+    "github_url":"https://github.com/alan-turing-institute/CleverCSV",
+    "version": "v0.8.5",
+    "default_branch": "master",
+    "package_dir": "c/clevercsv",
+    "build_script": "clevercsv_v0.8.5_ubi_9.6.sh",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "wheel_build": "true",
+    "v0.8.5": {
+        "build_script": "clevercsv_v0.8.5_ubi_9.6.sh"
+    },
+    "*": {
+    	"build_script": "clevercsv_v0.8.5_ubi_9.6.sh" 
+    } 
+}
