@@ -815,8 +815,10 @@ fi
 
 
 cd python
+python3.11 -m pip cache purge
+python3.11 -m pip install --upgrade pip setuptools wheel
 
-if ! python3.11 -m pip install . ; then
+if ! PIP_NO_CACHE_DIR=1 python3.11 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
