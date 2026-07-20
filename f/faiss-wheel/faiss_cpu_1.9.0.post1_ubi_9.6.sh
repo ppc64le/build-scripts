@@ -23,6 +23,8 @@ PACKAGE_NAME=faiss-cpu
 PACKAGE_DIR=faiss-wheels
 PACKAGE_VERSION=${1:-1.9.0.post1}
 PACKAGE_URL=https://github.com/faiss-wheels/faiss-wheels.git
+SOURCE_ROOT="$(pwd)"
+
 
 
 echo "Installing dependencies..."
@@ -42,7 +44,6 @@ echo -e "\n[tool.uv]\nenvironments = [\"python_version == '3.13'\"]" >> pyprojec
 uv python pin 3.13
 sed -i "s/.version=.*/version='"$PACKAGE_VERSION"',/" third-party/faiss/faiss/python/setup.py
 export INDEX_URL_DEVPY="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple"
-#rm uv.lock; uv version $PACKAGE_VERSION --extra-index-url $INDEX_URL_DEVPY
 sed -i '/^\[project\]/,/^$/ {s/version = "[^"]*"/version = "'"$PACKAGE_VERSION"'"/}' pyproject.toml
 CP=$(python3.13 -c "import sysconfig; print(sysconfig.get_config_var('py_version_nodot'))")
 uv build --wheel --config-setting wheel.py-api=cp$CP --extra-index-url $INDEX_URL_DEVPY
@@ -54,7 +55,13 @@ if ! (python3.13 -m pip install dist/faiss_cpu-$PACKAGE_VERSION-cp$CP-abi3-linux
 fi
 # Run tests
 python3.13 -m pip install  scipy==1.17.0 sentence-transformers  --extra-index-url $INDEX_URL_DEVPY 
-if ! (python3.13 ../app.py); then
+#find test case called app.py
+TEST_PATH=$(find "${SOURCE_ROOT}" -name app.py | head -1)
+if [ -z "${PATCH_PATH}" ]; then
+    echo "ERROR: test case not found"
+    exit 1
+fi
+if ! (python3.13 $TEST_PATH); then
      echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails--------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
