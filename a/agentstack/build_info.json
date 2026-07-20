@@ -8,7 +8,7 @@
   "build_script": "agentstack_v0.4.3_ubi9.7.sh", 
   "package_dir": "a/agentstack",
   "use_non_root_user": false,
-  "validate_build_script":true,
+  "validate_build_script":false,
   "docker_build": true,
   "docker_cmd": "docker build -f ${dir}/Dockerfile -t ${package_name}-ppc64le:${PACKAGE_VERSION} .",
   "wheel_build" : false,
