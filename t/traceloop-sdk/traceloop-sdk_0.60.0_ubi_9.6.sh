@@ -19,11 +19,15 @@
 # ----------------------------------------------------------------------------
 
 # Variables
-PACKAGE_DIR="openllmetry"
+REPO_DIR="openllmetry"
 PACKAGE_NAME="traceloop_sdk"
 PACKAGE_VERSION=${1:-v0.60.0}
 PACKAGE_URL="https://github.com/traceloop/openllmetry.git"
 SOURCE_ROOT="$(pwd)"
+
+# PACKAGE_DIR must point to the actual Python package (contains pyproject.toml)
+# so that the CI wheel-build harness can find it.
+PACKAGE_DIR="${REPO_DIR}/packages/traceloop-sdk"
 
 echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 
@@ -37,15 +41,15 @@ python3.12 -m pip install --upgrade pip build hatchling
 dnf install -y openssl-devel zlib-devel
 GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 \
 GRPC_PYTHON_BUILD_SYSTEM_ZLIB=1 \
-python3.12 -m pip install "grpcio==1.67.1" --no-binary grpci
+python3.12 -m pip install "grpcio==1.67.1" --no-binary grpcio
 
 # Clone and checkout
-rm -rf "$PACKAGE_DIR"
-git clone "$PACKAGE_URL" "$PACKAGE_DIR"
-cd "${PACKAGE_DIR}"
+rm -rf "$REPO_DIR"
+git clone "$PACKAGE_URL" "$REPO_DIR"
+cd "${REPO_DIR}"
 git checkout "$PACKAGE_VERSION"
 
-PACKAGES_DIR="${SOURCE_ROOT}/${PACKAGE_DIR}/packages"
+PACKAGES_DIR="${SOURCE_ROOT}/${REPO_DIR}/packages"
 DIST_DIR="${SOURCE_ROOT}/dist"
 mkdir -p "$DIST_DIR"
 
