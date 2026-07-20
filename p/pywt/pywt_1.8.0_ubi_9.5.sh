@@ -32,7 +32,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-python3.12 -m pip install numpy pillow pytest cython
+python3.12 -m pip install numpy==2.3.3 pillow pytest cython
 #install
 if ! ( python3.12 -m pip install -v . ) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"

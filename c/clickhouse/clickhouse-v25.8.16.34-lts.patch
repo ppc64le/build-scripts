@@ -1,0 +1,35 @@
+diff --git a/cmake/cpu_features.cmake b/cmake/cpu_features.cmake
+index fa58a739611..a8a495d0389 100644
+--- a/cmake/cpu_features.cmake
++++ b/cmake/cpu_features.cmake
+@@ -116,10 +116,10 @@ elseif (ARCH_PPC64LE)
+     # Note that gcc and clang have support for x86 SSE2 intrinsics when building for PowerPC
+     option (POWER9 "Build for Power 9 CPU and above" 0)
+     if(POWER9)
+-        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power9 -D__SSE2__=1 -DNO_WARN_X86_INTRINSICS")
++        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power9")
+         list(APPEND RUSTFLAGS_CPU "-C" "target_feature=+power9-altivec")
+     else ()
+-        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power8 -D__SSE2__=1 -DNO_WARN_X86_INTRINSICS")
++        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power8")
+         list(APPEND RUSTFLAGS_CPU "-C" "target_feature=+power8-altivec")
+     endif ()
+ 
+diff --git a/src/Common/CurrentMetrics.h b/src/Common/CurrentMetrics.h
+index 6466bde2dfd..1ef7c6a22f6 100644
+--- a/src/Common/CurrentMetrics.h
++++ b/src/Common/CurrentMetrics.h
+@@ -76,7 +76,12 @@ namespace CurrentMetrics
+         explicit Increment(Metric metric, Value amount_ = 1)
+             : Increment(&values[metric], amount_)
+         {
+-            assert(metric < CurrentMetrics::end());
++            // in src/Core/tests/gtest_BackgroundSchedulePool.cpp we create pool as
++            // auto pool = BackgroundSchedulePool::create(4, 0, CurrentMetrics::end(), CurrentMetrics::end(), "tests");
++            // which leads as to creation of Increment with metric == CurrentMetrics::end()
++            // actually this is not a real metric, however it is presented in CurrentMetrics::values array
++            // so we are able to increment it and we should not assert here when metric == CurrentMetrics::end()
++            assert(metric <= CurrentMetrics::end());
+         }
+ 
+         ~Increment()

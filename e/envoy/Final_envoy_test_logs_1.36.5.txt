@@ -1,0 +1,572 @@
+-benchmark
+
+bazel test //test/benchmark/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed target //test/benchmark:main (2 packages loaded, 49 targets configured).
+INFO: Found 1 target and 0 test targets...
+Target //test/benchmark:main up-to-date:
+  bazel-bin/test/benchmark/libmain.lo
+INFO: Elapsed time: 44.591s, Critical Path: 34.22s
+INFO: 26 processes: 5 internal, 21 linux-sandbox.
+INFO: Build completed successfully, 26 total actions
+ERROR: No test targets were found, yet testing was requested
+
+=========================================================================================
+-common
+bazel test //test/common/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --test_env=PYTHONPATH=/usr/local/lib64/python3.12/site-packages --jobs=4  -- -//test/common/network:io_socket_handle_impl_integration_test  -//test/common/stream_info:stream_info_impl_test    -//test/common/tls:tls_throughput_benchmark_test  
+DEBUG: /root/.cache/bazel/_bazel_root/c2c91d2d0efe1abd085f863969359f65/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+DEBUG: /root/.cache/bazel/_bazel_root/c2c91d2d0efe1abd085f863969359f65/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:ares
+INFO: Analyzed 728 targets (156 packages loaded, 6810 targets configured).
+INFO: Found 334 targets and 394 test targets...
+INFO: Elapsed time: 139.775s, Critical Path: 43.94s
+INFO: 14 processes: 1 internal, 13 processwrapper-sandbox.
+INFO: Build completed successfully, 14 total actions
+ 
+Executed 9 out of 394 tests: 394 tests pass.
+
+======================
+-config 
+bazel test //test/config/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures    --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 8 targets (1 packages loaded, 30 targets configured).
+INFO: Found 8 targets and 0 test targets...
+Target //test/config:utility_lib up-to-date:
+  bazel-bin/test/config/libutility_lib.lo
+INFO: Elapsed time: 0.724s, Critical Path: 0.05s
+INFO: 3 processes: 2 internal, 1 linux-sandbox.
+INFO: Build completed successfully, 3 total actions
+ERROR: No test targets were found, yet testing was requested
+
+
+
+================================================================================
+
+- config_test - LUA filter disable for power - details in md file
+
+INFO: Found 2 targets and 1 test target...
+INFO: Elapsed time: 57.766s, Critical Path: 48.87s
+INFO: 140 processes: 9 internal, 131 linux-sandbox.
+INFO: Build completed, 1 test FAILED, 140 total actions
+//test/config_test:example_configs_test                                  FAILED in 30.3s
+  /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/execroot/envoy/bazel-out/ppc-fastbuild/testlogs/test/config_test/example_configs_test/test.log
+
+Executed 1 out of 1 test: 1 fails locally.
+[root@prachi-gaonkar-1 envoy]# bazel test //test/config_test/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BI
+
+==========================
+-exe
+
+ bazel test //test/exe/...   --config=clang-gnu   --define=wasm=disabled   --jobs=8   --local_resources=memory=16000   --test_output=errors   --verbose_failures   --linkopt=-fuse-ld=lld   --test_tag_filters=-fuzz   --override_repository=base_pip3=$(pwd)/third_party/python_stub   --override_repository=v8_python_deps=$(pwd)/third_party/v8_python_deps   --override_repository=fuzzing_pip3=$(pwd)/third_party/python_stub_fuzzing   --action_env=PYTHON_BIN_PATH=$(which python3.12)
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:ares
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:87:18: target 'grpc_cpp_plugin' is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:93:18: target 'grpc_csharp_plugin' is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:99:18: target 'grpc_node_plugin' is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:105:18: target 'grpc_objective_c_plugin' is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:111:18: target 'grpc_php_plugin' is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:117:18: target 'grpc_python_plugin' is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:123:18: target 'grpc_ruby_plugin' is both a rule and a file; please choose another name for the rule
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:maxmind
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zstd
+INFO: Analyzed 12 targets (652 packages loaded, 11688 targets configured).
+INFO: From Compiling absl/random/internal/randen_hwaes.cc:
+external/com_google_absl/absl/random/internal/randen_hwaes.cc:151:45: warning: Implicit conversion between vector types (''Vector128' (vector of 2 'unsigned long long' values)' and ''__vector unsigned char' (vector of 16 'unsigned char' values)') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecate-lax-vec-conv-all]
+  151 |   return Vector128(__builtin_crypto_vcipher(state, round_key));
+      |                                             ^
+external/com_google_absl/absl/random/internal/randen_hwaes.cc:151:52: warning: Implicit conversion between vector types (''Vector128' (vector of 2 'unsigned long long' values)' and ''__vector unsigned char' (vector of 16 'unsigned char' values)') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecate-lax-vec-conv-all]
+  151 |   return Vector128(__builtin_crypto_vcipher(state, round_key));
+      |                                                    ^
+2 warnings generated.
+INFO: Found 1 target and 11 test targets...
+INFO: Elapsed time: 3224.981s, Critical Path: 64.65s
+INFO: 5502 processes: 2140 internal, 3361 linux-sandbox, 1 worker.
+INFO: Build completed successfully, 5502 total actions
+
+Executed 11 out of 11 tests: 11 tests pass.
+==========================================================================
+- extensions
+seperate file attached
+=================================================
+-fuzz
+ bazel test //test/fuzz/...   --config=clang-gnu   --define=wasm=disabled   --jobs=8   --local_resources=memory=16000   --test_output=errors   --verbose_failures   --linkopt=-fuse-ld=lld   --test_tag_filters=-fuzz   --override_repository=base_pip3=$(pwd)/third_party/python_stub   --override_repository=v8_python_deps=$(pwd)/third_party/v8_python_deps   --override_repository=fuzzing_pip3=$(pwd)/third_party/python_stub_fuzzing   --action_env=PYTHON_BIN_PATH=$(which python3.12)
+Starting local Bazel server and connecting to it...
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_google_protobuf/protobuf.bzl:654:10: The py_proto_library macro is deprecated and will be removed in the 30.x release. switch to the rule defined by rules_python or the one in bazel/py_proto_library.bzl.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:event
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:nghttp2
+INFO: Analyzed 15 targets (534 packages loaded, 24031 targets configured).
+INFO: Found 14 targets and 1 test target...
+INFO: Elapsed time: 247.943s, Critical Path: 84.94s
+INFO: 50 processes: 1 internal, 49 linux-sandbox.
+INFO: Build completed successfully, 50 total actions
+
+Executed 1 out of 1 test: 1 test passes.
+
+=========================================================================================
+- integration (2 skipped - explained in PowerPC64LE_Test_Exclusion.md)
+
+bazel test //test/integration/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --
+override_repository=v8_python_deps=third_party/v8_python_deps   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --action_env=PYTHONPATH=/usr/local/l
+ib/python3.12/site-packages   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --test_output=errors --jobs=3  -- -//test/integration:tcp_proxy_integration_test  -//tes
+t/integration:stats_integration_test                                                                                                                                     
+DEBUG: /root/.cache/bazel/_bazel_root/6c8c0067fa8c658a831be4d65c04d45f/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, plea
+se update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib                                        
+INFO: Analyzed 415 targets (171 packages loaded, 4277 targets configured).                                                                                               
+INFO: Found 321 targets and 94 test targets...                                                                                                                           
+INFO: Elapsed time: 6577.014s, Critical Path: 1004.17s                                                                                                                   
+INFO: 311 processes: 311 processwrapper-sandbox.                                                                                                                         
+INFO: Build completed successfully, 311 total actions                                                                                                                    
+Executed 90 out of 94 tests: 94 tests pass. 
+=======================================================================
+
+-mocks
+
+ bazel test //test/mocks/...   --config=clang-gnu   --define=wasm=disabled   --jobs=2   --local_resources=memory=16000   --test
+_output=errors   --verbose_failures   --linkopt=-fuse-ld=lld   --test_tag_filters=-fuzz   --override_repository=base_pip3=$(pwd)/third_party/python_stub   --
+override_repository=v8_python_deps=$(pwd)/third_party/v8_python_deps   --override_repository=fuzzing_pip3=$(pwd)/third_party/python_stub_fuzzing   --action_e
+nv=PYTHON_BIN_PATH=$(which python3.12)
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_google_protobuf/protobuf.bzl:654:10: The py_proto_library macro is deprec
+ated and will be removed in the 30.x release. switch to the rule defined by rules_python or the one in bazel/py_proto_library.bzl.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:event
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:nghttp2
+INFO: Analyzed 109 targets (351 packages loaded, 18742 targets configured).
+INFO: From Compiling absl/base/internal/unscaledcycleclock.cc:
+external/com_google_absl/absl/base/internal/unscaledcycleclock.cc:65:10: warning: implicit conversion changes signedness: 'uint64_t' (aka 'unsigned long') to
+ 'int64_t' (aka 'long') [-Wsign-conversion]
+   65 |   return __ppc_get_timebase();
+      |   ~~~~~~ ^~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+INFO: From Compiling absl/debugging/stacktrace.cc:
+In file included from external/com_google_absl/absl/debugging/stacktrace.cc:55:
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'u
+nsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'u
+nsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/stacktrace.cc:229:12: note: in instantiation of function template specialization 'UnwindImpl<true, false>' requested
+here
+  229 |       f = &UnwindImpl<true, false>;
+
+In file included from external/com_google_absl/absl/debugging/stacktrace.cc:55:
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'u
+nsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/stacktrace.cc:231:12: note: in instantiation of function template specialization 'UnwindImpl<true, true>' requested h
+ere
+  231 |       f = &UnwindImpl<true, true>;
+      |            ^
+3 warnings generated.
+[2,788 / 3,832] 2 actions, 1 running
+    Compiling external/envoy_api/envoy/config/listener/v3/listener.pb.validate.cc; 8s linux-sandbox
+[2,790 / 3,832] 3 actions, 2 running
+    Compiling external/envoy_api/envoy/extensions/filters/common/dependency/v3/dependency.pb.validate.cc; 1s linux-sandbox
+[2,790 / 3,832] 3 actions, 2 running
+    Compiling external/envoy_api/envoy/extensions/filters/common/dependency/v3/dependency.pb.validate.cc; 2s linux-sandbox
+    Compiling external/envoy_api/envoy/config/listener/v3/api_listener.pb.validate.cc; 1s linux-sandbox
+    [Prepa] Compiling source/common/quic/platform/quiche_mem_slice_impl.cc
+
+
+[2,790 / 3,832] 3 actions, 2 running
+[2,848 / 3,832] 3 actions, 2 running
+    Compiling quiche/http2/core/spdy_framer.cc; 7s linux-sandbox
+[2,848 / 3,832] 3 actions, 2 running
+    Compiling quiche/http2/core/spdy_framer.cc; 8s linux-sandbox
+    Compiling source/common/config/watched_directory.cc; 1s linux-sandbox
+[2,849 / 3,832] 2 actions, 1 running
+    Compiling source/common/config/watched_directory.cc; 2s linux-sandbox
+[2,849 / 3,832] 3 actions, 2 running
+    Compiling source/common/config/watched_directory.cc; 2s linux-sandbox
+    Compiling quiche/http2/decoder/payload_decoders/priority_update_payload_decoder.cc; 0s linux-sandbox
+    [Prepa] Compiling quiche/http2/core/spdy_frame_builder.cc
+
+[2,849 / 3,832] 3 actions, 2 running
+    Compiling source/common/config/watched_directory.cc; 3s linux-sandbox
+[3,828 / 3,834] 1 / 1 tests; 3 actions, 2 running; last test: //test/mocks/http:http_mocks_test
+[3,828 / 3,834] 1 / 1 tests; 3 actions, 2 running; last test: //test/mocks/http:http_mocks_test
+[3,828 / 3,834] 1 / 1 tests; 3 actions, 2 running; last test: //test/mocks/http:http_mocks_test
+[3,828 / 3,834] 1 / 1 tests; 3 actions, 2 running; last test: //test/mocks/http:http_mocks_test
+[3,828 / 3,834] 1 / 1 tests; 3 actions, 2 running; last test: //test/mocks/http:http_mocks_test
+[3,828 / 3,834] 1 / 1 tests; 3 actions, 2 running; last test: //test/mocks/http:http_mocks_test
+[3,828 / 3,834] 1 / 1 tests; 3 actions, 2 running; last test: //test/mocks/http:http_mocks_test
+[3,828 / 3,834] 1 / 1 tests; 3 actions, 2 running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions, 1 running; last test: //test/mocks/http:
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_test
+[3,829 / 3,834] 1 / 1 tests; 2 actions running; last test: //test/mocks/http:http_mocks_
+    Compiling test/mocks/server/health_checker_factory_context.cc; 72s linux-san
+[3,832 / 3,834] 1 / 1 tests;  1 action; last test: //test/mocks/http:http_mocks_test
+[3,832 / 3,834] 1 / 1 tests;  1 action; last test: //test/mocks/http:http_mocks_test
+[3,832 / 3,834] 1 / 1 tests;  1 action; last test: //test/mocks/http:http_mocks_test
+[3,832 / 3,834] 1 / 1 tests;  1 action; last test: //test/mocks/http:http_mocks_test
+[3,832 / 3,834] 1 / 1 tests;  1 action; last test: //test/mocks/http:http_mocks_test
+[3,832 / 3,834] 1 / 1 tests;  1 action; last test: //test/mocks/http:http_mocks_test
+[3,832 / 3,834] 1 / 1 tests;  1 action; last test: //test/mocks/http:http_mocks_test
+[3,832 / 3,834] 1 / 1 tests;  1 action; last test: //test/mocks/http:http_mocks_test
+[3,832 / 3,834] 1 / 1 tests;  1 action; last test: //test/mocks/http:http_mocks_test
+[3,832 / 3,834] 1 / 1 tests;  1 action; last test: //test/mocks/http:http_mocks_test
+[3,833 / 3,834] 1 / 1 tests;  1 action; last test: //test/mocks/http:http_mocks_
+INFO: Found 108 targets and 1 test target...
+[3,834 / 3,834] 1 / 1 tests; no actions running; last test: //test/mocks/http:ht
+[3,834 / 3,834] 1 / 1 tests; no actions running; last test: //test/mocks/http:ht
+INFO: Elapsed time: 6310.552s, Critical Path: 189.79s
+[3,834 / 3,834] 1 / 1 tests; no actions running; last test: //test/mocks/http:ht
+INFO: 2237 processes: 114 internal, 2123 linux-sandbox.
+[3,834 / 3,834] 1 / 1 tests; no actions running; last test: //test/mocks/http:ht
+INFO: Build completed successfully, 2237 total actions
+
+Executed 1 out of 1 test: 1 test passes.
+
+=======================================================================================================================================
+
+bazel test //test/common/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --test_env=PYTHONPATH=/usr/local/lib64/python3.12/site-packages --jobs=4  -- -//test/common/network:io_socket_handle_impl_integration_test  -//test/common/stream_info:stream_info_impl_test    -//test/common/tls:tls_throughput_benchmark_test  
+DEBUG: /root/.cache/bazel/_bazel_root/c2c91d2d0efe1abd085f863969359f65/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+DEBUG: /root/.cache/bazel/_bazel_root/c2c91d2d0efe1abd085f863969359f65/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:ares
+INFO: Analyzed 728 targets (156 packages loaded, 6810 targets configured).
+INFO: Found 334 targets and 394 test targets...
+INFO: Elapsed time: 139.775s, Critical Path: 43.94s
+INFO: 14 processes: 1 internal, 13 processwrapper-sandbox.
+INFO: Build completed successfully, 14 total actions
+ 
+Executed 9 out of 394 tests: 394 tests pass.
+
+
+===============================================================
+
+- proto
+bazel test //test/proto/...    --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --test_env=PYTHONPATH=/usr/local/lib64/python3.12/site-packages   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=8   --local_ram_resources=12000
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+INFO: Analyzed 40 targets (23 packages loaded, 1603 targets configured).
+INFO: From Building external/com_google_protobuf/java/core/libcore.jar (43 source files, 1 source jar):
+external/com_google_protobuf/java/core/src/main/java/com/google/protobuf/RepeatedFieldBuilderV3.java:28: warning: [dep-ann] deprecated item is not annotated with @Deprecated
+public class RepeatedFieldBuilderV3<
+       ^
+INFO: Found 40 targets and 0 test targets...
+INFO: Elapsed time: 159.556s, Critical Path: 23.07s
+INFO: 906 processes: 499 internal, 399 linux-sandbox, 8 worker.
+INFO: Build completed successfully, 906 total actions
+ERROR: No test targets were found, yet testing was requested
+
+
+============================================================
+
+-server
+
+long long' values)' and ''__vector unsigned char' (vector of 16 'unsigned char' values)') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecate-lax-vec-conv-all]
+  151 |   return Vector128(__builtin_crypto_vcipher(state, round_key));
+      |                                                    ^
+2 warnings generated.
+INFO: From Compiling absl/debugging/stacktrace.cc:
+In file included from external/com_google_absl/absl/debugging/stacktrace.cc:55:
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/stacktrace.cc:229:12: note: in instantiation of function template specialization 'UnwindImpl<true, false>' requested here
+  229 |       f = &UnwindImpl<true, false>;
+      |            ^
+In file included from external/com_google_absl/absl/debugging/stacktrace.cc:55:
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/stacktrace.cc:231:12: note: in instantiation of function template specialization 'UnwindImpl<true, true>' requested here
+  231 |       f = &UnwindImpl<true, true>;
+      |            ^
+3 warnings generated.
+INFO: Found 25 targets and 46 test targets...
+INFO: Elapsed time: 6057.572s, Critical Path: 274.77s
+INFO: 13100 processes: 5868 internal, 7223 linux-sandbox, 9 worker.
+INFO: Build completed successfully, 13100 total actions
+
+Executed 46 out of 46 tests: 46 tests pass.
+
+===========================================================================================
+- test_common
+ bazel test //test/test_common/...   --config=clang-gnu   --define=wasm=disabled   --jobs=2   --local_resources=memory=16000   --test_output=errors   --verbose_failures   --linkopt=-fuse-ld=lld   --test_tag_filters=-fuzz   --override_repository=base_pip3=$(pwd)/third_party/python_stub   --override_repository=v8_python_deps=$(pwd)/third_party/v8_python_deps   --override_repository=fuzzing_pip3=$(pwd)/third_party/python_stub_fuzzing   --action_env=PYTHON_BIN_PATH=$(which python3.12)
+INFO: Analyzed 33 targets (36 packages loaded, 1553 targets configured).
+INFO: Found 27 targets and 6 test targets...
+INFO: Elapsed time: 793.429s, Critical Path: 52.29s
+INFO: 445 processes: 50 internal, 395 linux-sandbox.
+INFO: Build completed successfully, 445 total actions
+
+Executed 6 out of 6 tests: 6 tests pass.
+
+=========================================================================
+-tools
+
+[root@prachi-gaonkar-1 envoy]# bazel test //test/tools/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python
+_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v
+8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --test_output=errors
+--verbose_failures   --jobs=8   --local_resources=memory=16000
+Starting local Bazel server and connecting to it...
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_google_protobuf/protobuf.bzl:654:10: The py_proto_library macro is deprec
+ated and will be removed in the 30.x release. switch to the rule defined by rules_python or the one in bazel/py_proto_library.bzl.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:maxmind
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:ares
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:87:18: target 'grpc_cpp_plugin' is
+both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:93:18: target 'grpc_csharp_plugin'
+is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:99:18: target 'grpc_node_plugin' is
+ both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:105:18: target 'grpc_objective_c_pl
+ugin' is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:111:18: target 'grpc_php_plugin' is
+ both a rule and a file; please choose another name for the rule
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:event
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:117:18: target 'grpc_python_plugin'
+ is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:123:18: target 'grpc_ruby_plugin' i
+s both a rule and a file; please choose another name for the rule
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zstd
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:nghttp2
+INFO: Analyzed 23 targets (1317 packages loaded, 40191 targets configured).
+INFO: From Compiling absl/base/internal/unscaledcycleclock.cc [for tool]:
+external/com_google_absl/absl/base/internal/unscaledcycleclock.cc:65:10: warning: implicit conversion changes signedness: 'uint64_t' (aka 'unsigned long') to
+ 'int64_t' (aka 'long') [-Wsign-conversion]
+   65 |   return __ppc_get_timebase();
+   |   ~~~~~~ ^~~~~~~~~~~~~~~~~~~~
+   
+INFO: From Compiling simdutf.cpp [for tool]:
+external/simdutf/simdutf.cpp:40346:22: warning: Implicit conversion between vector types (''vector_type' (aka '__vector unsigned char')' and ''const vector_t
+ype' (aka '__vector __bool unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [
+-Wdeprecate-lax-vec-conv-all]
+ 40346 |   return simd8<bool>(is_third_byte | is_fourth_byte);
+       |                      ^
+external/simdutf/simdutf.cpp:42600:22: warning: Implicit conversion between vector types (''vector_type' (aka '__vector __bool unsigned char')' and ''const v
+ector_type' (aka '__vector unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [
+-Wdeprecate-lax-vec-conv-all]
+ 42600 |       simd8<uint8_t>(must_be_2_3_continuation(prev2, prev3));
+       |                      ^
+external/simdutf/simdutf.cpp:42913:22: warning: Implicit conversion between vector types (''vector_type' (aka '__vector __bool unsigned char')' and ''const v
+ector_type' (aka '__vector unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [
+-Wdeprecate-lax-vec-conv-all]
+ 42913 |       simd8<uint8_t>(must_be_2_3_continuation(prev2, prev3));
+       |                      ^
+external/simdutf/simdutf.cpp:43326:22: warning: Implicit conversion between vector types (''vector_type' (aka '__vector __bool unsigned char')' and ''const v
+ector_type' (aka '__vector unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [
+-Wdeprecate-lax-vec-conv-all]
+ 43326 |       simd8<uint8_t>(must_be_2_3_continuation(prev2, prev3));
+       |                      ^
+external/simdutf/simdutf.cpp:8459:42: warning: Implicit conversion between vector types (''vector_type' (aka '__vector signed char')' and ''const vector_type
+' (aka '__vector unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecat
+e-lax-vec-conv-all]
+ 8459 |     return simd8x64<bool>(simd8<uint8_t>(this->chunks[0]) >= mask,
+      |                                          ^
+external/simdutf/simdutf.cpp:43671:32: note: in instantiation of member function 'simdutf::ppc64::(anonymous namespace)::simd::simd8x64<signed char>::gteq_un
+signed' requested here
+ 43671 |     int64_t utf8_4byte = input.gteq_unsigned(240);
+       |                                ^
+external/simdutf/simdutf.cpp:8460:42: warning: Implicit conversion between vector types (''vector_type' (aka '__vector signed char')' and ''const vector_type
+' (aka '__vector unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecat
+e-lax-vec-conv-all]
+ 8460 |                           simd8<uint8_t>(this->chunks[1]) >= mask,
+      |                                          ^
+external/simdutf/simdutf.cpp:8461:42: warning: Implicit conversion between vector types (''vector_type' (aka '__vector signed char')' and ''const vector_type
+' (aka '__vector unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecat
+e-lax-vec-conv-all]
+ 8461 |                           simd8<uint8_t>(this->chunks[2]) >= mask,
+      |                                          ^
+external/simdutf/simdutf.cpp:8462:42: warning: Implicit conversion between vector types (''vector_type' (aka '__vector signed char')' and ''const vector_type
+' (aka '__vector unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecat
+e-lax-vec-conv-all]
+ 8462 |                           simd8<uint8_t>(this->chunks[3]) >= mask)
+
+
+external/simdutf/simdutf.cpp:2085:15: warning: unused variable 'pack_1_2_3_utf8_bytes' [-Wunused-const-variable]
+ 2085 | const uint8_t pack_1_2_3_utf8_bytes[256][17] = {
+      |               ^~~~~~~~~~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:2591:15: warning: unused variable 'pack_utf32_to_utf16le' [-Wunused-const-variable]
+ 2591 | const uint8_t pack_utf32_to_utf16le[16][16] = {
+      |               ^~~~~~~~~~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:2610:15: warning: unused variable 'pack_utf32_to_utf16be' [-Wunused-const-variable]
+ 2610 | const uint8_t pack_utf32_to_utf16be[16][16] = {
+      |               ^~~~~~~~~~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:13320:28: warning: unused function 'low_surrogate' [-Wunused-function]
+ 13320 | simdutf_really_inline bool low_surrogate(char16_t c) {
+       |                            ^~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:14169:15: warning: unused function 'convert_valid' [-Wunused-function]
+ 14169 | inline size_t convert_valid(const char32_t *buf, size_t len,
+       |               ^~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:16403:15: warning: unused function 'convert_valid' [-Wunused-function]
+ 16403 | inline size_t convert_valid(const char32_t *buf, size_t len,
+       |               ^~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:41928:16: warning: unused variable 'with_base64_std' [-Wunused-const-variable]
+ 41928 | constexpr bool with_base64_std = false;
+       |                ^~~~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:41929:16: warning: unused variable 'with_base64_url' [-Wunused-const-variable]
+ 41929 | constexpr bool with_base64_url = true;
+       |                ^~~~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:41930:16: warning: unused variable 'with_ignore_errors' [-Wunused-const-variable]
+ 41930 | constexpr bool with_ignore_errors = true;
+       |                ^~~~~~~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:41931:16: warning: unused variable 'with_ignore_garbage' [-Wunused-const-variable]
+ 41931 | constexpr bool with_ignore_garbage = true;
+       |                ^~~~~~~~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:41932:16: warning: unused variable 'with_strict_checking' [-Wunused-const-variable]
+ 41932 | constexpr bool with_strict_checking = false;
+       |                ^~~~~~~~~~~~~~~~~~~~
+	   
+ 42913 |       simd8<uint8_t>(must_be_2_3_continuation(prev2, prev3));
+       |                      ^
+external/simdutf/simdutf.cpp:43326:22: warning: Implicit conversion between vector types (''vector_type' (aka '__vector __bool unsigned char')' and ''const v
+ector_type' (aka '__vector unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [
+-Wdeprecate-lax-vec-conv-all]
+ 43326 |       simd8<uint8_t>(must_be_2_3_continuation(prev2, prev3));
+       |                      ^
+external/simdutf/simdutf.cpp:8459:42: warning: Implicit conversion between vector types (''vector_type' (aka '__vector signed char')' and ''const vector_type
+' (aka '__vector unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecat
+e-lax-vec-conv-all]
+ 8459 |     return simd8x64<bool>(simd8<uint8_t>(this->chunks[0]) >= mask,
+      |                                          ^
+external/simdutf/simdutf.cpp:43671:32: note: in instantiation of member function 'simdutf::ppc64::(anonymous namespace)::simd::simd8x64<signed char>::gteq_un
+signed' requested here
+ 43671 |     int64_t utf8_4byte = input.gteq_unsigned(240);
+       |                                ^
+external/simdutf/simdutf.cpp:8460:42: warning: Implicit conversion between vector types (''vector_type' (aka '__vector signed char')' and ''const vector_type
+' (aka '__vector unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecat
+e-lax-vec-conv-all]
+ 8460 |                           simd8<uint8_t>(this->chunks[1]) >= mask,
+      |                                          ^
+external/simdutf/simdutf.cpp:8461:42: warning: Implicit conversion between vector types (''vector_type' (aka '__vector signed char')' and ''const vector_type
+' (aka '__vector unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecat
+e-lax-vec-conv-all]
+ 8461 |                           simd8<uint8_t>(this->chunks[2]) >= mask,
+      |                                          ^
+external/simdutf/simdutf.cpp:8462:42: warning: Implicit conversion between vector types (''vector_type' (aka '__vector signed char')' and ''const vector_type
+' (aka '__vector unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecat
+e-lax-vec-conv-all]
+ 8462 |                           simd8<uint8_t>(this->chunks[3]) >= mask)
+      |                                          ^
+external/simdutf/simdutf.cpp:2085:15: warning: unused variable 'pack_1_2_3_utf8_bytes' [-Wunused-const-variable]
+ 2085 | const uint8_t pack_1_2_3_utf8_bytes[256][17] = {
+      |               ^~~~~~~~~~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:2591:15: warning: unused variable 'pack_utf32_to_utf16le' [-Wunused-const-variable]
+ 2591 | const uint8_t pack_utf32_to_utf16le[16][16] = {
+      |               ^~~~~~~~~~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:2610:15: warning: unused variable 'pack_utf32_to_utf16be' [-Wunused-const-variable]
+ 2610 | const uint8_t pack_utf32_to_utf16be[16][16] = {
+      |               ^~~~~~~~~~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:13320:28: warning: unused function 'low_surrogate' [-Wunused-function]
+ 13320 | simdutf_really_inline bool low_surrogate(char16_t c) {
+       |                            ^~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:14169:15: warning: unused function 'convert_valid' [-Wunused-function]
+ 14169 | inline size_t convert_valid(const char32_t *buf, size_t len,
+       |               ^~~~~~~~~~~~~
+external/simdutf/simdutf.cpp:16403:15: warning: unused function 'convert_valid' [-Wunused-function]
+
+19 warnings generated.
+INFO: From Compiling simdutf.cpp:
+external/simdutf/simdutf.cpp:40346:22: warning: Implicit conversion between vector types (''vector_type' (aka '__vector unsigned char')' and ''const vector_t
+ype' (aka '__vector __bool unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [
+-Wdeprecate-lax-vec-conv-all]
+ 40346 |   return simd8<bool>(is_third_byte | is_fourth_byte);
+       |                      ^
+external/simdutf/simdutf.cpp:42600:22: warning: Implicit conversion between vector types (''vector_type' (aka '__vector __bool unsigned char')' and ''const v
+ector_type' (aka '__vector unsigned char const')') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [
+-Wdeprecate-lax-vec-conv-all]
+ 42600 |       simd8<uint8_t>(must_be_2_3_continuation(prev2, prev3));
+       |                      ^
+
+1 warning generated.
+
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/stacktrace.cc:229:12: note: in instantiation of function template specialization 'UnwindImpl<true, false>' requested here
+  229 |       f = &UnwindImpl<true, false>;
+      |            ^
+In file included from external/com_google_absl/absl/debugging/stacktrace.cc:55:
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/stacktrace.cc:231:12: note: in instantiation of function template specialization 'UnwindImpl<true, true>' requested here
+  231 |       f = &UnwindImpl<true, true>;
+      |            ^
+3 warnings generated.
+INFO: From Compiling absl/random/internal/randen_hwaes.cc:
+external/com_google_absl/absl/random/internal/randen_hwaes.cc:151:45: warning: Implicit conversion between vector types (''Vector128' (vector of 2 'unsigned long long' values)' and ''__vector unsigned char' (vector of 16 'unsigned char' values)') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecate-lax-vec-conv-all]
+  151 |   return Vector128(__builtin_crypto_vcipher(state, round_key));
+      |                                             ^
+external/com_google_absl/absl/random/internal/randen_hwaes.cc:151:52: warning: Implicit conversion between vector types (''Vector128' (vector of 2 'unsigned long long' values)' and ''__vector unsigned char' (vector of 16 'unsigned char' values)') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecate-lax-vec-conv-all]
+  151 |   return Vector128(__builtin_crypto_vcipher(state, round_key));
+      |                                                    ^
+2 warnings generated.
+INFO: Found 19 targets and 4 test targets...
+INFO: Elapsed time: 8505.993s, Critical Path: 211.45s
+INFO: 15218 processes: 5684 internal, 9532 linux-sandbox, 1 local, 1 worker.
+INFO: Build completed successfully, 15218 total actions
+
+Executed 4 out of 4 tests: 4 tests pass.
+===============================================================================
+
+
+
+

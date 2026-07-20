@@ -47,9 +47,9 @@ sed -i 's/1e-5/2/g' statsmodels/imputation/tests/test_mice.py
 sed -i 's/1e-2/1e-1/g' statsmodels/stats/tests/test_mediation.py
 
 pip install pytest
-pip install numpy==1.22.4
-pip install pandas==1.3.0
-pip install scipy==1.7.3 --prefer-binary
+pip install numpy==1.26.4
+pip install pandas==2.1.4
+pip install scipy==1.11.4 --prefer-binary
 
 echo "------------------------------------------------------------Run tests for statsmodels------------------------------------------------------"
 cd $PACKAGE_DIR

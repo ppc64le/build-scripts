@@ -56,58 +56,10 @@ echo "---------------------openblas installing---------------------"
 
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
-git checkout v0.3.29
-git submodule update --init
-
-# Set build options
-declare -a build_opts
-# Fix ctest not automatically discovering tests
-LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
-export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
-unset CFLAGS
-export USE_OPENMP=1
-build_opts+=(USE_OPENMP=${USE_OPENMP})
-export PREFIX=${PREFIX}
-
-# Handle Fortran flags
-if [ ! -z "$FFLAGS" ]; then
-    export FFLAGS="${FFLAGS/-fopenmp/ }"
-    export FFLAGS="${FFLAGS} -frecursive"
-    export LAPACK_FFLAGS="${FFLAGS}"
-fi
-export PLATFORM=$(uname -m)
-build_opts+=(BINARY="64")
-build_opts+=(DYNAMIC_ARCH=1)
-build_opts+=(TARGET="POWER9")
-BUILD_BFLOAT16=1
-
-# Placeholder for future builds that may include ILP64 variants.
-build_opts+=(INTERFACE64=0)
-build_opts+=(SYMBOLSUFFIX="")
-
-# Build LAPACK
-build_opts+=(NO_LAPACK=0)
-
-# Enable threading and set the number of threads
-build_opts+=(USE_THREAD=1)
-build_opts+=(NUM_THREADS=120)
-
-# Disable CPU/memory affinity handling to avoid problems with NumPy and R
-build_opts+=(NO_AFFINITY=1)
-
-echo "Building OpenBLAS"
-make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
-
-echo "Install OpenBLAS"
-CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
-OpenBLASInstallPATH=$(pwd)/$PREFIX
-OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
-OpenBLASPCFile=$(find . -name openblas.pc)
-export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib":${LD_LIBRARY_PATH}
-export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
-export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-pkg-config --modversion openblas
+git checkout v0.3.32
+make -j${MAX_JOBS} TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=120 DYNAMIC_ARCH=1 INTERFACE64=0
+make install PREFIX=/usr/local
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib
 cd $SCRIPT_DIR
 echo "--------------------openblas installed-------------------------------"
 
@@ -189,7 +141,7 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 echo "Installing protobuf...."
 cd python
-python3.12 -m pip install .
+python3.12 -m pip install . --no-build-isolation
 cd $SCRIPT_DIR
 
 echo "------------ libprotobuf,protobuf installed--------------"
@@ -313,6 +265,10 @@ export LD_LIBRARY_PATH=${SCRIPT_DIR}/pytorch/build/lib/libprotobuf.so.3.13.0.0:$
 export PATH="${SCRIPT_DIR}/protobuf/local/libprotobuf/bin/protoc:${PATH}"
 export LD_LIBRARY_PATH="${SCRIPT_DIR}/OpenBLAS:/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="${SCRIPT_DIR}/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
+
+PY_VER=$(python3.12 -c 'import sys; print(f"{sys.version_info.major}{sys.version_info.minor}")')
+export LD_LIBRARY_PATH="${SCRIPT_DIR}/audio/build/lib.linux-ppc64le-cpython-${PY_VER}/torchaudio/lib:$LD_LIBRARY_PATH"
+
 echo "LD_LIBRARY_PATH= $LD_LIBRARY_PATH"
 echo "Installing torchaudio..." 
 if ! (python3.12 -m pip install -v . --no-build-isolation --no-deps);then

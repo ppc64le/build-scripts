@@ -71,7 +71,7 @@ echo "---------------------openblas installing---------------------"
 
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
-git checkout v0.3.29
+git checkout v0.3.32
 git submodule update --init
 
 # Set build options
@@ -111,10 +111,9 @@ build_opts+=(NUM_THREADS=8)
 build_opts+=(NO_AFFINITY=1)
 
 # Build OpenBLAS
-make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
+make -j${MAX_JOBS} TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=$(nproc) DYNAMIC_ARCH=1 INTERFACE64=0 CFLAGS="${CF}"
+make install PREFIX=${PREFIX}
 
-# Install OpenBLAS
-CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
 OpenBLASInstallPATH=$(pwd)/$PREFIX
 OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
 OpenBLASPCFile=$(find . -name openblas.pc)
@@ -203,7 +202,7 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 echo "Installing protobuf...."
 cd python
-python3 -m pip install .
+python3 -m pip install . --no-build-isolation
 cd $CURRENT_DIR
 
 echo "------------ libprotobuf,protobuf installed--------------"
@@ -591,6 +590,10 @@ cp libtorchvision.so $CURRENT_DIR/vision/torchvision/libtorchvision.so
 cp libtorchvision.so $PYTHON_SITE_PACKAGES/torch/share/cmake/Torch
 cp libtorchvision.so /usr/local/lib64
 cd $CURRENT_DIR/vision
+
+export LD_LIBRARY_PATH="${CURRENT_DIR}/pytorch/build/lib/:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="${CURRENT_DIR}/protobuf/local/libprotobuf/lib64/:$LD_LIBRARY_PATH"
+
 python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR
 
 cd $CURRENT_DIR
@@ -610,4 +613,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-

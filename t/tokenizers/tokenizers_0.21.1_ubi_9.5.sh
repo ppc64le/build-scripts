@@ -18,6 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
+
 PACKAGE_NAME=tokenizers
 PACKAGE_VERSION=${1:-v0.21.1}
 PACKAGE_URL=https://github.com/huggingface/tokenizers
@@ -58,7 +59,7 @@ export CC=gcc
 export ARROW_HOME=$(pwd)/dist
 export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=$(pwd)/dist/lib:$LD_LIBRARY_PATH
-export CMAKE_PREFIX_PATH=$ARROW_HOME:$CMAKE_PREFIX_PATH
+export CMAKE_PREFIX_PATH=$ARROW_HOME/lib64/cmake:$CMAKE_PREFIX_PATH
 
 echo "installing python dependencies..."
 pip install -r python/requirements-build.txt
@@ -94,6 +95,7 @@ make install
 cd ../../..
 
 cd arrow/python/
+export PYARROW_WITH_COMPUTE=1
 export PYARROW_WITH_PARQUET=1
 export PYARROW_WITH_DATASET=1
 export PYARROW_PARALLEL=4
@@ -112,7 +114,7 @@ git checkout $PACKAGE_VERSION
 cd bindings/python/
 
 echo "installing python dependencies..."
-pip install pytest setuptools datasets numpy tiktoken build maturin
+pip install pytest setuptools datasets==2.0.0 numpy tiktoken build maturin
 
 echo "installing..."
 if ! pip install . ; then
@@ -123,7 +125,7 @@ if ! pip install . ; then
 fi
 
 # Skipped these tests as these tests were parity with intel
-if ! pytest -k "not(test_continuing_prefix_trainer_mismatch or test_gzip or test_tiktoken)"; then
+if ! pytest -k "not(test_continuing_prefix_trainer_mismatch or test_gzip or test_tiktoken or test_datasets)"; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

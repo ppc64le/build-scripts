@@ -1,8 +1,8 @@
 {
-  "maintainer": "SakshiJain0302",
+  "maintainer": "Shivansh-ibm",
   "package_name": "PyAV",
   "github_url": "https://github.com/PyAV-Org/PyAV",
-  "version": "v16.0.0",
+  "version": "v17.0.0",
   "wheel_build" : true,
   "package_dir": "p/pyav",
   "default_branch": "main",
@@ -10,6 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "wheel_name": "av",
   "10.0.0": {
     "build_script": "pyav_10-0_ubi_9.3.sh"
   },

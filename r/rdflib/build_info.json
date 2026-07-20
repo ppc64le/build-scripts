@@ -6,11 +6,11 @@
     "default_branch": "main",
     "wheel_build" : true,
     "package_dir": "r/rdflib",
-    "build_script": "rdflib_ubi_9_3.sh",
+    "build_script": "rdflib_ubi_9.6.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
     "*": {
-        "build_script": "rdflib_ubi_9_3.sh"
+        "build_script": "rdflib_ubi_9.6.sh"
      }
 }

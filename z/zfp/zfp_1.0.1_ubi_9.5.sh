@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/LLNL/zfp
 PACKAGE_DIR=zfp
 
 echo "Installing dependencies...."
-yum install -y wget gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran git make python python-devel python-pip openssl-devel cmake 
+yum install -y wget gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran git make python3 python3-devel python3-pip openssl-devel cmake 
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -39,10 +39,10 @@ PYTHON_VERSION=$(python3 -c "import sys; print('.'.join(map(str, sys.version_inf
 IFS='.' read -r MAJOR MINOR <<< "$PYTHON_VERSION"
 if [[ "$MAJOR" -gt 3 ]] || { [[ "$MAJOR" -eq 3 ]] && [[ "$MINOR" -ge 12 ]]; }; then
     echo "Python version is >= 3.12, installing numpy 2.2.2..."
-    pip install cython numpy==2.2.2 wheel
+    python3 -m pip install cython numpy==2.2.2 wheel
 else
     echo "Python version is < 3.12, installing numpy 1.23.5..."
-    pip install cython==0.29.36 numpy==1.23.5 wheel
+    python3 -m pip install cython==0.29.36 numpy==1.23.5 wheel
 fi
 
 NUMPY_INCLUDE_DIR=$(python3 -c "import numpy; print(numpy.get_include())")
@@ -74,7 +74,7 @@ cd ..
 sed -i 's/), language_level = "3"]/)]/' setup.py
 
 echo "installing..."
-if ! pip install . ; then
+if ! python3 -m pip install . --no-build-isolation ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

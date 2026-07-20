@@ -1,0 +1,16 @@
+{
+   "maintainer": "kiranNukal",
+   "package_name": "pynacl",
+   "github_url": "https://github.com/pyca/pynacl",
+   "version": "v1.3.1",
+   "default_branch": "main",
+   "build_script": "pynacl_ubi_9.6.sh",
+   "package_dir": "p/pynacl",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"pynacl_ubi_9.6.sh"
+  }
+}

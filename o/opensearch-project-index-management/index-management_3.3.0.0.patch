@@ -1,0 +1,13 @@
+diff --git a/build.gradle b/build.gradle
+index 79e37cbc..1155083f 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -64,7 +64,7 @@ buildscript {
+         notifications_core_build_download = 'https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/' + opensearch_no_snapshot +
+                 '/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-notifications-core-' + notifications_no_snapshot + '.zip'
+ 
+-        kotlin_version = System.getProperty("kotlin.version", "2.2.0")
++        kotlin_version = System.getProperty("kotlin.version", "2.2.20")
+ 
+         security_plugin_version = System.getProperty("security.version", opensearch_build)
+         ccr_version = System.getProperty("ccr.version", opensearch_build)

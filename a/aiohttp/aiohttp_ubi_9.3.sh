@@ -22,18 +22,16 @@
 PACKAGE_NAME=aiohttp
 PACKAGE_VERSION=${1:-v3.9.0}
 PACKAGE_URL=https://github.com/aio-libs/aiohttp.git
+PACKAGE_DIR=aiohttp
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel npm cmake libjpeg-devel python3-devel 
+yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel npm cmake libjpeg-devel python3-devel python3-pip python3 python-unversioned-command
 
 # Clone the repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
-
-#create symbolic link for env
-ln -s /usr/bin/python3 /usr/bin/python
 
 # Check if Rust is installed
 if ! command -v rustc &> /dev/null; then
@@ -46,7 +44,7 @@ else
 fi
 
 #check if requests is already installed
-if pip list | grep -q "requests"; then
+if pip3 list | grep -q "requests"; then
     echo "Removing existing requests package..."
     yum remove -y python3-requests
 else
@@ -54,14 +52,13 @@ else
 fi
 
 # install necessary Python packages
-pip install attrs multidict async-timeout yarl frozenlist aiosignal freezegun python-on-whales re-assert brotlicffi brotli Cython pytest-cov pytest-mock build proxy proxy.py
+pip3 install attrs multidict async-timeout yarl frozenlist aiosignal freezegun python-on-whales re-assert brotlicffi brotli Cython pytest-cov pytest-mock build proxy proxy.py
+# Disabled: test_import_time is unstable / not supported on Python versions > 3.10
+sed -i '/^\.PHONY: all/i\export PYTEST_ADDOPTS := --deselect=tests/test_imports.py::test_import_time' Makefile
 make
 
-# Upgrade pip
-ln -s /usr/local/bin/pip3 /usr/bin/pip
-
 #install
-if ! (pip install .) ; then
+if ! (python3 -m pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

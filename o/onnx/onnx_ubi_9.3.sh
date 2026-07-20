@@ -27,21 +27,22 @@ CURRENT_DIR="${PWD}"
 
 echo "Installing dependencies..."
 yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12-devel python3.12 python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
+yum install -y jq curl --allowerasing
+source /opt/rh/gcc-toolset-13/enable
+
 export PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 
 echo " ------------------------------------------ Openblas Installing ------------------------------------------ "
-
 #clone and install openblas from source
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
-git checkout v0.3.29
+git checkout v0.3.32
 git submodule update --init
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/openblas/pyproject.toml
-sed -i "s/{PACKAGE_VERSION}/v0.3.29/g" pyproject.toml
+sed -i "s/{PACKAGE_VERSION}/v0.3.32/g" pyproject.toml
 
 PREFIX=local/openblas
 OPENBLAS_SOURCE=$(pwd)
@@ -85,10 +86,8 @@ build_opts+=(NUM_THREADS=8)
 build_opts+=(NO_AFFINITY=1)
 
 # Build OpenBLAS
-make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
-
-# Install OpenBLAS
-CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
+make -j${MAX_JOBS} TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=$(nproc) DYNAMIC_ARCH=1 INTERFACE64=0 CFLAGS="${CF}"
+make install PREFIX=${PREFIX}
 OpenBLASInstallPATH=$(pwd)/$PREFIX
 OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
 OpenBLASPCFile=$(find . -name openblas.pc)
@@ -100,7 +99,6 @@ sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/in
 
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
-
 echo " ------------------------------------------ Openblas Successfully Installed ------------------------------------------ "
 
 
@@ -109,9 +107,10 @@ cd $CURRENT_DIR
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-python${PYTHON_VERSION} -m pip install --upgrade pip setuptools wheel ninja
-python${PYTHON_VERSION} -m pip install packaging tox pytest build mypy stubs
-python${PYTHON_VERSION} -m pip install 'cmake==3.31.6'
+python3.12 -m pip install --upgrade pip wheel ninja
+python3.12 -m pip install "setuptools>=65,<81"
+python3.12 -m pip install packaging tox pytest build mypy stubs
+python3.12 -m pip install 'cmake==3.31.6'
 
 echo " ------------------------------------------ Abseil-CPP Cloning ------------------------------------------ "
 
@@ -126,8 +125,8 @@ echo " ------------------------------------------ Abseil-CPP Cloned ------------
 cd $CURRENT_DIR
 
 # Setting paths and versions
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
+export C_COMPILER=$(command -v gcc)
+export CXX_COMPILER=$(command -v g++)
 echo "C Compiler set to $C_COMPILER"
 echo "CXX Compiler set to $CXX_COMPILER"
 
@@ -189,11 +188,11 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 # Build Python package
 cd python
-python${PYTHON_VERSION} setup.py install --cpp_implementation
+python3.12 setup.py install --cpp_implementation
 
 cd $CURRENT_DIR
 
-python${PYTHON_VERSION} -m pip install pybind11==2.12.0
+python3.12 -m pip install pybind11==2.12.0
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
 
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
@@ -237,14 +236,18 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
-python${PYTHON_VERSION} -m pip install cython meson
-python${PYTHON_VERSION} -m pip install numpy==2.0.2
-python${PYTHON_VERSION} -m pip install parameterized
-python${PYTHON_VERSION} -m pip install pytest nbval pythran mypy-protobuf
-python${PYTHON_VERSION} -m pip install scipy==1.15.2
-python${PYTHON_VERSION} -m pip install ml-dtypes  # required while running tests
-python${PYTHON_VERSION} -m pip install wheel
-python${PYTHON_VERSION} -m pip install build
+python3.12 -m pip install cython meson
+if [ "$PYTHON_VERSION" = "3.13" ]; then
+    python3.12 -m pip install numpy==2.2.0
+else
+    python3.12 -m pip install numpy==2.0.2
+fi
+python3.12 -m pip install parameterized
+python3.12 -m pip install pytest nbval pythran mypy-protobuf
+python3.12 -m pip install scipy==1.15.2
+python3.12 -m pip install ml-dtypes  # required while running tests
+python3.12 -m pip install wheel
+python3.12 -m pip install build
 
 # export CMAKE_ARGS="$CMAKE_ARGS -DPYTHON_EXECUTABLE=$(which python3.12)"
 # Reason: In ONNX v1.18.0, setup.py uses a custom get_python_executable() which may resolve to /usr/bin/python3
@@ -261,9 +264,7 @@ export CMAKE_ARGS="$CMAKE_ARGS \
  -DPython3_INCLUDE_DIR=$PYTHON_INCLUDE \
  -DPython3_LIBRARY=$PYTHON_LIB/libpython${PYTHON_VERSION}.so"
 
-
-
-if !(python${PYTHON_VERSION} -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"); then
+if !(python3.12 -m pip install .); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -271,11 +272,11 @@ if !(python${PYTHON_VERSION} -m build --wheel --no-isolation --outdir="$CURRENT_
 fi
 
 echo " ------------------------------------------ Onnx Wheel Creating ------------------------------------------ "
-python${PYTHON_VERSION} setup.py bdist_wheel --dist-dir $CURRENT_DIR
+python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR
 echo " ------------------------------------------ Onnx Wheel Created Successfully ------------------------------------------ "
 
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
-python${PYTHON_VERSION} -m pip install "$CURRENT_DIR"/onnx-*.whl
+
 # Skipping test due to missing 're2/stringpiece.h' header file. Even after attempting to manually build RE2, the required header file could not be found.
 echo " ------------------------------------------ Onnx Testing ------------------------------------------ "
 if ! pytest --ignore=onnx/test/reference_evaluator_backend_test.py --ignore=onnx/test/test_backend_reference.py --ignore=onnx/test/reference_evaluator_test.py; then

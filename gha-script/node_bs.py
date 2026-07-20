@@ -124,13 +124,23 @@ def get_repo_url(script_file):
 
 def get_default_branch(package_url):
     owner, repo = package_url.replace('.git','').split('/')[-2:]
-    response = requests.get(GITHUB_PACKAGE_INFO_API_2.format(owner, repo)).json()
+    # Get GitHub token from environment variable
+    github_token = os.environ.get('GITHUB_TOKEN')
+    headers = {}
+    if github_token:
+        headers['Authorization'] = f'Bearer {github_token}'
+    response = requests.get(GITHUB_PACKAGE_INFO_API_2.format(owner, repo), headers=headers).json()
     return response["default_branch"]
 
 def check_repo_activeness(package_url):
     owner, repo = package_url.replace('.git','').split('/')[-2:]
     def_branch = get_default_branch(package_url)
-    active_response=requests.get(GITHUB_PACKAGE_INFO_API.format(owner,repo,'branches',def_branch))
+    # Get GitHub token from environment variable
+    github_token = os.environ.get('GITHUB_TOKEN')
+    headers = {}
+    if github_token:
+        headers['Authorization'] = f'Bearer {github_token}'
+    active_response=requests.get(GITHUB_PACKAGE_INFO_API.format(owner,repo,'branches',def_branch), headers=headers)
 
    
     last_commit_date=active_response.json()["commit"]["commit"]["committer"]["date"]
@@ -172,7 +182,7 @@ def raise_pull_request(branch_pkg, base="master"):
             "Authorization": "Bearer {}".format(github_token)
     }
 
-    #Check if PR already exists
+    # Check if PR already exists
     search_url = f"https://api.github.com/repos/{pr_owner}/{pr_repo}/pulls?head={head}&state=open"
     existing_pr_response = requests.get(search_url, headers=headers)
 

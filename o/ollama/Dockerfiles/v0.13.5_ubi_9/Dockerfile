@@ -7,7 +7,7 @@ ARG PACKAGE_NAME=ollama
 ARG PACKAGE_VERSION=v0.13.5
 ARG PACKAGE_URL=https://github.com/ollama/ollama
 ENV CMAKE_VERSION=3.30.5
-ENV GO_VERSION=1.24.1
+ENV GO_VERSION=1.26.1
 ENV PATH="/usr/local/go/bin:/usr/local/cmake/bin:${PATH}"
 
 # Install dependencies

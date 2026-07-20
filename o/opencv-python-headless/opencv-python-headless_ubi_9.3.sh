@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : opencv-python-headless
-# Version       : 4.11.0.86
+# Version       : 4.11.0.88
 # Source repo   : https://github.com/opencv/opencv-python.git
 # Tested on     : UBI:9.3
 # Language      : Python
@@ -22,7 +22,7 @@ set -e
 
 
 PACKAGE_NAME=opencv-python-headless
-PACKAGE_VERSION=${1:-86}
+PACKAGE_VERSION=${1:-88}
 PACKAGE_URL=https://github.com/opencv/opencv-python
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=opencv-python
@@ -234,7 +234,7 @@ export CPLUS_INCLUDE_PATH=${LIBPROTOBUF_PREFIX}/include:$CPLUS_INCLUDE_PATH
 ln -sf $CURRENT_DIR/opencv-python/tests/SampleVideo_1280x720_1mb.mp4 SampleVideo_1280x720_1mb.mp4
 
 # Build package
-if ! pip install -e . ; then
+if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

@@ -33,10 +33,17 @@ yum install -y git gcc-toolset-13 ninja-build rust cargo python-devel python-pip
 
 source /opt/rh/gcc-toolset-13/enable
 
-curl -sL https://ftp2.osuosl.org/pub/ppc64el/openblas/latest/Openblas_0.3.29_ppc64le.tar.gz | tar xvf - -C /usr/local \
-&& export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
+echo "---------------------openblas installing---------------------"
+#install openblas
+#clone and install openblas from source
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib:/usr/lib64:/usr/lib
+git clone https://github.com/OpenMathLib/OpenBLAS
+cd OpenBLAS
+git checkout v0.3.32
+make -j${MAX_JOBS} TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=120 DYNAMIC_ARCH=1 INTERFACE64=0
+make install PREFIX=/usr/local
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib
+echo "--------------------openblas installed-------------------------------"
 
 # Clone repository
 cd $CURRENT_DIR
@@ -55,7 +62,7 @@ pip3 install --upgrade pip setuptools wheel
 pip3 install ninja 'cmake<4' 'pytest==8.2.2' hydra-core
 
 # Install dependency - pytorch
-PYTORCH_VERSION=v2.5.1
+PYTORCH_VERSION=v2.7.1
 cd $CURRENT_DIR
 
 git clone https://github.com/pytorch/pytorch.git
@@ -82,10 +89,11 @@ export CXXFLAGS="-Wno-unused-variable -Wno-unused-parameter"
 pip3 install -r requirements.txt
 MAX_JOBS=$PARALLEL python3 setup.py install
 
+export LD_LIBRARY_PATH=$CURRENT_DIR/pytorch/build/lib/:$LD_LIBRARY_PATH
 cd $CURRENT_DIR/$PACKAGE_NAME
 
 # Build and install xformers
-if ! pip3 install . -vvv; then
+if ! pip3 install . --no-build-isolation -vvv; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Build_fails"

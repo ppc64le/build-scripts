@@ -18,18 +18,25 @@
 #
 # ---------------------------------------------------------------------------
 
-set -ex 
+set -ex
 
 PACKAGE_NAME=sentencepiece
 PACKAGE_VERSION=${1:-v0.2.0}
 PACKAGE_URL=https://github.com/google/sentencepiece.git
 PACKAGE_DIR=sentencepiece/python
 
-yum install -y make libtool git wget tar xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13  pkg-config
+yum install -y make libtool git wget tar xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13 gcc gcc-c++ pkg-config
 
 dnf install -y gcc-toolset-13-libatomic-devel
 
-PYTHON_VERSION=python$(python --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)  
+export CC=gcc
+export CXX=g++
+export FC=gfortran
+# command -v g++
+gcc --version
+g++ --version
+
+PYTHON_VERSION=python$(python --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -38,7 +45,7 @@ SCRIPT_DIR=$(pwd)
 
 #Building abesil-cpp,libprotobuf and protobuf 
 
-pip install --upgrade pip setuptools wheel ninja packaging pytest 
+pip install --upgrade pip "setuptools<80" wheel ninja packaging pytest
 
 # cmake installing from source 
 echo " -------------------------- Cmake Installing -------------------------- " 
@@ -54,18 +61,6 @@ echo " -------------------------- Cmake Successfully Installed -----------------
 
 cd $SCRIPT_DIR
 
-#Building abseil-cpp
-echo " -------------------------- Abseil-cpp cloning -------------------------- "
-
-ABSEIL_VERSION=20240116.2
-ABSEIL_URL="https://github.com/abseil/abseil-cpp"
-git clone $ABSEIL_URL -b $ABSEIL_VERSION
-
-echo " -------------------------- Abseil-cpp cloned -------------------------- "
-
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
-
 #Build libprotobuf
 echo " -------------------------- Libprotobuf Installing -------------------------- "
 
@@ -78,10 +73,7 @@ mkdir -p $LIBPROTO_DIR/local/libprotobuf
 LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
 
 git submodule update --init --recursive
-rm -rf ./third_party/googletest | true
-rm -rf ./third_party/abseil-cpp | true
-
-cp -r $SCRIPT_DIR/abseil-cpp ./third_party/
+rm -rf ./third_party/googletest || true
 
 mkdir build
 cd build
@@ -90,8 +82,8 @@ cmake -G "Ninja" \
    ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_C_COMPILER=$C_COMPILER \
-    -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
+    -DCMAKE_C_COMPILER=$CC \
+    -DCMAKE_CXX_COMPILER=$CXX \
     -DCMAKE_INSTALL_PREFIX=$LIBPROTO_INSTALL \
     -Dprotobuf_BUILD_TESTS=OFF \
     -Dprotobuf_BUILD_LIBUPB=OFF \
@@ -108,9 +100,9 @@ cmake --install .
 cd ..
 
 #Build protobuf
-export PROTOC=$LIBPROTO_DIR/build/protoc
-export LD_LIBRARY_PATH=$SCRIPT_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
-export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
+export PROTOC=$LIBPROTO_INSTALL/bin/protoc  # CHANGED: Use installed path
+export LD_LIBRARY_PATH=$LIBPROTO_INSTALL/lib:$LD_LIBRARY_PATH  # CHANGED: Use installed path
+export LIBRARY_PATH=$LIBPROTO_INSTALL/lib:$LIBRARY_PATH  # CHANGED: Use installed path
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
@@ -119,7 +111,7 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p
 git apply set_cpp_to_17_v4.25.3.patch
 
 cd python
-pip install .
+pip install . --no-build-isolation
 
 echo " -------------------------- libprotobuf and  protobuf installed -------------------------- "
 
@@ -132,11 +124,30 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-export PATH="${SITE_PACKAGE_PATH}/libprotobuf/bin/protoc:${PATH}"
-export LD_LIBRARY_PATH="${SITE_PACKAGE_PATH}/libprotobuf/lib64:${LD_LIBRARY_PATH}"
-export LD_LIBRARY_PATH="${SITE_PACKAGE_PATH}/abseilcpp/lib:${LD_LIBRARY_PATH}"
-export CMAKE_PREFIX_PATH="${SITE_PACKAGE_PATH}"
+echo "-------------------------- Patch license metadata --------------------------"
+cd python
 
+cp -f ../LICENSE . 2>/dev/null || true
+
+if ! grep -q '^license *=.*' pyproject.toml; then
+    echo "Patching pyproject.toml to include license..."
+
+    sed -i '/^\[project\]$/a license = "Apache-2.0"' pyproject.toml
+    sed -i '/^license = "Apache-2.0"$/a license-files = ["LICENSE"]' pyproject.toml
+fi
+
+# Ensure LICENSE included in source dist
+if [ ! -f MANIFEST.in ]; then
+    echo "include LICENSE" > MANIFEST.in
+elif ! grep -q LICENSE MANIFEST.in; then
+    echo "include LICENSE" >> MANIFEST.in
+fi
+
+cd ..
+
+export PATH="$LIBPROTO_INSTALL/bin:${PATH}"
+export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib:${LD_LIBRARY_PATH}"
+export CMAKE_PREFIX_PATH="$LIBPROTO_INSTALL"  # ADDED: Let CMake find protobuf/abseil
 
 export GCC_AR="${GCC_HOME}/bin/ar"
 mkdir -p ${SCRIPT_DIR}/custom_libs
@@ -155,12 +166,13 @@ PAGE_SIZE=`getconf PAGE_SIZE`
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX="${HOME}" .. -DSPM_BUILD_TEST=ON -DSPM_ENABLE_TCMALLOC=OFF \
-    -DSPM_USE_BUILTIN_PROTOBUF=OFF -DCMAKE_AR=${GCC_AR}
+    -DSPM_USE_BUILTIN_PROTOBUF=OFF -DCMAKE_AR=${GCC_AR} \
+    -DSPM_USE_BUILTIN_PROTOBUF=ON
 make -j $(nproc)
 make install
 cd ../python
 
-if ! pip install .; then
+if ! pip install . --no-build-isolation; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

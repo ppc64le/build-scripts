@@ -15,6 +15,6 @@
    "build_script": "pyzmq_v25.1.2_ubi_9.3.sh"
   },
   "*": {
-    "build_script": "pyzmq_ubi_9.3.sh"
+    "build_script": "pyzmq_v25.1.2_ubi_9.3.sh"
   }
 }

@@ -1,10 +1,10 @@
 {
-  "maintainer": "AbhiIBM",
+  "maintainer": "SanketPatil11",
   "package_name": "consul",
   "github_url": "https://github.com/hashicorp/consul",
-  "version": "v1.18.1",
+  "version": "v1.22.0",
   "default_branch": "main",
-  "build_script": "consul_v1.18.1_ubi_9.3.sh",
+  "build_script": "consul_v1.22.0_ubi_9.6.sh",
   "package_dir": "c/consul/",
   "docker_build": true,
   "validate_build_script": true,
@@ -32,6 +32,10 @@
     "dir": "1.9.4-ubi8",
     "build_script": "consul_v1.16.1_ubi_8.7.sh"
   },
+  "v1.22.0": {
+    "dir": "1.22.0-ubi9",
+    "build_script": "consul_v1.22.0_ubi_9.6.sh"
+  },
   "v1.1*.*":{
     "dir": "1.18.1-ubi9",
     "build_script": "consul_v1.18.1_ubi_9.3.sh",
@@ -40,6 +44,7 @@
     }
   },
   "v*.*.*": {
-    "dir": "template"
+    "dir": "template",
+	"build_script": "consul_v1.22.0_ubi_9.6.sh"
   }
 }

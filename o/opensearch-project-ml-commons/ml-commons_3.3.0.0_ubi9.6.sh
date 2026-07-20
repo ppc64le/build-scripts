@@ -202,6 +202,17 @@ cd bom
 ./gradlew -Prelease=true publishToMavenLocal
 
 
+# ------------------------------
+# Build OpenSearch distribution
+# ------------------------------
+cd $BUILD_HOME
+git clone https://github.com/opensearch-project/OpenSearch
+cd OpenSearch
+git checkout $OPENSEARCH_VERSION
+./gradlew -p distribution/archives/linux-ppc64le-tar assemble
+./gradlew -Prelease=true publishToMavenLocal
+./gradlew :build-tools:publishToMavenLocal
+
 # ---------------------------
 # Build Job Scheduler
 # ---------------------------
@@ -223,14 +234,6 @@ export GRADLE_OPTS="-Dorg.gradle.console=plain"
 ./gradlew build
 ./gradlew -Prelease=true publishToMavenLocal
 
-# ------------------------------
-# Build OpenSearch distribution
-# ------------------------------
-cd $BUILD_HOME
-git clone https://github.com/opensearch-project/OpenSearch
-cd OpenSearch
-git checkout $OPENSEARCH_VERSION
-./gradlew -p distribution/archives/linux-ppc64le-tar assemble
 
 # ---------------------------
 # Clone and Prepare Repository
@@ -246,7 +249,7 @@ git apply ${SCRIPT_PATH}/ml-commons_$SCRIPT_PACKAGE_VERSION.patch
 # Build
 # --------
 ret=0
-./gradlew build -x test -x integTest || ret=$?
+./gradlew build -x test -x integTest -Dbuild.snapshot=false|| ret=$?
 if [ $ret -ne 0 ]; then
         set +ex
 	echo "------------------ ${PACKAGE_NAME}: Build Failed ------------------"

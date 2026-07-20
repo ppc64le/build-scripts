@@ -104,7 +104,7 @@ cd ..
 echo "-------------------successfully Installed llvmlite----------------------"
 
 # Install numpy
-pip install pytest numpy==1.21.1
+pip install pytest numpy==1.26.4
 
 # Clone repository
 git clone $PACKAGE_URL

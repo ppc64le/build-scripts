@@ -1,0 +1,16 @@
+{
+   "maintainer": "kiranNukal",
+   "package_name": "joblib",
+   "github_url": "https://github.com/joblib/joblib",
+   "version": "1.3.2",
+   "default_branch": "main",
+   "build_script": "joblib_ubi_9.6.sh",
+   "package_dir": "j/joblib",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"joblib_ubi_9.6.sh"
+  }
+}

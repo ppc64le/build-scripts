@@ -3,10 +3,9 @@ import os
 import stat
 import requests
 import sys
-import subprocess
 import docker
 import json
-
+import datetime
 import re
 
 
@@ -22,32 +21,32 @@ image_name = None  # changed from hardcoded to None
 
 
 def determine_docker_image(tested_on_raw, use_non_root_user):
-    """
-    Determine docker image based on Tested_on value and non-root build flag,
-    replicating the logic from the bash script.
-    """
+    tested_on_raw = tested_on_raw.strip().upper()
     docker_image = ""
 
-    tested_on_raw = tested_on_raw.strip().upper()
-    # Match UBI 9.x pattern
-    if tested_on_raw.startswith("UBI:9") or tested_on_raw.startswith("UBI9"):
-        # Extract version e.g. 9.6, 9.3 etc.
-        match = re.search(r'9\.\d+', tested_on_raw)
-        ubi_version = match.group(0) if match else "9.3"  # default to 9.3 if missing
+    # Match:
+    # UBI:9.6 | UBI9.6 | UBI 9.6 | UBI:9 | UBI9 | UBI 9
+    match = re.search(r'\bUBI\s*[: ]?\s*(\d+)(?:\.(\d+))?\b', tested_on_raw)
 
-        docker_image = f"registry.access.redhat.com/ubi9/ubi:{ubi_version}"
+    if match:
+        major = match.group(1)
+        minor = match.group(2) or "3"  # default minor if missing
 
+        if major == "9":
+            docker_image = f"registry.access.redhat.com/ubi9/ubi:{major}.{minor}"
+        else:
+            docker_image = "registry.access.redhat.com/ubi8/ubi:8.7"
     else:
-        # fallback to UBI 8.7 if not matched
+        # fallback if format is completely unknown
         docker_image = "registry.access.redhat.com/ubi8/ubi:8.7"
 
-    # If non-root build is set, build custom non-root docker image
+    # Non-root handling (unchanged)
     if use_non_root_user.lower() == "true":
-        # Build custom image based on base docker_image
         build_non_root_custom_docker_image(base_image=docker_image)
         docker_image = "docker_non_root_image"
 
     return docker_image
+
 
 
 def trigger_basic_validation_checks(file_name):
@@ -129,6 +128,9 @@ def trigger_basic_validation_checks(file_name):
     else:
         raise ValueError("Build script not found.")
 
+def log_msg(message):
+    """Helper to print with timestamp"""
+    print(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] {message}")
 
 def trigger_script_validation_checks(file_name):
     global image_name
@@ -136,33 +138,70 @@ def trigger_script_validation_checks(file_name):
         # fallback if image_name is still None
         image_name = "registry.access.redhat.com/ubi9/ubi:9.3"
 
-    print(f"Image used for the creating container: {image_name}")
-    # Spawn a container and pass the build script
-    client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+    log_msg(f"Starting validation. Image: {image_name}")
+    
+    try:
+        log_msg("Connecting to Docker socket...")
+        client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+        log_msg("Docker client connected.")
+    except Exception as e:
+        log_msg(f"Failed to connect to Docker: {e}")
+        raise e
+
+    log_msg(f"Setting execution permissions for {file_name}...")
     st = os.stat(file_name)
     current_dir = os.getcwd()
     os.chmod("{}/{}".format(current_dir, file_name), st.st_mode | stat.S_IEXEC)
-    # Let the container run in non detach mode, as we need to delete the container on operation completion
-    container = client.containers.run(
-        image_name,
-        "/home/tester/{}".format(file_name),
-
-        network='host',
-        detach=True,
-        volumes={
-            current_dir: {'bind': '/home/tester/', 'mode': 'rw'}
-        },
-        stderr=True,  # Return logs from STDERR
-
-    )
-    result = container.wait()
+    
+    log_msg(f"Checking if image {image_name} exists locally...")
     try:
-        print(container.logs().decode("utf-8"))
-    except Exception:
-        print(container.logs())
-    container.remove()
+        client.images.get(image_name)
+        log_msg("Image found locally.")
+    except docker.errors.ImageNotFound:
+        log_msg("Image NOT found locally. Pulling now... (This may take a while)")
+        try:
+            client.images.pull(image_name)
+            log_msg("Image pulled successfully.")
+        except Exception as e:
+            log_msg(f"Failed to pull image: {e}")
+            raise e
+
+    log_msg(f"Spawning container to run /home/tester/{file_name}...")
+    try:
+        container = client.containers.run(
+            image_name,
+            "/home/tester/{}".format(file_name),
+            detach = True,
+            volumes = {
+                current_dir : {'bind': '/home/tester/', 'mode': 'rw'}
+            },
+            stderr = True,
+        )
+        log_msg(f"Container started. ID: {container.short_id}")
+    except Exception as e:
+        log_msg(f"Failed to start container: {e}")
+        raise e
+
+    log_msg("Streaming container logs...")
+    print("----- CONTAINER LOGS START -----")
+    try:
+        for line in container.logs(stream=True):
+            print(line.decode("utf-8").strip())
+    except Exception as e:
+        log_msg(f"Error while streaming logs: {e}")
+    print("----- CONTAINER LOGS END -----")
+
+    result = container.wait()
+    log_msg(f"Container finished with status code: {result['StatusCode']}")
+    
+    try:
+        container.remove()
+        log_msg("Container removed.")
+    except Exception as e:
+        log_msg(f"Warning: Failed to remove container: {e}")
+
     if int(result["StatusCode"]) != 0:
-        raise Exception(f"Build script validation failed for {file_name} !")
+        raise Exception(f"Build script validation failed for {file_name} with exit code {result['StatusCode']}!")
     else:
         return True
 
@@ -229,8 +268,33 @@ def trigger_build_validation_ci(pr_number):
         GITHUB_BUILD_SCRIPT_BASE_REPO,
         pr_number
     )
+
+    print(f"pull_request_file_url:{pull_request_file_url}" )
+    
+    # Get GitHub token from environment variable
+    github_token = os.environ.get('GITHUB_TOKEN')
+    headers = {}
+    if github_token:
+        headers['Authorization'] = f'Bearer {github_token}'
+        print("Using authenticated GitHub API request")
+    else:
+        print("Warning: GITHUB_TOKEN not found, using unauthenticated request (subject to rate limits)")
+    
+    req_response = requests.get(pull_request_file_url, headers=headers)
+    
+    if req_response.status_code != 200:
+        print(f"Error calling GitHub API. Status Code: {req_response.status_code}")
+        print(f"Response: {req_response.text}")
+        sys.exit(1)
+
+    response = req_response.json()
+
+    if not isinstance(response, list):
+        print(f"Unexpected API response format. Expected list, got {type(response)}")
+        print(response)
+        sys.exit(1)
+
     validated_file_list = []
-    response = requests.get(pull_request_file_url).json()
 
     ordered_files = []
     build_info = [file for file in response if 'build_info.json' in file.get('filename')]

@@ -28,7 +28,7 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 #Install libev
-curl -LO http://dist.schmorp.de/libev/Attic/libev-4.33.tar.gz
+curl -LO https://dist.schmorp.de/libev/Attic/libev-4.33.tar.gz
 tar -xzf libev-4.33.tar.gz
 cd libev-4.33
 export CFLAGS="-fPIC"
@@ -44,7 +44,7 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #install necessary Python packages
-pip install wheel pytest tox nox mock build gevent eventlet pyopenssl
+pip install wheel pytest tox nox mock build gevent eventlet pyopenssl "setuptools<80" 
 pip install -r test-requirements.txt
 
 export CASS_DRIVER_LIBEV_INCLUDES="/usr/local/include"
@@ -53,7 +53,7 @@ export LDFLAGS="-Wl,-Bstatic -lev -Wl,-Bdynamic"
 python3 setup.py build_ext --inplace
 
 #Install
-if ! pip install . ; then
+if ! pip install . --no-build-isolation ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

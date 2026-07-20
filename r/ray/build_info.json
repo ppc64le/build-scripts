@@ -1,16 +1,19 @@
 {
-  "maintainer": "ramnathnayak-ibm",
+  "maintainer": "Sunidhi-Gaonkar1",
   "package_name": "ray",
   "github_url": "https://github.com/ray-project/ray",
-  "version": "ray-2.47.1",
+  "version": "ray-2.52.1",
   "default_branch": "master",
-  "build_script": "ray_ubi_9.3.sh",
+  "build_script": "ray_2.52.1_ubi_9.6.sh",
   "package_dir": "r/ray",
   "docker_build": false,
   "wheel_build": true,
   "use_non_root_user": false,
   "validate_build_script": true,
   "*": {
-    "build_script": "ray_ubi_9.3.sh"
+    "build_script": "ray_2.52.1_ubi_9.6.sh"
+  },
+  "ray-2.47.1": {
+    "build_script": "ray_ubi_9.3.sh" 
   }
 }

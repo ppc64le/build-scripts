@@ -1,0 +1,43 @@
+diff --git a/build.gradle b/build.gradle
+index e9efe3f1..83b05bc0 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -400,7 +400,12 @@ loggerUsageCheck.enabled = false
+ publishing {
+     publications {
+         pluginZip(MavenPublication) { publication ->
+-            pom {
++             withType(MavenPublication).configureEach {
++            if (name == "nebula") {
++                groupId = "org.opensearch.plugin"
++            }
++        }
++	        pom {
+                 name = "opensearch-security"
+                 description = "Provide access control related features for OpenSearch"
+                 groupId = "org.opensearch.plugin"
+@@ -864,10 +869,24 @@ publishing {
+         maven(MavenPublication) {
+             from(components.java)
+             artifact(testsJar)
++
++	 groupId = "org.opensearch.plugin"
+         }
+     }
+ }
+ 
++import org.gradle.api.publish.maven.tasks.GenerateMavenPom
++     tasks.matching {
++        it.name.startsWith("publish")
++     }.configureEach {
++    dependsOn(
++        "generatePomFileForNebulaPublication",
++        "generatePomFileForMavenPublication",
++        "generatePomFileForPluginZipPublication"
++    )
++}
++
++
+ task integTestRemote(type: RestIntegTestTask) {
+ 
+     systemProperty "tests.security.manager", "false"

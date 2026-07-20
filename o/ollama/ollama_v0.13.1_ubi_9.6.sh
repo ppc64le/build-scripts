@@ -70,10 +70,15 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-echo "** Applying Power10 Patches..."
-patch -p1 < ${SCRIPT_PATH}/build_power_${PACKAGE_VERSION}.patch
-patch -p1 < ${SCRIPT_PATH}/set_threads_env_${PACKAGE_VERSION}.patch
-patch -p1 < ${SCRIPT_PATH}/enable_mma_${PACKAGE_VERSION}.patch
+echo "** Downloading Power10 Patches..."
+wget -O build_power.patch https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/ollama/build_power_v0.13.1.patch
+wget -O set_threads_env.patch https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/ollama/set_threads_env_v0.13.1.patch
+wget -O enable_mma.patch https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/ollama/enable_mma_v0.13.1.patch
+
+echo "** Applying Patches..."
+patch -p1 < build_power.patch
+patch -p1 < set_threads_env.patch
+patch -p1 < enable_mma.patch
 
 # -----------------------------------------------------------------------------
 # Build Ollama
@@ -82,7 +87,7 @@ echo "**** Building Ollama with CMake..."
 cmake -B build
 cmake --build build -j$(nproc)
 
-export CGO_LDFLAGS="-L$(pwd)/build/lib/ollama/ -lggml-cpu-power10"
+export CGO_LDFLAGS="-L$(pwd)/build/lib/ollama -lggml-cpu-power10 -Wl,-rpath,\$ORIGIN/../lib"
 
 echo "**** Building Ollama binary with Go..."
 ../go/bin/go build --tags ppc64le.power10 -o ollama .
@@ -154,7 +159,7 @@ setup(
     author_email="Pratik.Tonage@ibm.com",
     description="Power10 optimized Ollama binary + shared libs as Python package",
     license="MIT",
-    packages=[PYTHON_PACKAGE_NAME],
+	packages=find_packages(include=["ollama_python_package"]),
     include_package_data=False,
     cmdclass={'build_py': CustomBuild},
     package_data={PYTHON_PACKAGE_NAME: ["bin/*", "lib/*.so"]},
@@ -178,7 +183,7 @@ EOF
 echo "=============== Building wheel =================="
 python -m pip install --upgrade pip setuptools wheel build
 
-if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
+if ! python setup.py bdist_wheel --plat-name linux_ppc64le --dist-dir "$CURRENT_DIR/"; then
     echo "============ Wheel Creation Failed ================="
     EXIT_CODE=1
 else

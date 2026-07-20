@@ -1,0 +1,16 @@
+{
+    "maintainer": "Harithanagothu2",
+    "package_name": "galaxy_ng",
+    "github_url": "https://github.com/ansible/galaxy_ng.git",
+    "version": "4.10.6",
+    "wheel_build": true,
+    "default_branch": "main",
+    "build_script": "galaxy_ng_ubi_9.6.sh",
+    "package_dir": "g/galaxy_ng",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*": {
+        "build_script":"galaxy_ng_ubi_9.6.sh"
+    }
+}

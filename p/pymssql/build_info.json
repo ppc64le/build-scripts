@@ -1,22 +1,25 @@
 {
-  "maintainer": "SakshiJain0302",
+  "maintainer": "Shivansh-ibm",
   "package_name": "pymssql",
   "github_url": "https://github.com/pymssql/pymssql.git",
-  "version": "v2.3.8",
+  "version": "v2.3.11",
   "wheel_build" : true,
   "package_dir": "p/pymssql",
   "default_branch": "master",
-  "build_script": "pymssql_2.3.8_ubi_9.6.sh",
+  "build_script": "pymssql_2.3.11_ubi_9.6.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
   "v2.2.5":{
     "build_script":"pymssql_ubi_9.3.sh"
   },
-  "v2.3.7":{
+  "v2.3.2":{
+    "build_script":"pymssql_2.3.2_ubi_9.3.sh"
+  },
+  "v2.3.4":{
     "build_script":"pymssql_2.3.2_ubi_9.3.sh"
   },
   "*":{
-    "build_script":"pymssql_2.3.8_ubi_9.6.sh"
+    "build_script":"pymssql_2.3.11_ubi_9.6.sh"
   }
 }

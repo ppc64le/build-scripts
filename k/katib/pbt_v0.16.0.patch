@@ -1,0 +1,26 @@
+diff --git a/cmd/suggestion/pbt/v1beta1/Dockerfile b/cmd/suggestion/pbt/v1beta1/Dockerfile
+index 43a3f155..14fb0a02 100644
+--- a/cmd/suggestion/pbt/v1beta1/Dockerfile
++++ b/cmd/suggestion/pbt/v1beta1/Dockerfile
+@@ -7,7 +7,10 @@ ENV PYTHONPATH ${TARGET_DIR}:${TARGET_DIR}/pkg/apis/manager/v1beta1/python:${TAR
+ 
+ RUN if [ "${TARGETARCH}" = "ppc64le" ]; then \
+     apt-get -y update && \
+-    apt-get -y install gfortran libopenblas-dev liblapack-dev && \
++    apt-get -y install gfortran libopenblas-dev liblapack-dev libssl-dev gcc g++ pkg-config git && \
++    export REPO_ROOT=grpc && git clone -b v1.60.1 https://github.com/grpc/grpc $REPO_ROOT && \
++    cd $REPO_ROOT && git submodule update --init && \
++    pip install -r requirements.txt && GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 pip install . && \
+     apt-get clean && \
+     rm -rf /var/lib/apt/lists/*; \
+     fi
+diff --git a/cmd/suggestion/pbt/v1beta1/requirements.txt b/cmd/suggestion/pbt/v1beta1/requirements.txt
+index a341e334..f101a272 100644
+--- a/cmd/suggestion/pbt/v1beta1/requirements.txt
++++ b/cmd/suggestion/pbt/v1beta1/requirements.txt
+@@ -1,4 +1,4 @@
+-grpcio>=1.41.1
++#grpcio>=1.41.1
+ protobuf>=3.19.5, <=3.20.3
+ googleapis-common-protos==1.53.0
+ numpy==1.22.2

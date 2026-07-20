@@ -1,0 +1,16 @@
+{
+   "maintainer": "kiranNukal",
+   "package_name": "portalocker",
+   "github_url": "https://github.com/wolph/portalocker",
+   "version": "v2.10.1",
+   "default_branch": "develop",
+   "build_script": "portalocker_ubi_9.6.sh",
+   "package_dir": "p/portalocker",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"portalocker_ubi_9.6.sh"
+  }
+}

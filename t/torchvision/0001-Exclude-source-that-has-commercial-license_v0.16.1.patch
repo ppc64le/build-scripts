@@ -1,0 +1,2497 @@
+From 5ff67e8a522484241854bf4b05f9e1788c4812f0 Mon Sep 17 00:00:00 2001
+From: Nishidha Panpaliya <nishidha.panpaliya@partner.ibm.com>
+Date: Thu, 4 Sep 2025 07:54:52 -0400
+Subject: [PATCH] Exclude source that has commercial license
+
+---
+ README.md                                |    3 -
+ torchvision/models/__init__.py           |    4 +-
+ torchvision/models/regnet.py             | 1571 ----------------------
+ torchvision/models/vision_transformer.py |  864 ------------
+ 4 files changed, 2 insertions(+), 2440 deletions(-)
+ delete mode 100644 torchvision/models/regnet.py
+ delete mode 100644 torchvision/models/vision_transformer.py
+
+diff --git a/README.md b/README.md
+index 1076a7a186..ac74d6cf33 100644
+--- a/README.md
++++ b/README.md
+@@ -109,9 +109,6 @@ The pre-trained models provided in this library may have their own licenses or t
+ dataset used for training. It is your responsibility to determine whether you have permission to use the models for your
+ use case.
+ 
+-More specifically, SWAG models are released under the CC-BY-NC 4.0 license. See
+-[SWAG LICENSE](https://github.com/facebookresearch/SWAG/blob/main/LICENSE) for additional details.
+-
+ ## Citing TorchVision
+ 
+ If you find TorchVision useful in your work, please consider citing the following BibTeX entry:
+diff --git a/torchvision/models/__init__.py b/torchvision/models/__init__.py
+index 6ea0a1f717..190bbe2b4d 100644
+--- a/torchvision/models/__init__.py
++++ b/torchvision/models/__init__.py
+@@ -6,12 +6,12 @@ from .googlenet import *
+ from .inception import *
+ from .mnasnet import *
+ from .mobilenet import *
+-from .regnet import *
++#from .regnet import *
+ from .resnet import *
+ from .shufflenetv2 import *
+ from .squeezenet import *
+ from .vgg import *
+-from .vision_transformer import *
++#from .vision_transformer import *
+ from .swin_transformer import *
+ from .maxvit import *
+ from . import detection, optical_flow, quantization, segmentation, video
+diff --git a/torchvision/models/regnet.py b/torchvision/models/regnet.py
+deleted file mode 100644
+index f37b2994e4..0000000000
+--- a/torchvision/models/regnet.py
++++ /dev/null
+@@ -1,1571 +0,0 @@
+-import math
+-from collections import OrderedDict
+-from functools import partial
+-from typing import Any, Callable, Dict, List, Optional, Tuple
+-
+-import torch
+-from torch import nn, Tensor
+-
+-from ..ops.misc import Conv2dNormActivation, SqueezeExcitation
+-from ..transforms._presets import ImageClassification, InterpolationMode
+-from ..utils import _log_api_usage_once
+-from ._api import register_model, Weights, WeightsEnum
+-from ._meta import _IMAGENET_CATEGORIES
+-from ._utils import _make_divisible, _ovewrite_named_param, handle_legacy_interface
+-
+-
+-__all__ = [
+-    "RegNet",
+-    "RegNet_Y_400MF_Weights",
+-    "RegNet_Y_800MF_Weights",
+-    "RegNet_Y_1_6GF_Weights",
+-    "RegNet_Y_3_2GF_Weights",
+-    "RegNet_Y_8GF_Weights",
+-    "RegNet_Y_16GF_Weights",
+-    "RegNet_Y_32GF_Weights",
+-    "RegNet_Y_128GF_Weights",
+-    "RegNet_X_400MF_Weights",
+-    "RegNet_X_800MF_Weights",
+-    "RegNet_X_1_6GF_Weights",
+-    "RegNet_X_3_2GF_Weights",
+-    "RegNet_X_8GF_Weights",
+-    "RegNet_X_16GF_Weights",
+-    "RegNet_X_32GF_Weights",
+-    "regnet_y_400mf",
+-    "regnet_y_800mf",
+-    "regnet_y_1_6gf",
+-    "regnet_y_3_2gf",
+-    "regnet_y_8gf",
+-    "regnet_y_16gf",
+-    "regnet_y_32gf",
+-    "regnet_y_128gf",
+-    "regnet_x_400mf",
+-    "regnet_x_800mf",
+-    "regnet_x_1_6gf",
+-    "regnet_x_3_2gf",
+-    "regnet_x_8gf",
+-    "regnet_x_16gf",
+-    "regnet_x_32gf",
+-]
+-
+-
+-class SimpleStemIN(Conv2dNormActivation):
+-    """Simple stem for ImageNet: 3x3, BN, ReLU."""
+-
+-    def __init__(
+-        self,
+-        width_in: int,
+-        width_out: int,
+-        norm_layer: Callable[..., nn.Module],
+-        activation_layer: Callable[..., nn.Module],
+-    ) -> None:
+-        super().__init__(
+-            width_in, width_out, kernel_size=3, stride=2, norm_layer=norm_layer, activation_layer=activation_layer
+-        )
+-
+-
+-class BottleneckTransform(nn.Sequential):
+-    """Bottleneck transformation: 1x1, 3x3 [+SE], 1x1."""
+-
+-    def __init__(
+-        self,
+-        width_in: int,
+-        width_out: int,
+-        stride: int,
+-        norm_layer: Callable[..., nn.Module],
+-        activation_layer: Callable[..., nn.Module],
+-        group_width: int,
+-        bottleneck_multiplier: float,
+-        se_ratio: Optional[float],
+-    ) -> None:
+-        layers: OrderedDict[str, nn.Module] = OrderedDict()
+-        w_b = int(round(width_out * bottleneck_multiplier))
+-        g = w_b // group_width
+-
+-        layers["a"] = Conv2dNormActivation(
+-            width_in, w_b, kernel_size=1, stride=1, norm_layer=norm_layer, activation_layer=activation_layer
+-        )
+-        layers["b"] = Conv2dNormActivation(
+-            w_b, w_b, kernel_size=3, stride=stride, groups=g, norm_layer=norm_layer, activation_layer=activation_layer
+-        )
+-
+-        if se_ratio:
+-            # The SE reduction ratio is defined with respect to the
+-            # beginning of the block
+-            width_se_out = int(round(se_ratio * width_in))
+-            layers["se"] = SqueezeExcitation(
+-                input_channels=w_b,
+-                squeeze_channels=width_se_out,
+-                activation=activation_layer,
+-            )
+-
+-        layers["c"] = Conv2dNormActivation(
+-            w_b, width_out, kernel_size=1, stride=1, norm_layer=norm_layer, activation_layer=None
+-        )
+-        super().__init__(layers)
+-
+-
+-class ResBottleneckBlock(nn.Module):
+-    """Residual bottleneck block: x + F(x), F = bottleneck transform."""
+-
+-    def __init__(
+-        self,
+-        width_in: int,
+-        width_out: int,
+-        stride: int,
+-        norm_layer: Callable[..., nn.Module],
+-        activation_layer: Callable[..., nn.Module],
+-        group_width: int = 1,
+-        bottleneck_multiplier: float = 1.0,
+-        se_ratio: Optional[float] = None,
+-    ) -> None:
+-        super().__init__()
+-
+-        # Use skip connection with projection if shape changes
+-        self.proj = None
+-        should_proj = (width_in != width_out) or (stride != 1)
+-        if should_proj:
+-            self.proj = Conv2dNormActivation(
+-                width_in, width_out, kernel_size=1, stride=stride, norm_layer=norm_layer, activation_layer=None
+-            )
+-        self.f = BottleneckTransform(
+-            width_in,
+-            width_out,
+-            stride,
+-            norm_layer,
+-            activation_layer,
+-            group_width,
+-            bottleneck_multiplier,
+-            se_ratio,
+-        )
+-        self.activation = activation_layer(inplace=True)
+-
+-    def forward(self, x: Tensor) -> Tensor:
+-        if self.proj is not None:
+-            x = self.proj(x) + self.f(x)
+-        else:
+-            x = x + self.f(x)
+-        return self.activation(x)
+-
+-
+-class AnyStage(nn.Sequential):
+-    """AnyNet stage (sequence of blocks w/ the same output shape)."""
+-
+-    def __init__(
+-        self,
+-        width_in: int,
+-        width_out: int,
+-        stride: int,
+-        depth: int,
+-        block_constructor: Callable[..., nn.Module],
+-        norm_layer: Callable[..., nn.Module],
+-        activation_layer: Callable[..., nn.Module],
+-        group_width: int,
+-        bottleneck_multiplier: float,
+-        se_ratio: Optional[float] = None,
+-        stage_index: int = 0,
+-    ) -> None:
+-        super().__init__()
+-
+-        for i in range(depth):
+-            block = block_constructor(
+-                width_in if i == 0 else width_out,
+-                width_out,
+-                stride if i == 0 else 1,
+-                norm_layer,
+-                activation_layer,
+-                group_width,
+-                bottleneck_multiplier,
+-                se_ratio,
+-            )
+-
+-            self.add_module(f"block{stage_index}-{i}", block)
+-
+-
+-class BlockParams:
+-    def __init__(
+-        self,
+-        depths: List[int],
+-        widths: List[int],
+-        group_widths: List[int],
+-        bottleneck_multipliers: List[float],
+-        strides: List[int],
+-        se_ratio: Optional[float] = None,
+-    ) -> None:
+-        self.depths = depths
+-        self.widths = widths
+-        self.group_widths = group_widths
+-        self.bottleneck_multipliers = bottleneck_multipliers
+-        self.strides = strides
+-        self.se_ratio = se_ratio
+-
+-    @classmethod
+-    def from_init_params(
+-        cls,
+-        depth: int,
+-        w_0: int,
+-        w_a: float,
+-        w_m: float,
+-        group_width: int,
+-        bottleneck_multiplier: float = 1.0,
+-        se_ratio: Optional[float] = None,
+-        **kwargs: Any,
+-    ) -> "BlockParams":
+-        """
+-        Programmatically compute all the per-block settings,
+-        given the RegNet parameters.
+-
+-        The first step is to compute the quantized linear block parameters,
+-        in log space. Key parameters are:
+-        - `w_a` is the width progression slope
+-        - `w_0` is the initial width
+-        - `w_m` is the width stepping in the log space
+-
+-        In other terms
+-        `log(block_width) = log(w_0) + w_m * block_capacity`,
+-        with `bock_capacity` ramping up following the w_0 and w_a params.
+-        This block width is finally quantized to multiples of 8.
+-
+-        The second step is to compute the parameters per stage,
+-        taking into account the skip connection and the final 1x1 convolutions.
+-        We use the fact that the output width is constant within a stage.
+-        """
+-
+-        QUANT = 8
+-        STRIDE = 2
+-
+-        if w_a < 0 or w_0 <= 0 or w_m <= 1 or w_0 % 8 != 0:
+-            raise ValueError("Invalid RegNet settings")
+-        # Compute the block widths. Each stage has one unique block width
+-        widths_cont = torch.arange(depth) * w_a + w_0
+-        block_capacity = torch.round(torch.log(widths_cont / w_0) / math.log(w_m))
+-        block_widths = (torch.round(torch.divide(w_0 * torch.pow(w_m, block_capacity), QUANT)) * QUANT).int().tolist()
+-        num_stages = len(set(block_widths))
+-
+-        # Convert to per stage parameters
+-        split_helper = zip(
+-            block_widths + [0],
+-            [0] + block_widths,
+-            block_widths + [0],
+-            [0] + block_widths,
+-        )
+-        splits = [w != wp or r != rp for w, wp, r, rp in split_helper]
+-
+-        stage_widths = [w for w, t in zip(block_widths, splits[:-1]) if t]
+-        stage_depths = torch.diff(torch.tensor([d for d, t in enumerate(splits) if t])).int().tolist()
+-
+-        strides = [STRIDE] * num_stages
+-        bottleneck_multipliers = [bottleneck_multiplier] * num_stages
+-        group_widths = [group_width] * num_stages
+-
+-        # Adjust the compatibility of stage widths and group widths
+-        stage_widths, group_widths = cls._adjust_widths_groups_compatibilty(
+-            stage_widths, bottleneck_multipliers, group_widths
+-        )
+-
+-        return cls(
+-            depths=stage_depths,
+-            widths=stage_widths,
+-            group_widths=group_widths,
+-            bottleneck_multipliers=bottleneck_multipliers,
+-            strides=strides,
+-            se_ratio=se_ratio,
+-        )
+-
+-    def _get_expanded_params(self):
+-        return zip(self.widths, self.strides, self.depths, self.group_widths, self.bottleneck_multipliers)
+-
+-    @staticmethod
+-    def _adjust_widths_groups_compatibilty(
+-        stage_widths: List[int], bottleneck_ratios: List[float], group_widths: List[int]
+-    ) -> Tuple[List[int], List[int]]:
+-        """
+-        Adjusts the compatibility of widths and groups,
+-        depending on the bottleneck ratio.
+-        """
+-        # Compute all widths for the current settings
+-        widths = [int(w * b) for w, b in zip(stage_widths, bottleneck_ratios)]
+-        group_widths_min = [min(g, w_bot) for g, w_bot in zip(group_widths, widths)]
+-
+-        # Compute the adjusted widths so that stage and group widths fit
+-        ws_bot = [_make_divisible(w_bot, g) for w_bot, g in zip(widths, group_widths_min)]
+-        stage_widths = [int(w_bot / b) for w_bot, b in zip(ws_bot, bottleneck_ratios)]
+-        return stage_widths, group_widths_min
+-
+-
+-class RegNet(nn.Module):
+-    def __init__(
+-        self,
+-        block_params: BlockParams,
+-        num_classes: int = 1000,
+-        stem_width: int = 32,
+-        stem_type: Optional[Callable[..., nn.Module]] = None,
+-        block_type: Optional[Callable[..., nn.Module]] = None,
+-        norm_layer: Optional[Callable[..., nn.Module]] = None,
+-        activation: Optional[Callable[..., nn.Module]] = None,
+-    ) -> None:
+-        super().__init__()
+-        _log_api_usage_once(self)
+-
+-        if stem_type is None:
+-            stem_type = SimpleStemIN
+-        if norm_layer is None:
+-            norm_layer = nn.BatchNorm2d
+-        if block_type is None:
+-            block_type = ResBottleneckBlock
+-        if activation is None:
+-            activation = nn.ReLU
+-
+-        # Ad hoc stem
+-        self.stem = stem_type(
+-            3,  # width_in
+-            stem_width,
+-            norm_layer,
+-            activation,
+-        )
+-
+-        current_width = stem_width
+-
+-        blocks = []
+-        for i, (
+-            width_out,
+-            stride,
+-            depth,
+-            group_width,
+-            bottleneck_multiplier,
+-        ) in enumerate(block_params._get_expanded_params()):
+-            blocks.append(
+-                (
+-                    f"block{i+1}",
+-                    AnyStage(
+-                        current_width,
+-                        width_out,
+-                        stride,
+-                        depth,
+-                        block_type,
+-                        norm_layer,
+-                        activation,
+-                        group_width,
+-                        bottleneck_multiplier,
+-                        block_params.se_ratio,
+-                        stage_index=i + 1,
+-                    ),
+-                )
+-            )
+-
+-            current_width = width_out
+-
+-        self.trunk_output = nn.Sequential(OrderedDict(blocks))
+-
+-        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+-        self.fc = nn.Linear(in_features=current_width, out_features=num_classes)
+-
+-        # Performs ResNet-style weight initialization
+-        for m in self.modules():
+-            if isinstance(m, nn.Conv2d):
+-                # Note that there is no bias due to BN
+-                fan_out = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+-                nn.init.normal_(m.weight, mean=0.0, std=math.sqrt(2.0 / fan_out))
+-            elif isinstance(m, nn.BatchNorm2d):
+-                nn.init.ones_(m.weight)
+-                nn.init.zeros_(m.bias)
+-            elif isinstance(m, nn.Linear):
+-                nn.init.normal_(m.weight, mean=0.0, std=0.01)
+-                nn.init.zeros_(m.bias)
+-
+-    def forward(self, x: Tensor) -> Tensor:
+-        x = self.stem(x)
+-        x = self.trunk_output(x)
+-
+-        x = self.avgpool(x)
+-        x = x.flatten(start_dim=1)
+-        x = self.fc(x)
+-
+-        return x
+-
+-
+-def _regnet(
+-    block_params: BlockParams,
+-    weights: Optional[WeightsEnum],
+-    progress: bool,
+-    **kwargs: Any,
+-) -> RegNet:
+-    if weights is not None:
+-        _ovewrite_named_param(kwargs, "num_classes", len(weights.meta["categories"]))
+-
+-    norm_layer = kwargs.pop("norm_layer", partial(nn.BatchNorm2d, eps=1e-05, momentum=0.1))
+-    model = RegNet(block_params, norm_layer=norm_layer, **kwargs)
+-
+-    if weights is not None:
+-        model.load_state_dict(weights.get_state_dict(progress=progress, check_hash=True))
+-
+-    return model
+-
+-
+-_COMMON_META: Dict[str, Any] = {
+-    "min_size": (1, 1),
+-    "categories": _IMAGENET_CATEGORIES,
+-}
+-
+-_COMMON_SWAG_META = {
+-    **_COMMON_META,
+-    "recipe": "https://github.com/facebookresearch/SWAG",
+-    "license": "https://github.com/facebookresearch/SWAG/blob/main/LICENSE",
+-}
+-
+-
+-class RegNet_Y_400MF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_400mf-c65dace8.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 4344144,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#small-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 74.046,
+-                    "acc@5": 91.716,
+-                }
+-            },
+-            "_ops": 0.402,
+-            "_file_size": 16.806,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_400mf-e6988f5f.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 4344144,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 75.804,
+-                    "acc@5": 92.742,
+-                }
+-            },
+-            "_ops": 0.402,
+-            "_file_size": 16.806,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-class RegNet_Y_800MF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_800mf-1b27b58c.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 6432512,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#small-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 76.420,
+-                    "acc@5": 93.136,
+-                }
+-            },
+-            "_ops": 0.834,
+-            "_file_size": 24.774,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_800mf-58fc7688.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 6432512,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 78.828,
+-                    "acc@5": 94.502,
+-                }
+-            },
+-            "_ops": 0.834,
+-            "_file_size": 24.774,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-class RegNet_Y_1_6GF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_1_6gf-b11a554e.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 11202430,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#small-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 77.950,
+-                    "acc@5": 93.966,
+-                }
+-            },
+-            "_ops": 1.612,
+-            "_file_size": 43.152,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_1_6gf-0d7bc02a.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 11202430,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 80.876,
+-                    "acc@5": 95.444,
+-                }
+-            },
+-            "_ops": 1.612,
+-            "_file_size": 43.152,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-class RegNet_Y_3_2GF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_3_2gf-b5a9779c.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 19436338,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#medium-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 78.948,
+-                    "acc@5": 94.576,
+-                }
+-            },
+-            "_ops": 3.176,
+-            "_file_size": 74.567,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_3_2gf-9180c971.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 19436338,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 81.982,
+-                    "acc@5": 95.972,
+-                }
+-            },
+-            "_ops": 3.176,
+-            "_file_size": 74.567,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-class RegNet_Y_8GF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_8gf-d0d0e4a8.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 39381472,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#medium-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 80.032,
+-                    "acc@5": 95.048,
+-                }
+-            },
+-            "_ops": 8.473,
+-            "_file_size": 150.701,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_8gf-dc2b1b54.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 39381472,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 82.828,
+-                    "acc@5": 96.330,
+-                }
+-            },
+-            "_ops": 8.473,
+-            "_file_size": 150.701,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-class RegNet_Y_16GF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_16gf-9e6ed7dd.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 83590140,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#large-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 80.424,
+-                    "acc@5": 95.240,
+-                }
+-            },
+-            "_ops": 15.912,
+-            "_file_size": 319.49,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_16gf-3e4a00f9.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 83590140,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 82.886,
+-                    "acc@5": 96.328,
+-                }
+-            },
+-            "_ops": 15.912,
+-            "_file_size": 319.49,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    IMAGENET1K_SWAG_E2E_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_16gf_swag-43afe44d.pth",
+-        transforms=partial(
+-            ImageClassification, crop_size=384, resize_size=384, interpolation=InterpolationMode.BICUBIC
+-        ),
+-        meta={
+-            **_COMMON_SWAG_META,
+-            "num_params": 83590140,
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 86.012,
+-                    "acc@5": 98.054,
+-                }
+-            },
+-            "_ops": 46.735,
+-            "_file_size": 319.49,
+-            "_docs": """
+-                These weights are learnt via transfer learning by end-to-end fine-tuning the original
+-                `SWAG <https://arxiv.org/abs/2201.08371>`_ weights on ImageNet-1K data.
+-            """,
+-        },
+-    )
+-    IMAGENET1K_SWAG_LINEAR_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_16gf_lc_swag-f3ec0043.pth",
+-        transforms=partial(
+-            ImageClassification, crop_size=224, resize_size=224, interpolation=InterpolationMode.BICUBIC
+-        ),
+-        meta={
+-            **_COMMON_SWAG_META,
+-            "recipe": "https://github.com/pytorch/vision/pull/5793",
+-            "num_params": 83590140,
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 83.976,
+-                    "acc@5": 97.244,
+-                }
+-            },
+-            "_ops": 15.912,
+-            "_file_size": 319.49,
+-            "_docs": """
+-                These weights are composed of the original frozen `SWAG <https://arxiv.org/abs/2201.08371>`_ trunk
+-                weights and a linear classifier learnt on top of them trained on ImageNet-1K data.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-class RegNet_Y_32GF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_32gf-4dee3f7a.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 145046770,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#large-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 80.878,
+-                    "acc@5": 95.340,
+-                }
+-            },
+-            "_ops": 32.28,
+-            "_file_size": 554.076,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_32gf-8db6d4b5.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 145046770,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 83.368,
+-                    "acc@5": 96.498,
+-                }
+-            },
+-            "_ops": 32.28,
+-            "_file_size": 554.076,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    IMAGENET1K_SWAG_E2E_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_32gf_swag-04fdfa75.pth",
+-        transforms=partial(
+-            ImageClassification, crop_size=384, resize_size=384, interpolation=InterpolationMode.BICUBIC
+-        ),
+-        meta={
+-            **_COMMON_SWAG_META,
+-            "num_params": 145046770,
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 86.838,
+-                    "acc@5": 98.362,
+-                }
+-            },
+-            "_ops": 94.826,
+-            "_file_size": 554.076,
+-            "_docs": """
+-                These weights are learnt via transfer learning by end-to-end fine-tuning the original
+-                `SWAG <https://arxiv.org/abs/2201.08371>`_ weights on ImageNet-1K data.
+-            """,
+-        },
+-    )
+-    IMAGENET1K_SWAG_LINEAR_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_32gf_lc_swag-e1583746.pth",
+-        transforms=partial(
+-            ImageClassification, crop_size=224, resize_size=224, interpolation=InterpolationMode.BICUBIC
+-        ),
+-        meta={
+-            **_COMMON_SWAG_META,
+-            "recipe": "https://github.com/pytorch/vision/pull/5793",
+-            "num_params": 145046770,
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 84.622,
+-                    "acc@5": 97.480,
+-                }
+-            },
+-            "_ops": 32.28,
+-            "_file_size": 554.076,
+-            "_docs": """
+-                These weights are composed of the original frozen `SWAG <https://arxiv.org/abs/2201.08371>`_ trunk
+-                weights and a linear classifier learnt on top of them trained on ImageNet-1K data.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-class RegNet_Y_128GF_Weights(WeightsEnum):
+-    IMAGENET1K_SWAG_E2E_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_128gf_swag-c8ce3e52.pth",
+-        transforms=partial(
+-            ImageClassification, crop_size=384, resize_size=384, interpolation=InterpolationMode.BICUBIC
+-        ),
+-        meta={
+-            **_COMMON_SWAG_META,
+-            "num_params": 644812894,
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 88.228,
+-                    "acc@5": 98.682,
+-                }
+-            },
+-            "_ops": 374.57,
+-            "_file_size": 2461.564,
+-            "_docs": """
+-                These weights are learnt via transfer learning by end-to-end fine-tuning the original
+-                `SWAG <https://arxiv.org/abs/2201.08371>`_ weights on ImageNet-1K data.
+-            """,
+-        },
+-    )
+-    IMAGENET1K_SWAG_LINEAR_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_y_128gf_lc_swag-cbe8ce12.pth",
+-        transforms=partial(
+-            ImageClassification, crop_size=224, resize_size=224, interpolation=InterpolationMode.BICUBIC
+-        ),
+-        meta={
+-            **_COMMON_SWAG_META,
+-            "recipe": "https://github.com/pytorch/vision/pull/5793",
+-            "num_params": 644812894,
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 86.068,
+-                    "acc@5": 97.844,
+-                }
+-            },
+-            "_ops": 127.518,
+-            "_file_size": 2461.564,
+-            "_docs": """
+-                These weights are composed of the original frozen `SWAG <https://arxiv.org/abs/2201.08371>`_ trunk
+-                weights and a linear classifier learnt on top of them trained on ImageNet-1K data.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_SWAG_E2E_V1
+-
+-
+-class RegNet_X_400MF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_400mf-adf1edd5.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 5495976,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#small-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 72.834,
+-                    "acc@5": 90.950,
+-                }
+-            },
+-            "_ops": 0.414,
+-            "_file_size": 21.258,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_400mf-62229a5f.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 5495976,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe-with-fixres",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 74.864,
+-                    "acc@5": 92.322,
+-                }
+-            },
+-            "_ops": 0.414,
+-            "_file_size": 21.257,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-class RegNet_X_800MF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_800mf-ad17e45c.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 7259656,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#small-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 75.212,
+-                    "acc@5": 92.348,
+-                }
+-            },
+-            "_ops": 0.8,
+-            "_file_size": 27.945,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_800mf-94a99ebd.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 7259656,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe-with-fixres",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 77.522,
+-                    "acc@5": 93.826,
+-                }
+-            },
+-            "_ops": 0.8,
+-            "_file_size": 27.945,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-class RegNet_X_1_6GF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_1_6gf-e3633e7f.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 9190136,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#small-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 77.040,
+-                    "acc@5": 93.440,
+-                }
+-            },
+-            "_ops": 1.603,
+-            "_file_size": 35.339,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_1_6gf-a12f2b72.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 9190136,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe-with-fixres",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 79.668,
+-                    "acc@5": 94.922,
+-                }
+-            },
+-            "_ops": 1.603,
+-            "_file_size": 35.339,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-class RegNet_X_3_2GF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_3_2gf-f342aeae.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 15296552,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#medium-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 78.364,
+-                    "acc@5": 93.992,
+-                }
+-            },
+-            "_ops": 3.177,
+-            "_file_size": 58.756,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_3_2gf-7071aa85.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 15296552,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 81.196,
+-                    "acc@5": 95.430,
+-                }
+-            },
+-            "_ops": 3.177,
+-            "_file_size": 58.756,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-class RegNet_X_8GF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_8gf-03ceed89.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 39572648,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#medium-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 79.344,
+-                    "acc@5": 94.686,
+-                }
+-            },
+-            "_ops": 7.995,
+-            "_file_size": 151.456,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_8gf-2b70d774.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 39572648,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 81.682,
+-                    "acc@5": 95.678,
+-                }
+-            },
+-            "_ops": 7.995,
+-            "_file_size": 151.456,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-class RegNet_X_16GF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_16gf-2007eb11.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 54278536,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#medium-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 80.058,
+-                    "acc@5": 94.944,
+-                }
+-            },
+-            "_ops": 15.941,
+-            "_file_size": 207.627,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_16gf-ba3796d7.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 54278536,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 82.716,
+-                    "acc@5": 96.196,
+-                }
+-            },
+-            "_ops": 15.941,
+-            "_file_size": 207.627,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-class RegNet_X_32GF_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_32gf-9d47f8d0.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 107811560,
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#large-models",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 80.622,
+-                    "acc@5": 95.248,
+-                }
+-            },
+-            "_ops": 31.736,
+-            "_file_size": 412.039,
+-            "_docs": """These weights reproduce closely the results of the paper using a simple training recipe.""",
+-        },
+-    )
+-    IMAGENET1K_V2 = Weights(
+-        url="https://download.pytorch.org/models/regnet_x_32gf-6eb8fdc6.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=232),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 107811560,
+-            "recipe": "https://github.com/pytorch/vision/issues/3995#new-recipe",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 83.014,
+-                    "acc@5": 96.288,
+-                }
+-            },
+-            "_ops": 31.736,
+-            "_file_size": 412.039,
+-            "_docs": """
+-                These weights improve upon the results of the original paper by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V2
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_Y_400MF_Weights.IMAGENET1K_V1))
+-def regnet_y_400mf(*, weights: Optional[RegNet_Y_400MF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetY_400MF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_Y_400MF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_Y_400MF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_Y_400MF_Weights
+-        :members:
+-    """
+-    weights = RegNet_Y_400MF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(depth=16, w_0=48, w_a=27.89, w_m=2.09, group_width=8, se_ratio=0.25, **kwargs)
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_Y_800MF_Weights.IMAGENET1K_V1))
+-def regnet_y_800mf(*, weights: Optional[RegNet_Y_800MF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetY_800MF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_Y_800MF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_Y_800MF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_Y_800MF_Weights
+-        :members:
+-    """
+-    weights = RegNet_Y_800MF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(depth=14, w_0=56, w_a=38.84, w_m=2.4, group_width=16, se_ratio=0.25, **kwargs)
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_Y_1_6GF_Weights.IMAGENET1K_V1))
+-def regnet_y_1_6gf(*, weights: Optional[RegNet_Y_1_6GF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetY_1.6GF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_Y_1_6GF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_Y_1_6GF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_Y_1_6GF_Weights
+-        :members:
+-    """
+-    weights = RegNet_Y_1_6GF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(
+-        depth=27, w_0=48, w_a=20.71, w_m=2.65, group_width=24, se_ratio=0.25, **kwargs
+-    )
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_Y_3_2GF_Weights.IMAGENET1K_V1))
+-def regnet_y_3_2gf(*, weights: Optional[RegNet_Y_3_2GF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetY_3.2GF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_Y_3_2GF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_Y_3_2GF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_Y_3_2GF_Weights
+-        :members:
+-    """
+-    weights = RegNet_Y_3_2GF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(
+-        depth=21, w_0=80, w_a=42.63, w_m=2.66, group_width=24, se_ratio=0.25, **kwargs
+-    )
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_Y_8GF_Weights.IMAGENET1K_V1))
+-def regnet_y_8gf(*, weights: Optional[RegNet_Y_8GF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetY_8GF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_Y_8GF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_Y_8GF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_Y_8GF_Weights
+-        :members:
+-    """
+-    weights = RegNet_Y_8GF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(
+-        depth=17, w_0=192, w_a=76.82, w_m=2.19, group_width=56, se_ratio=0.25, **kwargs
+-    )
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_Y_16GF_Weights.IMAGENET1K_V1))
+-def regnet_y_16gf(*, weights: Optional[RegNet_Y_16GF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetY_16GF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_Y_16GF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_Y_16GF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_Y_16GF_Weights
+-        :members:
+-    """
+-    weights = RegNet_Y_16GF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(
+-        depth=18, w_0=200, w_a=106.23, w_m=2.48, group_width=112, se_ratio=0.25, **kwargs
+-    )
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_Y_32GF_Weights.IMAGENET1K_V1))
+-def regnet_y_32gf(*, weights: Optional[RegNet_Y_32GF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetY_32GF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_Y_32GF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_Y_32GF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_Y_32GF_Weights
+-        :members:
+-    """
+-    weights = RegNet_Y_32GF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(
+-        depth=20, w_0=232, w_a=115.89, w_m=2.53, group_width=232, se_ratio=0.25, **kwargs
+-    )
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", None))
+-def regnet_y_128gf(*, weights: Optional[RegNet_Y_128GF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetY_128GF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_Y_128GF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_Y_128GF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_Y_128GF_Weights
+-        :members:
+-    """
+-    weights = RegNet_Y_128GF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(
+-        depth=27, w_0=456, w_a=160.83, w_m=2.52, group_width=264, se_ratio=0.25, **kwargs
+-    )
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_X_400MF_Weights.IMAGENET1K_V1))
+-def regnet_x_400mf(*, weights: Optional[RegNet_X_400MF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetX_400MF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_X_400MF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_X_400MF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_X_400MF_Weights
+-        :members:
+-    """
+-    weights = RegNet_X_400MF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(depth=22, w_0=24, w_a=24.48, w_m=2.54, group_width=16, **kwargs)
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_X_800MF_Weights.IMAGENET1K_V1))
+-def regnet_x_800mf(*, weights: Optional[RegNet_X_800MF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetX_800MF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_X_800MF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_X_800MF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_X_800MF_Weights
+-        :members:
+-    """
+-    weights = RegNet_X_800MF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(depth=16, w_0=56, w_a=35.73, w_m=2.28, group_width=16, **kwargs)
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_X_1_6GF_Weights.IMAGENET1K_V1))
+-def regnet_x_1_6gf(*, weights: Optional[RegNet_X_1_6GF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetX_1.6GF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_X_1_6GF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_X_1_6GF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_X_1_6GF_Weights
+-        :members:
+-    """
+-    weights = RegNet_X_1_6GF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(depth=18, w_0=80, w_a=34.01, w_m=2.25, group_width=24, **kwargs)
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_X_3_2GF_Weights.IMAGENET1K_V1))
+-def regnet_x_3_2gf(*, weights: Optional[RegNet_X_3_2GF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetX_3.2GF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_X_3_2GF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_X_3_2GF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_X_3_2GF_Weights
+-        :members:
+-    """
+-    weights = RegNet_X_3_2GF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(depth=25, w_0=88, w_a=26.31, w_m=2.25, group_width=48, **kwargs)
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_X_8GF_Weights.IMAGENET1K_V1))
+-def regnet_x_8gf(*, weights: Optional[RegNet_X_8GF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetX_8GF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_X_8GF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_X_8GF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_X_8GF_Weights
+-        :members:
+-    """
+-    weights = RegNet_X_8GF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(depth=23, w_0=80, w_a=49.56, w_m=2.88, group_width=120, **kwargs)
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_X_16GF_Weights.IMAGENET1K_V1))
+-def regnet_x_16gf(*, weights: Optional[RegNet_X_16GF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetX_16GF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_X_16GF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_X_16GF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_X_16GF_Weights
+-        :members:
+-    """
+-    weights = RegNet_X_16GF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(depth=22, w_0=216, w_a=55.59, w_m=2.1, group_width=128, **kwargs)
+-    return _regnet(params, weights, progress, **kwargs)
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", RegNet_X_32GF_Weights.IMAGENET1K_V1))
+-def regnet_x_32gf(*, weights: Optional[RegNet_X_32GF_Weights] = None, progress: bool = True, **kwargs: Any) -> RegNet:
+-    """
+-    Constructs a RegNetX_32GF architecture from
+-    `Designing Network Design Spaces <https://arxiv.org/abs/2003.13678>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.RegNet_X_32GF_Weights`, optional): The pretrained weights to use.
+-            See :class:`~torchvision.models.RegNet_X_32GF_Weights` below for more details and possible values.
+-            By default, no pretrained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to either ``torchvision.models.regnet.RegNet`` or
+-            ``torchvision.models.regnet.BlockParams`` class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/regnet.py>`_
+-            for more detail about the classes.
+-
+-    .. autoclass:: torchvision.models.RegNet_X_32GF_Weights
+-        :members:
+-    """
+-    weights = RegNet_X_32GF_Weights.verify(weights)
+-
+-    params = BlockParams.from_init_params(depth=23, w_0=320, w_a=69.86, w_m=2.0, group_width=168, **kwargs)
+-    return _regnet(params, weights, progress, **kwargs)
+diff --git a/torchvision/models/vision_transformer.py b/torchvision/models/vision_transformer.py
+deleted file mode 100644
+index f2983ef9db..0000000000
+--- a/torchvision/models/vision_transformer.py
++++ /dev/null
+@@ -1,864 +0,0 @@
+-import math
+-from collections import OrderedDict
+-from functools import partial
+-from typing import Any, Callable, Dict, List, NamedTuple, Optional
+-
+-import torch
+-import torch.nn as nn
+-
+-from ..ops.misc import Conv2dNormActivation, MLP
+-from ..transforms._presets import ImageClassification, InterpolationMode
+-from ..utils import _log_api_usage_once
+-from ._api import register_model, Weights, WeightsEnum
+-from ._meta import _IMAGENET_CATEGORIES
+-from ._utils import _ovewrite_named_param, handle_legacy_interface
+-
+-
+-__all__ = [
+-    "VisionTransformer",
+-    "ViT_B_16_Weights",
+-    "ViT_B_32_Weights",
+-    "ViT_L_16_Weights",
+-    "ViT_L_32_Weights",
+-    "ViT_H_14_Weights",
+-    "vit_b_16",
+-    "vit_b_32",
+-    "vit_l_16",
+-    "vit_l_32",
+-    "vit_h_14",
+-]
+-
+-
+-class ConvStemConfig(NamedTuple):
+-    out_channels: int
+-    kernel_size: int
+-    stride: int
+-    norm_layer: Callable[..., nn.Module] = nn.BatchNorm2d
+-    activation_layer: Callable[..., nn.Module] = nn.ReLU
+-
+-
+-class MLPBlock(MLP):
+-    """Transformer MLP block."""
+-
+-    _version = 2
+-
+-    def __init__(self, in_dim: int, mlp_dim: int, dropout: float):
+-        super().__init__(in_dim, [mlp_dim, in_dim], activation_layer=nn.GELU, inplace=None, dropout=dropout)
+-
+-        for m in self.modules():
+-            if isinstance(m, nn.Linear):
+-                nn.init.xavier_uniform_(m.weight)
+-                if m.bias is not None:
+-                    nn.init.normal_(m.bias, std=1e-6)
+-
+-    def _load_from_state_dict(
+-        self,
+-        state_dict,
+-        prefix,
+-        local_metadata,
+-        strict,
+-        missing_keys,
+-        unexpected_keys,
+-        error_msgs,
+-    ):
+-        version = local_metadata.get("version", None)
+-
+-        if version is None or version < 2:
+-            # Replacing legacy MLPBlock with MLP. See https://github.com/pytorch/vision/pull/6053
+-            for i in range(2):
+-                for type in ["weight", "bias"]:
+-                    old_key = f"{prefix}linear_{i+1}.{type}"
+-                    new_key = f"{prefix}{3*i}.{type}"
+-                    if old_key in state_dict:
+-                        state_dict[new_key] = state_dict.pop(old_key)
+-
+-        super()._load_from_state_dict(
+-            state_dict,
+-            prefix,
+-            local_metadata,
+-            strict,
+-            missing_keys,
+-            unexpected_keys,
+-            error_msgs,
+-        )
+-
+-
+-class EncoderBlock(nn.Module):
+-    """Transformer encoder block."""
+-
+-    def __init__(
+-        self,
+-        num_heads: int,
+-        hidden_dim: int,
+-        mlp_dim: int,
+-        dropout: float,
+-        attention_dropout: float,
+-        norm_layer: Callable[..., torch.nn.Module] = partial(nn.LayerNorm, eps=1e-6),
+-    ):
+-        super().__init__()
+-        self.num_heads = num_heads
+-
+-        # Attention block
+-        self.ln_1 = norm_layer(hidden_dim)
+-        self.self_attention = nn.MultiheadAttention(hidden_dim, num_heads, dropout=attention_dropout, batch_first=True)
+-        self.dropout = nn.Dropout(dropout)
+-
+-        # MLP block
+-        self.ln_2 = norm_layer(hidden_dim)
+-        self.mlp = MLPBlock(hidden_dim, mlp_dim, dropout)
+-
+-    def forward(self, input: torch.Tensor):
+-        torch._assert(input.dim() == 3, f"Expected (batch_size, seq_length, hidden_dim) got {input.shape}")
+-        x = self.ln_1(input)
+-        x, _ = self.self_attention(x, x, x, need_weights=False)
+-        x = self.dropout(x)
+-        x = x + input
+-
+-        y = self.ln_2(x)
+-        y = self.mlp(y)
+-        return x + y
+-
+-
+-class Encoder(nn.Module):
+-    """Transformer Model Encoder for sequence to sequence translation."""
+-
+-    def __init__(
+-        self,
+-        seq_length: int,
+-        num_layers: int,
+-        num_heads: int,
+-        hidden_dim: int,
+-        mlp_dim: int,
+-        dropout: float,
+-        attention_dropout: float,
+-        norm_layer: Callable[..., torch.nn.Module] = partial(nn.LayerNorm, eps=1e-6),
+-    ):
+-        super().__init__()
+-        # Note that batch_size is on the first dim because
+-        # we have batch_first=True in nn.MultiAttention() by default
+-        self.pos_embedding = nn.Parameter(torch.empty(1, seq_length, hidden_dim).normal_(std=0.02))  # from BERT
+-        self.dropout = nn.Dropout(dropout)
+-        layers: OrderedDict[str, nn.Module] = OrderedDict()
+-        for i in range(num_layers):
+-            layers[f"encoder_layer_{i}"] = EncoderBlock(
+-                num_heads,
+-                hidden_dim,
+-                mlp_dim,
+-                dropout,
+-                attention_dropout,
+-                norm_layer,
+-            )
+-        self.layers = nn.Sequential(layers)
+-        self.ln = norm_layer(hidden_dim)
+-
+-    def forward(self, input: torch.Tensor):
+-        torch._assert(input.dim() == 3, f"Expected (batch_size, seq_length, hidden_dim) got {input.shape}")
+-        input = input + self.pos_embedding
+-        return self.ln(self.layers(self.dropout(input)))
+-
+-
+-class VisionTransformer(nn.Module):
+-    """Vision Transformer as per https://arxiv.org/abs/2010.11929."""
+-
+-    def __init__(
+-        self,
+-        image_size: int,
+-        patch_size: int,
+-        num_layers: int,
+-        num_heads: int,
+-        hidden_dim: int,
+-        mlp_dim: int,
+-        dropout: float = 0.0,
+-        attention_dropout: float = 0.0,
+-        num_classes: int = 1000,
+-        representation_size: Optional[int] = None,
+-        norm_layer: Callable[..., torch.nn.Module] = partial(nn.LayerNorm, eps=1e-6),
+-        conv_stem_configs: Optional[List[ConvStemConfig]] = None,
+-    ):
+-        super().__init__()
+-        _log_api_usage_once(self)
+-        torch._assert(image_size % patch_size == 0, "Input shape indivisible by patch size!")
+-        self.image_size = image_size
+-        self.patch_size = patch_size
+-        self.hidden_dim = hidden_dim
+-        self.mlp_dim = mlp_dim
+-        self.attention_dropout = attention_dropout
+-        self.dropout = dropout
+-        self.num_classes = num_classes
+-        self.representation_size = representation_size
+-        self.norm_layer = norm_layer
+-
+-        if conv_stem_configs is not None:
+-            # As per https://arxiv.org/abs/2106.14881
+-            seq_proj = nn.Sequential()
+-            prev_channels = 3
+-            for i, conv_stem_layer_config in enumerate(conv_stem_configs):
+-                seq_proj.add_module(
+-                    f"conv_bn_relu_{i}",
+-                    Conv2dNormActivation(
+-                        in_channels=prev_channels,
+-                        out_channels=conv_stem_layer_config.out_channels,
+-                        kernel_size=conv_stem_layer_config.kernel_size,
+-                        stride=conv_stem_layer_config.stride,
+-                        norm_layer=conv_stem_layer_config.norm_layer,
+-                        activation_layer=conv_stem_layer_config.activation_layer,
+-                    ),
+-                )
+-                prev_channels = conv_stem_layer_config.out_channels
+-            seq_proj.add_module(
+-                "conv_last", nn.Conv2d(in_channels=prev_channels, out_channels=hidden_dim, kernel_size=1)
+-            )
+-            self.conv_proj: nn.Module = seq_proj
+-        else:
+-            self.conv_proj = nn.Conv2d(
+-                in_channels=3, out_channels=hidden_dim, kernel_size=patch_size, stride=patch_size
+-            )
+-
+-        seq_length = (image_size // patch_size) ** 2
+-
+-        # Add a class token
+-        self.class_token = nn.Parameter(torch.zeros(1, 1, hidden_dim))
+-        seq_length += 1
+-
+-        self.encoder = Encoder(
+-            seq_length,
+-            num_layers,
+-            num_heads,
+-            hidden_dim,
+-            mlp_dim,
+-            dropout,
+-            attention_dropout,
+-            norm_layer,
+-        )
+-        self.seq_length = seq_length
+-
+-        heads_layers: OrderedDict[str, nn.Module] = OrderedDict()
+-        if representation_size is None:
+-            heads_layers["head"] = nn.Linear(hidden_dim, num_classes)
+-        else:
+-            heads_layers["pre_logits"] = nn.Linear(hidden_dim, representation_size)
+-            heads_layers["act"] = nn.Tanh()
+-            heads_layers["head"] = nn.Linear(representation_size, num_classes)
+-
+-        self.heads = nn.Sequential(heads_layers)
+-
+-        if isinstance(self.conv_proj, nn.Conv2d):
+-            # Init the patchify stem
+-            fan_in = self.conv_proj.in_channels * self.conv_proj.kernel_size[0] * self.conv_proj.kernel_size[1]
+-            nn.init.trunc_normal_(self.conv_proj.weight, std=math.sqrt(1 / fan_in))
+-            if self.conv_proj.bias is not None:
+-                nn.init.zeros_(self.conv_proj.bias)
+-        elif self.conv_proj.conv_last is not None and isinstance(self.conv_proj.conv_last, nn.Conv2d):
+-            # Init the last 1x1 conv of the conv stem
+-            nn.init.normal_(
+-                self.conv_proj.conv_last.weight, mean=0.0, std=math.sqrt(2.0 / self.conv_proj.conv_last.out_channels)
+-            )
+-            if self.conv_proj.conv_last.bias is not None:
+-                nn.init.zeros_(self.conv_proj.conv_last.bias)
+-
+-        if hasattr(self.heads, "pre_logits") and isinstance(self.heads.pre_logits, nn.Linear):
+-            fan_in = self.heads.pre_logits.in_features
+-            nn.init.trunc_normal_(self.heads.pre_logits.weight, std=math.sqrt(1 / fan_in))
+-            nn.init.zeros_(self.heads.pre_logits.bias)
+-
+-        if isinstance(self.heads.head, nn.Linear):
+-            nn.init.zeros_(self.heads.head.weight)
+-            nn.init.zeros_(self.heads.head.bias)
+-
+-    def _process_input(self, x: torch.Tensor) -> torch.Tensor:
+-        n, c, h, w = x.shape
+-        p = self.patch_size
+-        torch._assert(h == self.image_size, f"Wrong image height! Expected {self.image_size} but got {h}!")
+-        torch._assert(w == self.image_size, f"Wrong image width! Expected {self.image_size} but got {w}!")
+-        n_h = h // p
+-        n_w = w // p
+-
+-        # (n, c, h, w) -> (n, hidden_dim, n_h, n_w)
+-        x = self.conv_proj(x)
+-        # (n, hidden_dim, n_h, n_w) -> (n, hidden_dim, (n_h * n_w))
+-        x = x.reshape(n, self.hidden_dim, n_h * n_w)
+-
+-        # (n, hidden_dim, (n_h * n_w)) -> (n, (n_h * n_w), hidden_dim)
+-        # The self attention layer expects inputs in the format (N, S, E)
+-        # where S is the source sequence length, N is the batch size, E is the
+-        # embedding dimension
+-        x = x.permute(0, 2, 1)
+-
+-        return x
+-
+-    def forward(self, x: torch.Tensor):
+-        # Reshape and permute the input tensor
+-        x = self._process_input(x)
+-        n = x.shape[0]
+-
+-        # Expand the class token to the full batch
+-        batch_class_token = self.class_token.expand(n, -1, -1)
+-        x = torch.cat([batch_class_token, x], dim=1)
+-
+-        x = self.encoder(x)
+-
+-        # Classifier "token" as used by standard language architectures
+-        x = x[:, 0]
+-
+-        x = self.heads(x)
+-
+-        return x
+-
+-
+-def _vision_transformer(
+-    patch_size: int,
+-    num_layers: int,
+-    num_heads: int,
+-    hidden_dim: int,
+-    mlp_dim: int,
+-    weights: Optional[WeightsEnum],
+-    progress: bool,
+-    **kwargs: Any,
+-) -> VisionTransformer:
+-    if weights is not None:
+-        _ovewrite_named_param(kwargs, "num_classes", len(weights.meta["categories"]))
+-        assert weights.meta["min_size"][0] == weights.meta["min_size"][1]
+-        _ovewrite_named_param(kwargs, "image_size", weights.meta["min_size"][0])
+-    image_size = kwargs.pop("image_size", 224)
+-
+-    model = VisionTransformer(
+-        image_size=image_size,
+-        patch_size=patch_size,
+-        num_layers=num_layers,
+-        num_heads=num_heads,
+-        hidden_dim=hidden_dim,
+-        mlp_dim=mlp_dim,
+-        **kwargs,
+-    )
+-
+-    if weights:
+-        model.load_state_dict(weights.get_state_dict(progress=progress, check_hash=True))
+-
+-    return model
+-
+-
+-_COMMON_META: Dict[str, Any] = {
+-    "categories": _IMAGENET_CATEGORIES,
+-}
+-
+-_COMMON_SWAG_META = {
+-    **_COMMON_META,
+-    "recipe": "https://github.com/facebookresearch/SWAG",
+-    "license": "https://github.com/facebookresearch/SWAG/blob/main/LICENSE",
+-}
+-
+-
+-class ViT_B_16_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/vit_b_16-c867db91.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 86567656,
+-            "min_size": (224, 224),
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#vit_b_16",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 81.072,
+-                    "acc@5": 95.318,
+-                }
+-            },
+-            "_ops": 17.564,
+-            "_file_size": 330.285,
+-            "_docs": """
+-                These weights were trained from scratch by using a modified version of `DeIT
+-                <https://arxiv.org/abs/2012.12877>`_'s training recipe.
+-            """,
+-        },
+-    )
+-    IMAGENET1K_SWAG_E2E_V1 = Weights(
+-        url="https://download.pytorch.org/models/vit_b_16_swag-9ac1b537.pth",
+-        transforms=partial(
+-            ImageClassification,
+-            crop_size=384,
+-            resize_size=384,
+-            interpolation=InterpolationMode.BICUBIC,
+-        ),
+-        meta={
+-            **_COMMON_SWAG_META,
+-            "num_params": 86859496,
+-            "min_size": (384, 384),
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 85.304,
+-                    "acc@5": 97.650,
+-                }
+-            },
+-            "_ops": 55.484,
+-            "_file_size": 331.398,
+-            "_docs": """
+-                These weights are learnt via transfer learning by end-to-end fine-tuning the original
+-                `SWAG <https://arxiv.org/abs/2201.08371>`_ weights on ImageNet-1K data.
+-            """,
+-        },
+-    )
+-    IMAGENET1K_SWAG_LINEAR_V1 = Weights(
+-        url="https://download.pytorch.org/models/vit_b_16_lc_swag-4e70ced5.pth",
+-        transforms=partial(
+-            ImageClassification,
+-            crop_size=224,
+-            resize_size=224,
+-            interpolation=InterpolationMode.BICUBIC,
+-        ),
+-        meta={
+-            **_COMMON_SWAG_META,
+-            "recipe": "https://github.com/pytorch/vision/pull/5793",
+-            "num_params": 86567656,
+-            "min_size": (224, 224),
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 81.886,
+-                    "acc@5": 96.180,
+-                }
+-            },
+-            "_ops": 17.564,
+-            "_file_size": 330.285,
+-            "_docs": """
+-                These weights are composed of the original frozen `SWAG <https://arxiv.org/abs/2201.08371>`_ trunk
+-                weights and a linear classifier learnt on top of them trained on ImageNet-1K data.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V1
+-
+-
+-class ViT_B_32_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/vit_b_32-d86f8d99.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 88224232,
+-            "min_size": (224, 224),
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#vit_b_32",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 75.912,
+-                    "acc@5": 92.466,
+-                }
+-            },
+-            "_ops": 4.409,
+-            "_file_size": 336.604,
+-            "_docs": """
+-                These weights were trained from scratch by using a modified version of `DeIT
+-                <https://arxiv.org/abs/2012.12877>`_'s training recipe.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V1
+-
+-
+-class ViT_L_16_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/vit_l_16-852ce7e3.pth",
+-        transforms=partial(ImageClassification, crop_size=224, resize_size=242),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 304326632,
+-            "min_size": (224, 224),
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#vit_l_16",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 79.662,
+-                    "acc@5": 94.638,
+-                }
+-            },
+-            "_ops": 61.555,
+-            "_file_size": 1161.023,
+-            "_docs": """
+-                These weights were trained from scratch by using a modified version of TorchVision's
+-                `new training recipe
+-                <https://pytorch.org/blog/how-to-train-state-of-the-art-models-using-torchvision-latest-primitives/>`_.
+-            """,
+-        },
+-    )
+-    IMAGENET1K_SWAG_E2E_V1 = Weights(
+-        url="https://download.pytorch.org/models/vit_l_16_swag-4f3808c9.pth",
+-        transforms=partial(
+-            ImageClassification,
+-            crop_size=512,
+-            resize_size=512,
+-            interpolation=InterpolationMode.BICUBIC,
+-        ),
+-        meta={
+-            **_COMMON_SWAG_META,
+-            "num_params": 305174504,
+-            "min_size": (512, 512),
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 88.064,
+-                    "acc@5": 98.512,
+-                }
+-            },
+-            "_ops": 361.986,
+-            "_file_size": 1164.258,
+-            "_docs": """
+-                These weights are learnt via transfer learning by end-to-end fine-tuning the original
+-                `SWAG <https://arxiv.org/abs/2201.08371>`_ weights on ImageNet-1K data.
+-            """,
+-        },
+-    )
+-    IMAGENET1K_SWAG_LINEAR_V1 = Weights(
+-        url="https://download.pytorch.org/models/vit_l_16_lc_swag-4d563306.pth",
+-        transforms=partial(
+-            ImageClassification,
+-            crop_size=224,
+-            resize_size=224,
+-            interpolation=InterpolationMode.BICUBIC,
+-        ),
+-        meta={
+-            **_COMMON_SWAG_META,
+-            "recipe": "https://github.com/pytorch/vision/pull/5793",
+-            "num_params": 304326632,
+-            "min_size": (224, 224),
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 85.146,
+-                    "acc@5": 97.422,
+-                }
+-            },
+-            "_ops": 61.555,
+-            "_file_size": 1161.023,
+-            "_docs": """
+-                These weights are composed of the original frozen `SWAG <https://arxiv.org/abs/2201.08371>`_ trunk
+-                weights and a linear classifier learnt on top of them trained on ImageNet-1K data.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V1
+-
+-
+-class ViT_L_32_Weights(WeightsEnum):
+-    IMAGENET1K_V1 = Weights(
+-        url="https://download.pytorch.org/models/vit_l_32-c7638314.pth",
+-        transforms=partial(ImageClassification, crop_size=224),
+-        meta={
+-            **_COMMON_META,
+-            "num_params": 306535400,
+-            "min_size": (224, 224),
+-            "recipe": "https://github.com/pytorch/vision/tree/main/references/classification#vit_l_32",
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 76.972,
+-                    "acc@5": 93.07,
+-                }
+-            },
+-            "_ops": 15.378,
+-            "_file_size": 1169.449,
+-            "_docs": """
+-                These weights were trained from scratch by using a modified version of `DeIT
+-                <https://arxiv.org/abs/2012.12877>`_'s training recipe.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_V1
+-
+-
+-class ViT_H_14_Weights(WeightsEnum):
+-    IMAGENET1K_SWAG_E2E_V1 = Weights(
+-        url="https://download.pytorch.org/models/vit_h_14_swag-80465313.pth",
+-        transforms=partial(
+-            ImageClassification,
+-            crop_size=518,
+-            resize_size=518,
+-            interpolation=InterpolationMode.BICUBIC,
+-        ),
+-        meta={
+-            **_COMMON_SWAG_META,
+-            "num_params": 633470440,
+-            "min_size": (518, 518),
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 88.552,
+-                    "acc@5": 98.694,
+-                }
+-            },
+-            "_ops": 1016.717,
+-            "_file_size": 2416.643,
+-            "_docs": """
+-                These weights are learnt via transfer learning by end-to-end fine-tuning the original
+-                `SWAG <https://arxiv.org/abs/2201.08371>`_ weights on ImageNet-1K data.
+-            """,
+-        },
+-    )
+-    IMAGENET1K_SWAG_LINEAR_V1 = Weights(
+-        url="https://download.pytorch.org/models/vit_h_14_lc_swag-c1eb923e.pth",
+-        transforms=partial(
+-            ImageClassification,
+-            crop_size=224,
+-            resize_size=224,
+-            interpolation=InterpolationMode.BICUBIC,
+-        ),
+-        meta={
+-            **_COMMON_SWAG_META,
+-            "recipe": "https://github.com/pytorch/vision/pull/5793",
+-            "num_params": 632045800,
+-            "min_size": (224, 224),
+-            "_metrics": {
+-                "ImageNet-1K": {
+-                    "acc@1": 85.708,
+-                    "acc@5": 97.730,
+-                }
+-            },
+-            "_ops": 167.295,
+-            "_file_size": 2411.209,
+-            "_docs": """
+-                These weights are composed of the original frozen `SWAG <https://arxiv.org/abs/2201.08371>`_ trunk
+-                weights and a linear classifier learnt on top of them trained on ImageNet-1K data.
+-            """,
+-        },
+-    )
+-    DEFAULT = IMAGENET1K_SWAG_E2E_V1
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", ViT_B_16_Weights.IMAGENET1K_V1))
+-def vit_b_16(*, weights: Optional[ViT_B_16_Weights] = None, progress: bool = True, **kwargs: Any) -> VisionTransformer:
+-    """
+-    Constructs a vit_b_16 architecture from
+-    `An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale <https://arxiv.org/abs/2010.11929>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.ViT_B_16_Weights`, optional): The pretrained
+-            weights to use. See :class:`~torchvision.models.ViT_B_16_Weights`
+-            below for more details and possible values. By default, no pre-trained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to the ``torchvision.models.vision_transformer.VisionTransformer``
+-            base class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/vision_transformer.py>`_
+-            for more details about this class.
+-
+-    .. autoclass:: torchvision.models.ViT_B_16_Weights
+-        :members:
+-    """
+-    weights = ViT_B_16_Weights.verify(weights)
+-
+-    return _vision_transformer(
+-        patch_size=16,
+-        num_layers=12,
+-        num_heads=12,
+-        hidden_dim=768,
+-        mlp_dim=3072,
+-        weights=weights,
+-        progress=progress,
+-        **kwargs,
+-    )
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", ViT_B_32_Weights.IMAGENET1K_V1))
+-def vit_b_32(*, weights: Optional[ViT_B_32_Weights] = None, progress: bool = True, **kwargs: Any) -> VisionTransformer:
+-    """
+-    Constructs a vit_b_32 architecture from
+-    `An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale <https://arxiv.org/abs/2010.11929>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.ViT_B_32_Weights`, optional): The pretrained
+-            weights to use. See :class:`~torchvision.models.ViT_B_32_Weights`
+-            below for more details and possible values. By default, no pre-trained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to the ``torchvision.models.vision_transformer.VisionTransformer``
+-            base class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/vision_transformer.py>`_
+-            for more details about this class.
+-
+-    .. autoclass:: torchvision.models.ViT_B_32_Weights
+-        :members:
+-    """
+-    weights = ViT_B_32_Weights.verify(weights)
+-
+-    return _vision_transformer(
+-        patch_size=32,
+-        num_layers=12,
+-        num_heads=12,
+-        hidden_dim=768,
+-        mlp_dim=3072,
+-        weights=weights,
+-        progress=progress,
+-        **kwargs,
+-    )
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", ViT_L_16_Weights.IMAGENET1K_V1))
+-def vit_l_16(*, weights: Optional[ViT_L_16_Weights] = None, progress: bool = True, **kwargs: Any) -> VisionTransformer:
+-    """
+-    Constructs a vit_l_16 architecture from
+-    `An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale <https://arxiv.org/abs/2010.11929>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.ViT_L_16_Weights`, optional): The pretrained
+-            weights to use. See :class:`~torchvision.models.ViT_L_16_Weights`
+-            below for more details and possible values. By default, no pre-trained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to the ``torchvision.models.vision_transformer.VisionTransformer``
+-            base class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/vision_transformer.py>`_
+-            for more details about this class.
+-
+-    .. autoclass:: torchvision.models.ViT_L_16_Weights
+-        :members:
+-    """
+-    weights = ViT_L_16_Weights.verify(weights)
+-
+-    return _vision_transformer(
+-        patch_size=16,
+-        num_layers=24,
+-        num_heads=16,
+-        hidden_dim=1024,
+-        mlp_dim=4096,
+-        weights=weights,
+-        progress=progress,
+-        **kwargs,
+-    )
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", ViT_L_32_Weights.IMAGENET1K_V1))
+-def vit_l_32(*, weights: Optional[ViT_L_32_Weights] = None, progress: bool = True, **kwargs: Any) -> VisionTransformer:
+-    """
+-    Constructs a vit_l_32 architecture from
+-    `An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale <https://arxiv.org/abs/2010.11929>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.ViT_L_32_Weights`, optional): The pretrained
+-            weights to use. See :class:`~torchvision.models.ViT_L_32_Weights`
+-            below for more details and possible values. By default, no pre-trained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to the ``torchvision.models.vision_transformer.VisionTransformer``
+-            base class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/vision_transformer.py>`_
+-            for more details about this class.
+-
+-    .. autoclass:: torchvision.models.ViT_L_32_Weights
+-        :members:
+-    """
+-    weights = ViT_L_32_Weights.verify(weights)
+-
+-    return _vision_transformer(
+-        patch_size=32,
+-        num_layers=24,
+-        num_heads=16,
+-        hidden_dim=1024,
+-        mlp_dim=4096,
+-        weights=weights,
+-        progress=progress,
+-        **kwargs,
+-    )
+-
+-
+-@register_model()
+-@handle_legacy_interface(weights=("pretrained", None))
+-def vit_h_14(*, weights: Optional[ViT_H_14_Weights] = None, progress: bool = True, **kwargs: Any) -> VisionTransformer:
+-    """
+-    Constructs a vit_h_14 architecture from
+-    `An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale <https://arxiv.org/abs/2010.11929>`_.
+-
+-    Args:
+-        weights (:class:`~torchvision.models.ViT_H_14_Weights`, optional): The pretrained
+-            weights to use. See :class:`~torchvision.models.ViT_H_14_Weights`
+-            below for more details and possible values. By default, no pre-trained weights are used.
+-        progress (bool, optional): If True, displays a progress bar of the download to stderr. Default is True.
+-        **kwargs: parameters passed to the ``torchvision.models.vision_transformer.VisionTransformer``
+-            base class. Please refer to the `source code
+-            <https://github.com/pytorch/vision/blob/main/torchvision/models/vision_transformer.py>`_
+-            for more details about this class.
+-
+-    .. autoclass:: torchvision.models.ViT_H_14_Weights
+-        :members:
+-    """
+-    weights = ViT_H_14_Weights.verify(weights)
+-
+-    return _vision_transformer(
+-        patch_size=14,
+-        num_layers=32,
+-        num_heads=16,
+-        hidden_dim=1280,
+-        mlp_dim=5120,
+-        weights=weights,
+-        progress=progress,
+-        **kwargs,
+-    )
+-
+-
+-def interpolate_embeddings(
+-    image_size: int,
+-    patch_size: int,
+-    model_state: "OrderedDict[str, torch.Tensor]",
+-    interpolation_mode: str = "bicubic",
+-    reset_heads: bool = False,
+-) -> "OrderedDict[str, torch.Tensor]":
+-    """This function helps interpolate positional embeddings during checkpoint loading,
+-    especially when you want to apply a pre-trained model on images with different resolution.
+-
+-    Args:
+-        image_size (int): Image size of the new model.
+-        patch_size (int): Patch size of the new model.
+-        model_state (OrderedDict[str, torch.Tensor]): State dict of the pre-trained model.
+-        interpolation_mode (str): The algorithm used for upsampling. Default: bicubic.
+-        reset_heads (bool): If true, not copying the state of heads. Default: False.
+-
+-    Returns:
+-        OrderedDict[str, torch.Tensor]: A state dict which can be loaded into the new model.
+-    """
+-    # Shape of pos_embedding is (1, seq_length, hidden_dim)
+-    pos_embedding = model_state["encoder.pos_embedding"]
+-    n, seq_length, hidden_dim = pos_embedding.shape
+-    if n != 1:
+-        raise ValueError(f"Unexpected position embedding shape: {pos_embedding.shape}")
+-
+-    new_seq_length = (image_size // patch_size) ** 2 + 1
+-
+-    # Need to interpolate the weights for the position embedding.
+-    # We do this by reshaping the positions embeddings to a 2d grid, performing
+-    # an interpolation in the (h, w) space and then reshaping back to a 1d grid.
+-    if new_seq_length != seq_length:
+-        # The class token embedding shouldn't be interpolated, so we split it up.
+-        seq_length -= 1
+-        new_seq_length -= 1
+-        pos_embedding_token = pos_embedding[:, :1, :]
+-        pos_embedding_img = pos_embedding[:, 1:, :]
+-
+-        # (1, seq_length, hidden_dim) -> (1, hidden_dim, seq_length)
+-        pos_embedding_img = pos_embedding_img.permute(0, 2, 1)
+-        seq_length_1d = int(math.sqrt(seq_length))
+-        if seq_length_1d * seq_length_1d != seq_length:
+-            raise ValueError(
+-                f"seq_length is not a perfect square! Instead got seq_length_1d * seq_length_1d = {seq_length_1d * seq_length_1d } and seq_length = {seq_length}"
+-            )
+-
+-        # (1, hidden_dim, seq_length) -> (1, hidden_dim, seq_l_1d, seq_l_1d)
+-        pos_embedding_img = pos_embedding_img.reshape(1, hidden_dim, seq_length_1d, seq_length_1d)
+-        new_seq_length_1d = image_size // patch_size
+-
+-        # Perform interpolation.
+-        # (1, hidden_dim, seq_l_1d, seq_l_1d) -> (1, hidden_dim, new_seq_l_1d, new_seq_l_1d)
+-        new_pos_embedding_img = nn.functional.interpolate(
+-            pos_embedding_img,
+-            size=new_seq_length_1d,
+-            mode=interpolation_mode,
+-            align_corners=True,
+-        )
+-
+-        # (1, hidden_dim, new_seq_l_1d, new_seq_l_1d) -> (1, hidden_dim, new_seq_length)
+-        new_pos_embedding_img = new_pos_embedding_img.reshape(1, hidden_dim, new_seq_length)
+-
+-        # (1, hidden_dim, new_seq_length) -> (1, new_seq_length, hidden_dim)
+-        new_pos_embedding_img = new_pos_embedding_img.permute(0, 2, 1)
+-        new_pos_embedding = torch.cat([pos_embedding_token, new_pos_embedding_img], dim=1)
+-
+-        model_state["encoder.pos_embedding"] = new_pos_embedding
+-
+-        if reset_heads:
+-            model_state_copy: "OrderedDict[str, torch.Tensor]" = OrderedDict()
+-            for k, v in model_state.items():
+-                if not k.startswith("heads"):
+-                    model_state_copy[k] = v
+-            model_state = model_state_copy
+-
+-    return model_state
+-- 
+2.47.3
+

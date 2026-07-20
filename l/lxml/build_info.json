@@ -10,6 +10,12 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "lxml-4.9.2": {
+    "build_script": "lxml_4.9.2_ubi_9.6.sh"
+  },
+  "lxml-4.9.3": {
+    "build_script": "lxml_4.9.2_ubi_9.6.sh"
+  },
   "*": {
     "build_script": "lxml_ubi_9.6.sh"
   }

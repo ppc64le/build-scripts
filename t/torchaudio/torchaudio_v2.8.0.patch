@@ -14,3 +14,5 @@ index 58f50878..955dbacd 100644
          ]
          build_args = ["--target", "install"]
          # Pass CUDA architecture to cmake
+
+

@@ -22,11 +22,13 @@
 set -e
 
 echo "Installing dependencies..."
-yum install -y python3-pip python3 python python3-devel git gcc-c++ cmake wget
+yum install -y python3-pip python3 python3 python3-devel git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ cmake wget
 yum install -y openblas-devel ninja-build
 yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel
 echo "Dependencies installed."
  
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 echo "Cloning the $PACKAGE_NAME package..."
 # Clone the matplotlib package.
 PACKAGE_NAME=matplotlib
@@ -40,28 +42,24 @@ echo "Cloned and checked out to version $PACKAGE_VERSION."
  
 echo "Downloading and preparing qhull..."
 # Download qhull
+# Create build directory
 mkdir -p build
-wget 'http://www.qhull.org/download/qhull-2020-src-8.0.2.tgz'
-gunzip qhull-2020-src-8.0.2.tgz
-tar -xvf qhull-2020-src-8.0.2.tar --no-same-owner
-mv qhull-2020.2 build/
-rm -f qhull-2020-src-8.0.2.tar
-echo "qhull downloaded and prepared."
- 
-echo "Setting up virtual environment for Python..."
-# Setup virtual environment for python
-pip install pytest hypothesis build meson pybind11 meson-python
+wget https://github.com/qhull/qhull/archive/refs/tags/v8.0.2.tar.gz -O qhull-8.0.2.tar.gz
+tar -xzf qhull-8.0.2.tar.gz
+mv qhull-8.0.2 build/qhull-2020.2
+
+pip3 install pytest hypothesis build meson pybind11 meson-python
 echo "Python environment set up."
  
 echo "Installing dependencies for $PACKAGE_NAME..."
 # Install package dependencies
-pip install 'numpy<2' fontTools setuptools-scm contourpy kiwisolver python-dateutil cycler pyparsing pillow certifi
-pip install --upgrade setuptools
+pip3 install 'numpy<2' fontTools setuptools-scm contourpy kiwisolver python-dateutil cycler "pyparsing<3.2" pillow certifi
+pip3 install --upgrade setuptools
 echo "Dependencies installed."
  
 echo "Building and installing $PACKAGE_NAME..."
 # Build and Install the package (This is dependent on numpy, pillow)
-if ! (pip install -e .); then
+if ! (pip3 install -e .); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"

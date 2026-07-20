@@ -1,0 +1,16 @@
+{
+  "maintainer": "Sunidhi-Gaonkar1",
+  "package_name": "grpcio_tools",
+  "github_url": "https://github.com/grpc/grpc.git",
+  "version": "v1.78.1",
+  "wheel_build" : true,
+  "package_dir": "g/grpcio_tools",
+  "default_branch": "master",
+  "build_script": "grpcio_tools_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"grpcio_tools_ubi_9.6.sh"
+  }
+}

@@ -13,7 +13,10 @@
     "v1.16.0" : {
       "build_script": "onnx_ubi_1.16.0_9.3.sh"
     },
+    "v1.13.1" : {
+      "build_script": "onnx_1.13.1_ubi_9.3.sh" 
+    },
     "*": {
       "build_script": "onnx_ubi_9.3.sh"
     }
-  }
+}

@@ -1,0 +1,19 @@
+{
+  "maintainer": "Ryder Salinas",
+  "package_name": "stepflow-orchestrator",
+  "github_url": "https://github.com/stepflow-ai/stepflow.git",
+  "version": "stepflow-0.13.0",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "package_dir": "s/stepflow-orchestrator",
+  "build_script": "stepflow-orchestrator_0.13.0_ubi_9.6.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "stepflow-0.13.0":{
+    "build_script":"stepflow-orchestrator_0.13.0_ubi_9.6.sh"
+  },
+  "*": {
+    "build_script":"stepflow-orchestrator_0.13.0_ubi_9.6.sh"
+  }
+}

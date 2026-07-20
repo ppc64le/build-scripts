@@ -24,7 +24,10 @@ PACKAGE_VERSION=${1:-2.0.1}
 PACKAGE_URL=https://github.com/python-greenlet/greenlet.git
 
 # Install dependencies and tools.
-yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-devel
+yum install -y wget gcc gcc-c++ gcc-gfortran git make python-devel openssl-devel
+
+export CC=/usr/bin/gcc
+export CXX=/usr/bin/g++
 
 #clone repository 
 git clone $PACKAGE_URL

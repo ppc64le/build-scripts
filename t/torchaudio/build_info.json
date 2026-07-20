@@ -10,6 +10,14 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "auditwheel_exclude": [
+    "libc10.so",
+    "libtorch.so",
+    "libtorch_cpu.so",
+    "libtorch_python.so",
+    "libshm.so",
+    "libtorchaudio.so"
+  ],
   "v2.9.*": {
     "build_script": "torchaudio_v2.9_ubi_9.3.sh"
   },
@@ -17,6 +25,9 @@
     "build_script": "torchaudio_ubi_9.3.sh"
   },
   "*": {
+    "build_script": "torchaudio_v2.9_ubi_9.3.sh"
+  },
+  "v2.11.*": {
     "build_script": "torchaudio_v2.9_ubi_9.3.sh"
   }
 }
