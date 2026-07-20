@@ -57,7 +57,7 @@ fi
 python3.13 -m pip install  scipy==1.17.0 sentence-transformers  --extra-index-url $INDEX_URL_DEVPY 
 #find test case called app.py
 TEST_PATH=$(find "${SOURCE_ROOT}" -name app.py | head -1)
-if [ -z "${PATCH_PATH}" ]; then
+if [ -z "${TEST_PATH}" ]; then
     echo "ERROR: test case not found"
     exit 1
 fi
