@@ -4,7 +4,7 @@
     "github_url": "https://github.com/faiss-wheels/faiss-wheels.git",
     "version": "1.9.0.post1",
     "default_branch": "main",
-    "build_script": "faiss_cpu_1.9.0.post1_ubi.sh",
+    "build_script": "faiss_cpu_1.9.0.post1_ubi_9.6.sh",
     "package_dir": "f/faiss-wheel",
     "docker_build": true,
     "validate_build_script": true,
@@ -12,6 +12,6 @@
     "wheel_build": true,
 
     "*": {
-        "build_script": "faiss_cpu_1.9.0.post1_ubi.sh"
+        "build_script": "faiss_cpu_1.9.0.post1_ubi_9.6.sh"
     }
 }
