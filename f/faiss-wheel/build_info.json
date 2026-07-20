@@ -1,6 +1,6 @@
 {
     "maintainer": "Amir Sanjar",
-    "package_name": "faiss-cpu",
+    "package_name": "faiss-wheel",
     "github_url": "https://github.com/faiss-wheels/faiss-wheels.git",
     "version": "1.9.0.post1",
     "default_branch": "main",
