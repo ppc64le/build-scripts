@@ -27,7 +27,7 @@ SOURCE_ROOT="$(pwd)"
 
 # PACKAGE_DIR must point to the actual Python package (contains pyproject.toml)
 # so that the CI wheel-build harness can find it.
-PACKAGE_DIR="${REPO_DIR}/packages/traceloop-sdk"
+PACKAGE_DIR="openllmetry/packages/traceloop-sdk"
 
 echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 
