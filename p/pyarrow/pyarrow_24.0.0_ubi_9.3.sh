@@ -792,6 +792,9 @@ cd arrow
 
 export CMAKE_PREFIX_PATH=$ARROW_HOME
 
+export CXXFLAGS="-std=c++20"
+export CMAKE_CXX_STANDARD=20
+
 # Build dependencies
 export PARQUET_HOME=$ARROW_HOME
 export SETUPTOOLS_SCM_PRETEND_VERSION=$version
