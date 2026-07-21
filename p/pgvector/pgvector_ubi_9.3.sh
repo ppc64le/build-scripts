@@ -69,10 +69,6 @@ su - postgres -c "source /home/postgres/.bash_profile"
 su - postgres -c "which psql"
 cd ..
 
-# mkdir -p /home/postgres/build
-# chown -R postgres:postgres /home/postgres/build
-# cd /home/postgres/build
-
 cd "$BUILD_HOME"
 
 # Build and install pgvector
@@ -94,6 +90,9 @@ if ! make OPTFLAGS="" install; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pgvector/pyproject.toml
+sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
 
 # Run install check
 # su - postgres -c "cd pgvector && make installcheck"
