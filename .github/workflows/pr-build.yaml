@@ -158,7 +158,10 @@ jobs:
           if [ -z "$BUILD_INFO_FILE" ]; then
               echo "No build_info.json modified, trying to detect from changed files..."
 
-              PACKAGE_DIR=$(echo "$CHANGED_FILES" | head -n 1 | cut -d'/' -f1-2)
+              PACKAGE_DIR=$(echo "$CHANGED_FILES" \
+                | grep -vE '^(gha-script|process_bom|script|templates|travis-currency-ymls|travis-ymls)/' \
+                | head -n 1 \
+                | cut -d'/' -f1-2)
 
               BUILD_INFO_FILE="$PACKAGE_DIR/build_info.json"
 
