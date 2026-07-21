@@ -17,8 +17,9 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-set -e 
+set -e
 PACKAGE_NAME=pgvector
+PACKAGE_DIR=pgvector
 PACKAGE_VERSION=${1:-v0.7.4}
 PACKAGE_URL=https://github.com/pgvector/pgvector.git
 POSTGRES_SOURCE_URL=https://ftp.postgresql.org/pub/source/v16.4/postgresql-16.4.tar.gz
@@ -68,9 +69,11 @@ su - postgres -c "source /home/postgres/.bash_profile"
 su - postgres -c "which psql"
 cd ..
 
-mkdir -p /home/postgres/build
-chown -R postgres:postgres /home/postgres/build
-cd /home/postgres/build
+# mkdir -p /home/postgres/build
+# chown -R postgres:postgres /home/postgres/build
+# cd /home/postgres/build
+
+cd "$BUILD_HOME"
 
 # Build and install pgvector
 git clone $PACKAGE_URL
@@ -96,9 +99,9 @@ fi
 # su - postgres -c "cd pgvector && make installcheck"
 
 # Ensure postgres owns test directory
-chown -R postgres:postgres /home/postgres/build/${PACKAGE_NAME}
+chown -R postgres:postgres "$BUILD_HOME/${PACKAGE_NAME}"
 
-if ! su - postgres -c "cd /home/postgres/build/${PACKAGE_NAME} && make installcheck"; then
+if ! su - postgres -c "cd $BUILD_HOME/${PACKAGE_NAME} && make installcheck"; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
