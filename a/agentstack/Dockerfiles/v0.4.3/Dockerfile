@@ -21,6 +21,7 @@ RUN microdnf update -y && \
     microdnf install -y \
         git \
         tar \
+        wget \
         gcc \
         gcc-c++ \
         make \
