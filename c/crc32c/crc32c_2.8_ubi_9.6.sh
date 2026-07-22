@@ -52,6 +52,8 @@ echo "Wheel: $WHEEL"
 
 cd "${SOURCE_ROOT}"
 
+cp "${WHEEL}" "${SOURCE_ROOT}"
+
 # Install wheel
 echo "=== Installing Wheel ==="
 python3.12 -m pip install "$WHEEL"
