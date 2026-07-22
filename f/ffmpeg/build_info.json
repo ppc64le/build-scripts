@@ -1,12 +1,12 @@
 {
-    "maintainer": "Anumala Rajesh",
+    "maintainer": "ramnathnayak-ibm",
     "package_name": "FFmpeg",
     "github_url": "https://github.com/FFmpeg/FFmpeg",
     "version": "n7.1",
     "wheel_build" : true,
     "package_dir": "f/ffmpeg",
     "default_branch": "master",
-    "build_script": "ffmpeg_ubi_9.3.sh",
+    "build_script": "ffmpeg_ubi_10.1.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": "false",
@@ -15,6 +15,6 @@
       "libsw*"
     ],
     "*": {
-      "build_script": "ffmpeg_ubi_9.3.sh"
+      "build_script": "ffmpeg_ubi_10.1.sh"
     }
   }
