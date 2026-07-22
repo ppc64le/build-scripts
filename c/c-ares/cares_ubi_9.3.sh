@@ -55,7 +55,7 @@ git checkout $PACKAGE_VERSION
 
 mkdir -p prefix
 export PREFIX=$(pwd)/prefix
-mkdir build && cd build
+mkdir cmake-build && cd cmake-build
 
 export CARES_STATIC=OFF                                                                                                           
 export CARES_SHARED=ON                                                                                                            
@@ -94,10 +94,10 @@ WHL_VERSION=$(echo "$PACKAGE_VERSION" | grep -oE '[0-9_]+$' | tr '_' '.')
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/c/c-ares/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$WHL_VERSION/g" pyproject.toml
 
-python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
+python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/" -v
 
 echo "----------------------------------------------Testing pkg-------------------------------------------------------"
-cd build
+cd cmake-build
 #Test package
 if ! (ninja test) ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"

@@ -1,0 +1,16 @@
+{
+  "maintainer": "rcarino5",
+  "package_name": "python-zeroconf",
+  "github_url": "https://github.com/python-zeroconf/python-zeroconf",
+  "version": "0.150.0",
+  "default_branch": "master",
+  "build_script": "python-zeroconf_ubi_9.6.sh",
+  "package_dir": "p/python-zeroconf",
+  "docker_build": false,
+  "wheel_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "python-zeroconf_ubi_9.6.sh"
+  }
+}
