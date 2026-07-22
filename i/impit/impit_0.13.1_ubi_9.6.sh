@@ -43,14 +43,6 @@ git clone "${PACKAGE_URL}"
 cd "${PACKAGE_NAME}"
 git checkout "py-${PACKAGE_VERSION}"
 
-#export LD_LIBRARY_PATH for python 3.13 and 3.14
-PY_VERSION=$(python3 --version 2>&1 | grep -oP '\d+\.\d+')
-
-if [[ "$PY_VERSION" == "3.13" || "$PY_VERSION" == "3.14" ]]; then
-    export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-    export PYO3_PYTHON="/usr/local/bin/python${PY_VERSION}"
-fi
-
 # -- Build wheel --------------------------------------------------------------
 # reqwest's http3 feature requires this unstable cfg flag.
 export RUSTFLAGS='--cfg reqwest_unstable'
