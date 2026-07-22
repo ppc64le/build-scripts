@@ -73,6 +73,8 @@ python3.12 -c "import importlib.metadata; print('lz4 version:', importlib.metada
 # 2. Upstream unit tests.
 #    - block/ and frame/ tests are pure compression round-trips; no external services.
 #    - stream/ tests are skipped (only built when PYLZ4_EXPERIMENTAL=True).
+#    Run from SOURCE_ROOT so Python uses the installed wheel, not the source tree
+#    (setup.cfg sets inplace=1 which leaves no compiled extensions in the source lz4/).
 python3.12 -m pytest \
     "${PACKAGE_DIR}/tests/block/" \
     "${PACKAGE_DIR}/tests/frame/" \
@@ -81,8 +83,6 @@ python3.12 -m pytest \
     -x
 
 TEST_EXIT=$?
-cd "${SOURCE_ROOT}"
-
 if [ "$TEST_EXIT" -ne 0 ]; then
     echo "ERROR: Tests failed (exit $TEST_EXIT)"
     exit "$TEST_EXIT"
