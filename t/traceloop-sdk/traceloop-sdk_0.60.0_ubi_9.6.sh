@@ -41,7 +41,7 @@ python3.12 -m pip install --upgrade pip build hatchling
 dnf install -y openssl-devel zlib-devel
 GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 \
 GRPC_PYTHON_BUILD_SYSTEM_ZLIB=1 \
-python3.12 -m pip install "grpcio==1.67.1" --no-binary grpcio
+python3.12 -m pip install "grpcio>=1.75.1" --no-binary grpcio
 
 # Clone and checkout
 rm -rf "$REPO_DIR"
