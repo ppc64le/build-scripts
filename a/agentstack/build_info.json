@@ -1,0 +1,24 @@
+{
+  "maintainer": "Simran.Sirsat@ibm.com",
+  "package_name": "agentstack",
+  "github_url": "https://github.com/i-am-bee/agentstack",
+  "version": "v0.4.3",
+  "required_versions":{"Releases": ["*"], "Tags": ["*"]},
+  "default_branch": "master",
+  "build_script": "agentstack_v0.4.3_ubi9.7.sh", 
+  "package_dir": "a/agentstack",
+  "use_non_root_user": false,
+  "validate_build_script":false,
+  "docker_build": true,
+  "docker_cmd": "docker build -f ${dir}/Dockerfile -t ${package_name}-ppc64le:${PACKAGE_VERSION} .",
+  "wheel_build" : false,
+  "v0.4.3": {
+  "build_script": "agentstack_v0.4.3_ubi9.7.sh",
+  "dir": "v0.4.3",
+  "base_docker_image": "ubi-minimal",
+  "base_docker_variant": "9.8"
+  },
+  "*": {
+    "build_script": "agentstack_v0.4.3_ubi9.7.sh"
+  }
+}
