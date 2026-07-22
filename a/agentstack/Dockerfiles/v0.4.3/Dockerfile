@@ -51,10 +51,6 @@ RUN git clone https://github.com/i-am-bee/agentstack.git .
 RUN git fetch --all --tags && \
     git checkout ${AGENTSTACK_VERSION}
 
-COPY agentstack_v0.4.3.patch /tmp/agentstack.patch
-
-RUN git apply /tmp/agentstack.patch || true
-
 ############################################################
 # Apply your patch
 ############################################################
