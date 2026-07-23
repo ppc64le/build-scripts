@@ -1,0 +1,19 @@
+{
+    "maintainer":"Ethan Choe <ethanchoe@ibm.com>",
+    "package_name" : "litellm",
+    "github_url":"https://github.com/BerriAI/litellm",
+    "version": "v1.93.0",
+    "default_branch": "litellm_internal_staging",
+    "package_dir": "l/litellm",
+    "build_script": "litellm_v1.93.0_ubi_9.6.sh",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "wheel_build": "true",
+    "v1.93.0": {
+        "build_script": "litellm_v1.93.0_ubi_9.6.sh"
+    },
+    "*": {
+    	"build_script": "litellm_v1.93.0_ubi_9.6.sh"
+    } 
+}
