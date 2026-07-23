@@ -23,6 +23,7 @@ RUN microdnf update -y && \
         git \
         tar \
         gcc \
+        wget \
         gcc-c++ \
         cmake \
         make \
