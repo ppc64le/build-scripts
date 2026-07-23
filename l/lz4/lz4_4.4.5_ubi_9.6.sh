@@ -32,6 +32,9 @@ dnf install -y gcc-toolset-13 git python3.12 python3.12-devel python3.12-pip
 
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:$PATH"
 
+# Register any shared libraries installed/built outside this script (e.g. source-built Python versions)
+ldconfig
+
 # Install build frontend + build-time deps
 python3.12 -m pip install "build" "setuptools>=45" "wheel" "setuptools_scm[toml]>=6.2" "pkgconfig"
 
