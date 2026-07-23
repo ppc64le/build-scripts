@@ -1,10 +1,11 @@
 ###############################################################################
-# Stage 1: Build Ollama (Power10 optimized)
+# Stage 1: Build llama.cpp
 ###############################################################################
 FROM registry.access.redhat.com/ubi9/ubi:9.7 AS build
 
 ARG PACKAGE_NAME=llama.cpp
-ARG PACKAGE_VERSION=master
+ARG BRANCH=master
+ARG PACKAGE_VERSION
 ARG PACKAGE_URL=https://github.com/ggml-org/llama.cpp
 ENV CMAKE_VERSION=3.31.5
 
@@ -30,10 +31,12 @@ RUN yum install -y cmake
 # Clone and Build llama.cpp
 ###############################################################################
 WORKDIR /src
-    
+
 RUN git clone ${PACKAGE_URL} && \
     cd ${PACKAGE_NAME} && \
-    git checkout ${PACKAGE_VERSION} 
+    git fetch --tags && \
+    git checkout ${PACKAGE_VERSION} && \
+    echo "Building release ${PACKAGE_VERSION}"
 
 WORKDIR /src/${PACKAGE_NAME}
 
@@ -44,7 +47,7 @@ RUN cmake -B build -DCMAKE_BUILD_TYPE=Release && \
     cmake --build build -j$(nproc)
 
 ###############################################################################
-# Stage 2: Small runtime image (Power10 optimized)
+# Stage 2: Small runtime image
 ###############################################################################
 FROM registry.access.redhat.com/ubi9/ubi:9.7
 
@@ -53,9 +56,9 @@ RUN yum update -y && \
     yum clean all
 
 COPY --from=build /src/llama.cpp/build/bin/llama-cli /usr/bin/llama-cli
-COPY --from=build /src/llama.cpp/build/bin/llama-cli /usr/bin/llama-server
-COPY --from=build /src/llama.cpp/build/bin/llama-cli /usr/bin/llama-bench
-COPY --from=build /src/llama.cpp/build/bin/llama-cli /usr/bin/llama-batched-bench
+COPY --from=build /src/llama.cpp/build/bin/llama-server /usr/bin/llama-server
+COPY --from=build /src/llama.cpp/build/bin/llama-bench /usr/bin/llama-bench
+COPY --from=build /src/llama.cpp/build/bin/llama-batched-bench /usr/bin/llama-batched-bench
 
 COPY --from=build /src/llama.cpp/build/bin/libllama-bench-impl.so /usr/lib/llama
 COPY --from=build /src/llama.cpp/build/bin/libllama-common.so.0 /usr/lib/llama
@@ -68,6 +71,6 @@ COPY --from=build /src/llama.cpp/build/bin/libggml-cpu.so.0 /usr/lib/llama
 ENV LD_LIBRARY_PATH=/usr/lib/llama:$LD_LIBRARY_PATH
 ENV PATH="/usr/bin:${PATH}"
 
-EXPOSE 11434
+EXPOSE 8080
 ENTRYPOINT ["/usr/bin/llama-server"]
 CMD ["--help"]
