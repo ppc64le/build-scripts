@@ -94,6 +94,8 @@ fi
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pgvector/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
 
+mkdir -p local
+
 # Run install check
 # su - postgres -c "cd pgvector && make installcheck"
 
