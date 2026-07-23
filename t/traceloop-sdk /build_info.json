@@ -1,0 +1,19 @@
+{
+   "maintainer": "varsha.kumar@ibm.com",
+   "package_name": "traceloop-sdk",
+   "github_url": "https://github.com/traceloop/openllmetry",
+   "version": "0.60.0",
+   "default_branch": "main",
+   "build_script": "traceloop-sdk_0.60.0_ubi_9.6.sh",
+   "wheel_build" : true,
+   "package_dir": "t/traceloop-sdk",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "0.60.0":{
+           "build_script": "traceloop-sdk_0.60.0_ubi_9.6.sh"
+   },
+   "*": {
+       "build_script": "traceloop-sdk_0.60.0_ubi_9.6.sh"
+   }
+}
