@@ -32,8 +32,11 @@ dnf install -y gcc-toolset-13 git python3.12 python3.12-devel python3.12-pip
 
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:$PATH"
 
-# Register any shared libraries installed/built outside this script (e.g. source-built Python versions)
+# Source-built Pythons install libpythonX.Y.so.1.0 to /usr/local/lib but the
+# linker cache may not include that path yet.  Register it and also set
+# LD_LIBRARY_PATH as a fallback for environments where ldconfig has no effect.
 ldconfig
+export LD_LIBRARY_PATH="/usr/local/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 # Install build frontend + build-time deps
 python3.12 -m pip install "build" "setuptools>=45" "wheel" "setuptools_scm[toml]>=6.2" "pkgconfig"
