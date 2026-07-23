@@ -55,6 +55,9 @@ if [ -z "$WHEEL" ]; then
 fi
 echo "Wheel: $WHEEL"
 
+# Copy wheel to /home/tester so the wrapper script can locate it without rebuilding
+cp "${WHEEL}" /home/tester/
+
 cd "${SOURCE_ROOT}"
 
 # Install wheel + test dependencies
