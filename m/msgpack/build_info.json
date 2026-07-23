@@ -1,0 +1,19 @@
+{
+   "maintainer": "varsha.kumar@ibm.com",
+   "package_name": "msgpack",
+   "github_url": "https://github.com/msgpack/msgpack-python",
+   "version": "v1.2.1",
+   "default_branch": "main",
+   "build_script": "msgpack_1.2.1_ubi_9.6.sh",
+   "wheel_build" : true,
+   "package_dir": "t/traceloop-sdk",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v1.2.1":{
+           "build_script": "msgpack_1.2.1_ubi_9.6.sh"
+   },
+   "*": {
+       "build_script": "msgpack_1.2.1_ubi_9.6.sh"
+   }
+}
