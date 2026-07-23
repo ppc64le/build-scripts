@@ -34,7 +34,6 @@ echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 # Install system dependencies
 # gcc-c++ is required to build grpcio from source (provides the 'c++' binary)
 dnf install -y gcc gcc-c++ git python3.12 python3.12-devel python3.12-pip
-
 # Install build frontend
 python3.12 -m pip install --upgrade pip build hatchling
 
