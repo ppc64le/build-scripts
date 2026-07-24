@@ -26,7 +26,7 @@ echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 
 # Install system dependencies
 dnf install -y gcc-toolset-13 git \
-    python3.13 python3.13-devel python3.13-pip \
+    python3.12 python3.12-devel python3.12-pip \
     autoconf automake libtool
 
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:$PATH"
@@ -35,7 +35,7 @@ export LDFLAGS="-L/usr/lib64"
 
 # Install build dependencies
 # Use earlier setuptools version to include pkg_resources
-python3.13 -m pip install --upgrade pip "setuptools>=60,<72" wheel "cython~=3.1" build
+python3.12 -m pip install --upgrade pip "setuptools>=60,<72" wheel "cython~=3.1" build
 
 # Clone and checkout
 rm -rf "$PACKAGE_DIR"
@@ -45,7 +45,7 @@ git checkout "$PACKAGE_VERSION"
 git submodule update --init --depth 1
 
 # Build wheel — no isolation since deps are already installed above
-python3.13 -m build --wheel --no-isolation --outdir "${SOURCE_ROOT}/dist/"
+python3.12 -m build --wheel --no-isolation --outdir "${SOURCE_ROOT}/dist/"
 
 WHEEL=$(find "${SOURCE_ROOT}/dist" -name "${PACKAGE_NAME}-*.whl" | head -1)
 if [ -z "$WHEEL" ]; then
@@ -60,7 +60,7 @@ cp "${WHEEL}" "${SOURCE_ROOT}"
 
 # Install wheel
 echo "=== Installing Wheel ==="
-python3.13 -m pip install "$WHEEL"
+python3.12 -m pip install "$WHEEL"
 
 # Run tests
 echo "=== Running Tests ==="
@@ -69,7 +69,7 @@ TESTS_FAILED=0
 
 # Test 1: Import and version
 echo "Test 1: Import and version"
-python3.13 -c "
+python3.12 -c "
 import uvloop
 from importlib.metadata import version
 v = version('uvloop')
@@ -81,7 +81,7 @@ print('  PASSED')
 
 # Test 2: Event loop policy installs and restores correctly
 echo "Test 2: Event loop policy"
-python3.13 -c "
+python3.12 -c "
 import asyncio
 import uvloop
 uvloop.install()
@@ -94,7 +94,7 @@ print('  PASSED')
 
 # Test 3: Event loop is a uvloop instance
 echo "Test 3: Event loop type"
-python3.13 -c "
+python3.12 -c "
 import asyncio
 import uvloop
 uvloop.install()
@@ -108,7 +108,7 @@ print('  PASSED')
 
 # Test 4: Run a basic coroutine
 echo "Test 4: Run coroutine"
-python3.13 -c "
+python3.12 -c "
 import uvloop
 
 async def add(a, b):
@@ -122,7 +122,7 @@ print('  PASSED')
 
 # Test 5: Asyncio sleep works inside uvloop
 echo "Test 5: Async sleep"
-python3.13 -c "
+python3.12 -c "
 import asyncio
 import uvloop
 import time
@@ -140,7 +140,7 @@ print('  PASSED')
 
 # Test 6: TCP echo server and client
 echo "Test 6: TCP echo server/client"
-python3.13 -c "
+python3.12 -c "
 import asyncio
 import uvloop
 
@@ -172,7 +172,7 @@ print('  PASSED')
 
 # Test 7: Gather runs tasks concurrently
 echo "Test 7: Concurrent tasks with gather"
-python3.13 -c "
+python3.12 -c "
 import asyncio
 import uvloop
 import time
