@@ -1,0 +1,504 @@
+diff --git a/manifests/3.6.0/opensearch-3.6.0.yml b/manifests/3.6.0/opensearch-3.6.0.yml
+index 0a0a8cf8b2..81e7d80416 100644
+--- a/manifests/3.6.0/opensearch-3.6.0.yml
++++ b/manifests/3.6.0/opensearch-3.6.0.yml
+@@ -59,16 +59,6 @@ components:
+     platforms:
+       - linux
+       - windows
+-  - name: k-NN
+-    repository: https://github.com/opensearch-project/k-NN.git
+-    ref: tags/3.6.0.0
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - common-utils
+-      - security
+-      - custom-codecs
+   - name: geospatial
+     repository: https://github.com/opensearch-project/geospatial.git
+     ref: tags/3.6.0.0
+@@ -95,15 +85,6 @@ components:
+       - common-utils
+       - job-scheduler
+       - opensearch-remote-metadata-sdk
+-  - name: neural-search
+-    repository: https://github.com/opensearch-project/neural-search.git
+-    ref: tags/3.6.0.0
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - ml-commons
+-      - k-NN
+   - name: notifications-core
+     repository: https://github.com/opensearch-project/notifications.git
+     ref: tags/3.6.0.0
+@@ -173,16 +154,6 @@ components:
+       - windows
+     depends_on:
+       - common-utils
+-  - name: security-analytics
+-    repository: https://github.com/opensearch-project/security-analytics.git
+-    ref: tags/3.6.0.0
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - common-utils
+-      - alerting
+-      - job-scheduler
+   - name: index-management
+     repository: https://github.com/opensearch-project/index-management.git
+     ref: tags/3.6.0.0
+@@ -207,8 +178,6 @@ components:
+       - common-utils
+       - opensearch-remote-metadata-sdk
+       - ml-commons
+-      - k-NN
+-      - neural-search
+   - name: skills
+     repository: https://github.com/opensearch-project/skills.git
+     ref: tags/3.6.0.0
+@@ -246,7 +215,5 @@ components:
+       - windows
+     depends_on:
+       - job-scheduler
+-      - neural-search
+-      - k-NN
+       - ml-commons
+       - user-behavior-insights
+diff --git a/opensearch.patch b/opensearch.patch
+new file mode 100644
+index 0000000000..ca464f0c2c
+--- /dev/null
++++ b/opensearch.patch
+@@ -0,0 +1,74 @@
++diff --git a/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java b/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java
++index baeaeb72..38a69b40 100644
++--- a/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java
+++++ b/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java
++@@ -127,7 +127,23 @@ public class OpenSearchJavaPlugin implements Plugin<Project> {
++                 // just a self contained test-fixture configuration, likely transitive and hellacious
++                 return;
++             }
++-            configuration.resolutionStrategy(ResolutionStrategy::failOnVersionConflict);
+++            configuration.resolutionStrategy(strategy -> {
+++                strategy.failOnVersionConflict();
+++                strategy.eachDependency(details -> {
+++                    String group = details.getRequested().getGroup();
+++                    String name = details.getRequested().getName();
+++                    // Force jackson modules to 2.21.5 (excludes jackson-annotations which uses "2.21" scheme)
+++                    if (("com.fasterxml.jackson.core".equals(group) && !"jackson-annotations".equals(name))
+++                        || "com.fasterxml.jackson.datatype".equals(group)
+++                        || "com.fasterxml.jackson.dataformat".equals(group)
+++                        || "com.fasterxml.jackson".equals(group)) {
+++                        details.useVersion("2.21.5");
+++                    }
+++                    if ("org.apache.logging.log4j".equals(group)) {
+++                        details.useVersion("2.25.4");
+++                    }
+++                });
+++            });
++         });
++ 
++         // force all dependencies added directly to compile/testImplementation to be non-transitive, except for ES itself
++diff --git a/gradle/libs.versions.toml b/gradle/libs.versions.toml
++index 23e45f4c..6a9304ff 100644
++--- a/gradle/libs.versions.toml
+++++ b/gradle/libs.versions.toml
++@@ -3,18 +3,18 @@ opensearch        = "3.6.0"
++ lucene            = "10.4.0"
++ 
++ bundled_jdk_vendor = "adoptium"
++-bundled_jdk = "25.0.2+10"
+++bundled_jdk = "25.0.3+9"
++ 
++ # optional dependencies
++ spatial4j               = "0.7"
++ jts                     = "1.15.0"
++ jackson_annotations     = "2.21"
++ jackson                 = "2.21.2"
++-jackson_databind        = "2.21.2"
+++jackson_databind        = "2.21.5"
++ snakeyaml               = "2.1"
++ icu4j                   = "77.1"
++ supercsv                = "2.4.0"
++-log4j                   = "2.25.3"
+++log4j                   = "2.25.4"
++ error_prone_annotations = "2.45.0"
++ slf4j                   = "2.0.17"
++ asm                     = "9.9.1"
++@@ -37,7 +37,7 @@ json_smart              = "2.5.2"
++ # when updating the JNA version, also update the version in buildSrc/build.gradle
++ jna               = "5.16.0"
++ 
++-netty             = "4.2.12.Final"
+++netty             = "4.2.16.Final"
++ joda              = "2.12.7"
++ roaringbitmap     = "1.3.0"
++ 
++@@ -46,7 +46,7 @@ reactor_netty     = "1.3.4"
++ reactor           = "3.8.4"
++ 
++ # client dependencies
++-httpclient5       = "5.6"
+++httpclient5       = "5.6.1"
++ httpcore5         = "5.4"
++ httpclient        = "4.5.14"
++ httpcore          = "4.4.16"
++
+diff --git a/patches/cross-cluster-replication.patch b/patches/cross-cluster-replication.patch
+new file mode 100644
+index 0000000000..d691d8e4e1
+--- /dev/null
++++ b/patches/cross-cluster-replication.patch
+@@ -0,0 +1,13 @@
++diff --git a/build.gradle b/build.gradle
++--- a/build.gradle
+++++ b/build.gradle
++@@ -131,7 +131,7 @@ allprojects {
++         force "org.apache.httpcomponents.core5:httpcore5:${versions.httpcore5}"
++         force "org.apache.httpcomponents.core5:httpcore5-h2:${versions.httpcore5}"
++         force "org.apache.httpcomponents.client5:httpclient5:${versions.httpclient5}"
++         force "org.apache.httpcomponents.client5:httpclient5-osgi:${versions.httpclient5}"
++-        force 'com.fasterxml.jackson.core:jackson-databind:2.13.4.2'
+++        force "com.fasterxml.jackson.core:jackson-databind:${versions.jackson_databind}"
++         force 'org.yaml:snakeyaml:2.0'
++         force 'org.codehaus.plexus:plexus-utils:3.0.24'
++         force 'net.java.dev.jna:jna:5.12.1'
+diff --git a/patches/flow-framework.patch b/patches/flow-framework.patch
+new file mode 100644
+index 0000000000..f481111895
+--- /dev/null
++++ b/patches/flow-framework.patch
+@@ -0,0 +1,12 @@
++diff --git a/build.gradle b/build.gradle
++index 21b7f02..88c9c24 100644
++--- a/build.gradle
+++++ b/build.gradle
++@@ -275,6 +275,7 @@ dependencies {
++             force("com.google.errorprone:error_prone_annotations:${versions.error_prone_annotations}")
++             force("org.apache.httpcomponents.core5:httpcore5:${versions.httpcore5}")
++             force("org.apache.httpcomponents.core5:httpcore5-h2:${versions.httpcore5}")
+++            force("org.apache.httpcomponents.client5:httpclient5:${versions.httpclient5}")
++ 
++             if (System.getenv('REMOTE_METADATA_SDK_IMPL') == 'ddb-client') {
++                 // OpenSearch Java client brings in different versions of the below dependencies.
+diff --git a/patches/ml-commons.patch b/patches/ml-commons.patch
+new file mode 100644
+index 0000000000..a693d8e5fc
+--- /dev/null
++++ b/patches/ml-commons.patch
+@@ -0,0 +1,34 @@
++diff --git a/plugin/build.gradle b/plugin/build.gradle
++index d3fc0dd..87cf678 100644
++--- a/plugin/build.gradle
+++++ b/plugin/build.gradle
++@@ -707,12 +707,12 @@ configurations.all {
++     resolutionStrategy.force "software.amazon.awssdk:s3:${versions.aws}"
++     resolutionStrategy.force "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson_annotations}"
++     resolutionStrategy.force 'com.networknt:json-schema-validator:1.5.7'
++-    resolutionStrategy.force 'com.fasterxml.jackson:jackson-bom:2.18.3'
+++    resolutionStrategy.force "com.fasterxml.jackson:jackson-bom:${versions.jackson_databind}"
++     resolutionStrategy.force 'org.yaml:snakeyaml:2.3'
++-    resolutionStrategy.force 'com.fasterxml.jackson.dataformat:jackson-dataformat-smile:2.18.3'
++-    resolutionStrategy.force 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.3'
++-    resolutionStrategy.force 'com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.18.3'
++-    resolutionStrategy.force 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.3'
+++    resolutionStrategy.force "com.fasterxml.jackson.dataformat:jackson-dataformat-smile:${versions.jackson_databind}"
+++    resolutionStrategy.force "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${versions.jackson_databind}"
+++    resolutionStrategy.force "com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:${versions.jackson_databind}"
+++    resolutionStrategy.force "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${versions.jackson_databind}"
++     resolutionStrategy.force "io.netty:netty-codec-http:${versions.netty}"
++     resolutionStrategy.force "io.netty:netty-codec-http2:${versions.netty}"
++     resolutionStrategy.force "io.netty:netty-codec:${versions.netty}"
++@@ -722,8 +722,8 @@ configurations.all {
++     resolutionStrategy.force "io.netty:netty-handler:${versions.netty}"
++     resolutionStrategy.force "io.netty:netty-resolver:${versions.netty}"
++     resolutionStrategy.force "io.netty:netty-transport-native-unix-common:${versions.netty}"
++-    resolutionStrategy.force 'org.apache.logging.log4j:log4j-api:2.25.3'
++-    resolutionStrategy.force 'org.apache.logging.log4j:log4j-core:2.25.3'
+++    resolutionStrategy.force "org.apache.logging.log4j:log4j-api:${versions.log4j}"
+++    resolutionStrategy.force "org.apache.logging.log4j:log4j-core:${versions.log4j}"
++ }
++ 
++ apply plugin: 'com.netflix.nebula.ospackage'
++
+diff --git a/patches/opensearch-reports.patch b/patches/opensearch-reports.patch
+new file mode 100644
+index 0000000000..6d0202219a
+--- /dev/null
++++ b/patches/opensearch-reports.patch
+@@ -0,0 +1,14 @@
++diff --git a/build.gradle b/build.gradle
++--- a/build.gradle
+++++ b/build.gradle
++@@ -172,7 +172,7 @@ allprojects {
++         force "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_version}"
++         force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlin_version}"
++         force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}"
++         force "org.jetbrains.kotlin:kotlin-reflect:${kotlin_version}"
++         force "org.jetbrains.kotlin:kotlin-stdlib-common:${kotlin_version}"
++-        force "com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.11.4"
+++        force "com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:${versions.jackson_databind}"
++         force "org.yaml:snakeyaml:2.0"
++         force "org.slf4j:slf4j-api:2.0.7"
++         force "ch.qos.logback:logback-classic:1.5.20"
+diff --git a/patches/security.patch b/patches/security.patch
+new file mode 100644
+index 0000000000..5bc24e7306
+--- /dev/null
++++ b/patches/security.patch
+@@ -0,0 +1,30 @@
++diff --git a/build.gradle b/build.gradle
++index 89a749a..92433a5 100644
++--- a/build.gradle
+++++ b/build.gradle
++@@ -492,6 +492,12 @@ configurations {
++             force "io.netty:netty-handler:${versions.netty}"
++             force "io.netty:netty-transport:${versions.netty}"
++             force "io.netty:netty-transport-native-unix-common:${versions.netty}"
+++            force "io.netty:netty-codec:${versions.netty}"
+++            force "io.netty:netty-codec-http:${versions.netty}"
+++            force "io.netty:netty-codec-http2:${versions.netty}"
+++            force "io.netty:netty-codec-http3:${versions.netty}"
+++            force "io.netty:netty-codec-compression:${versions.netty}"
+++            force "io.netty:netty-codec-classes-quic:${versions.netty}"
++             force "com.github.luben:zstd-jni:${versions.zstd}"
++             force "org.xerial.snappy:snappy-java:1.1.10.8"
++             force "com.google.guava:guava:${guava_version}"
++diff --git a/libs/opensaml/build.gradle b/libs/opensaml/build.gradle
++index c202dfb..bd4b2f8 100644
++--- a/libs/opensaml/build.gradle
+++++ b/libs/opensaml/build.gradle
++@@ -32,6 +32,7 @@ configurations.all {
++         force "org.bouncycastle:bcprov-jdk18on:1.83"
++         force "org.apache.commons:commons-lang3:${versions.commonslang}"
++         force "com.fasterxml.jackson.core:jackson-core:${versions.jackson}"
+++        force "com.fasterxml.jackson.core:jackson-databind:${versions.jackson_databind}"
++     }
++ }
++ 
++
+diff --git a/patches/sql.patch b/patches/sql.patch
+new file mode 100644
+index 0000000000..ba3f7a53af
+--- /dev/null
++++ b/patches/sql.patch
+@@ -0,0 +1,59 @@
++diff --git a/build.gradle b/build.gradle
++index 7c672cc..d2d5e7a 100644
++--- a/build.gradle
+++++ b/build.gradle
++@@ -160,6 +160,8 @@ allprojects {
++         resolutionStrategy.force 'org.apache.commons:commons-text:1.11.0'
++         resolutionStrategy.force 'commons-io:commons-io:2.15.0'
++         resolutionStrategy.force 'org.yaml:snakeyaml:2.2'
+++        resolutionStrategy.force 'com.jayway.jsonpath:json-path:2.10.0'
+++        resolutionStrategy.force 'org.jooq:joou-java-6:0.9.5'
++         resolutionStrategy.dependencySubstitution {
++             substitute module('commons-lang:commons-lang') using module('org.apache.commons:commons-lang3:3.18.0') because 'CVE-2025-48924: commons-lang 2.x vulnerable to StackOverflowError'
++         }
++diff --git a/core/build.gradle b/core/build.gradle
++index 23f9b37..f1e7f16 100644
++--- a/core/build.gradle
+++++ b/core/build.gradle
++@@ -58,10 +58,10 @@ dependencies {
++     api group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
++     api group: 'com.tdunning', name: 't-digest', version: '3.3'
++     api "net.minidev:json-smart:${versions.json_smart}"
++-    api('org.apache.calcite:calcite-core:1.41.0') {
+++    api('org.apache.calcite:calcite-core:1.42.0') {
++         exclude group: 'net.minidev', module: 'json-smart'
++     }
++-    api 'org.apache.calcite:calcite-linq4j:1.41.0'
+++    api 'org.apache.calcite:calcite-linq4j:1.42.0'
++     api project(':common')
++     implementation "com.github.seancfoley:ipaddress:5.4.2"
++     implementation "com.jayway.jsonpath:json-path:2.9.0"
++diff --git a/core/src/main/java/org/opensearch/sql/executor/OpenSearchTypeSystem.java b/core/src/main/java/org/opensearch/sql/executor/OpenSearchTypeSystem.java
++index b84d7dc..0e2ecda 100644
++--- a/core/src/main/java/org/opensearch/sql/executor/OpenSearchTypeSystem.java
+++++ b/core/src/main/java/org/opensearch/sql/executor/OpenSearchTypeSystem.java
++@@ -25,13 +25,19 @@ public class OpenSearchTypeSystem extends RelDataTypeSystemImpl {
++   private OpenSearchTypeSystem() {}
++ 
++   @Override
++-  public int getMaxNumericPrecision() {
++-    return MAX_PRECISION;
+++  public int getMaxPrecision(SqlTypeName typeName) {
+++    if (typeName == SqlTypeName.DECIMAL) {
+++      return MAX_PRECISION;
+++    }
+++    return super.getMaxPrecision(typeName);
++   }
++ 
++   @Override
++-  public int getMaxNumericScale() {
++-    return MAX_SCALE;
+++  public int getMaxScale(SqlTypeName typeName) {
+++    if (typeName == SqlTypeName.DECIMAL) {
+++      return MAX_SCALE;
+++    }
+++    return super.getMaxScale(typeName);
++   }
++ 
++   @Override
++
+diff --git a/src/build_workflow/build_args.py b/src/build_workflow/build_args.py
+index d67c27a7b9..80bf830df7 100644
+--- a/src/build_workflow/build_args.py
++++ b/src/build_workflow/build_args.py
+@@ -16,6 +16,7 @@ class BuildArgs:
+     SUPPORTED_ARCHITECTURES = [
+         "x64",
+         "arm64",
++        "ppc64le"
+     ]
+     SUPPORTED_DISTRIBUTIONS = ["tar", "zip", "rpm", "deb"]
+ 
+diff --git a/src/build_workflow/builder_from_source.py b/src/build_workflow/builder_from_source.py
+index 2c77c80d2a..644d232639 100644
+--- a/src/build_workflow/builder_from_source.py
++++ b/src/build_workflow/builder_from_source.py
+@@ -6,12 +6,18 @@
+ # compatible open source license.
+ 
+ import os
++import logging
+ 
+ from build_workflow.build_recorder import BuildRecorder
+ from build_workflow.builder import Builder
+ from git.git_repository import GitRepository
+ from paths.script_finder import ScriptFinder
+ 
++OPENSEARCH_PATCH_FILE = os.path.join(os.getcwd(), "opensearch.patch")
++
++# Per-component patch files under patches/<ComponentName>.patch next to build.sh
++PATCHES_DIR = os.path.join(os.getcwd(), "patches")
++
+ """
+ This class is responsible for executing the build for a component and passing the results to a build recorder.
+ It will notify the build recorder of build information such as repository and git ref, and any artifacts generated by the build.
+@@ -27,6 +33,93 @@ def checkout(self, work_dir: str) -> None:
+             os.path.join(work_dir, self.component.name),
+             self.component.working_directory,
+         )
++        # Apply OpenSearch core patch (opensearch.patch) if building OpenSearch
++        if self.component.name == "OpenSearch":
++            if os.path.isfile(OPENSEARCH_PATCH_FILE):
++                logging.info(f"Applying patch {OPENSEARCH_PATCH_FILE} to {self.component.name}")
++                self.git_repo.execute(f"git apply {OPENSEARCH_PATCH_FILE}")
++                logging.info(f"Successfully applied patch to {self.component.name}")
++            else:
++                logging.warning(f"Patch file not found: {OPENSEARCH_PATCH_FILE}")
++
++        # Per-component patch support: patches/<ComponentName>.patch
++        component_patch_file = os.path.join(PATCHES_DIR, f"{self.component.name}.patch")
++        if os.path.isfile(component_patch_file):
++            logging.info(f"Applying patch {component_patch_file} to {self.component.name}")
++            self.git_repo.execute(f"git apply {component_patch_file}")
++            logging.info(f"Successfully applied patch to {self.component.name}")
++
++        self._apply_ppc64le_gradle_fix()
++        self._apply_kotlin_version_fix()
++
++    def _apply_ppc64le_gradle_fix(self) -> None:
++        """
++        Apply ppc64le architecture fix for Gradle builds.
++        Creates gradle.properties to disable native platform support which doesn't work on ppc64le.
++        """
++        gradle_properties_path = os.path.join(self.git_repo.working_directory, "gradle.properties")
++
++        # Check if this is a Gradle project (has gradlew or build.gradle)
++        has_gradlew = os.path.isfile(os.path.join(self.git_repo.working_directory, "gradlew"))
++        has_build_gradle = os.path.isfile(os.path.join(self.git_repo.working_directory, "build.gradle"))
++
++        if not (has_gradlew or has_build_gradle):
++            logging.debug(f"Skipping ppc64le Gradle fix for {self.component.name} - not a Gradle project")
++            return
++
++        gradle_properties_content = """# Disable native platform support for ppc64le architecture compatibility
++        # The native-platform library doesn't support ppc64le, so we fall back to pure Java implementations
++        org.gradle.native=false
++        # Use plain console output (no rich formatting that requires native platform)
++        org.gradle.console=plain
++        """
++
++        # If gradle.properties already exists, append our settings
++        if os.path.isfile(gradle_properties_path):
++            logging.info(f"Appending ppc64le fix to existing gradle.properties for {self.component.name}")
++            with open(gradle_properties_path, 'a') as f:
++                f.write("\n" + gradle_properties_content)
++        else:
++            logging.info(f"Creating gradle.properties with ppc64le fix for {self.component.name}")
++            with open(gradle_properties_path, 'w') as f:
++                f.write(gradle_properties_content)
++
++    def _apply_kotlin_version_fix(self) -> None:
++        """
++        Update Kotlin version from 2.2.0 to 2.2.20 in build.gradle for specific plugins.
++        Only applies to plugins that use Kotlin and need the version update.
++        """
++        # List of plugins that need Kotlin version update
++        KOTLIN_PLUGINS = ['k-NN', 'cross-cluster-replication', 'opensearch-observability',
++                         'opensearch-reports', 'alerting', 'index-management']
++
++        if self.component.name not in KOTLIN_PLUGINS:
++            logging.debug(f"Skipping Kotlin version fix for {self.component.name} - not in Kotlin plugins list")
++            return
++
++        build_gradle_path = os.path.join(self.git_repo.working_directory, "build.gradle")
++
++        if not os.path.isfile(build_gradle_path):
++            logging.warning(f"build.gradle not found for {self.component.name} at {build_gradle_path}")
++            return
++
++        # Read the current build.gradle content
++        with open(build_gradle_path, 'r') as f:
++            content = f.read()
++
++        # Check if Kotlin 2.2.0 is present
++        if '2.2.0' not in content:
++            logging.debug(f"Kotlin version 2.2.0 not found in build.gradle for {self.component.name}")
++            return
++
++        # Replace Kotlin version 2.2.0 with 2.2.20
++        updated_content = content.replace('2.2.0', '2.2.20')
++
++        # Write the updated content back
++        with open(build_gradle_path, 'w') as f:
++            f.write(updated_content)
++
++        logging.info(f"Updated Kotlin version from 2.2.0 to 2.2.20 in build.gradle for {self.component.name}")
+ 
+     def build(self, build_recorder: BuildRecorder) -> None:
+ 
+@@ -64,3 +157,4 @@ def export_artifacts(self, build_recorder: BuildRecorder) -> None:
+                     absolute_path = os.path.join(dir, file_name)
+                     relative_path = os.path.relpath(absolute_path, artifacts_path)
+                     build_recorder.record_artifact(self.component.name, artifact_type, relative_path, absolute_path)
++
+diff --git a/docker/release/build-image-single-arch.sh b/docker/release/build-image-single-arch.sh
+index 02c98e28..97093d7e 100755
+--- a/docker/release/build-image-single-arch.sh
++++ b/docker/release/build-image-single-arch.sh
+@@ -87,7 +87,7 @@ else
+     echo $PRODUCT $PRODUCT_ALT.yml
+ fi
+ 
+-if [ "$ARCHITECTURE" != "x64" ] && [ "$ARCHITECTURE" != "arm64" ]
++if [ "$ARCHITECTURE" != "x64" ] && [ "$ARCHITECTURE" != "arm64" ] && [ "$ARCHITECTURE" != "ppc64le" ]
+ then
+     echo "We only support 'x64' and 'arm64' as architecture name for -a parameter"
+     exit 1
+@@ -123,6 +123,5 @@ else
+ fi
+ 
+ # Docker build
+-docker build --build-arg VERSION=$VERSION --build-arg BUILD_DATE=`date -u +%Y-%m-%dT%H:%M:%SZ` --build-arg NOTES=$NOTES -f $DOCKERFILE $DIR -t opensearchproject/$PRODUCT:$VERSION
++docker build --no-cache --build-arg VERSION=$VERSION --build-arg BUILD_DATE=`date -u +%Y-%m-%dT%H:%M:%SZ` --build-arg NOTES=$NOTES --secret id=artifactory_user_secret,env=artifactory_user --secret id=artifactory_token_secret,env=artifactory_token -f $DOCKERFILE $DIR -t opensearchproject/$PRODUCT:$VERSION
+ docker tag opensearchproject/$PRODUCT:$VERSION opensearchproject/$PRODUCT:latest
+-
