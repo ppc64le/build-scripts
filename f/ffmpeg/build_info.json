@@ -15,6 +15,9 @@
       "libsw*"
     ],
     "*": {
-      "build_script": "ffmpeg_ubi_10.1.sh"
+      "build_script":  [
+        "ffmpeg_ubi_9.3.sh",
+        "ffmpeg_ubi_10.1.sh"
+        ]
     }
   }
