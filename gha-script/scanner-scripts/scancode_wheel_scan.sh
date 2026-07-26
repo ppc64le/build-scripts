@@ -7,11 +7,14 @@ echo "----------Installing dependencies -----------------"
 sudo apt update -y && sudo apt install -y file git python3.12 python3.12-venv python3-pip python3.12-dev build-essential unzip patch wget tar libffi-dev zlib1g-dev libssl-dev libxml2-dev libxslt1-dev libicu-dev pkg-config
 
 echo "----------Installed dependencies -----------------"
-# pip download cache (~/.cache/pip) is restored by actions/cache in the workflow
-# so this git clone + pip install is fast after the first run
-git clone https://github.com/nexB/scancode-toolkit.git
+# scancode-toolkit source is cached by actions/cache in the workflow (key: scancode-toolkit-<version>)
+# pip download cache (~/.cache/pip) is also cached, so install is fast after the first run
+SCANCODE_VERSION="v32.4.0"
+if [ ! -d "scancode-toolkit" ]; then
+  git clone https://github.com/nexB/scancode-toolkit.git
+fi
 cd scancode-toolkit
-git checkout v32.4.0
+git checkout $SCANCODE_VERSION
 echo "-------------- Create venv ------------------"
 python3.12 -m venv venv
 source venv/bin/activate
