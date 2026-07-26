@@ -138,7 +138,15 @@ jobs:
           GRYPE_VERSION=$(curl -s --retry 3 https://api.github.com/repos/anchore/grype/releases/latest | jq -r '.tag_name')
           echo "Installing grype $GRYPE_VERSION for ppc64le..."
           wget --tries=3 https://github.com/anchore/grype/releases/download/$GRYPE_VERSION/grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz
-          tar -xzf grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz
+          wget --tries=3 https://github.com/anchore/grype/releases/download/$GRYPE_VERSION/grype_${GRYPE_VERSION#v}_checksums.txt
+          echo "[INFO] Verifying checksum..."
+          if grep "grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz" "grype_${GRYPE_VERSION#v}_checksums.txt" | sha256sum --check --status; then
+            echo "[INFO] Checksum verification successful."
+            tar -xzf grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz
+          else
+            echo "[ERROR] Checksum verification FAILED for grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz."
+            exit 1
+          fi
           mkdir -p scan-tools-bin
           mv grype scan-tools-bin/grype
           chmod +x scan-tools-bin/grype
@@ -274,6 +282,12 @@ jobs:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
 
+      - name: Cache scancode-toolkit source
+        uses: actions/cache@v4
+        with:
+          path: scancode-toolkit
+          key: scancode-toolkit-v32.4.0
+
       - name: Run build_wheels.sh
         run: |
           ls
@@ -403,6 +417,12 @@ jobs:
         with:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
+
+      - name: Cache scancode-toolkit source
+        uses: actions/cache@v4
+        with:
+          path: scancode-toolkit
+          key: scancode-toolkit-v32.4.0
 
       - name: Run build_wheels.sh
         run: |
@@ -547,6 +567,12 @@ jobs:
         with:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
+
+      - name: Cache scancode-toolkit source
+        uses: actions/cache@v4
+        with:
+          path: scancode-toolkit
+          key: scancode-toolkit-v32.4.0
 
       - name: Run build_wheels.sh
         run: |
@@ -693,6 +719,12 @@ jobs:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
 
+      - name: Cache scancode-toolkit source
+        uses: actions/cache@v4
+        with:
+          path: scancode-toolkit
+          key: scancode-toolkit-v32.4.0
+
       - name: Run build_wheels.sh
         run: |
           ls
@@ -837,6 +869,12 @@ jobs:
         with:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
+
+      - name: Cache scancode-toolkit source
+        uses: actions/cache@v4
+        with:
+          path: scancode-toolkit
+          key: scancode-toolkit-v32.4.0
 
       - name: Run build_wheels.sh
         run: |
@@ -1251,3 +1289,4 @@ jobs:
                 # Export environment variables
                 export PYTHONPATH="/tmp/_actions-runner-working-dir/build-scripts/build-scripts:/tmp/_actions-runner-working-dir/build-scripts/build-scripts/process_bom"
                 python -m process_bom.run_currency_processor
+                
