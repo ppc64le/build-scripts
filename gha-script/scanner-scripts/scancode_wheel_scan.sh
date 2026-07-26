@@ -7,10 +7,13 @@ echo "----------Installing dependencies -----------------"
 sudo apt update -y && sudo apt install -y file git python3.12 python3.12-venv python3-pip python3.12-dev build-essential unzip patch wget tar libffi-dev zlib1g-dev libssl-dev libxml2-dev libxslt1-dev libicu-dev pkg-config
 
 echo "----------Installed dependencies -----------------"
-# scancode-toolkit source is cached by actions/cache in the workflow (key: scancode-toolkit-<version>)
-# pip download cache (~/.cache/pip) is also cached, so install is fast after the first run
+# scancode-toolkit source is fetched once by fetch_scancode_toolkit.sh in install_scan_tools job
+# and distributed to all wheel_build jobs as a GHA artifact (scancode-toolkit-src.tar.gz).
+# The directory is extracted by the workflow before this script runs, so the clone below
+# is a safety fallback only and should not be reached under normal conditions.
 SCANCODE_VERSION="v32.4.0"
 if [ ! -d "scancode-toolkit" ]; then
+  echo "[WARN] scancode-toolkit directory not found. Falling back to git clone..."
   git clone https://github.com/nexB/scancode-toolkit.git
 fi
 cd scancode-toolkit
