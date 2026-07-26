@@ -128,10 +128,24 @@ jobs:
     if: ${{ inputs.wheel_build == 'true' }}
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
       - name: Install system dependencies
         run: |
           sudo apt update -y
-          sudo apt install -y wget curl tar jq
+          sudo apt install -y wget curl tar jq git
+
+      - name: Fetch scancode-toolkit source
+        run: |
+          chmod +x ./gha-script/scanner-scripts/fetch_scancode_toolkit.sh
+          bash ./gha-script/scanner-scripts/fetch_scancode_toolkit.sh
+
+      - name: Upload scancode-toolkit-src artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: scancode-toolkit-src
+          path: scancode-toolkit-src.tar.gz
 
       - name: Install grype
         run: |
@@ -282,11 +296,13 @@ jobs:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
 
-      - name: Cache scancode-toolkit source
-        uses: actions/cache@v4
+      - name: Download scancode-toolkit-src artifact
+        uses: actions/download-artifact@v7
         with:
-          path: scancode-toolkit
-          key: scancode-toolkit-v32.4.0
+          name: scancode-toolkit-src
+
+      - name: Extract scancode-toolkit source
+        run: tar -xzf scancode-toolkit-src.tar.gz
 
       - name: Run build_wheels.sh
         run: |
@@ -418,11 +434,13 @@ jobs:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
 
-      - name: Cache scancode-toolkit source
-        uses: actions/cache@v4
+      - name: Download scancode-toolkit-src artifact
+        uses: actions/download-artifact@v7
         with:
-          path: scancode-toolkit
-          key: scancode-toolkit-v32.4.0
+          name: scancode-toolkit-src
+
+      - name: Extract scancode-toolkit source
+        run: tar -xzf scancode-toolkit-src.tar.gz
 
       - name: Run build_wheels.sh
         run: |
@@ -568,11 +586,13 @@ jobs:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
 
-      - name: Cache scancode-toolkit source
-        uses: actions/cache@v4
+      - name: Download scancode-toolkit-src artifact
+        uses: actions/download-artifact@v7
         with:
-          path: scancode-toolkit
-          key: scancode-toolkit-v32.4.0
+          name: scancode-toolkit-src
+
+      - name: Extract scancode-toolkit source
+        run: tar -xzf scancode-toolkit-src.tar.gz
 
       - name: Run build_wheels.sh
         run: |
@@ -719,11 +739,13 @@ jobs:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
 
-      - name: Cache scancode-toolkit source
-        uses: actions/cache@v4
+      - name: Download scancode-toolkit-src artifact
+        uses: actions/download-artifact@v7
         with:
-          path: scancode-toolkit
-          key: scancode-toolkit-v32.4.0
+          name: scancode-toolkit-src
+
+      - name: Extract scancode-toolkit source
+        run: tar -xzf scancode-toolkit-src.tar.gz
 
       - name: Run build_wheels.sh
         run: |
@@ -870,11 +892,13 @@ jobs:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
 
-      - name: Cache scancode-toolkit source
-        uses: actions/cache@v4
+      - name: Download scancode-toolkit-src artifact
+        uses: actions/download-artifact@v7
         with:
-          path: scancode-toolkit
-          key: scancode-toolkit-v32.4.0
+          name: scancode-toolkit-src
+
+      - name: Extract scancode-toolkit source
+        run: tar -xzf scancode-toolkit-src.tar.gz
 
       - name: Run build_wheels.sh
         run: |
