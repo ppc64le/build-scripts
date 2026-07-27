@@ -15,12 +15,14 @@ import sys
 import json
 import os
 import re
+import site
 import subprocess
 import tempfile
 import time
 import urllib.request
 import urllib.parse
 import zipfile
+from collections import deque
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Set, Tuple
@@ -28,6 +30,9 @@ import shutil
 
 
 NVD_API_BASE = "https://services.nvd.nist.gov/rest/json"
+
+# Maximum number of stderr characters to include in log messages
+MAX_STDERR_LOG_CHARS = 200
 
 
 class WheelCVEScanner:
@@ -43,65 +48,22 @@ class WheelCVEScanner:
             'steps': {}
         }
         
-    # Grype install URL
-    _GRYPE_INSTALL_URL = (
-        "https://raw.githubusercontent.com/anchore/grype/main/install.sh"
-    )
-
-    def _ensure_grype(self, retries: int = 3, retry_delay: int = 10) -> bool:
-        """
-        Ensure grype is available on PATH.  If not found, attempt to install it
-        via the official install script into /usr/local/bin.
-
-        Non-blocking — if all retries fail, prints a warning and returns False.
-        The caller skips grype-dependent steps but continues with Lane 3 (NVD).
-
-        Args:
-            retries:     number of install attempts (default 3)
-            retry_delay: seconds to wait between attempts (default 10)
-
-        Returns True if grype is available after this call, False otherwise.
-        """
-        if shutil.which('grype'):
-            print("  grype already installed.")
-            return True
-
-        print(f"  grype not found — attempting installation "
-              f"(up to {retries} tries, {retry_delay}s between retries)...")
-
-        for attempt in range(1, retries + 1):
-            try:
-                print(f"  Install attempt {attempt}/{retries}...")
-                result = subprocess.run(
-                    ['sh', '-c',
-                     f'curl -sSfL {self._GRYPE_INSTALL_URL} | sh -s -- -b /usr/local/bin'],
-                    capture_output=True, text=True, timeout=120
-                )
-                if result.returncode == 0 and shutil.which('grype'):
-                    print("  grype installed successfully.")
-                    return True
-                print(f"  Attempt {attempt} failed: {result.stderr.strip()[:200]}")
-            except Exception as e:
-                print(f"  Attempt {attempt} error: {e}")
-
-            if attempt < retries:
-                print(f"  Retrying in {retry_delay}s...")
-                time.sleep(retry_delay)
-
-        print("  WARNING: grype installation failed after all retries. "
-              "Lane 1, Lane 2 and Phase 1 (wheel direct scan) will be skipped. "
-              "Lane 3 (NVD) will still run.")
-        return False
-
     def scan(self) -> Dict:
         """Main scanning workflow"""
         print(f"\n{'='*70}")
         print(f"Scanning Wheel: {self.wheel_name}")
         print(f"{'='*70}\n")
 
-        # Step 0: Ensure grype is available (install if needed, with retries)
+        # Step 0: Check grype availability — grype is installed by the workflow
+        # step before this script runs; if it is missing, grype-dependent lanes
+        # are skipped gracefully and Lane 3 (NVD) still runs.
         print("Step 0: Checking grype availability...")
-        grype_available = self._ensure_grype()
+        grype_available = bool(shutil.which('grype'))
+        if grype_available:
+            print("  grype is available.")
+        else:
+            print("  WARNING: grype not found. Lane 1, Lane 2 and Phase 1 "
+                  "(wheel direct scan) will be skipped. Lane 3 (NVD) will still run.")
         self.results['grype_available'] = grype_available
 
         # Step 1: Create system library inventory
@@ -154,150 +116,72 @@ class WheelCVEScanner:
         return self.results
     
     def _create_system_inventory(self) -> Dict:
-        """Create inventory of system libraries"""
+        """Create inventory of system libraries (RPM-based systems only)."""
         inventory = {
             'timestamp': datetime.now(timezone.utc).isoformat(),
             'packages': {}
         }
-        
-        # Check if RPM-based system
+
         if shutil.which('rpm'):
             print("  Detected RPM-based system")
             inventory['packages'] = self._get_rpm_packages()
-        # Check if DEB-based system
-        elif shutil.which('dpkg'):
-            print("  Detected DEB-based system")
-            inventory['packages'] = self._get_dpkg_packages()
         else:
-            print("  Warning: Could not detect package manager")
-        
+            print("  Warning: rpm not found — cannot build system library inventory")
+
         print(f"  Found {len(inventory['packages'])} packages with libraries")
         return inventory
-    
+
     def _get_rpm_packages(self) -> Dict:
         """Get library information from RPM packages.
 
-        Uses two bulk rpm queries — no per-package subprocess calls:
-          1. rpm -qa --queryformat  → all package names + versions
-          2. rpm -q --filesbypkg -a → all files for all packages at once
-             Output: "pkgname   /path/to/file"  (one line per file)
+        Uses a single bulk rpm query:
+          rpm -qa --queryformat 'PKG:%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\\n[%{FILENAMES}\\n]'
 
-        Avoids [%{FILENAMES}] array iterator which fails on some RPM versions
-        when packages have mismatched array tag sizes.
+        Lines starting with 'PKG:' are package headers; all following lines
+        (until the next 'PKG:') are files belonging to that package.
         """
         packages = {}
 
         try:
-            # Step 1: one call — all package names + versions
-            meta_result = subprocess.run(
-                ['rpm', '-qa', '--queryformat', '%{NAME}|%{VERSION}-%{RELEASE}\n'],
-                capture_output=True, text=True, timeout=30
-            )
-
-            name_to_version: Dict[str, str] = {}
-            for line in meta_result.stdout.strip().splitlines():
-                if '|' not in line:
-                    continue
-                pkg_name, version = line.split('|', 1)
-                name_to_version[pkg_name] = version
-
-            if not name_to_version:
-                return packages
-
-            # Step 2: one call — all files for all packages
-            # Output format: "pkgname                   /path/to/file"
-            files_result = subprocess.run(
-                ['rpm', '-q', '--filesbypkg', '-a'],
+            result = subprocess.run(
+                ['rpm', '-qa', '--queryformat',
+                 r'PKG:%{NAME}|%{VERSION}-%{RELEASE}' '\n' r'[%{FILENAMES}' '\n' r']'],
                 capture_output=True, text=True, timeout=120
             )
 
-            for line in files_result.stdout.strip().splitlines():
-                # Split on whitespace — pkgname is first token, filepath is last
-                parts = line.split()
-                if len(parts) < 2:
-                    continue
-                pkg_name  = parts[0]
-                file_path = parts[-1]
+            current_pkg: Optional[str] = None
+            current_ver: Optional[str] = None
 
-                if pkg_name not in name_to_version:
-                    continue
-                if '.so' not in file_path:
-                    continue
-
-                p = Path(file_path)
-                if not p.exists():
-                    continue
-
-                try:
-                    so_entry = {
-                        'path': file_path,
-                        'realpath': str(p.resolve()),
-                        'basename': p.name
-                    }
-                except Exception:
-                    continue
-
-                if pkg_name not in packages:
-                    packages[pkg_name] = {
-                        'version': name_to_version[pkg_name],
-                        'so_files': []
-                    }
-                packages[pkg_name]['so_files'].append(so_entry)
+            for line in result.stdout.splitlines():
+                if line.startswith('PKG:'):
+                    header = line[4:]  # strip 'PKG:'
+                    if '|' not in header:
+                        current_pkg = current_ver = None
+                        continue
+                    current_pkg, current_ver = header.split('|', 1)
+                elif current_pkg and '.so' in line:
+                    file_path = line.strip()
+                    p = Path(file_path)
+                    if not p.exists():
+                        continue
+                    try:
+                        so_entry = {
+                            'path': file_path,
+                            'realpath': str(p.resolve()),
+                            'basename': p.name
+                        }
+                    except Exception:
+                        continue
+                    if current_pkg not in packages:
+                        packages[current_pkg] = {
+                            'version': current_ver,
+                            'so_files': []
+                        }
+                    packages[current_pkg]['so_files'].append(so_entry)
 
         except Exception as e:
             print(f"  Warning: Error getting RPM packages: {e}")
 
-        return packages
-    
-    def _get_dpkg_packages(self) -> Dict:
-        """Get library information from DEB packages"""
-        packages = {}
-        
-        try:
-            # Get all packages
-            result = subprocess.run(
-                ['dpkg-query', '-W', '-f=${Package}|${Version}\n'],
-                capture_output=True,
-                text=True,
-                timeout=30
-            )
-            
-            for line in result.stdout.strip().split('\n'):
-                if '|' not in line:
-                    continue
-                
-                pkg_name, version = line.split('|', 1)
-                
-                # Get files in package
-                files_result = subprocess.run(
-                    ['dpkg', '-L', pkg_name],
-                    capture_output=True,
-                    text=True,
-                    timeout=10
-                )
-                
-                # Find .so files
-                so_files = []
-                for file_path in files_result.stdout.strip().split('\n'):
-                    if '.so' in file_path and Path(file_path).exists():
-                        try:
-                            so_files.append({
-                                'path': file_path,
-                                'realpath': str(Path(file_path).resolve()),
-                                'basename': Path(file_path).name
-                            })
-                        except:
-                            pass
-                
-                if so_files:
-                    packages[pkg_name] = {
-                        'version': version,
-                        'so_files': so_files
-                    }
-        
-        except Exception as e:
-            print(f"  Warning: Error getting DEB packages: {e}")
-        
         return packages
     
     def _extract_wheel(self, extract_dir: Path):
@@ -366,12 +250,12 @@ class WheelCVEScanner:
 
         print(f"  Found site-packages dirs: {[str(d) for d in site_packages_dirs]}")
 
-        # Recursive walk
+        # Recursive walk — use deque for O(1) popleft
         visited: Set[str] = set()
-        queue = [wheel_pkg_name]
+        queue: deque = deque([wheel_pkg_name])
 
         while queue:
-            pkg = queue.pop(0)
+            pkg = queue.popleft()
             # Normalise name for consistent comparison
             norm = self._normalise_pkg_name(pkg)
             if norm in visited:
@@ -399,23 +283,9 @@ class WheelCVEScanner:
         return result
 
     def _find_site_packages(self) -> List[Path]:
-        """Find all site-packages directories on the system"""
-        site_dirs = []
-        try:
-            result = subprocess.run(
-                ['find', '/', '-name', 'site-packages', '-type', 'd',
-                 '-not', '-path', '*/proc/*'],
-                capture_output=True,
-                text=True,
-                timeout=60
-            )
-            for line in result.stdout.strip().splitlines():
-                p = Path(line.strip())
-                if p.is_dir():
-                    site_dirs.append(p)
-        except Exception as e:
-            print(f"  Warning: Error finding site-packages: {e}")
-        return site_dirs
+        """Return all site-packages directories known to the running Python."""
+        dirs = site.getsitepackages() + [site.getusersitepackages()]
+        return [Path(d) for d in dirs if Path(d).is_dir()]
 
     def _normalise_pkg_name(self, name: str) -> str:
         """Normalise package name for comparison (PEP 503)"""
@@ -532,13 +402,11 @@ class WheelCVEScanner:
             bundled_name = bundled_lib['bundled_filename']
             
             # Extract base library name — strip auditwheel hash and all version info
-            # Works generically for any library naming convention:
+            # in a single pass.  Examples:
             #   libgfortran-2758a8fd.so.5.0.0    -> libgfortran
             #   libopenblasp-r0-a8f83a82.3.32.so -> libopenblasp-r0
             #   libabsl_base-eb206faa.so.2401.0.0 -> libabsl_base
-            base_name = re.sub(r'-[a-f0-9]{8,}', '', bundled_name)  # Remove hex hash
-            base_name = re.sub(r'(\.so|\.so\.).*$', '', base_name)  # Remove .so and after
-            base_name = re.sub(r'\.\d+.*$', '', base_name)          # Remove any remaining .N.N version
+            base_name = re.sub(r'(-[a-f0-9]{8,})?(\.\d[^/]*)?\.so.*$', '', bundled_name)
             
             print(f"  Mapping {bundled_name} (base: {base_name})...")
             
@@ -624,11 +492,11 @@ class WheelCVEScanner:
                         'version':     pkg_ver,
                         'cve_id':      cve_id,
                         'severity':    vuln.get('severity', ''),
-                        'description': vuln.get('description', '')[:200]
+                        'description': vuln.get('description', '')[:MAX_STDERR_LOG_CHARS]
                     })
                 print(f"  Phase 1: found {len(result_data['matches'])} CVE(s) in wheel")
             else:
-                print(f"  Phase 1 grype scan failed: {result.stderr.strip()[:200]}")
+                print(f"  Phase 1 grype scan failed: {result.stderr.strip()[:MAX_STDERR_LOG_CHARS]}")
         except Exception as e:
             print(f"  Phase 1 grype scan error: {e}")
         return result_data
@@ -695,7 +563,7 @@ class WheelCVEScanner:
                         cve_results['packages_with_cves'][pkg_name].append({
                             'cve_id': cve_id,
                             'severity': vuln.get('severity'),
-                            'description': vuln.get('description', '')[:200]
+                            'description': vuln.get('description', '')[:MAX_STDERR_LOG_CHARS]
                         })
 
                 print(f"  Found CVEs in {len(cve_results['packages_with_cves'])} packages")
@@ -941,15 +809,21 @@ class WheelCVEScanner:
         print(f"  Parsed source-built lib: {name} v{version} (org={git_org})")
 
     def _nvd_get(self, url: str) -> Dict:
-        """Single NVD API GET call. Reads NVD_API_KEY from environment."""
+        """Single NVD API GET call. Reads NVD_API_KEY from environment.
+
+        The API key is passed only as an HTTP request header and is never
+        interpolated into any printed string or log message.
+        """
         req = urllib.request.Request(url)
         api_key = os.environ.get("NVD_API_KEY", "")
         if api_key:
+            # Key is added as a header only — never logged or printed
             req.add_header("apiKey", api_key)
         try:
             with urllib.request.urlopen(req, timeout=30) as resp:
                 return json.loads(resp.read())
         except Exception as e:
+            # url does not contain the key (key is in the header, not the query string)
             print(f"  Warning: NVD API call failed ({url}): {e}")
             return {}
 
