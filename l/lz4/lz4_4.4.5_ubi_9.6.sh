@@ -32,11 +32,12 @@ dnf install -y gcc-toolset-13 git python3.12 python3.12-devel python3.12-pip
 
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:$PATH"
 
-# Source-built Pythons install libpythonX.Y.so.1.0 to /usr/local/lib but the
-# linker cache may not include that path yet.  Register it and also set
-# LD_LIBRARY_PATH as a fallback for environments where ldconfig has no effect.
+# Source-built Pythons install libpythonX.Y.so.1.0 under /usr/local/lib on UBI.
+# Make sure the dynamic linker can find it before invoking python.
+echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf
+echo "/usr/local/lib64" >> /etc/ld.so.conf.d/python-local.conf
 ldconfig
-export LD_LIBRARY_PATH="/usr/local/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 # Install build frontend + build-time deps
 python3.12 -m pip install "build" "setuptools>=45" "wheel" "setuptools_scm[toml]>=6.2" "pkgconfig"
@@ -87,12 +88,6 @@ python3.12 -m pytest \
     -v \
     --timeout=60 \
     -x
-
-TEST_EXIT=$?
-if [ "$TEST_EXIT" -ne 0 ]; then
-    echo "ERROR: Tests failed (exit $TEST_EXIT)"
-    exit "$TEST_EXIT"
-fi
 
 echo -e "\n=== Build Complete ==="
 echo "Wheel: $WHEEL"
