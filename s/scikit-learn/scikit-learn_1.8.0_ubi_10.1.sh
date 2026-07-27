@@ -66,7 +66,7 @@ build_opts+=(DYNAMIC_ARCH=1)
 export PLATFORM=$(uname -m)
 case "${PLATFORM}" in
     ppc64le)
-        build_opts+=(TARGET="POWER8")
+        build_opts+=(TARGET="POWER9")
         BUILD_BFLOAT16=1
         ;;
     s390x)
