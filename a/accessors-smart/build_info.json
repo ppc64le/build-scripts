@@ -1,0 +1,15 @@
+{
+    "maintainer": "pratibh-ibm",
+    "package_name": "accessors-smart",
+    "github_url": "https://github.com/netplex/json-smart-v2.git",
+    "version": "2.5.0",
+    "default_branch": "master",
+    "build_script": "accessors-smart_ubi_9.3.sh",
+    "package_dir": "a/accessors-smart",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "2.*.*": {
+      "build_script": "accessors-smart_ubi_9.3.sh"
+    }
+  }
