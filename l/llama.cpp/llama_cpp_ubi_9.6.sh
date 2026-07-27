@@ -21,7 +21,6 @@ set -e
 
 # Variables
 PACKAGE_NAME=llama.cpp
-PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/ggml-org/llama.cpp
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=llama.cpp
@@ -58,20 +57,20 @@ git clone "$PACKAGE_URL"
 cd "$PACKAGE_NAME"
 git fetch --tags
 echo "$PACKAGE_VERSION"
-git checkout "$PACKAGE_VERSION"
+git checkout "$VERSION"
 
 ###############################################################################
 # Determine build number for wheel version
 ###############################################################################
 
-if [[ "$PACKAGE_VERSION" =~ ^b[0-9]+$ ]]; then
+if [[ "$VERSION" =~ ^b[0-9]+$ ]]; then
     BUILD_TAG="$PACKAGE_VERSION"
 else
     BUILD_TAG=$(git describe --tags --match "b*" --abbrev=0)
 fi
 WHEEL_VERSION="${BUILD_TAG#b}"
 
-echo "Repository Version : $PACKAGE_VERSION"
+echo "Repository Version : $VERSION"
 echo "Build Tag          : $BUILD_TAG"
 echo "Wheel Version      : 1.0+ppc64le${WHEEL_VERSION}"
 
