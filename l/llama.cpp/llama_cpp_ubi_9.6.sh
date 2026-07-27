@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
@@ -18,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # -----------------------------------------------------------------------------
-
 set -e
 
 # Variables
@@ -54,17 +52,11 @@ SCRIPT_PATH=$(dirname "$(realpath "$0")")
 ###############################################################################
 
 cd "$CURRENT_DIR"
-
 rm -rf "$PACKAGE_NAME"
-
 echo "Cloning llama.cpp..."
-
 git clone "$PACKAGE_URL"
-
 cd "$PACKAGE_NAME"
-
 git fetch --tags
-
 git checkout "$PACKAGE_VERSION"
 
 ###############################################################################
@@ -76,14 +68,11 @@ if [[ "$PACKAGE_VERSION" =~ ^b[0-9]+$ ]]; then
 else
     BUILD_TAG=$(git describe --tags --match "b*" --abbrev=0)
 fi
-
 WHEEL_VERSION="${BUILD_TAG#b}"
 
-echo
 echo "Repository Version : $PACKAGE_VERSION"
 echo "Build Tag          : $BUILD_TAG"
 echo "Wheel Version      : 1.0+ppc64le${WHEEL_VERSION}"
-echo
 
 ###############################################################################
 # Build llama.cpp
