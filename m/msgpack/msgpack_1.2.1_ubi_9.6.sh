@@ -32,10 +32,10 @@ echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 
 # Install system dependencies
 # gcc-c++ is required to compile the C extension (_cmsgpack)
-dnf install -y gcc gcc-c++ git python3.13 python3.13-devel python3.13-pip
+dnf install -y gcc gcc-c++ git python3.12 python3.12-devel python3.12-pip
 
 # Install build frontend and Cython (needed to regenerate the C extension source)
-python3.13 -m pip install --upgrade pip build setuptools "cython>=3.2.5"
+python3.12 -m pip install --upgrade pip build setuptools "cython>=3.2.5"
 
 # Clone and checkout
 rm -rf "$REPO_DIR"
@@ -49,11 +49,11 @@ mkdir -p "$DIST_DIR"
 # Generate _cmsgpack.c from the Cython source before building the wheel.
 # The .c file is not committed to the repo and must be produced at build time.
 echo "=== Generating C extension source via Cython ==="
-python3.13 -m cython msgpack/_cmsgpack.pyx -o msgpack/_cmsgpack.c
+python3.12 -m cython msgpack/_cmsgpack.pyx -o msgpack/_cmsgpack.c
 
 # Build the wheel (setup.py compiles the generated _cmsgpack.c into a native extension)
 echo "=== Building msgpack ==="
-python3.13 -m build --wheel --outdir "$DIST_DIR" .
+python3.12 -m build --wheel --outdir "$DIST_DIR" .
 
 WHEEL=$(find "$DIST_DIR" -name "${PACKAGE_NAME}-*.whl" | head -1)
 if [ -z "$WHEEL" ]; then
@@ -66,19 +66,19 @@ cd "${SOURCE_ROOT}"
 
 # Install the wheel
 echo "=== Installing msgpack ==="
-python3.13 -m pip install "$WHEEL"
+python3.12 -m pip install "$WHEEL"
 
 # Install test dependencies
-python3.13 -m pip install pytest
+python3.12 -m pip install pytest
 
 # Test
 echo "=== Running Tests ==="
 
 # 1. Version check
-python3.13 -c "import importlib.metadata; print('version:', importlib.metadata.version('msgpack'))"
+python3.12 -c "import importlib.metadata; print('version:', importlib.metadata.version('msgpack'))"
 
 # 2. Basic import and round-trip smoke test
-python3.13 - <<'EOF'
+python3.12 - <<'EOF'
 import msgpack
 print("msgpack import: OK")
 
@@ -96,7 +96,7 @@ EOF
 
 # 3. Run the upstream test suite
 echo "=== Running upstream pytest suite ==="
-python3.13 -m pytest "${REPO_DIR}/test" -v --tb=short
+python3.12 -m pytest "${REPO_DIR}/test" -v --tb=short
 
 echo -e "\n=== Build Complete ==="
 echo "Wheel: $WHEEL"
