@@ -1,0 +1,19 @@
+{
+   "maintainer": "varsha.kumar@ibm.com",
+   "package_name": "couchbase",
+   "github_url": "https://github.com/couchbase/couchbase-python-client",
+   "version": "4.6.2",
+   "default_branch": "master",
+   "build_script": "couchbase_4.6.2_ubi_9.6.sh",
+   "wheel_build" : true,
+   "package_dir": "c/couchbase",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "4.6.2":{
+           "build_script": "couchbase_4.6.2_ubi_9.6.sh"
+   },
+   "*": {
+       "build_script": "couchbase_4.6.2_ubi_9.6.sh"
+   }
+}
