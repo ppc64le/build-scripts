@@ -23,7 +23,7 @@ set -ex
 # Variables
 PACKAGE_NAME=audio
 PACKAGE_URL=https://github.com/pytorch/audio.git
-PACKAGE_VERSION=${1:-v2.9.0}
+PACKAGE_VERSION=${1:-v2.11.0}
 PACKAGE_DIR=./audio
 SCRIPT_DIR=$(pwd)
 
@@ -157,8 +157,12 @@ git checkout $PACKAGE_VERSION
 git submodule sync
 git submodule update --init --recursive
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PACKAGE_VERSION}.patch
-git apply pytorch_${PACKAGE_VERSION}.patch
+if [ "$PACKAGE_VERSION" != "v2.11.0" ]; then
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PACKAGE_VERSION}.patch
+    git apply pytorch_${PACKAGE_VERSION}.patch
+else
+    echo "Skipping PyTorch patch for ${PACKAGE_VERSION}"
+fi
 
 ARCH=`uname -p`
 BUILD_NUM="1"
@@ -224,6 +228,7 @@ echo " Basic Import test for torch"
 cd ..
 export LD_LIBRARY_PATH="/OpenBLAS/:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH=/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH="${SCRIPT_DIR}/pytorch/torch/lib64:${SCRIPT_DIR}/pytorch/build/lib:/usr/local/lib:${LD_LIBRARY_PATH}"
 
 if ! (python3.12 -c "import torch;"); then
      echo "--------------------pytorch:Install_success_but_test_fails---------------------"
