@@ -1,0 +1,15 @@
+{
+  "maintainer": "AbhiIBM",
+  "package_name": "flay",
+  "github_url": "https://github.com/seattlerb/flay.git",
+  "package_dir": "f/flay",
+  "version": "v2.13.2",
+  "default_branch": "master",
+  "build_script": "flay_ubi_9.3.sh",
+  "use_non_root_user": false,
+  "validate_build_script": true,
+  "docker_build": false,
+  "v*.*.*": {
+    "build_script": "flay_ubi_9.3.sh"
+  }
+}
