@@ -36,9 +36,10 @@ install_python_version() {
             wget https://www.python.org/ftp/python/3.10.20/Python-3.10.20.tgz
             tar xf Python-3.10.20.tgz
             cd Python-3.10.20
-            ./configure --prefix=/usr/local --enable-optimizations
+            ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
+            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
             echo "Completed..."
             cd .. && rm -rf Python-3.10.20.tgz
         fi
@@ -50,9 +51,10 @@ install_python_version() {
             wget https://www.python.org/ftp/python/3.13.10/Python-3.13.10.tgz
             tar xzf Python-3.13.10.tgz
             cd Python-3.13.10
-            ./configure --prefix=/usr/local --enable-optimizations
+            ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
+            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
             cd .. && rm -rf Python-3.13.10.tgz
         fi
         ;;
@@ -63,9 +65,10 @@ install_python_version() {
             wget https://www.python.org/ftp/python/3.14.3/Python-3.14.3.tgz
             tar xzf Python-3.14.3.tgz
             cd Python-3.14.3
-            ./configure --prefix=/usr/local --enable-optimizations
+            ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
+            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
             cd .. && rm -rf Python-3.14.3.tgz
         fi
         ;;
