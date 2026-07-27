@@ -30,7 +30,7 @@ PACKAGE_VERSION="${1:-$SCRIPT_PACKAGE_VERSION}"
 OPENSEARCH_VERSION="${PACKAGE_VERSION::-2}"
 PACKAGE_URL="https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}.git"
 COMMON_UTILS_VERSION="3.2.0.0"
-RUNTESTS=1
+RUN_TESTS=1
 wdir="$(pwd)"
 SCRIPT=$(readlink -f $0)
 SCRIPT_DIR=$(dirname $SCRIPT)
@@ -58,7 +58,7 @@ for i in "$@"; do
   esac
 done
 
-
+yum install -y sudo
 
 # ---------------------------
 # Dependency Installation
