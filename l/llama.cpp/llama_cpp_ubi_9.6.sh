@@ -57,6 +57,7 @@ echo "Cloning llama.cpp..."
 git clone "$PACKAGE_URL"
 cd "$PACKAGE_NAME"
 git fetch --tags
+echo "$PACKAGE_VERSION"
 git checkout "$PACKAGE_VERSION"
 
 ###############################################################################
