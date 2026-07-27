@@ -5,7 +5,7 @@ FROM ubuntu:jammy AS mongo-builder
 
 ARG PACKAGE_VERSION=r7.0.34
 ARG MONGO_MAJOR=7.0
-ARG MONGOSH_VERSION=2.8.3
+ARG MONGOSH_VERSION=2.9.2
 
 ENV MONGO_VERSION=${PACKAGE_VERSION}
 ENV DEBIAN_FRONTEND=noninteractive
@@ -84,6 +84,9 @@ RUN set -eux; \
                 ca-certificates \
                 jq \
                 numactl \
+                libcurl4 \
+                libssl3 \
+                liblzma5 \
         ; \
         if ! command -v ps > /dev/null; then \
                 apt-get install -y --no-install-recommends procps; \
@@ -150,7 +153,6 @@ RUN set -ex; \
                 apt-key list
 
 ARG MONGO_MAJOR=7.0
-ARG MONGOSH_VERSION=2.8.3
 ARG PACKAGE_VERSION=r7.0.34
 ENV MONGO_VERSION=${PACKAGE_VERSION}
 
