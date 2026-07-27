@@ -381,3 +381,23 @@ index f32c0159..77718cc7 100755
 +
          #
          # Final image... tritonserver
+         #
+diff --git a/python/openai/requirements.txt b/python/openai/requirements.txt
+index 4b4f631f..9d614e77 100644
+--- a/python/openai/requirements.txt
++++ b/python/openai/requirements.txt
+@@ -25,7 +25,7 @@
+ # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ # FastAPI Application
+-fastapi==0.121.2
++fastapi==0.139.0
+ # Fix httpx version to avoid bug in openai library:
+ # https://community.openai.com/t/error-with-openai-1-56-0-client-init-got-an-unexpected-keyword-argument-proxies/1040332/3
+ httpx==0.27.2
+@@ -37,4 +37,4 @@ scipy==1.16.3
+ # Minimum starlette version needed to address CVE(s):
+ # https://github.com/advisories/GHSA-f96h-pmfr-66vw
+ # https://github.com/advisories/GHSA-7f5h-v6xp-fcq8
+-starlette>=0.49.1
++starlette>=1.3.1

@@ -141,7 +141,7 @@ cd $SCRIPT_DIR
 echo "------------ libprotobuf installed--------------"
 
 #re2 install from sosurce
-git clone http://github.com/google/re2
+git clone https://github.com/google/re2
 cd re2
 git checkout 2022-04-01
 git submodule update --init

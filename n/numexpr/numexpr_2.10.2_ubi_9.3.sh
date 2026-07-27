@@ -35,7 +35,7 @@ git checkout $PACKAGE_VERSION
 #install pytest
 pip install pytest
 
-pip install numpy==2.0.2
+pip install numpy
 pip install -e .
 pip install tox
 

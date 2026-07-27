@@ -11,14 +11,18 @@ index ca13dade..dc4d0584 100644
      }
  
      repositories {
-diff --git a/gradle.properties b/gradle.properties
-new file mode 100644
-index 00000000..4d41702b
---- /dev/null
-+++ b/gradle.properties
-@@ -0,0 +1,4 @@
-+org.gradle.native=false
+diff --git a/alerting/build.gradle b/alerting/build.gradle
+index 30b28dec..43e21d35 100644
+--- a/alerting/build.gradle
++++ b/alerting/build.gradle
+@@ -109,6 +109,10 @@ configurations.all {
+ 
+         force "org.slf4j:slf4j-api:${versions.slf4j}" //Needed for http5
+ 
++        // CVE fix: Update httpclient5 to 5.6.1 (CVE-2026-40542)
++        force "org.apache.httpcomponents.client5:httpclient5:5.6.1"
++        force "org.apache.httpcomponents.client5:httpclient5-cache:5.6.1"
 +
-+#Use plain console output (no rich formatting that requires native platform)
-+org.gradle.console=plain
-
+         // This is required because kotlin-coroutines-core 1.1.1 still requires kotlin stdlib 1.3.20 and we're using a higher kotlin version
+         force "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_version}"
+         force "org.jetbrains.kotlin:kotlin-stdlib-common:${kotlin_version}"

@@ -1,0 +1,19 @@
+{
+    "maintainer":"Ethan Choe <ethanchoe@ibm.com>",
+    "package_name" : "py-rust-stemmers",
+    "github_url" : "https://github.com/qdrant/py-rust-stemmers", 
+    "version": "v0.1.8",
+    "default_branch": "master",
+    "package_dir": "p/py-rust-stemmers",
+    "build_script": "py-rust-stemmers_v0.1.8_ubi_9.6.sh",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "wheel_build": "true",
+    "v0.1.8": {
+        "build_script": "py-rust-stemmers_v0.1.8_ubi_9.6.sh"
+    },
+    "*": {
+    	"build_script": "py-rust-stemmers_v0.1.8_ubi_9.6.sh" 
+    } 
+}
