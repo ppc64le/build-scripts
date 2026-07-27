@@ -68,6 +68,7 @@ done
 # ---------------------------
 # Dependency Installation
 # ---------------------------
+sudo chown -R test_user:test_user /home/tester
 sudo yum install -y git wget sudo unzip make cmake gcc gcc-c++ perl python3-devel python3-pip java-25-openjdk-devel
 export JAVA_HOME=$(ls -d /usr/lib/jvm/java-25-openjdk* 2>/dev/null | head -1)
 export JRE_HOME=${JAVA_HOME}/jre
