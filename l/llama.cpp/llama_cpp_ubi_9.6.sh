@@ -1,3 +1,4 @@
+
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
@@ -42,132 +43,228 @@ gcc --version
 echo "**** Checking GCC version..."
 gcc -v || true
 
-# -----------------------------------------------------------------------------
-# Clone latest llama.cpp 
-# -----------------------------------------------------------------------------
+# Accept tag (e.g. b5046) or branch (master)
+PACKAGE_VERSION="${PACKAGE_VERSION:-master}"
 
-echo "**** Cloning llama.cpp repository..."
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+CURRENT_DIR=$(pwd)
+SCRIPT_PATH=$(dirname "$(realpath "$0")")
+
+###############################################################################
+# Clone repository
+###############################################################################
+
+cd "$CURRENT_DIR"
+
+rm -rf "$PACKAGE_NAME"
+
+echo "Cloning llama.cpp..."
+
+git clone "$PACKAGE_URL"
+
+cd "$PACKAGE_NAME"
+
 git fetch --tags
-git checkout $PACKAGE_VERSION
 
-WHEEL_VERSION=${PACKAGE_VERSION#b}
+git checkout "$PACKAGE_VERSION"
 
-echo "Building llama.cpp version: ${PACKAGE_VERSION}"
+###############################################################################
+# Determine build number for wheel version
+###############################################################################
 
-# -----------------------------------------------------------------------------
-# Build llama.cpp
-# -----------------------------------------------------------------------------
-cmake -B build_llama
-if ! cmake --build build_llama -j$(nproc); then
-    echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
-    exit 1
+if [[ "$PACKAGE_VERSION" =~ ^b[0-9]+$ ]]; then
+    BUILD_TAG="$PACKAGE_VERSION"
+else
+    BUILD_TAG=$(git describe --tags --match "b*" --abbrev=0)
 fi
 
+WHEEL_VERSION="${BUILD_TAG#b}"
 
-# -----------------------------------------------------------------------------
-# Auto-generate setup.py and minimal package structure for wheel build
-# -----------------------------------------------------------------------------
-echo "**** Creating setup.py and package files ****"
+echo
+echo "Repository Version : $PACKAGE_VERSION"
+echo "Build Tag          : $BUILD_TAG"
+echo "Wheel Version      : 1.0+ppc64le${WHEEL_VERSION}"
+echo
 
-# Generate setup.py
-cat <<EOF > setup.py
+###############################################################################
+# Build llama.cpp
+###############################################################################
+
+echo "Configuring CMake..."
+cmake -B build_llama
+echo "Building..."
+cmake --build build_llama -j"$(nproc)"
+
+echo
+echo "Build completed successfully."
+echo
+
+###############################################################################
+# Verify required binaries
+###############################################################################
+
+BUILD_DIR="$CURRENT_DIR/$PACKAGE_NAME/build_llama/bin"
+REQUIRED_BINS=(
+    llama-cli
+    llama-server
+    llama-bench
+    llama-batched-bench
+)
+echo "Verifying generated binaries..."
+
+for bin in "${REQUIRED_BINS[@]}"; do
+    if [[ ! -f "$BUILD_DIR/$bin" ]]; then
+        echo "ERROR: Missing binary $bin"
+        exit 1
+    fi
+done
+
+echo
+echo "All required binaries generated successfully."
+
+###############################################################################
+# Create standalone packaging directory
+###############################################################################
+
+echo "========================================================="
+echo "Creating standalone wheel package"
+echo "========================================================="
+
+cd "$CURRENT_DIR"
+
+PKG_ROOT="$CURRENT_DIR/llama_cpp_pkg"
+PKG_NAME="llama_cpp_python_package"
+
+rm -rf "$PKG_ROOT"
+
+mkdir -p "$PKG_ROOT/$PKG_NAME/bin"
+mkdir -p "$PKG_ROOT/$PKG_NAME/lib"
+
+###############################################################################
+# Copy executables
+###############################################################################
+
+echo "Copying executables..."
+
+BINARIES=(
+    llama-cli
+    llama-server
+    llama-bench
+    llama-batched-bench
+)
+
+for bin in "${BINARIES[@]}"; do
+    cp "$BUILD_DIR/$bin" "$PKG_ROOT/$PKG_NAME/bin/"
+    chmod +x "$PKG_ROOT/$PKG_NAME/bin/$bin"
+done
+
+###############################################################################
+# Copy all shared libraries
+###############################################################################
+
+echo "Copying shared libraries..."
+
+find "$BUILD_DIR" -maxdepth 1 \( -name "*.so" -o -name "*.so.*" \) \
+    -exec cp -a {} "$PKG_ROOT/$PKG_NAME/lib/" \;
+
+###############################################################################
+# Package __init__.py
+###############################################################################
+
+cat > "$PKG_ROOT/$PKG_NAME/__init__.py" <<'EOF'
+"""
+Standalone llama.cpp binaries packaged as a Python wheel.
+"""
+EOF
+
+###############################################################################
+# Launcher module
+###############################################################################
+
+cat > "$PKG_ROOT/$PKG_NAME/launcher.py" <<'EOF'
+import subprocess
+from pathlib import Path
+import sys
+
+BIN_DIR = Path(__file__).parent / "bin"
+
+def run(binary):
+    exe = BIN_DIR / binary
+    raise SystemExit(
+        subprocess.call([str(exe)] + sys.argv[1:])
+    )
+
+def llama_cli():
+    run("llama-cli")
+
+def llama_server():
+    run("llama-server")
+
+def llama_bench():
+    run("llama-bench")
+
+def llama_batched_bench():
+    run("llama-batched-bench")
+EOF
+
+###############################################################################
+# setup.py
+###############################################################################
+
+cat > "$PKG_ROOT/setup.py" <<EOF
 from setuptools import setup, find_packages
-from setuptools.command.build_py import build_py
-import os, shutil, stat
-
-PYTHON_PACKAGE_NAME = "llama_cpp_python_package"
-VERSION = "${WHEEL_VERSION}"
-PKG_NAME = "llama_cpp_python_package"
-
-BUILD_DIR = os.path.join(os.getcwd(), "build_llama", "bin")
-
-BINARIES = [
-    "llama-cli",
-    "llama-server",
-    "llama-bench",
-    "llama-batched-bench",
-]
-
-LIBRARIES = [
-    "libllama-bench-impl.so",
-    "libllama-common.so.0",
-    "libllama.so.0",
-    "libggml.so.0",
-    "libggml-cpu.so.0",
-    "libggml-base.so.0",
-]
-
-PKG_BIN_DIR = os.path.join(PYTHON_PACKAGE_NAME, "bin")
-PKG_LIB_DIR = os.path.join(PYTHON_PACKAGE_NAME, "lib")
-
-def make_executable(path):
-    st = os.stat(path)
-    os.chmod(path, st.st_mode | stat.S_IEXEC)
-
-class CustomBuild(build_py):
-    def run(self):
-        os.makedirs(PKG_BIN_DIR, exist_ok=True)
-        os.makedirs(PKG_LIB_DIR, exist_ok=True)
-
-        # Copy ollama binary
-        if os.path.exists(BUILD_DIR):
-            print(f"Copying binaries to {PKG_BIN_DIR}")
-            for binary in BINARIES:
-                src = os.path.join(BUILD_DIR, binary)
-
-                if not os.path.exists(src):
-                    print(f"Warning: {src} not found")
-                    continue
-
-                dst = os.path.join(PKG_BIN_DIR, binary)
-                shutil.copy2(src, dst)
-                make_executable(dst)
-        else:
-            print("Warning: llama.cpp binaries not found")
-
-        # Copy .so libraries
-        if os.path.exists(BUILD_DIR):
-            for lib in LIBRARIES:
-                src = os.path.join(BUILD_DIR, lib)
-
-                if os.path.exists(src):
-                   shutil.copy2(src, os.path.join(PKG_LIB_DIR, lib))
-        else:
-            print(f"Warning: {lib} not found")
-            
-        super().run()
 
 setup(
-    name=PYTHON_PACKAGE_NAME,
-    version=VERSION,
+    name="llama_cpp_python_package",
+    version="1.0+ppc64le${WHEEL_VERSION}",
+    description="Standalone llama.cpp binaries",
     author="Shalini Salomi Bodapati",
     author_email="Shalini.Salomi.Bodapati@ibm.com",
-    description="llama.cpp binaries + shared libs as Python package",
-    license="MIT",
-    packages=find_packages(include=["llama_cpp_python_package"]),
-    include_package_data=False,
-    cmdclass={'build_py': CustomBuild},
-    package_data={PYTHON_PACKAGE_NAME: ["bin/*", "lib/*.so"]},
+
+    packages=find_packages(),
+
+    include_package_data=True,
+
+    package_data={
+        "llama_cpp_python_package": [
+            "bin/*",
+            "lib/*",
+        ],
+    },
+
     python_requires=">=3.8",
+
+    zip_safe=False,
+
+    entry_points={
+        "console_scripts": [
+            "llama-cli=llama_cpp_python_package.launcher:llama_cli",
+            "llama-server=llama_cpp_python_package.launcher:llama_server",
+            "llama-bench=llama_cpp_python_package.launcher:llama_bench",
+            "llama-batched-bench=llama_cpp_python_package.launcher:llama_batched_bench",
+        ],
+    },
 )
 EOF
 
-# Create __init__.py (wrapper)
-cat <<'EOF' > ${PKG_NAME}/__init__.py
-import subprocess
-from pathlib import Path
+###############################################################################
+# MANIFEST.in
+###############################################################################
 
-def run(args=None):
-    """Run llama-cli packaged with this wheel."""
-    bin_path = Path(__file__).parent / "bin" / "llama-cli"
-    if not bin_path.exists():
-        raise FileNotFoundError("llama-cli binary not found.")
-    subprocess.run([str(bin_path)] + (args or []))
+cat > "$PKG_ROOT/MANIFEST.in" <<EOF
+recursive-include ${PKG_NAME}/bin *
+recursive-include ${PKG_NAME}/lib *
 EOF
 
+###############################################################################
+# Build wheel
+###############################################################################
+
+echo
+echo "Building wheel..."
+echo
+
 echo "=============== Building wheel =================="
+cd "$PKG_ROOT"
 python -m pip install --upgrade pip setuptools wheel build
 
 if ! python setup.py bdist_wheel --plat-name linux_ppc64le --dist-dir "$CURRENT_DIR/"; then
@@ -175,4 +272,7 @@ if ! python setup.py bdist_wheel --plat-name linux_ppc64le --dist-dir "$CURRENT_
     EXIT_CODE=1
 else
     echo "============ Wheel successfully built ================="
+    ls -lh "$CURRENT_DIR"/*.whl
+    echo "Wheel version:"
+    echo "1.0+ppc64le${WHEEL_VERSION}"
 fi
