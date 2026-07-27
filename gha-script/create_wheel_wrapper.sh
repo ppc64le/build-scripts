@@ -39,6 +39,7 @@ install_python_version() {
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
+	    echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
             echo "Completed..."
             cd .. && rm -rf Python-3.10.20.tgz
         fi
@@ -53,6 +54,7 @@ install_python_version() {
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
+	    echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
             cd .. && rm -rf Python-3.13.10.tgz
         fi
         ;;
@@ -66,6 +68,7 @@ install_python_version() {
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
+	    echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
             cd .. && rm -rf Python-3.14.3.tgz
         fi
         ;;
