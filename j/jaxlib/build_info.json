@@ -1,8 +1,8 @@
 {
-  "maintainer": "stutiibm",
+  "maintainer": "shivansh-ibm",
   "package_name": "jaxlib",
   "github_url": "https://github.com/jax-ml/jax",
-  "version": "jaxlib-v0.4.7",
+  "version": "jaxlib-v0.4.23",
   "wheel_build" : true,
   "package_dir": "j/jaxlib",
   "default_branch": "main",
