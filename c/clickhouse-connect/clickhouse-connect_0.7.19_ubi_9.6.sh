@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 # Package          : clickhouse-connect
-# Version          : 0.7.19
+# Version          : v0.7.19
 # Source repo      : https://github.com/ClickHouse/clickhouse-connect.git
 # Tested on        : UBI 9.6
 # Language         : Python
