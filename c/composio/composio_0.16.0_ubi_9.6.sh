@@ -19,12 +19,11 @@
 # Variables
 PACKAGE_DIR="composio-src"
 PACKAGE_NAME="composio"
-PACKAGE_VERSION=${1:-0.16.0}
-GIT_TAG="py@${PACKAGE_VERSION}"
+PACKAGE_VERSION=${1:-py@0.16.0}
 PACKAGE_URL="https://github.com/composiohq/composio.git"
 SOURCE_ROOT="$(pwd)"
 
-echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION} (tag: ${GIT_TAG})"
+echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 
 # Install system dependencies
 dnf install -y \
@@ -41,7 +40,7 @@ python3.12 -m pip install build setuptools wheel
 rm -rf "$PACKAGE_DIR"
 git clone "$PACKAGE_URL" "$PACKAGE_DIR"
 cd "${PACKAGE_DIR}"
-git checkout "${GIT_TAG}"
+git checkout "${PACKAGE_VERSION}"
 
 # The Python SDK lives under the python/ subdirectory of the monorepo
 cd python
