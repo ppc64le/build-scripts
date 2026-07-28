@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package         : llama.cpp
-# Version         : b10145
+# Version         : Release
 # Source repo     : https://github.com/ggml-org/llama.cpp
 # Tested on       : UBI:9.6
 # Language        : C, C++
@@ -44,7 +44,6 @@ gcc -v || true
 
 CURRENT_DIR=$(pwd)
 SCRIPT_PATH=$(dirname "$(realpath "$0")")
-
 ###############################################################################
 # Clone repository
 ###############################################################################
@@ -55,21 +54,30 @@ echo "Cloning llama.cpp..."
 git clone "$PACKAGE_URL"
 cd "$PACKAGE_NAME"
 git fetch --tags
-echo "$PACKAGE_VERSION"
-git checkout "$PACKAGE_VERSION"
+
+if [[ "$PACKAGE_VERSION" == "Release" ]]; then
+    LLAMA_CPP_VERSION=$(git describe --tags --match "b*" --abbrev=0)
+    echo "PACKAGE_VERSION is Release. Using latest build tag: $LLAMA_CPP_VERSION"
+else
+    LLAMA_CPP_VERSION="$PACKAGE_VERSION"
+fi
+
+echo "Checking out $LLAMA_CPP_VERSION"
+git checkout "$LLAMA_CPP_VERSION"
 
 ###############################################################################
 # Determine build number for wheel version
 ###############################################################################
 
-if [[ "$PACKAGE_VERSION" =~ ^b[0-9]+$ ]]; then
-    BUILD_TAG="$PACKAGE_VERSION"
+if [[ "$LLAMA_CPP_VERSION" =~ ^b[0-9]+$ ]]; then
+    BUILD_TAG="$LLAMA_CPP_VERSION"
 else
     BUILD_TAG=$(git describe --tags --match "b*" --abbrev=0)
 fi
+
 WHEEL_VERSION="${BUILD_TAG#b}"
 
-echo "Repository Version : $VERSION"
+echo "Repository Version : $PACKAGE_VERSION"
 echo "Build Tag          : $BUILD_TAG"
 echo "Wheel Version      : 1.0+ppc64le${WHEEL_VERSION}"
 
