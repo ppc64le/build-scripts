@@ -3,7 +3,7 @@
    "package_name": "cassandra-driver",
    "github_url": "https://github.com/apache/cassandra-python-driver",
    "version": "3.30.1",
-   "default_branch": "master",
+   "default_branch": "trunk",
    "build_script": "cassandra-driver_3.30.1_ubi_9.6.sh",
    "package_dir": "c/cassandra-driver",
    "docker_build": false,
