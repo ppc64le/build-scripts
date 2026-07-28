@@ -178,8 +178,12 @@ git clean -fd
 
 # Apply ppc64le patch
 PATCH_FILE="next.js_${PACKAGE_VERSION#v}.patch"
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/n/next.js/${PATCH_FILE}
-git apply ${PATCH_FILE}
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+if [ ! -f "${SCRIPT_DIR}/${PATCH_FILE}" ]; then
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/n/next.js/${PATCH_FILE} \
+        -O "${SCRIPT_DIR}/${PATCH_FILE}"
+fi
+git apply "${SCRIPT_DIR}/${PATCH_FILE}"
 
 # Regenerate Cargo.lock to resolve the wasmer git overrides added by the patch
 cargo update
