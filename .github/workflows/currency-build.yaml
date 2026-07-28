@@ -120,8 +120,7 @@ jobs:
   # ---------------------------------------------------------------------------
   # install_scan_tools: Installs grype ONCE (static Go binary — fully portable)
   # and caches it as an artifact for all wheel_build_pyXXX jobs.
-  # Scancode-toolkit is installed fresh per wheel_build job using pip cache
-  # (Option 1) — pip downloads are cached so reinstall is fast.
+  # Scancode-toolkit is fetched once and distributed as an artifact too.
   # ---------------------------------------------------------------------------
   install_scan_tools:
     needs: build_info
@@ -242,11 +241,9 @@ jobs:
 
           
   # ---------------------------------------------------------------------------
-  # wheel_build_pyXXX jobs: build wheel → run scancode scan → run grype scan →
-  # upload scan results to COS → upload wheel to COS (only if scans pass).
+  # wheel_build_pyXXX jobs: build wheel → run CVE scan (generalized_wheel_scanner)
+  # → run scancode scan → run grype scan → upload all results to COS.
   # Grype is reused from the install_scan_tools artifact (static binary).
-  # Scancode is installed fresh per job via git clone; pip download cache
-  # (actions/cache on ~/.cache/pip) makes reinstalls fast after the first run.
   # ---------------------------------------------------------------------------
 
   wheel_build_py310:
@@ -385,6 +382,26 @@ jobs:
           else
             echo "No wheel file found!"
             exit 1
+          fi
+
+      - name: Upload CVE report to COS
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+        run: |
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          if [ -n "$WHEEL_FILE" ]; then
+            CVE_REPORT="${WHEEL_FILE%.whl}_cve_report.json"
+            if [ -f "$CVE_REPORT" ]; then
+              echo "Uploading CVE report: $CVE_REPORT"
+              source package-cache/variable.sh
+              source package-cache/scanner-env.sh
+              chmod +x ./gha-script/upload-scripts/upload_file.sh
+              bash ./gha-script/upload-scripts/upload_file.sh "$CVE_REPORT"
+            else
+              echo "WARNING: CVE report not found: $CVE_REPORT — skipping upload."
+            fi
+          else
+            echo "WARNING: No wheel found — skipping CVE report upload."
           fi
 
   wheel_build_py311:
@@ -539,6 +556,26 @@ jobs:
             exit 1
           fi
 
+      - name: Upload CVE report to COS
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+        run: |
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          if [ -n "$WHEEL_FILE" ]; then
+            CVE_REPORT="${WHEEL_FILE%.whl}_cve_report.json"
+            if [ -f "$CVE_REPORT" ]; then
+              echo "Uploading CVE report: $CVE_REPORT"
+              source package-cache/variable.sh
+              source package-cache/scanner-env.sh
+              chmod +x ./gha-script/upload-scripts/upload_file.sh
+              bash ./gha-script/upload-scripts/upload_file.sh "$CVE_REPORT"
+            else
+              echo "WARNING: CVE report not found: $CVE_REPORT — skipping upload."
+            fi
+          else
+            echo "WARNING: No wheel found — skipping CVE report upload."
+          fi
+
   wheel_build_py312:
     needs:
       - build_info
@@ -689,6 +726,26 @@ jobs:
           else
             echo "No wheel file found!"
             exit 1
+          fi
+
+      - name: Upload CVE report to COS
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+        run: |
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          if [ -n "$WHEEL_FILE" ]; then
+            CVE_REPORT="${WHEEL_FILE%.whl}_cve_report.json"
+            if [ -f "$CVE_REPORT" ]; then
+              echo "Uploading CVE report: $CVE_REPORT"
+              source package-cache/variable.sh
+              source package-cache/scanner-env.sh
+              chmod +x ./gha-script/upload-scripts/upload_file.sh
+              bash ./gha-script/upload-scripts/upload_file.sh "$CVE_REPORT"
+            else
+              echo "WARNING: CVE report not found: $CVE_REPORT — skipping upload."
+            fi
+          else
+            echo "WARNING: No wheel found — skipping CVE report upload."
           fi
   
   wheel_build_py313:
@@ -844,6 +901,26 @@ jobs:
             exit 1
           fi
 
+      - name: Upload CVE report to COS
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+        run: |
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          if [ -n "$WHEEL_FILE" ]; then
+            CVE_REPORT="${WHEEL_FILE%.whl}_cve_report.json"
+            if [ -f "$CVE_REPORT" ]; then
+              echo "Uploading CVE report: $CVE_REPORT"
+              source package-cache/variable.sh
+              source package-cache/scanner-env.sh
+              chmod +x ./gha-script/upload-scripts/upload_file.sh
+              bash ./gha-script/upload-scripts/upload_file.sh "$CVE_REPORT"
+            else
+              echo "WARNING: CVE report not found: $CVE_REPORT — skipping upload."
+            fi
+          else
+            echo "WARNING: No wheel found — skipping CVE report upload."
+          fi
+
   wheel_build_py314:
     needs:
       - build_info
@@ -997,11 +1074,29 @@ jobs:
             exit 1
           fi
 
+      - name: Upload CVE report to COS
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+        run: |
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          if [ -n "$WHEEL_FILE" ]; then
+            CVE_REPORT="${WHEEL_FILE%.whl}_cve_report.json"
+            if [ -f "$CVE_REPORT" ]; then
+              echo "Uploading CVE report: $CVE_REPORT"
+              source package-cache/variable.sh
+              source package-cache/scanner-env.sh
+              chmod +x ./gha-script/upload-scripts/upload_file.sh
+              bash ./gha-script/upload-scripts/upload_file.sh "$CVE_REPORT"
+            else
+              echo "WARNING: CVE report not found: $CVE_REPORT — skipping upload."
+            fi
+          else
+            echo "WARNING: No wheel found — skipping CVE report upload."
+          fi
+
   # ---------------------------------------------------------------------------
   # wheel_license_extract: Runs after all wheel builds complete. Downloads the
-  # per-Python-version scancode JSON files from COS (uploaded by each
-  # wheel_build_pyXXX job) and runs extract_licenses.py against each one to
-  # produce a comma-separated list of SPDX license identifiers.
+  # per-Python-version scancode JSON files from COS and extracts SPDX licenses.
   # ---------------------------------------------------------------------------
   wheel_license_extract:
     if: ${{ inputs.wheel_build == 'true' && (needs.wheel_build_py310.result == 'success' || needs.wheel_build_py311.result == 'success' || needs.wheel_build_py312.result == 'success' || needs.wheel_build_py313.result == 'success' || needs.wheel_build_py314.result == 'success') }}
