@@ -1,0 +1,19 @@
+{
+    "maintainer":"Ethan Choe <ethanchoe@ibm.com>",
+    "package_name" : "asyncpg",
+    "github_url":"https://github.com/MagicStack/asyncpg",
+    "version": "v0.31.0",
+    "default_branch": "master",
+    "package_dir": "a/asyncpg",
+    "build_script": "asyncpg_v0.31.0_ubi_9.6.sh",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "wheel_build": "true",
+    "v0.31.0": {
+        "build_script": "asyncpg_v0.31.0_ubi_9.6.sh"
+    },
+    "*": {
+    	"build_script": "asyncpg_v0.31.0_ubi_9.6.sh"
+    } 
+}

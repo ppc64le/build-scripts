@@ -1,0 +1,16 @@
+{
+  "maintainer": "jason.cho2",
+  "package_name": "impit",
+  "github_url": "https://github.com/apify/impit.git",
+  "version": "0.13.1",
+  "default_branch": "main",
+  "package_dir": "i/impit",
+  "build_script": "impit_0.13.1_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "wheel_build" : true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "impit_0.13.1_ubi_9.6.sh"
+  }
+}

@@ -263,13 +263,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # required for getting all the commits not just the latest commits
+          fetch-depth: 0
 
       - name: Install system dependencies
         run: |
           sudo apt update -y
 
-      - name: Download package-cache from previous step
+      - name: Download package-cache
         uses: actions/download-artifact@v7
         with:
           name: package-cache
@@ -421,13 +421,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # required for getting all the commits not just the latest commits
+          fetch-depth: 0
 
       - name: Install system dependencies
         run: |
           sudo apt update -y
 
-      - name: Download package-cache from previous step
+      - name: Download package-cache
         uses: actions/download-artifact@v7
         with:
           name: package-cache
@@ -593,13 +593,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # required for getting all the commits not just the latest commits
+          fetch-depth: 0
 
       - name: Install system dependencies
         run: |
           sudo apt update -y
 
-      - name: Download package-cache from previous step
+      - name: Download package-cache
         uses: actions/download-artifact@v7
         with:
           name: package-cache
@@ -766,13 +766,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # required for getting all the commits not just the latest commits
+          fetch-depth: 0
 
       - name: Install system dependencies
         run: |
           sudo apt update -y
   
-      - name: Download package-cache from previous step
+      - name: Download package-cache
         uses: actions/download-artifact@v7
         with:
           name: package-cache
@@ -939,13 +939,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # required for getting all the commits not just the latest commits
+          fetch-depth: 0
 
       - name: Install system dependencies
         run: |
           sudo apt update -y
   
-      - name: Download package-cache from previous step
+      - name: Download package-cache
         uses: actions/download-artifact@v7
         with:
           name: package-cache
@@ -1408,3 +1408,4 @@ jobs:
                 # Export environment variables
                 export PYTHONPATH="/tmp/_actions-runner-working-dir/build-scripts/build-scripts:/tmp/_actions-runner-working-dir/build-scripts/build-scripts/process_bom"
                 python -m process_bom.run_currency_processor
+                

@@ -1,0 +1,41 @@
+[build-system]
+requires = [
+    "setuptools",
+    "wheel",
+    "auditwheel>=5.0.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pgvector"
+version = "{PACKAGE_VERSION}"
+description = "Open-source vector similarity search extension for PostgreSQL"
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: C",
+    "License :: OSI Approved :: PostgreSQL License",
+    "Operating System :: POSIX :: Linux",
+]
+
+[project.urls]
+homepage = "https://github.com/pgvector/pgvector"
+repository = "https://github.com/pgvector/pgvector"
+
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["local"]
+
+[tool.setuptools.package-data]
+pgvector = [
+    "lib/**/*",
+    "lib64/**/*",
+    "include/**/*",
+    "share/**/*",
+    "bin/**/*",
+    "extension/**/*",
+]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_ppc64le"
+universal = false
