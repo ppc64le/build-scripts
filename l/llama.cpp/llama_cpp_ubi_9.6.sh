@@ -22,6 +22,7 @@ set -e
 # Variables
 PACKAGE_NAME=llama.cpp
 PACKAGE_URL=https://github.com/ggml-org/llama.cpp
+PACKAGE_VERSION=${1:-master}
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=llama.cpp
 SCRIPT_PATH=$(dirname $(realpath $0))
@@ -40,8 +41,6 @@ gcc --version
 echo "**** Checking GCC version..."
 gcc -v || true
 
-# Accept tag (e.g. b5046) or branch (master)
-PACKAGE_VERSION="${PACKAGE_VERSION:-master}"
 
 CURRENT_DIR=$(pwd)
 SCRIPT_PATH=$(dirname "$(realpath "$0")")
@@ -63,7 +62,7 @@ git checkout "$PACKAGE_VERSION"
 # Determine build number for wheel version
 ###############################################################################
 
-if [[ "$VERSION" =~ ^b[0-9]+$ ]]; then
+if [[ "$PACKAGE_VERSION" =~ ^b[0-9]+$ ]]; then
     BUILD_TAG="$PACKAGE_VERSION"
 else
     BUILD_TAG=$(git describe --tags --match "b*" --abbrev=0)
