@@ -11,6 +11,6 @@
   "default_branch": "master",
   "use_non_root_user": false,
   "*": {
-    "build_script": "llama_cpp_ubi_9.6.sh",
+    "build_script": "llama_cpp_ubi_9.6.sh"
   }
 }
