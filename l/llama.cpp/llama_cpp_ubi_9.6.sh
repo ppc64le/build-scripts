@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package         : llama.cpp
-# Version         : Release TAG from build_info.json.
+# Version         : b10145
 # Source repo     : https://github.com/ggml-org/llama.cpp
 # Tested on       : UBI:9.6
 # Language        : C, C++
