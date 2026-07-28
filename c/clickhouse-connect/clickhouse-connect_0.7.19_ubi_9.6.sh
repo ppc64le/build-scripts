@@ -41,9 +41,9 @@ git checkout "$PACKAGE_VERSION"
 git submodule update --init --depth 1
 
 # Build wheel
-python3.12 -m build --wheel --outdir "${SOURCE_ROOT}/dist/"
+python3.12 -m build --wheel --outdir "${SOURCE_ROOT}"
 
-WHEEL=$(find "${SOURCE_ROOT}/dist" -name "clickhouse_connect-*.whl" | head -1)
+WHEEL=$(find "${SOURCE_ROOT}" -name "clickhouse_connect-*.whl" | head -1)
 if [ -z "$WHEEL" ]; then
     echo "ERROR: wheel not found after build"
     exit 1
@@ -51,6 +51,7 @@ fi
 echo "Wheel: $WHEEL"
 
 cd "${SOURCE_ROOT}"
+
 
 # Install wheel
 echo "=== Installing Wheel ==="
