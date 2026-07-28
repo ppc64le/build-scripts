@@ -211,7 +211,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="llama_cpp_python_package",
-    version="1.0+ppc64le${WHEEL_VERSION}",
+    version="1.0+${WHEEL_VERSION}",
     description="Standalone llama.cpp binaries",
     author="Shalini Salomi Bodapati",
     author_email="Shalini.Salomi.Bodapati@ibm.com",
