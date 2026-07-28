@@ -28,7 +28,6 @@ SOURCE_ROOT="$(pwd)"
 echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 
 # Install system dependencies
-dnf update -y openssl openssl-libs
 dnf install -y gcc-toolset-13 git python3.12 python3.12-devel python3.12-pip
 
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:$PATH"
@@ -64,6 +63,10 @@ if [ -z "$WHEEL" ]; then
     exit 1
 fi
 echo "Wheel: $WHEEL"
+
+# Copy wheel to /home/tester/ so the wrapper script can locate it without rebuilding
+mkdir -p /home/tester
+cp "${WHEEL}" /home/tester/
 
 cd "${SOURCE_ROOT}"
 
