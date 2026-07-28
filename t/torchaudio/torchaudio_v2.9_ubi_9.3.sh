@@ -30,8 +30,9 @@ SCRIPT_DIR=$(pwd)
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
 echo "Installed gcc-toolset"
-yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build pkg-config
+yum install -y make libtool  xz zlib-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build pkg-config
 dnf install -y gcc-toolset-13-libatomic-devel
+dnf install -y --nobest --skip-broken openssl-devel
 echo "Installed required deps from RH"
 
 export BUILD_VERSION=${PACKAGE_VERSION#v}
@@ -157,7 +158,8 @@ git checkout $PACKAGE_VERSION
 git submodule sync
 git submodule update --init --recursive
 
-if [ "$PACKAGE_VERSION" != "v2.11.0" ]; then
+if [[ "${PACKAGE_VERSION}" != "v2.10.0" && "${PACKAGE_VERSION}" != "v2.11.0" ]]; then
+    echo "Applying PyTorch patch for ${PACKAGE_VERSION}"
     wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PACKAGE_VERSION}.patch
     git apply pytorch_${PACKAGE_VERSION}.patch
 else
@@ -245,8 +247,13 @@ git checkout $PACKAGE_VERSION
 
 # Apply the patch
 echo "------------------------Applying patch-------------------"
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/torchaudio_${PACKAGE_VERSION}.patch
-git apply torchaudio_${PACKAGE_VERSION}.patch
+if [[ "${PACKAGE_VERSION}" != "v2.10.0" && "${PACKAGE_VERSION}" != "v2.11.0" ]]; then
+    echo "Applying TorchAudio patch for ${PACKAGE_VERSION}"
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/torchaudio_${PACKAGE_VERSION}.patch
+    git apply torchaudio_${PACKAGE_VERSION}.patch
+else
+    echo "Skipping TorchAudio patch for ${PACKAGE_VERSION}"
+fi
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/0001-Excluded-source-that-has-commercial-license-new.patch
 # Below patch excludes the source files that has commercial license
