@@ -85,6 +85,7 @@ OUTPUT_DIR="${OUTPUT_DIR:-${WORK_DIR}/vllm-wheels}"
 # ─── System packages ──────────────────────────────────────────────────────────
 info "Installing system dependencies"
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
+dnf update -y
 dnf install -y \
     git              \
     gcc-toolset-15   \

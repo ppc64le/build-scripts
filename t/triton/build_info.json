@@ -8,14 +8,14 @@
     "package_dir": "t/triton",
     "docker_cmd":"NA",
     "build_script": "build-triton-ppc64le-ubi10.sh",
-    "docker_build": "False",
-    "validate_build_script": "True",
-    "use_non_root_user": "True",
-    "wheel_build": "True",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "wheel_build": "true",
     "wheel_name": "triton",
 
     "required_versions": {
         "Releases": "[v3.6.0]",
         "Tags": "[v3.6.0]"
-    },
+    }
 }
