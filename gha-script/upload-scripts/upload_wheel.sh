@@ -33,7 +33,7 @@ if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
         -H "Content-Type: application/octet-stream" \
         -H "x-amz-meta-sha256: $WHEEL_SHA256" \
         -T $WHEEL_FILE \
-        "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-artifacts-production/$PACKAGE_NAME/$VERSION/$WHEEL_FILE")
+        "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-artifacts-stag/$PACKAGE_NAME/$VERSION/$WHEEL_FILE")
 
     # Check if the PUT request was successful based on the absence of an <Error> block
     if ! echo "$response" | grep -q "<Error>"; then
