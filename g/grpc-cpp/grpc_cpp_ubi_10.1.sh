@@ -4,7 +4,7 @@
 # Package       : grpc-cpp 
 # Version       : v1.68.0
 # Source repo   : https://github.com/grpc/grpc
-# Tested on     : UBI:9.3
+# Tested on     : UBI:10.1
 # Language      : Python, C++
 # Ci-Check  : True
 # Script License: Apache License, Version 2 or later
