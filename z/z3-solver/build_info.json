@@ -7,7 +7,7 @@
     "category": "default",
     "package_dir": "z/z3-solver",
     "docker_cmd":"NA",
-    "build_script": "build-z3-ppc64le-ubi10.sh",
+    "build_script": "z3-solver_4.15.4_ubi_10.sh",
     "docker_build": "False",
     "validate_build_script": "True",
     "use_non_root_user": "True",
@@ -18,4 +18,7 @@
         "Releases": "[z3-4.15.4]",
         "Tags": "[z3-4.15.4]"
     },
+    "*": {
+    "build_script": "z3-solver_4.15.4_ubi_10.sh"
+   }
 }
