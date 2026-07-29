@@ -20,6 +20,7 @@
 
 PACKAGE_NAME=duckdb-python
 PACKAGE_VERSION=${1:-v1.5.4}
+CURRENT_DIR=$(pwd)
 PACKAGE_DIR=duckdb-python
 PACKAGE_URL=https://github.com/duckdb/duckdb-python.git
 PYTHON_VERSION=3.12
