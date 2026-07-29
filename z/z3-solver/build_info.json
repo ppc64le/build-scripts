@@ -10,7 +10,7 @@
     "build_script": "build-z3-ppc64le-ubi10.sh",
     "docker_build": "false",
     "validate_build_script": "true",
-    "use_non_root_user": "True",
+    "use_non_root_user": "false",
     "wheel_build": "True",
     "wheel_name": "z3-solver",
 
