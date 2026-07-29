@@ -49,6 +49,7 @@ pip3.12 install --upgrade pip setuptools wheel build
 
 # Clone repository
 cd $CURRENT_DIR
+rm -rf $PACKAGE_DIR
 git clone $PACKAGE_URL $PACKAGE_DIR
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
@@ -68,13 +69,16 @@ else:
     raise SystemExit("Could not find TAGS dict in setup.py")
 PYEOF
 
-# Build Z3 using the bundled mk_make.py build system
-python3.12 scripts/mk_make.py --python --pypkgdir=src/api/python
+# Build Z3 native library using the bundled mk_make.py build system
+# Do NOT pass --python/--pypkgdir here: mk_make.py requires --pypkgdir to live
+# under --prefix (/usr), which a source-relative path never satisfies.
+# The Python wheel is built separately via setup.py below.
+python3.12 scripts/mk_make.py
 cd build
 make -j"$(nproc)"
 make install
 
-# Build wheel
+# Build and install the Python bindings wheel
 cd $CURRENT_DIR/$PACKAGE_DIR/src/api/python
 
 # Install package
@@ -102,4 +106,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
