@@ -45,7 +45,7 @@ fi
 echo "Using gcc: $(gcc --version | head -1)"
 
 # Install Python build tools
-pip3.12 install --upgrade pip setuptools wheel build
+pip install --upgrade pip setuptools wheel build
 
 # Clone repository
 cd $CURRENT_DIR
