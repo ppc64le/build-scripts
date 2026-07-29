@@ -11,7 +11,7 @@
     "docker_build": "false",
     "validate_build_script": "true",
     "use_non_root_user": "false",
-    "wheel_build": "True",
+    "wheel_build": "true",
     "wheel_name": "z3-solver",
 
     "required_versions": {
