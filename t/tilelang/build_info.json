@@ -8,14 +8,14 @@
     "package_dir": "t/tilelang",
     "docker_cmd":"NA",
     "build_script": "build-tilelang-ppc64le-ubi10.sh",
-    "docker_build": "False",
-    "validate_build_script": "True",
-    "use_non_root_user": "True",
-    "wheel_build": "True",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "true",
+    "wheel_build": "true",
     "wheel_name": "tilelang",
 
     "required_versions": {
         "Releases": "[0.1.10]",
         "Tags": "[0.1.10]"
-    },
+    }
 }
