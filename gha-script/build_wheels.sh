@@ -51,6 +51,11 @@ fi
 
 WHEEL_SCRIPT=gha-script/create_wheel_wrapper.sh
 
+# Ensure the wrapper script is readable and executable by all users.
+# Required for non-root container builds where the mounted volume is owned
+# by the host runner user but executed as test_user inside the container.
+chmod a+rx "$WHEEL_SCRIPT"
+
 # path to post_process_wheel script (suffix addition, license addition, metadata addition)
 POST_PROCESS_SCRIPT_PATH=gha-script/post_process_wheel.py
 
