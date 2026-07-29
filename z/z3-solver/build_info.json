@@ -8,10 +8,10 @@
     "package_dir": "z/z3-solver",
     "docker_cmd":"NA",
     "build_script": "z3-solver_4.15.4_ubi_10.sh",
-    "docker_build": "False",
-    "validate_build_script": "True",
-    "use_non_root_user": "True",
-    "wheel_build": "True",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "true",
+    "wheel_build": "true",
     "wheel_name": "z3-solver",
 
     "required_versions": {
