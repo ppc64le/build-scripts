@@ -217,6 +217,7 @@ jobs:
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
           echo "===== variable.sh ====="; cat package-cache/variable.sh
+          echo "BUILD_SCRIPT=$BUILD_SCRIPT  TESTED_ON=$TESTED_ON"
           lscpu
           chmod +x ./gha-script/build_package.sh
           bash ./gha-script/build_package.sh
@@ -262,6 +263,7 @@ jobs:
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
           echo "===== variable.sh ====="; cat package-cache/variable.sh
+          echo "BUILD_SCRIPT=$BUILD_SCRIPT  TESTED_ON=$TESTED_ON"
           lscpu
           chmod +x ./gha-script/build_package.sh
           bash ./gha-script/build_package.sh
@@ -307,6 +309,7 @@ jobs:
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
           echo "===== variable.sh ====="; cat package-cache/variable.sh
+          echo "BUILD_SCRIPT=$BUILD_SCRIPT  TESTED_ON=$TESTED_ON"
           lscpu
           chmod +x ./gha-script/build_package.sh
           bash ./gha-script/build_package.sh
