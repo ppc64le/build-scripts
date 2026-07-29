@@ -225,6 +225,8 @@ jobs:
         run: |
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi8).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}"
           echo "===== variable.sh ====="; cat package-cache/variable.sh
           echo "BUILD_SCRIPT=$BUILD_SCRIPT  TESTED_ON=$TESTED_ON"
           lscpu
@@ -271,6 +273,8 @@ jobs:
         run: |
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi9).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}"
           echo "===== variable.sh ====="; cat package-cache/variable.sh
           echo "BUILD_SCRIPT=$BUILD_SCRIPT  TESTED_ON=$TESTED_ON"
           lscpu
@@ -317,6 +321,8 @@ jobs:
         run: |
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi10).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}"
           echo "===== variable.sh ====="; cat package-cache/variable.sh
           echo "BUILD_SCRIPT=$BUILD_SCRIPT  TESTED_ON=$TESTED_ON"
           lscpu
@@ -394,6 +400,8 @@ jobs:
         run: |
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi8).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
@@ -493,6 +501,8 @@ jobs:
         run: |
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi8).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
@@ -580,6 +590,8 @@ jobs:
       - name: Run build_wheels.sh
         run: |
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi8).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
           LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py312_log}.gz"
@@ -667,6 +679,8 @@ jobs:
       - name: Run build_wheels.sh
         run: |
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi8).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
           LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py313_log}.gz"
@@ -754,6 +768,8 @@ jobs:
       - name: Run build_wheels.sh
         run: |
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi8).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
           LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py314_log}.gz"
@@ -842,6 +858,8 @@ jobs:
       - name: Run build_wheels.sh
         run: |
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi9).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
           LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py310_log}.gz"
@@ -924,6 +942,8 @@ jobs:
       - name: Run build_wheels.sh
         run: |
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi9).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
           LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py311_log}.gz"
@@ -1006,6 +1026,8 @@ jobs:
       - name: Run build_wheels.sh
         run: |
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi9).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
           LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py312_log}.gz"
@@ -1089,6 +1111,8 @@ jobs:
       - name: Run build_wheels.sh
         run: |
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi9).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
           LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py313_log}.gz"
@@ -1172,6 +1196,8 @@ jobs:
       - name: Run build_wheels.sh
         run: |
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi9).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
           LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py314_log}.gz"
@@ -1256,6 +1282,8 @@ jobs:
       - name: Run build_wheels.sh
         run: |
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi10).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
           LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py311_log}.gz"
@@ -1338,6 +1366,8 @@ jobs:
       - name: Run build_wheels.sh
         run: |
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi10).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
           LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py312_log}.gz"
@@ -1421,6 +1451,8 @@ jobs:
       - name: Run build_wheels.sh
         run: |
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi10).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
           LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py313_log}.gz"
@@ -1504,6 +1536,8 @@ jobs:
       - name: Run build_wheels.sh
         run: |
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi10).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
           LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py314_log}.gz"
