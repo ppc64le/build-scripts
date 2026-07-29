@@ -106,9 +106,18 @@ jobs:
           echo "SCRIPT_UBI8=$SCRIPT_UBI8"
           echo "SCRIPT_UBI9=$SCRIPT_UBI9"
           echo "SCRIPT_UBI10=$SCRIPT_UBI10"
-          echo "script_ubi8=$SCRIPT_UBI8"   >> $GITHUB_OUTPUT
-          echo "script_ubi9=$SCRIPT_UBI9"   >> $GITHUB_OUTPUT
-          echo "script_ubi10=$SCRIPT_UBI10" >> $GITHUB_OUTPUT
+          # Use multiline delimiter syntax so JSON double-quotes are not truncated
+          {
+            echo "script_ubi8<<__EOF__"
+            echo "$SCRIPT_UBI8"
+            echo "__EOF__"
+            echo "script_ubi9<<__EOF__"
+            echo "$SCRIPT_UBI9"
+            echo "__EOF__"
+            echo "script_ubi10<<__EOF__"
+            echo "$SCRIPT_UBI10"
+            echo "__EOF__"
+          } >> $GITHUB_OUTPUT
 
       - name: Create scanner-env.sh
         run: |
