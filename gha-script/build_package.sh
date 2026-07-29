@@ -18,7 +18,8 @@ docker_build_non_root() {
   docker_image="docker_non_root_image"
 }
 
-#Below conditions are used to select the base image based on the 2 flags, tested_on and non_root_build. A docker_build_non_root function is called when non root build is true.
+#Below conditions are used to select the base image based on the 2 flags, tested_on and non_root_build.
+#A docker_build_non_root function is called when non root build is true.
 if [[ "$TESTED_ON" == UBI:9* || "$TESTED_ON" == UBI9* ]];
 then
     ubi_version=$(echo "$TESTED_ON" | grep -oE '[0-9]+\.[0-9]+')
@@ -27,6 +28,17 @@ then
     if [[ "$NON_ROOT_BUILD" == "true" ]];
     then
         docker_build_non_root "registry.access.redhat.com/ubi9/ubi:$ubi_version"
+    fi
+elif [[ "$TESTED_ON" == UBI:10* || "$TESTED_ON" == UBI10* ]];
+then
+    ubi_version=$(echo "$TESTED_ON" | grep -oE '[0-9]+\.[0-9]+')
+    # Fallback to 10.0 if no minor version found
+    ubi_version=${ubi_version:-10.0}
+    docker pull registry.access.redhat.com/ubi10/ubi:$ubi_version
+    docker_image="registry.access.redhat.com/ubi10/ubi:$ubi_version"
+    if [[ "$NON_ROOT_BUILD" == "true" ]];
+    then
+        docker_build_non_root "registry.access.redhat.com/ubi10/ubi:$ubi_version"
     fi
 else
     docker pull registry.access.redhat.com/ubi8/ubi:8.7

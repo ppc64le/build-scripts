@@ -7,9 +7,19 @@ EXTRA_ARGS=${3:-""}
 POST_PROCESS_SCRIPT_PATH=${4:-"post_process_wheel.py"}
 CURRENT_DIR=$(pwd)
 
-# install gcc
-yum install -y gcc-toolset-13 
-source /opt/rh/gcc-toolset-13/enable
+# install gcc — select toolset version based on UBI major version
+UBI_MAJOR=$(grep -oP '(?<=^VERSION_ID=")[0-9]+' /etc/os-release || grep -oP 'release \K[0-9]+' /etc/redhat-release 2>/dev/null || echo "8")
+if [[ "$UBI_MAJOR" -ge 10 ]]; then
+    GCC_TOOLSET="gcc-toolset-15"
+    yum install -y "$GCC_TOOLSET"
+    # On UBI 10, SCL (Software Collections) was dropped — there is no enable script.
+    # Activate the toolset by prepending its bin directory to PATH directly.
+    export PATH="/opt/rh/${GCC_TOOLSET}/root/usr/bin:$PATH"
+else
+    GCC_TOOLSET="gcc-toolset-13"
+    yum install -y "$GCC_TOOLSET"
+    source /opt/rh/${GCC_TOOLSET}/enable
+fi
 gcc --version
 
 # temporary build script path
