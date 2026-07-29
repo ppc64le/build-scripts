@@ -209,7 +209,7 @@ if [ "$script_type" = "array" ]; then
     fi
 
     # Append JSON object — jq --arg safely escapes both values
-    entry=$(jq -cn \
+    entry=$(jq -n \
       --arg s "$script_name" \
       --arg t "$raw_tested_on" \
       '{"script":$s,"tested_on":$t}')
@@ -248,7 +248,7 @@ else
   echo "Tested on value: $tested_on"
 
   # Wrap single entry into the same JSON array format for consistency
-  BUILD_SCRIPTS_JSON=$(jq -cn \
+  BUILD_SCRIPTS_JSON=$(jq -n \
     --arg s "$stripped_build_script" \
     --arg t "$tested_on" \
     '[{"script":$s,"tested_on":$t}]')
@@ -260,18 +260,44 @@ fi
 echo "BUILD_SCRIPTS_JSON: $BUILD_SCRIPTS_JSON"
 
 # ---------------------------------------------------------------------------
-# Emit individual slot variables: SLOT0, SLOT1, SLOT2.
-# Each slot is a single {script, tested_on} JSON object (or empty string).
-# Callers (currency-build.yaml, pr-build.yaml) use these to drive the three
-# reusable workflow calls without needing fromJson array indexing in `if:`.
+# Bucket scripts by UBI major version → SCRIPT_UBI8, SCRIPT_UBI9, SCRIPT_UBI10.
+# Each is a single {script, tested_on} JSON object (or empty string "").
+# At most one script per UBI major version is expected per package.
+# Callers (currency-build.yaml, pr-build.yaml) use these to drive named jobs:
+#   build_ubi8 / build_ubi9 / build_ubi10
+#   wheel_build_ubi8_pyXXX / wheel_build_ubi9_pyXXX / wheel_build_ubi10_pyXXX
 # ---------------------------------------------------------------------------
-SLOT0=$(echo "$BUILD_SCRIPTS_JSON" | jq -c '.[0] // empty' 2>/dev/null || echo "")
-SLOT1=$(echo "$BUILD_SCRIPTS_JSON" | jq -c '.[1] // empty' 2>/dev/null || echo "")
-SLOT2=$(echo "$BUILD_SCRIPTS_JSON" | jq -c '.[2] // empty' 2>/dev/null || echo "")
+SCRIPT_UBI8=""
+SCRIPT_UBI9=""
+SCRIPT_UBI10=""
 
-echo "SLOT0: $SLOT0"
-echo "SLOT1: $SLOT1"
-echo "SLOT2: $SLOT2"
+while IFS= read -r entry; do
+  [ -z "$entry" ] && continue
+  t_on=$(echo "$entry" | jq -r '.tested_on')
+  # Normalise: uppercase, collapse separators around UBI, then extract the
+  # integer immediately following "UBI".  Uses only sed + tr (POSIX) — no
+  # grep -P needed, so it works on ppc64le runners where grep -P is absent.
+  t_upper=$(echo "$t_on" | tr '[:lower:]' '[:upper:]')
+  # Collapse "UBI : 9.3" / "UBI:9.3" / "UBI 9.3" / "UBI9.3" → "UBI9.3"
+  t_norm=$(echo "$t_upper" | sed 's/UBI[[:space:]]*[: ][[:space:]]*/UBI/g')
+  # Extract digits immediately after "UBI"  e.g. "UBI10.0" → "10"
+  major=$(echo "$t_norm" | sed 's/.*UBI\([0-9][0-9]*\).*/\1/')
+  # If sed left non-numeric content (no UBI match), clear it
+  case "$major" in
+    ''|*[!0-9]*) major="" ;;
+  esac
+  echo "  bucket: tested_on='$t_on'  major='$major'"
+  case "$major" in
+    8)  SCRIPT_UBI8="$entry"  ;;
+    9)  SCRIPT_UBI9="$entry"  ;;
+    10) SCRIPT_UBI10="$entry" ;;
+    *)  echo "⚠️  Unknown UBI major '$major' in tested_on='$t_on' — skipping bucket" ;;
+  esac
+done < <(echo "$BUILD_SCRIPTS_JSON" | jq -c '.[]')
+
+echo "SCRIPT_UBI8:  $SCRIPT_UBI8"
+echo "SCRIPT_UBI9:  $SCRIPT_UBI9"
+echo "SCRIPT_UBI10: $SCRIPT_UBI10"
 
 # Extract auditwheel exclusions (unchanged — same pattern as before)
 AUDITWHEEL_EXCLUDE=""
@@ -281,26 +307,23 @@ fi
 
 # ---------------------------------------------------------------------------
 # Write variable.sh
-# BUILD_SCRIPTS_JSON is wrapped in single-quotes so embedded double-quotes
-# and spaces inside tested_on values survive the shell write safely.
+# JSON objects are single-quote-wrapped so embedded double-quotes survive.
 # ---------------------------------------------------------------------------
-echo "export VERSION=$VERSION"                              > $CUR_DIR/variable.sh
-echo "export BUILD_SCRIPT=$build_script"                  >> $CUR_DIR/variable.sh
-echo "export PKG_DIR_PATH=$package_dirpath"               >> $CUR_DIR/variable.sh
-echo "export IMAGE_NAME=$image_name"                      >> $CUR_DIR/variable.sh
-#echo "export BUILD_DOCKER=$build_docker"                 >> $CUR_DIR/variable.sh
-#echo "export VALIDATE_BUILD_SCRIPT=$validate_build_script" >> $CUR_DIR/variable.sh
-echo "export VARIANT=$variant"                            >> $CUR_DIR/variable.sh
-echo "export BASENAME=$basename"                          >> $CUR_DIR/variable.sh
-echo "export NON_ROOT_BUILD=$nonRootBuild"                >> $CUR_DIR/variable.sh
-echo "export TESTED_ON=$tested_on"                        >> $CUR_DIR/variable.sh
-echo "export AUDITWHEEL_EXCLUDE=\"$AUDITWHEEL_EXCLUDE\""  >> $CUR_DIR/variable.sh
-# Single-quote wrap keeps the JSON intact through the shell write
-echo "export BUILD_SCRIPTS_JSON='$BUILD_SCRIPTS_JSON'"    >> $CUR_DIR/variable.sh
-# Individual slot exports — empty string when slot has no script
-echo "export SLOT0='$SLOT0'"                              >> $CUR_DIR/variable.sh
-echo "export SLOT1='$SLOT1'"                              >> $CUR_DIR/variable.sh
-echo "export SLOT2='$SLOT2'"                              >> $CUR_DIR/variable.sh
+echo "export VERSION=$VERSION"                                > $CUR_DIR/variable.sh
+echo "export BUILD_SCRIPT=$build_script"                     >> $CUR_DIR/variable.sh
+echo "export PKG_DIR_PATH=$package_dirpath"                  >> $CUR_DIR/variable.sh
+echo "export IMAGE_NAME=$image_name"                         >> $CUR_DIR/variable.sh
+echo "export VARIANT=$variant"                               >> $CUR_DIR/variable.sh
+echo "export BASENAME=$basename"                             >> $CUR_DIR/variable.sh
+echo "export NON_ROOT_BUILD=$nonRootBuild"                   >> $CUR_DIR/variable.sh
+echo "export TESTED_ON=$tested_on"                           >> $CUR_DIR/variable.sh
+echo "export AUDITWHEEL_EXCLUDE=\"$AUDITWHEEL_EXCLUDE\""     >> $CUR_DIR/variable.sh
+# Full array — kept for any downstream consumer that still needs it
+echo "export BUILD_SCRIPTS_JSON='$BUILD_SCRIPTS_JSON'"       >> $CUR_DIR/variable.sh
+# Per-UBI-major named exports — empty string when that UBI version has no script
+echo "export SCRIPT_UBI8='$SCRIPT_UBI8'"                    >> $CUR_DIR/variable.sh
+echo "export SCRIPT_UBI9='$SCRIPT_UBI9'"                    >> $CUR_DIR/variable.sh
+echo "export SCRIPT_UBI10='$SCRIPT_UBI10'"                  >> $CUR_DIR/variable.sh
 
 chmod +x $CUR_DIR/variable.sh
 cat $CUR_DIR/variable.sh
