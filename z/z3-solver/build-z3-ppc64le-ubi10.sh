@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : z3
+# Package       : z3-solver
 # Version       : z3-4.15.4
 # Source repo   : https://github.com/Z3Prover/z3
-# Tested on     : UBI 10 (ppc64le)
-# Language      : C++, Python
+# Tested on     : UBI:10.2
+# Language      : Python
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Daniel Schenker <daniel.schenker@ibm.com>
@@ -16,103 +16,45 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
-# ----------------------------------------------------------------------------
-#
-# Clones the Z3 theorem prover, patches it for ppc64le, builds from source,
-# and produces a Python wheel.
-#
-# Designed to run inside a bare UBI 10 container. All required system packages
-# are installed via dnf at the start of the script.
-#
-# Output wheel:
-#   <output-dir>/z3_solver-4.15.4.0-cpXY-cpXY-linux_ppc64le.whl
-#
-# Usage:
-#   ./build-z3-rocm-ppc64le.sh [--version z3-4.15.4] [--workdir $HOME]
-#                               [--output-dir $HOME/vllm-wheels]
-#
-set -Eeuo pipefail
+# -----------------------------------------------------------------------------
 
-SCRIPT_NAME="$(basename "$0")"
+set -e
 
-# ─── Defaults ─────────────────────────────────────────────────────────────────
-Z3_VERSION="z3-4.15.4"
-WORK_DIR="${HOME}"
-OUTPUT_DIR=""          # resolved to ${WORK_DIR}/vllm-wheels after arg parsing
+PACKAGE_NAME=z3-solver
+PACKAGE_VERSION=${1:-z3-4.15.4}
+PACKAGE_URL=https://github.com/Z3Prover/z3
+PACKAGE_DIR=z3
+CURRENT_DIR=$(pwd)
 
-# ─── Helpers ──────────────────────────────────────────────────────────────────
-die()  { echo "ERROR: $*" >&2; exit 1; }
-info() { echo "==> $*"; }
+# Install dependencies
+yum install -y python3.12 python3.12-devel python3.12-pip \
+    git gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ \
+    make
 
-usage() {
-    cat <<EOF
-Usage:
-  $SCRIPT_NAME [options]
-
-Options:
-  --version VERSION     Z3 git tag to build (default: $Z3_VERSION)
-  --workdir DIR         Parent directory for the z3/ clone (default: $WORK_DIR)
-  --output-dir DIR      Directory to copy the built wheel into (default: <workdir>/vllm-wheels)
-  -h, --help            Show this help and exit
-EOF
-}
-
-# ─── Argument parsing ─────────────────────────────────────────────────────────
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        --version)     Z3_VERSION="$2";   shift 2 ;;
-        --workdir)     WORK_DIR="$2";      shift 2 ;;
-        --output-dir)  OUTPUT_DIR="$2";    shift 2 ;;
-        -h|--help)     usage; exit 0 ;;
-        *) die "Unknown option: $1" ;;
-    esac
-done
-
-# Resolve OUTPUT_DIR now that WORK_DIR is final
-OUTPUT_DIR="${OUTPUT_DIR:-${WORK_DIR}/vllm-wheels}"
-
-# ─── System packages ──────────────────────────────────────────────────────────
-info "Installing system dependencies"
-dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
-dnf install -y \
-    git              \
-    gcc-toolset-15   \
-    python3.13       \
-    python3.13-devel
-
-# ─── GCC Toolset 15 ───────────────────────────────────────────────────────────
-info "Configuring GCC Toolset 15"
-GCC_TOOLSET_BIN="/opt/rh/gcc-toolset-15/root/usr/bin"
+# Configure GCC Toolset 15
 if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
-    # shellcheck disable=SC1091
     source /opt/rh/gcc-toolset-15/enable
-elif [[ -d "$GCC_TOOLSET_BIN" ]]; then
-    export PATH="$GCC_TOOLSET_BIN:$PATH"
+elif [[ -d /opt/rh/gcc-toolset-15/root/usr/bin ]]; then
+    export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
+    export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:$LD_LIBRARY_PATH"
 else
-    die "/opt/rh/gcc-toolset-15 not found — install gcc-toolset-15"
+    echo "ERROR: gcc-toolset-15 not found"
+    exit 1
 fi
-echo "Using gcc: $(command -v gcc)  ($(gcc -dumpfullversion -dumpversion))"
-echo "Using ar:  $(command -v ar)"
 
-# ─── Venv ─────────────────────────────────────────────────────────────────────
-VENV_DIR="${WORK_DIR}/z3-build-env"
-[[ -d "$VENV_DIR" ]] || python3.13 -m venv "$VENV_DIR"
-source "$VENV_DIR/bin/activate"
-pip install --upgrade pip setuptools wheel build
+echo "Using gcc: $(gcc --version | head -1)"
 
-# ─── Clone ────────────────────────────────────────────────────────────────────
-Z3_DIR="${WORK_DIR}/z3"
-if [[ ! -d "$Z3_DIR" ]]; then
-    git clone https://github.com/Z3Prover/z3.git "$Z3_DIR"
-else
-    info "z3 directory already exists — skipping clone"
-fi
-cd "$Z3_DIR"
-git checkout "$Z3_VERSION"
+# Install Python build tools
+pip3.12 install --upgrade pip setuptools wheel build
 
-# ─── Patch setup.py (ppc64le wheel tag) ───────────────────────────────────────
-info "Patching src/api/python/setup.py (ppc64le wheel tag)"
-python3 - <<'PYEOF'
+# Clone repository
+cd $CURRENT_DIR
+git clone $PACKAGE_URL $PACKAGE_DIR
+cd $PACKAGE_DIR
+git checkout $PACKAGE_VERSION
+
+# Patch src/api/python/setup.py for ppc64le wheel tag
+python3.12 - <<'PYEOF'
 from pathlib import Path
 p = Path("src/api/python/setup.py")
 src = p.read_text()
@@ -126,16 +68,38 @@ else:
     raise SystemExit("Could not find TAGS dict in setup.py")
 PYEOF
 
-# ─── Build ────────────────────────────────────────────────────────────────────
-python scripts/mk_make.py --prefix="$VIRTUAL_ENV"
+# Build Z3 using the bundled mk_make.py build system
+python3.12 scripts/mk_make.py --python --pypkgdir=src/api/python
 cd build
 make -j"$(nproc)"
 make install
 
-# ─── Wheel ────────────────────────────────────────────────────────────────────
-cd "$Z3_DIR/src/api/python"
-python setup.py bdist_wheel
+# Build wheel
+cd $CURRENT_DIR/$PACKAGE_DIR/src/api/python
 
-mkdir -p "$OUTPUT_DIR"
-cp dist/*.whl "$OUTPUT_DIR/"
-info "Z3 wheel: $(ls "$OUTPUT_DIR"/z3*.whl)"
+# Install package
+if ! python3.12 setup.py install ; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
+fi
+
+# Copy wheel to CURRENT_DIR
+python3.12 setup.py bdist_wheel
+cp dist/*.whl $CURRENT_DIR/
+
+# Run tests
+cd $CURRENT_DIR/$PACKAGE_DIR
+if ! python3.12 -c "import z3; s = z3.Solver(); x = z3.Int('x'); s.add(x > 0); assert str(s.check()) == 'sat'; print('z3 basic smoke test passed')" ; then
+    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
+fi
+
