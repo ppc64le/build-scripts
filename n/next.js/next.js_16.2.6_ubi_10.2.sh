@@ -135,7 +135,7 @@ if [ -z "$RSPACK_BINARY" ]; then
 fi
 echo "✓ rspack binary found: $RSPACK_BINARY"
 
-# Build Turborepo (separate repository)
+# Build Turborepo 
 echo "=========================================="
 echo "Building Turborepo..."
 echo "=========================================="
