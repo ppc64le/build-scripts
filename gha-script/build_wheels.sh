@@ -49,6 +49,16 @@ else
     fi  
 fi
 
+# UBI 10 does not ship Python 3.10 or 3.11 in its repos.
+# Building 3.10 from source is not supported for UBI 10 wheel builds.
+# Skip those Python versions early to avoid false-positive successes.
+if [[ "$TESTED_ON" == UBI:10* || "$TESTED_ON" == UBI10* ]]; then
+    if [[ "$PYTHON_VERSION" == "3.10" || "$PYTHON_VERSION" == "3.11" ]]; then
+        echo "Skipping wheel build for Python $PYTHON_VERSION — not supported on UBI 10"
+        exit 0
+    fi
+fi
+
 WHEEL_SCRIPT=gha-script/create_wheel_wrapper.sh
 
 # Ensure the wrapper script is readable and executable by all users.

@@ -1,0 +1,19 @@
+{
+   "maintainer": "Varsha Kumar",
+   "package_name": "composio",
+   "github_url": "https://github.com/composiohq/composio",
+   "version": "py@0.16.0",
+   "default_branch": "next",
+   "build_script": "composio_0.16.0_ubi_9.6.sh",
+   "package_dir": "c/composio",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "py@0.16.0":{
+           "build_script": "composio_0.16.0_ubi_9.6.sh"
+   },
+   "*": {
+       "build_script": "composio_0.16.0_ubi_9.6.sh"
+   }
+}
