@@ -32,6 +32,10 @@ def extract_script_metadata(script_path):
                 for key, field in key_mapping.items():
                     if line.startswith(key):
                         value = line.split(':', 1)[-1].strip()
+                        # Normalize tested_on the same way read_buildinfo.sh does:
+                        # remove all spaces and uppercase — so "UBI 10.2" → "UBI10.2"
+                        if field == 'tested_on':
+                            value = value.replace(' ', '').upper()
                         metadata[field] = value
                         break
     except Exception as e:
