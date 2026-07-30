@@ -79,7 +79,7 @@ WHEEL_VERSION="${BUILD_TAG#b}"
 
 echo "Repository Version : $PACKAGE_VERSION"
 echo "Build Tag          : $BUILD_TAG"
-echo "Wheel Version      : 1.0+ppc64le${WHEEL_VERSION}"
+echo "Wheel Version      : 1.0+${WHEEL_VERSION}"
 
 ###############################################################################
 # Build llama.cpp
