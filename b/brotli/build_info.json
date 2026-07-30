@@ -1,5 +1,5 @@
 {
-  "maintainer": "Harithanagothu2",
+  "maintainer": "tejasBadjateIBM",
   "package_name": "brotli",
   "github_url": "https://github.com/google/brotli.git",
   "version": "v1.0.9",
@@ -10,6 +10,12 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "v1.1.0":{
+    "build_script": [ 
+      "brotli_v1.1.0_ubi_10.1.sh",
+      "brotli_ubi_9.3.sh"
+    ]
+  }
   "v1.*.*": {
     "build_script": "brotli_ubi_9.3.sh"
   }
