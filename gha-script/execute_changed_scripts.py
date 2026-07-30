@@ -92,13 +92,13 @@ def main():
 
         # Check if script exists
         if not os.path.exists(script_path):
-            print(f"⚠️  Script not found: {script_path}")
+            print(f"  Script not found: {script_path}")
             continue
 
         # Extract metadata from script header
         metadata = extract_script_metadata(script_path)
         if not metadata:
-            print(f"❌ Failed to extract metadata from {script_path}")
+            print(f" Failed to extract metadata from {script_path}")
             continue
 
         version = metadata['package_version']
@@ -106,7 +106,7 @@ def main():
         tested_on = metadata['tested_on']
         use_non_root = metadata['use_non_root_user'].lower()
 
-        print(f"📋 Metadata extracted:")
+        print(f" Metadata extracted:")
         print(f"   Package: {metadata['package_name']}")
         print(f"   Version: {version}")
         print(f"   Tested on: {tested_on}")
@@ -120,7 +120,7 @@ def main():
             continue
 
         if not version:
-            print(f"⚠️  No version found in script header, skipping {script_path}")
+            print(f"  No version found in script header, skipping {script_path}")
             skipped_count += 1
             continue
 
@@ -131,7 +131,7 @@ def main():
         os.environ['TESTED_ON'] = tested_on
         os.environ['NON_ROOT_BUILD'] = use_non_root
 
-        print(f"\n🚀 Executing: {script_path} with version {version}")
+        print(f"\n Executing: {script_path} with version {version}")
         print(f"   Command: bash gha-script/build_package.sh")
 
         # Execute build_package.sh which will run the script
@@ -140,18 +140,18 @@ def main():
         exit_code = os.waitstatus_to_exitcode(raw_exit)
 
         if exit_code != 0:
-            print(f"\n❌ Script execution failed for {script_path} with exit code {exit_code}")
+            print(f"\n Script execution failed for {script_path} with exit code {exit_code}")
             return exit_code
         else:
-            print(f"\n✅ Script execution completed successfully for {script_path}")
+            print(f"\n Script execution completed successfully for {script_path}")
             executed_count += 1
 
     print("\n" + "=" * 80)
     print("EXECUTION SUMMARY")
     print("=" * 80)
-    print(f"✅ Executed: {executed_count}")
-    print(f"⏭️  Skipped: {skipped_count}")
-    print(f"📊 Total: {len(changed_scripts)}")
+    print(f" Executed: {executed_count}")
+    print(f"  Skipped: {skipped_count}")
+    print(f" Total: {len(changed_scripts)}")
     print("=" * 80)
 
     return 0
