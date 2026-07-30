@@ -9,7 +9,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "wheel_build" : true,
-  "use_non_root_user": false,
+  "use_non_root_user": true,
   "v1.5.4": {
      "build_script": "duckdb_1.5.4_ubi_10.2.sh"
   },
