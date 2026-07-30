@@ -93,10 +93,27 @@ python3.12 setup.py bdist_wheel
 cd "$CURRENT_DIR"
 # ---------------------------------------------------------------------------
 
-# Install remaining Python dependencies from IBM wheels index
+# Install all Python runtime + build dependencies from the IBM ppc64le wheels
+# index.  torch is a hard unconditional runtime dep (tilelang/__init__.py:135
+# calls `import torch` on every `import tilelang`).
+#
+# --prefer-binary lets pip select the wheel that best matches the running
+# platform (UBI 10 / glibc 2.39 / POWER10); this gives better runtime
+# performance than a UBI 8-built wheel because GCC 15 and the newer glibc
+# enable POWER10 MMA intrinsics and improved VSX auto-vectorisation paths.
+#
+# torch-c-dlpack-ext is intentionally OMITTED: its wheel bundles
+# libtorch_cuda.so which does not exist on a ROCm-only system and would cause
+# a dlopen failure at import time.  tilelang/__init__.py:109-130 explicitly
+# disables the dlpack extension when ROCm is detected, so it is not needed.
+# (See tilelang docs: "skip torch-c-dlpack-ext on ROCm")
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 pip install --trusted-host wheels.developerfirst.ibm.com \
-    --extra-index-url "${IBM_WHEELS}" --prefer-binary numpy tqdm cython patchelf "scikit-build-core[pyproject]" cmake ninja
+    --extra-index-url "${IBM_WHEELS}" --prefer-binary \
+    numpy tqdm cython patchelf "scikit-build-core[pyproject]" cmake ninja \
+    torch \
+    "apache-tvm-ffi>=0.1.11,<0.1.13" \
+    cloudpickle ml-dtypes psutil "typing-extensions>=4.10.0"
 
 # Clone repository
 cd $CURRENT_DIR
