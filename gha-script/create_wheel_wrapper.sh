@@ -7,17 +7,28 @@ EXTRA_ARGS=${3:-""}
 POST_PROCESS_SCRIPT_PATH=${4:-"post_process_wheel.py"}
 CURRENT_DIR=$(pwd)
 
+# Use sudo for privileged commands when running as a non-root user.
+# dockerfile_non_root grants test_user passwordless sudo, so this is always safe.
+# When already root, sudo is not needed (and may not be installed), so skip it.
+if [[ "$(id -u)" -ne 0 ]]; then
+    YUM="sudo yum"
+    SUDO="sudo"
+else
+    YUM="yum"
+    SUDO=""
+fi
+
 # install gcc — select toolset version based on UBI major version
 UBI_MAJOR=$(grep -oP '(?<=^VERSION_ID=")[0-9]+' /etc/os-release || grep -oP 'release \K[0-9]+' /etc/redhat-release 2>/dev/null || echo "8")
 if [[ "$UBI_MAJOR" -ge 10 ]]; then
     GCC_TOOLSET="gcc-toolset-15"
-    yum install -y "$GCC_TOOLSET"
+    $YUM install -y "$GCC_TOOLSET"
     # On UBI 10, SCL (Software Collections) was dropped — there is no enable script.
     # Activate the toolset by prepending its bin directory to PATH directly.
     export PATH="/opt/rh/${GCC_TOOLSET}/root/usr/bin:$PATH"
 else
     GCC_TOOLSET="gcc-toolset-13"
-    yum install -y "$GCC_TOOLSET"
+    $YUM install -y "$GCC_TOOLSET"
     source /opt/rh/${GCC_TOOLSET}/enable
 fi
 gcc --version
@@ -37,48 +48,48 @@ install_python_version() {
     echo
     case $version in
     "3.11" | "3.12")
-        yum install -y python${version} python${version}-devel python${version}-pip
+        $YUM install -y python${version} python${version}-devel python${version}-pip
         ;;
     "3.10")
         if ! python3.10 --version &>/dev/null; then
-            yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
-            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
+            $YUM install -y zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
+            $YUM install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             wget https://www.python.org/ftp/python/3.10.20/Python-3.10.20.tgz
             tar xf Python-3.10.20.tgz
             cd Python-3.10.20
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
-            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
+            echo "/usr/local/lib" | $SUDO tee /etc/ld.so.conf.d/python-local.conf && $SUDO ldconfig
             echo "Completed..."
             cd .. && rm -rf Python-3.10.20.tgz
         fi
         ;;
     "3.13")
         if ! python3.13 --version &>/dev/null; then
-            yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
-            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
+            $YUM install -y zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
+            $YUM install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             wget https://www.python.org/ftp/python/3.13.10/Python-3.13.10.tgz
             tar xzf Python-3.13.10.tgz
             cd Python-3.13.10
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
-            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
+            echo "/usr/local/lib" | $SUDO tee /etc/ld.so.conf.d/python-local.conf && $SUDO ldconfig
             cd .. && rm -rf Python-3.13.10.tgz
         fi
         ;;
     "3.14")
         if ! python3.14 --version &>/dev/null; then
-            yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
-            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
+            $YUM install -y zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
+            $YUM install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             wget https://www.python.org/ftp/python/3.14.3/Python-3.14.3.tgz
             tar xzf Python-3.14.3.tgz
             cd Python-3.14.3
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
-            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
+            echo "/usr/local/lib" | $SUDO tee /etc/ld.so.conf.d/python-local.conf && $SUDO ldconfig
             cd .. && rm -rf Python-3.14.3.tgz
         fi
         ;;
