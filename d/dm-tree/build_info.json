@@ -16,7 +16,7 @@
    "0.1.9": {
    	"build_script": [
    		"dm-tree_ubi_9.3.sh",
-   		"dm-tree_0.1.9_ubi_9.3.sh"
+   		"dm-tree_0.1.9_ubi_10.1.sh"
    	]
    }
    "*":{
