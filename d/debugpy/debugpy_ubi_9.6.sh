@@ -44,13 +44,14 @@ fi
 cd "$PACKAGE_DIR" || exit
 git checkout "$PACKAGE_VERSION"
 
-# Build and install the attach_ppc64le.so native library required for attach-to-pid tests.
-# The upstream compile_linux.sh only covers x86/amd64; ppc64le must be compiled manually.
-ATTACH_DIR="src/debugpy/_vendored/pydevd/pydevd_attach_to_process"
-g++ -std=c++11 -shared -fPIC -O2 -D_FORTIFY_SOURCE=2 -nostartfiles \
-    -fstack-protector-strong \
-    "${ATTACH_DIR}/linux_and_mac/attach.cpp" \
-    -o "${ATTACH_DIR}/attach_ppc64le.so"
+# Patch compile_linux.sh to add ppc64le support (upstream only handles x86/amd64).
+# The case block is extended so the script's own g++ invocation produces attach_ppc64le.so.
+# compile_linux.sh is restored immediately after so versioneer sees a clean git tree,
+# ensuring the built wheel has a clean version string (1.8.20, not 1.8.20+0.g...dirty).
+COMPILE_SCRIPT="src/debugpy/_vendored/pydevd/pydevd_attach_to_process/linux_and_mac/compile_linux.sh"
+sed -i 's/x86_64\*) SUFFIX=amd64;;/x86_64*) SUFFIX=amd64;;\n    ppc64le) SUFFIX=ppc64le;;/' "$COMPILE_SCRIPT"
+bash "$COMPILE_SCRIPT"
+git checkout -- "$COMPILE_SCRIPT"
 
 # Install the package
 if ! python3 -m pip install ./; then
@@ -64,11 +65,11 @@ fi
 pip3 install pytest pytest-xdist pytest-timeout pytest-retry pytest-cov psutil untangle \
     importlib_metadata gevent flask django requests numpy
 
-# Run tests — skip attach-to-pid tests as they require ptrace privileges
-# not available in container environments.
-if ! python3 -Xfrozen_modules=off -m pytest tests/ \
-    --ignore=tests/tests/test_attach_to_pid.py \
-    -p no:warnings; then
+# Run tests.
+# Tests parametrized with attach_pid require ptrace syscall privileges which are
+# not available in container/CI environments — skip them with -k "not attach_pid".
+if ! python3 -Xfrozen_modules=off -m pytest tests/ -p no:warnings \
+    -k "not attach_pid"; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
