@@ -22,6 +22,8 @@ set -e
 
 PACKAGE_NAME=opencv-python-headless
 PACKAGE_VERSION=${1:-93}
+# The git tag is the last dot-separated component: 5.0.0.93 → 93, 93 → 93
+GIT_TAG=${1:-93}
 PACKAGE_URL=https://github.com/opencv/opencv-python
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=opencv-python
@@ -114,7 +116,7 @@ echo "-----------------------------------------------------Installed abseil-cpp 
 cd $CURRENT_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
-git checkout $PACKAGE_VERSION
+git checkout $GIT_TAG
 git submodule update --init --recursive
 
 # -----------------------------------------------------------------------------
