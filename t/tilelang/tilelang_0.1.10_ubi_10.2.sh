@@ -49,7 +49,51 @@ echo "Using gcc: $(gcc --version | head -1)"
 # Install Python build tools
 pip3.12 install --upgrade pip setuptools wheel build
 
-# Install z3-solver from IBM wheels index (required by tilelang)
+# ---------------------------------------------------------------------------
+# Build z3-solver from source (no ppc64le binary on PyPI; required by tilelang
+# with constraint z3-solver>=4.13.0,<4.15.5).
+# Version z3-4.15.4 satisfies that range.
+# ---------------------------------------------------------------------------
+Z3_VERSION="z3-4.15.4"
+Z3_DIR="${CURRENT_DIR}/z3-src"
+rm -rf "$Z3_DIR"
+git clone https://github.com/Z3Prover/z3 "$Z3_DIR"
+cd "$Z3_DIR"
+git checkout "$Z3_VERSION"
+
+# Patch src/api/python/setup.py to recognise the ppc64le wheel platform tag
+python3.12 - <<'PYEOF'
+from pathlib import Path
+p = Path("src/api/python/setup.py")
+src = p.read_text()
+entry = "    ('linux', 'ppc64le'): 'manylinux2014_ppc64le',\n"
+if entry in src:
+    print("  z3 setup.py already patched — skipping")
+elif "TAGS = {" in src:
+    p.write_text(src.replace("TAGS = {", "TAGS = {\n" + entry, 1))
+    print("  z3 setup.py patched OK")
+else:
+    raise SystemExit("Could not find TAGS dict in z3 setup.py")
+PYEOF
+
+# Build the Z3 native library and install it system-wide
+python3.12 scripts/mk_make.py
+cd build
+make -j"$(nproc)"
+make install
+
+# Build and install the Python bindings so 'import z3' works immediately
+cd "$Z3_DIR/src/api/python"
+python3.12 setup.py install
+
+# Also produce a wheel so the artefact is available if needed
+python3.12 setup.py bdist_wheel
+
+# Return to the main working directory
+cd "$CURRENT_DIR"
+# ---------------------------------------------------------------------------
+
+# Install remaining Python dependencies from IBM wheels index
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 pip3.12 install --trusted-host wheels.developerfirst.ibm.com \
     --extra-index-url "${IBM_WHEELS}" --prefer-binary numpy tqdm cython patchelf "scikit-build-core[pyproject]" cmake ninja
