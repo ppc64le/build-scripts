@@ -1,5 +1,5 @@
 {
-  "maintainer": "Ryder Salinas <rbsalinas@ibm.com>",
+  "maintainer": "RSakshiJain0302",
   "package_name": "pillow",
   "github_url": "https://github.com/python-pillow/Pillow",
   "version": "12.2.0",
@@ -23,9 +23,15 @@
   "build_script": "pillow_12.2.0_ubi_8.10.sh"
   },
   "12.3.0": {
-    "build_script": "pillow_v12.3.0_ubi_9.6.sh"
+    "build_script": [
+      "pillow_v12.3.0_ubi_9.6.sh",
+      "pillow_v11.1.0_ubi_10.1.sh"
+    ]
   },
   "*": {
-    "build_script": "pillow_v12.3.0_ubi_9.6.sh"
+    "build_script": [
+      "pillow_v12.3.0_ubi_9.6.sh",
+      "pillow_v11.1.0_ubi_10.1.sh"
+    ]
   }
 }
