@@ -17,7 +17,7 @@
     "required_versions": {
         "Releases": "[0.1.10]",
         "Tags": "[0.1.10]"
-    }
+    },
     "*": {
      "build_script":"tilelang_0.1.10_ubi_10.2.sh"
    }
