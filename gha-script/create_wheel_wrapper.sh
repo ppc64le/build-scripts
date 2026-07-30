@@ -7,13 +7,15 @@ EXTRA_ARGS=${3:-""}
 POST_PROCESS_SCRIPT_PATH=${4:-"post_process_wheel.py"}
 CURRENT_DIR=$(pwd)
 
-# Use sudo for yum when running as a non-root user (non-root container builds).
+# Use sudo for privileged commands when running as a non-root user.
 # dockerfile_non_root grants test_user passwordless sudo, so this is always safe.
 # When already root, sudo is not needed (and may not be installed), so skip it.
 if [[ "$(id -u)" -ne 0 ]]; then
     YUM="sudo yum"
+    SUDO="sudo"
 else
     YUM="yum"
+    SUDO=""
 fi
 
 # install gcc — select toolset version based on UBI major version
@@ -58,7 +60,7 @@ install_python_version() {
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
-            echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/python-local.conf && sudo ldconfig
+            echo "/usr/local/lib" | $SUDO tee /etc/ld.so.conf.d/python-local.conf && $SUDO ldconfig
             echo "Completed..."
             cd .. && rm -rf Python-3.10.20.tgz
         fi
@@ -73,7 +75,7 @@ install_python_version() {
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
-            echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/python-local.conf && sudo ldconfig
+            echo "/usr/local/lib" | $SUDO tee /etc/ld.so.conf.d/python-local.conf && $SUDO ldconfig
             cd .. && rm -rf Python-3.13.10.tgz
         fi
         ;;
@@ -87,7 +89,7 @@ install_python_version() {
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
-            echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/python-local.conf && sudo ldconfig
+            echo "/usr/local/lib" | $SUDO tee /etc/ld.so.conf.d/python-local.conf && $SUDO ldconfig
             cd .. && rm -rf Python-3.14.3.tgz
         fi
         ;;
