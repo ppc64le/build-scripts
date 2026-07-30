@@ -245,7 +245,7 @@ sed -i \
     packages/next/src/server/app-render/postponed-state.test.ts
 
 
-echo "---------------------Unit Tests---------------------"
+echo "---------------------Unit Tests-------------------------"
 pnpm test-unit -u
 
 # Patch next-webdriver.ts to throw a ppc64le skip sentinel 
