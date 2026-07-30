@@ -270,5 +270,5 @@ else
     echo "============ Wheel successfully built ================="
     ls -lh "$CURRENT_DIR"/*.whl
     echo "Wheel version:"
-    echo "1.0+ppc64le${WHEEL_VERSION}"
+    echo "1.0+${WHEEL_VERSION}"
 fi
