@@ -17,8 +17,9 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-set -e 
+set -e
 PACKAGE_NAME=pgvector
+PACKAGE_DIR=pgvector
 PACKAGE_VERSION=${1:-v0.7.4}
 PACKAGE_URL=https://github.com/pgvector/pgvector.git
 POSTGRES_SOURCE_URL=https://ftp.postgresql.org/pub/source/v16.4/postgresql-16.4.tar.gz
@@ -28,7 +29,7 @@ BUILD_HOME=$(pwd)
 
 # Install update and deps
 yum update -y
-yum install -y make g++ wget git libpq-devel python3-devel.ppc64le python-psycopg2 zlib-devel libicu-devel diffutils
+yum install -y make gcc-c++ wget git libpq-devel python3-devel zlib-devel libicu-devel diffutils
 
 
 # Change to home directory
@@ -68,9 +69,7 @@ su - postgres -c "source /home/postgres/.bash_profile"
 su - postgres -c "which psql"
 cd ..
 
-mkdir -p /home/postgres/build
-chown -R postgres:postgres /home/postgres/build
-cd /home/postgres/build
+cd "$BUILD_HOME"
 
 # Build and install pgvector
 git clone $PACKAGE_URL
@@ -92,13 +91,18 @@ if ! make OPTFLAGS="" install; then
     exit 1
 fi
 
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pgvector/pyproject.toml
+sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
+
+mkdir -p local
+
 # Run install check
 # su - postgres -c "cd pgvector && make installcheck"
 
 # Ensure postgres owns test directory
-chown -R postgres:postgres /home/postgres/build/${PACKAGE_NAME}
+chown -R postgres:postgres "$BUILD_HOME/${PACKAGE_NAME}"
 
-if ! su - postgres -c "cd /home/postgres/build/${PACKAGE_NAME} && make installcheck"; then
+if ! su - postgres -c "cd $BUILD_HOME/${PACKAGE_NAME} && make installcheck"; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
