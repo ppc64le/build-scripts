@@ -46,48 +46,48 @@ install_python_version() {
     echo
     case $version in
     "3.11" | "3.12")
-        yum install -y python${version} python${version}-devel python${version}-pip
+        $YUM install -y python${version} python${version}-devel python${version}-pip
         ;;
     "3.10")
         if ! python3.10 --version &>/dev/null; then
-            yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
-            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
+            $YUM install -y zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
+            $YUM install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             wget https://www.python.org/ftp/python/3.10.20/Python-3.10.20.tgz
             tar xf Python-3.10.20.tgz
             cd Python-3.10.20
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
-            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
+            echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/python-local.conf && sudo ldconfig
             echo "Completed..."
             cd .. && rm -rf Python-3.10.20.tgz
         fi
         ;;
     "3.13")
         if ! python3.13 --version &>/dev/null; then
-            yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
-            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
+            $YUM install -y zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
+            $YUM install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             wget https://www.python.org/ftp/python/3.13.10/Python-3.13.10.tgz
             tar xzf Python-3.13.10.tgz
             cd Python-3.13.10
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
-            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
+            echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/python-local.conf && sudo ldconfig
             cd .. && rm -rf Python-3.13.10.tgz
         fi
         ;;
     "3.14")
         if ! python3.14 --version &>/dev/null; then
-            yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
-            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
+            $YUM install -y zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
+            $YUM install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             wget https://www.python.org/ftp/python/3.14.3/Python-3.14.3.tgz
             tar xzf Python-3.14.3.tgz
             cd Python-3.14.3
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
-            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
+            echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/python-local.conf && sudo ldconfig
             cd .. && rm -rf Python-3.14.3.tgz
         fi
         ;;
