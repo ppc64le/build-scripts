@@ -1,5 +1,5 @@
 {
-  "maintainer": "Harithanagothu2",
+  "maintainer": "tejasBadjateIBM",
   "package_name": "hdf5",
   "github_url": "https://github.com/HDFGroup/hdf5",
   "required_versions":{"Releases": ["*"], "Tags": ["hdf5-1_12_1"]}, 
@@ -15,6 +15,9 @@
     "libhdf5*"
   ],
   "*":{
-    "build_script":"hdf5_ubi_9.3.sh"
+    "build_script":[ 
+      "hdf5_ubi_9.3.sh",
+      "hdf5_ubi_10.1.sh"
+    ]
   }
 }
