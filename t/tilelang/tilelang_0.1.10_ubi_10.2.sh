@@ -47,7 +47,7 @@ fi
 echo "Using gcc: $(gcc --version | head -1)"
 
 # Install Python build tools
-pip3.12 install --upgrade pip setuptools wheel build
+pip install --upgrade pip setuptools wheel build
 
 # ---------------------------------------------------------------------------
 # Build z3-solver from source (no ppc64le binary on PyPI; required by tilelang
@@ -95,7 +95,7 @@ cd "$CURRENT_DIR"
 
 # Install remaining Python dependencies from IBM wheels index
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
-pip3.12 install --trusted-host wheels.developerfirst.ibm.com \
+pip install --trusted-host wheels.developerfirst.ibm.com \
     --extra-index-url "${IBM_WHEELS}" --prefer-binary numpy tqdm cython patchelf "scikit-build-core[pyproject]" cmake ninja
 
 # Clone repository
