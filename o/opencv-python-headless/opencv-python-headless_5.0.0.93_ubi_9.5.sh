@@ -59,8 +59,6 @@ fi
 # Install pre-built dependencies from IBM devpi
 # -----------------------------------------------------------------------------
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
-IBM_WHEELS_1="https://wheels.developerfirst.ibm.com/ppc64le/linux-1.0.0/+simple/"
-
 
 if [ "$PYTHON_MINOR" -ge 14 ]; then
     NUMPY_VERSION="2.3.2"
@@ -74,7 +72,6 @@ python3.12 -m pip install \
   --prefer-binary \
   --trusted-host wheels.developerfirst.ibm.com \
   --extra-index-url ${IBM_WHEELS} \
-  --extra-index-url ${IBM_WHEELS_1} \
   openblas==0.3.33 \
   numpy==${NUMPY_VERSION}
 
@@ -99,7 +96,6 @@ export PKG_CONFIG_PATH="${OpenBLAS_HOME}/lib/pkgconfig:${PKG_CONFIG_PATH}"
 python3.12 -m pip install \
     --prefer-binary \
     --trusted-host wheels.developerfirst.ibm.com \
-    --extra-index-url ${IBM_WHEELS_1} \
     --extra-index-url ${IBM_WHEELS} \
     "libprotobuf==4.25.8" \
     "abseil-cpp==20240116.2"
