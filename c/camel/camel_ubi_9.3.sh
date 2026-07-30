@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : camel
-# Version          : 4.10.2
+# Version          : camel-4.10.2
 # Source repo      : https://github.com/apache/camel.git
 # Tested on        : UBI:9.3
 # Language         : Java
