@@ -5,7 +5,7 @@
 # Package           : argon2-cffi-bindings
 # Version           : 21.2.0
 # Source repo       : https://github.com/hynek/argon2-cffi-bindings
-# Tested on         : UBI:10
+# Tested on         : UBI:10.1
 # Language          : Python
 # Ci-Check      : True
 # Script License    : Apache License, Version 2.0
