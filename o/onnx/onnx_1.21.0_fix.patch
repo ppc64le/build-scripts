@@ -1,0 +1,123 @@
+diff --git a/setup.py b/setup.py
+index db78bfa2b..4aa697573 100644
+--- a/setup.py
++++ b/setup.py
+@@ -4,6 +4,13 @@
+
+ # NOTE: Put all metadata in pyproject.toml.
+ # Set the environment variable `ONNX_PREVIEW_BUILD=1` to build the dev preview release.
++#
++# ONNX_PREFIX Environment Variable:
++# Set ONNX_PREFIX to the installation directory of pre-built ONNX C++ libraries
++# to include them in the Python wheel. The directory should contain:
++#   - include/: C++ header files
++#   - lib64/: Shared libraries (.so files)
++# Example: export ONNX_PREFIX=/path/to/onnx-prefix
+ from __future__ import annotations
+
+ import contextlib
+@@ -56,6 +63,14 @@ COVERAGE = os.getenv("COVERAGE", "0") == "1"
+ # See https://github.com/onnx/onnx/pull/6117
+ ONNX_WHEEL_PLATFORM_NAME = os.getenv("ONNX_WHEEL_PLATFORM_NAME")
+
++# Path to pre-built ONNX C++ installation (optional)
++ONNX_PREFIX = os.getenv("ONNX_PREFIX")
++if ONNX_PREFIX:
++    ONNX_PREFIX = os.path.realpath(ONNX_PREFIX)
++    if not os.path.isdir(ONNX_PREFIX):
++        raise RuntimeError(f"ONNX_PREFIX is set but directory does not exist: {ONNX_PREFIX}")
++    logging.info(f"ONNX_PREFIX set to: {ONNX_PREFIX}")
++
+ ################################################################################
+ # Version
+ ################################################################################
+@@ -123,6 +138,26 @@ def get_python_execute():
+     return sys.executable
+
+
++def copy_tree_to_package(src_dir, dst_dir, pattern="*"):
++    """Recursively copy files from src_dir to dst_dir matching pattern."""
++    if not os.path.exists(src_dir):
++        logging.warning(f"Source directory does not exist: {src_dir}")
++        return
++
++    os.makedirs(dst_dir, exist_ok=True)
++    copied_count = 0
++
++    for item in glob.glob(os.path.join(src_dir, "**", pattern), recursive=True):
++        if os.path.isfile(item):
++            rel_path = os.path.relpath(item, src_dir)
++            dst_file = os.path.join(dst_dir, rel_path)
++            os.makedirs(os.path.dirname(dst_file), exist_ok=True)
++            shutil.copy2(item, dst_file)
++            copied_count += 1
++
++    logging.info(f"Copied {copied_count} files from {src_dir} to {dst_dir}")
++
++
+ ################################################################################
+ # Customized commands
+ ################################################################################
+@@ -314,6 +349,45 @@ class BuildExt(setuptools.command.build_ext.build_ext):
+             os.makedirs(os.path.dirname(dst), exist_ok=True)
+             self.copy_file(src, dst)
+
++        # Copy C++ libraries and headers if ONNX_PREFIX is set
++        if ONNX_PREFIX:
++            logging.info(f"Packaging C++ components from ONNX_PREFIX: {ONNX_PREFIX}")
++
++            # Copy shared libraries from lib64 (or lib as fallback)
++            for lib_subdir in ["lib64", "lib"]:
++                lib_src = os.path.join(ONNX_PREFIX, lib_subdir)
++                if os.path.exists(lib_src):
++                    lib_dst = os.path.join(dst_dir, "onnx", "lib")
++                    logging.info(f"Copying libraries from {lib_src} to {lib_dst}")
++                    copy_tree_to_package(lib_src, lib_dst, "*.so*")
++
++                    # Set RPATH for copied libraries to find each other
++                    patchelf_available = shutil.which("patchelf") is not None
++                    if patchelf_available:
++                        for so_file in glob.glob(os.path.join(lib_dst, "**", "*.so*"), recursive=True):
++                            if os.path.isfile(so_file) and not os.path.islink(so_file):
++                                try:
++                                    subprocess.run(
++                                        ["patchelf", "--set-rpath", "$ORIGIN:$ORIGIN/..", so_file],
++                                        check=True,
++                                        capture_output=True
++                                    )
++                                    logging.info(f"Set RPATH for {so_file}")
++                                except subprocess.CalledProcessError as e:
++                                    logging.warning(f"Failed to set RPATH for {so_file}: {e}")
++                    else:
++                        logging.warning("patchelf not found, skipping RPATH setting for shared libraries")
++                    break  # Use first existing lib directory
++
++            # Copy headers
++            include_src = os.path.join(ONNX_PREFIX, "include")
++            if os.path.exists(include_src):
++                include_dst = os.path.join(dst_dir, "onnx", "include")
++                logging.info(f"Copying headers from {include_src} to {include_dst}")
++                copy_tree_to_package(include_src, include_dst)
++            else:
++                logging.warning(f"Include directory not found: {include_src}")
++
+
+ CMD_CLASS = {
+     "cmake_build": CmakeBuild,
+@@ -368,4 +442,16 @@ setuptools.setup(
+     cmdclass=CMD_CLASS,
+     version=VERSION_INFO["version"],
+     options=({"bdist_wheel": bdist_wheel_options}),
++    package_data={
++        "onnx": [
++            "*.py",
++            "*.pyi",
++            "*.so*",
++            "lib/*.so*",
++            "lib/**/*.so*",
++            "include/**/*",
++        ]
++    },
++    include_package_data=True,
+ )
++
