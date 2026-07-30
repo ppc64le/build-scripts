@@ -7,17 +7,26 @@ EXTRA_ARGS=${3:-""}
 POST_PROCESS_SCRIPT_PATH=${4:-"post_process_wheel.py"}
 CURRENT_DIR=$(pwd)
 
+# Use sudo for yum when running as a non-root user (non-root container builds).
+# dockerfile_non_root grants test_user passwordless sudo, so this is always safe.
+# When already root, sudo is not needed (and may not be installed), so skip it.
+if [[ "$(id -u)" -ne 0 ]]; then
+    YUM="sudo yum"
+else
+    YUM="yum"
+fi
+
 # install gcc — select toolset version based on UBI major version
 UBI_MAJOR=$(grep -oP '(?<=^VERSION_ID=")[0-9]+' /etc/os-release || grep -oP 'release \K[0-9]+' /etc/redhat-release 2>/dev/null || echo "8")
 if [[ "$UBI_MAJOR" -ge 10 ]]; then
     GCC_TOOLSET="gcc-toolset-15"
-    yum install -y "$GCC_TOOLSET"
+    $YUM install -y "$GCC_TOOLSET"
     # On UBI 10, SCL (Software Collections) was dropped — there is no enable script.
     # Activate the toolset by prepending its bin directory to PATH directly.
     export PATH="/opt/rh/${GCC_TOOLSET}/root/usr/bin:$PATH"
 else
     GCC_TOOLSET="gcc-toolset-13"
-    yum install -y "$GCC_TOOLSET"
+    $YUM install -y "$GCC_TOOLSET"
     source /opt/rh/${GCC_TOOLSET}/enable
 fi
 gcc --version
