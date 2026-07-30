@@ -70,9 +70,12 @@ pip3 install pytest pytest-xdist pytest-timeout pytest-retry pytest-cov psutil u
 # - externalTerminal and integratedTerminal tests require a real desktop terminal,
 #   which is not available in CI environments.
 # - test_log_point is flaky due to timing/subprocess races in CI.
-# --retries=2 ensures that tests which pass on a second attempt do not leave a
-# residual ERROR in the pytest report (pytest-retry + pytest-xdist interaction).
-if ! python3 -Xfrozen_modules=off -m pytest tests/ -p no:warnings --retries=2 -k "not attach_pid and not externalTerminal and not integratedTerminal and not test_log_point"; then
+# --retries=2 --retry-on-errors: pytest-retry with pytest-xdist leaves a residual
+#   ERROR node even when the test passes on a second attempt; --retry-on-errors
+#   ensures those are retried and the ERROR is not propagated as a failure.
+if ! python3 -Xfrozen_modules=off -m pytest tests/ -p no:warnings \
+    --retries=2 --retry-on-errors \
+    -k "not attach_pid and not externalTerminal and not integratedTerminal and not test_log_point"; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
