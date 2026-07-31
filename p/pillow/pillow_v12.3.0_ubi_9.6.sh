@@ -24,14 +24,18 @@ PACKAGE_VERSION="${1:-12.3.0}"
 PACKAGE_URL="https://github.com/python-pillow/Pillow/"
 SOURCE_ROOT="$(pwd)"
 
+export INDEX_URL_DEVPY="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple"
+
 # Install core and Pillow dependencies
-dnf install -y python3.12 python3.12-pip python3.12-devel git gcc-toolset-13 \
+dnf install -y python3.12 python3.12-pip python3.12-devel git gcc-toolset-15 \
     zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel wget freetype-devel
 
-export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:$PATH"
+export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
 
 # Install build tools
-python3.12 -m pip install --upgrade pip setuptools wheel build pytest numpy
+python3.12 -m pip install --upgrade pip setuptools wheel build pytest \
+    --only-binary=numpy numpy \
+    --extra-index-url "${INDEX_URL_DEVPY}"
 
 # Clone and build
 rm -rf "$PACKAGE_DIR"
