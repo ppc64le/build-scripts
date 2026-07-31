@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : ml-metadata
-# Version       : 1.21.0
+# Version       : v1.21.0
 # Source repo   : https://github.com/google/ml-metadata.git
 # Tested on     : UBI:9.6
 # Language      : C++
