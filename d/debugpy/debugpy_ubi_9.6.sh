@@ -17,7 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
+set -ex
 # Variables
 PACKAGE_NAME=debugpy
 PACKAGE_VERSION=${1:-v1.8.20}
