@@ -123,6 +123,17 @@ git checkout "v${PACKAGE_VERSION}"
 git submodule sync --recursive
 git submodule update --init --recursive
 
+# ---------------------------------------------------------------------------
+# Patch pyproject.toml: remove torch-c-dlpack-ext from runtime dependencies.
+#
+# torch-c-dlpack-ext has no ppc64le binary on PyPI so pip tries to build it
+# from source and fails when installing this wheel.  tilelang's __init__.py
+# already disables it automatically on ROCm at runtime (checks
+# torch.version.hip), so it is never actually used on this platform.
+# ---------------------------------------------------------------------------
+sed -i '/"torch-c-dlpack-ext/d' pyproject.toml
+echo "Patched pyproject.toml: removed torch-c-dlpack-ext dependency"
+
 # Build TileLang wheel
 # USE_ROCM/USE_CUDA must be exported as environment variables AND passed via
 # CMAKE_ARGS. version_provider.py reads os.environ directly (not CMAKE_ARGS)
