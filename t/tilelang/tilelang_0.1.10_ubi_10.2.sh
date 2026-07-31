@@ -156,14 +156,111 @@ fi
 cp dist/*.whl $CURRENT_DIR/
 
 # Run tests
-if ! python3.12 -c "import tilelang; print('tilelang import OK')" ; then
+if ! python3.12 - <<'PYEOF'
+import sys
+
+print(f"Python: {sys.version}")
+
+# 1. Basic import
+print("\n[1] Importing tilelang...")
+import tilelang
+print(f"    tilelang version : {tilelang.__version__}")
+
+# 2. TVM FFI bridge
+print("\n[2] Checking TVM FFI bridge...")
+import tvm_ffi
+print(f"    tvm_ffi available: OK")
+
+# 3. Z3 solver
+print("\n[3] Checking Z3 solver...")
+import z3
+x = z3.Int("x")
+solver = z3.Solver()
+solver.add(x > 2, x < 10)
+assert solver.check() == z3.sat, "Z3 solver returned unexpected result"
+print(f"    z3 version       : {z3.get_version_string()}  (solver: OK)")
+
+# 4. Torch import
+print("\n[4] Checking torch...")
+import torch
+print(f"    torch version    : {torch.__version__}")
+is_rocm = getattr(torch.version, "hip", None) is not None
+print(f"    ROCm build       : {is_rocm}")
+print(f"    HIP version      : {torch.version.hip if is_rocm else 'N/A'}")
+
+# 5. Kernel definition
+print("\n[5] Defining a simple vector-add kernel...")
+import tilelang.language as T
+
+M = 1024
+BLOCK = 128
+
+@tilelang.jit(out_idx=[2])
+def vector_add(
+    A: T.Buffer((M,), "float32"),
+    B: T.Buffer((M,), "float32"),
+    C: T.Buffer((M,), "float32"),
+):
+    for i in T.grid(M // BLOCK):
+        with T.block("compute"):
+            vi = T.axis.spatial(M // BLOCK, i)
+            for j in T.vectorized(BLOCK):
+                C[vi * BLOCK + j] = A[vi * BLOCK + j] + B[vi * BLOCK + j]
+
+print("    Kernel defined   : OK")
+
+# 6. Layout primitives
+print("\n[6] Checking layout primitives...")
+from tilelang.layout import Fragment, Layout
+print("    Layout import    : OK")
+
+print("\n══════════════════════════════════════════")
+print("  All checks passed — tilelang stack OK")
+print("══════════════════════════════════════════")
+PYEOF
+then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
-else
-    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
 fi
+
+# ---------------------------------------------------------------------------
+# pytest — repo-based tests (no-GPU safe subset)
+#
+# Run from CURRENT_DIR (NOT from inside the cloned repo) so that
+# Python's import system resolves `import tilelang` to the installed wheel
+# in site-packages rather than the local tilelang/ source folder sitting
+# next to testing/.  Without this, the source .py files load but the
+# compiled .so extensions are missing → ImportError.
+#
+# --import-mode=importlib  further prevents sys.path from being polluted
+#                          with the repo root by pytest's default importer.
+#
+# Tests chosen: pure Python logic + ROCm arch helpers.
+# All tests that call get_kernel_source() are excluded — that API triggers
+# device detection and raises ValueError when no GPU is present.
+# ---------------------------------------------------------------------------
+TILELANG_TESTS="$CURRENT_DIR/$PACKAGE_DIR/testing/python"
+
+pip3.12 install pytest pytest-timeout
+
+cd "$CURRENT_DIR"
+
+if ! pytest \
+    "$TILELANG_TESTS/target/test_tilelang_rocm_target.py" \
+    "$TILELANG_TESTS/utils/test_compress_utils.py" \
+    "$TILELANG_TESTS/layout/test_tilelang_layout_equal.py" \
+    "$TILELANG_TESTS/layout/test_tilelang_layout_repeat.py" \
+    --import-mode=importlib \
+    -v --timeout=60 ; then
+    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
+fi
+
+echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+echo "$PACKAGE_URL $PACKAGE_NAME"
+echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+exit 0
