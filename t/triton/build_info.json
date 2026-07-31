@@ -7,7 +7,7 @@
     "category": "default",
     "package_dir": "t/triton",
     "docker_cmd":"NA",
-    "build_script": "build-triton-ppc64le-ubi10.sh",
+    "build_script": "triton_3.6.0_ubi_10.2.sh",
     "docker_build": "false",
     "validate_build_script": "true",
     "use_non_root_user": "false",
@@ -17,5 +17,8 @@
     "required_versions": {
         "Releases": "[v3.6.0]",
         "Tags": "[v3.6.0]"
-    }
+    },
+    "*": {
+     "build_script":"triton_3.6.0_ubi_10.2.sh"
+   }
 }
