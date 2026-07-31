@@ -136,7 +136,7 @@ fi
 echo "✓ rspack binary found: $RSPACK_BINARY"
 
 # Build Turborepo 
-echo "=========================================="
+echo "==========================================="
 echo "Building Turborepo..."
 echo "=========================================="
 cd "${WORK_DIR}"
