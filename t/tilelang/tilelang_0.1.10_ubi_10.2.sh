@@ -131,6 +131,7 @@ git submodule update --init --recursive
 export USE_ROCM=ON
 export USE_CUDA=OFF
 export CMAKE_ARGS="-DUSE_ROCM=ON -DUSE_CUDA=OFF"
+export NO_GIT_VERSION=1
 
 # Install package
 if ! python3.12 -m build --wheel --no-isolation ; then
