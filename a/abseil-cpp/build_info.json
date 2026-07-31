@@ -1,5 +1,5 @@
 {
-  "maintainer": "Harithanagothu2",
+  "maintainer": "shivansh-ibm",
   "package_name": "abseil-cpp",
   "github_url": "https://github.com/abseil/abseil-cpp",
   "version": "20240116.2",
@@ -13,7 +13,10 @@
   "auditwheel_exclude": [
     "libabsl_*"
   ],
-  "*":{
-    "build_script":"abseil-cpp_ubi_9.3.sh"
+  "*": {
+    "build_script": [
+      "abseil-cpp_ubi_9.3.sh",
+      "abseil-cpp_ubi_10.2.sh"
+    ]
   }
 }
