@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/google/ml-metadata.git
 # Tested on     : UBI:9.6
 # Language      : C++
-# Ci-Check      : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2.0
 # Maintainer    : Prerna Kumbhar <Prerna.Kumbhar@ibm.com>
 #
@@ -24,6 +24,7 @@ PACKAGE_URL=https://github.com/google/ml-metadata.git
 PACKAGE_NAME=ml-metadata
 PACKAGE_VERSION=${1:-v1.21.0}
 PACKAGE_DIR=ml-metadata
+PYTHON_VERSION=${2:-3.11}
 
 wdir=`pwd`
 SCRIPT=$(readlink -f $0)
@@ -31,7 +32,7 @@ SCRIPT_DIR=$(dirname $SCRIPT)
 
 #Install the dependencies
 #added gcc-toolset-13-binutils, gcc, gcc-c++ to resolve linker issues
-yum install -y autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils python3.11 python3.11-pip python3.11-devel git unzip zip patch openssl-devel utf8proc tzdata diffutils libffi-devel
+yum install -y autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils python${PYTHON_VERSION} python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-devel git unzip zip patch openssl-devel utf8proc tzdata diffutils libffi-devel
 source /opt/rh/gcc-toolset-13/enable
 
 yum install -y java-21-openjdk-devel
@@ -51,8 +52,8 @@ bazel --version
 cd $wdir
 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
-python3.11 -m pip install --upgrade pip
-python3.11 -m pip install numpy pytest build
+python${PYTHON_VERSION} -m pip install --upgrade pip
+python${PYTHON_VERSION} -m pip install numpy pytest build
 
 
 git clone $PACKAGE_URL
@@ -64,8 +65,8 @@ sed -i 's|boringssl-16c8d3db1af20fcc04b5190b25242aadcb1fbb30|boringssl-648cbaf03
 sed -i 's|16c8d3db1af20fcc04b5190b25242aadcb1fbb30.tar.gz|648cbaf033401b7fe7acdce02f275b06a88aab5c.tar.gz|g' WORKSPACE
 
 #set correct PYTHON_LIB_PATH 
-export PYTHON_BIN_PATH=$(which python3.11)
-export PYTHON_LIB_PATH=$(python3.11 -c "import sysconfig; print(sysconfig.get_path('stdlib'))")
+export PYTHON_BIN_PATH=$(which python${PYTHON_VERSION})
+export PYTHON_LIB_PATH=$(python${PYTHON_VERSION} -c "import sysconfig; print(sysconfig.get_path('stdlib'))")
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:/opt/rh/gcc-toolset-13/root/usr/lib:/usr/lib64:/usr/lib
 
@@ -85,19 +86,19 @@ fi
 #keep only build artifacts clean, preserve fetched repos
 bazel clean 2>/dev/null || true
 
-if ! (python3.11 -m pip install .); then 
+if ! (python${PYTHON_VERSION} -m pip install .); then 
      echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_fails"
      exit 2;
 fi
 
-if ! python3.11 -m build --wheel --no-isolation --outdir="$wdir/"; then
+if ! python${PYTHON_VERSION} -m build --wheel --no-isolation --outdir="$wdir/"; then
         echo "============ Wheel Creation Failed for Python $PYTHON_VERSION (without isolation) ================="
         echo "Attempting to build with isolation..."
 
         # Attempt to build the wheel without isolation
-        if ! python3.11 -m build --wheel --outdir="$wdir/"; then
+        if ! python${PYTHON_VERSION} -m build --wheel --outdir="$wdir/"; then
             echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
         fi
 fi

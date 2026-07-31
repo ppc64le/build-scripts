@@ -6,7 +6,7 @@
     "wheel_build" : true,
     "default_branch": "master",
     "package_dir": "m/ml-metadata",
-    "build_script": "ml-metadata_ubi_9.6.sh",
+    "build_script": "ml-metadata_v1.21.0_ubi_9.6.sh",
     "validate_build_script": true,
     "use_non_root_user": false,
     "docker_build": false,
