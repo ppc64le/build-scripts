@@ -18,6 +18,9 @@
         "Releases": "[0.1.10]",
         "Tags": "[0.1.10]"
     },
+    "auditwheel_exclude": [
+        "libtvm_ffi.so",
+    ],
     "*": {
      "build_script":"tilelang_0.1.10_ubi_10.2.sh"
    }
