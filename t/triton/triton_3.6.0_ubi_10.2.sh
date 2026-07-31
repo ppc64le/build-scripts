@@ -65,6 +65,13 @@ else
     exit 1
 fi
 
+# Create a local branch named release/<version> so that setup.py's
+# get_git_version_suffix() sees a branch starting with "release" and
+# suppresses the +gitXXXXXXXX hash from the wheel filename.
+# Without this, detached HEAD makes git report "HEAD" as the branch name
+# and the hash is always appended.
+git checkout -b "release/${PACKAGE_VERSION}"
+
 git submodule sync --recursive
 git submodule update --init --recursive
 
@@ -134,7 +141,7 @@ export CMAKE_ARGS="-DTRITON_BUILD_PROTON=OFF"
 # Install package
 # Use 'pip install' instead of the deprecated 'setup.py install' which is
 # unsupported on Python 3.12 and can silently mis-install with new setuptools.
-if ! pip3.12 install --no-build-isolation -e . ; then
+if ! pip install --no-build-isolation -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
