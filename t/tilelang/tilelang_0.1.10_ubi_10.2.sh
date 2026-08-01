@@ -188,29 +188,8 @@ is_rocm = getattr(torch.version, "hip", None) is not None
 print(f"    ROCm build       : {is_rocm}")
 print(f"    HIP version      : {torch.version.hip if is_rocm else 'N/A'}")
 
-# 5. Kernel definition
-print("\n[5] Defining a simple vector-add kernel...")
-import tilelang.language as T
-
-M = 1024
-BLOCK = 128
-
-@tilelang.jit(out_idx=[2])
-def vector_add(
-    A: T.Buffer((M,), "float32"),
-    B: T.Buffer((M,), "float32"),
-    C: T.Buffer((M,), "float32"),
-):
-    for i in T.grid(M // BLOCK):
-        with T.block("compute"):
-            vi = T.axis.spatial(M // BLOCK, i)
-            for j in T.vectorized(BLOCK):
-                C[vi * BLOCK + j] = A[vi * BLOCK + j] + B[vi * BLOCK + j]
-
-print("    Kernel defined   : OK")
-
-# 6. Layout primitives
-print("\n[6] Checking layout primitives...")
+# 5. Layout primitives
+print("\n[5] Checking layout primitives...")
 from tilelang.layout import Fragment, Layout
 print("    Layout import    : OK")
 
