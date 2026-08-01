@@ -222,7 +222,7 @@ fi
 # ---------------------------------------------------------------------------
 TILELANG_TESTS="$CURRENT_DIR/$PACKAGE_DIR/testing/python"
 
-pip3.12 install pytest pytest-timeout
+pip install pytest pytest-timeout
 
 cd "$CURRENT_DIR"
 
