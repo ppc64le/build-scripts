@@ -180,6 +180,37 @@ jobs:
           PACKAGE_NAME=$(jq -r '.package_name // ""' $BUILD_INFO_FILE)
           VERSION=$(jq -r '.version // ""' $BUILD_INFO_FILE)
 
+          # If any changed .sh file belongs to a non-default version block, use
+          # that block's version so read_buildinfo.sh loads the correct build_script
+          # array (e.g. PR adds ubi8 + ubi10 scripts for v6.4.0 while the top-level
+          # .version field still points to v6.0.2).
+          CHANGED_SH=$(echo "$CHANGED_FILES" | grep '\.sh$' || true)
+          if [ -n "$CHANGED_SH" ]; then
+            # Iterate every string key in build_info.json that is not a known scalar
+            # field name, then check if its build_script list contains a changed file.
+            SCALAR_KEYS='package_name|version|package_dir|wheel_build|docker_build|validate_build_script|base_docker_image|base_docker_variant|use_non_root_user|auditwheel_exclude'
+            VERSION_KEYS=$(jq -r 'keys[] | select(test("^('"$SCALAR_KEYS"')$") | not)' "$BUILD_INFO_FILE" 2>/dev/null || true)
+            for ver_key in $VERSION_KEYS; do
+              # Get the build_script value for this version block (string or array)
+              bs=$(jq -c --arg k "$ver_key" '.[$k].build_script // empty' "$BUILD_INFO_FILE" 2>/dev/null || true)
+              [ -z "$bs" ] && continue
+              # Normalise to a newline-separated list of bare script names
+              if echo "$bs" | jq -e 'type == "array"' >/dev/null 2>&1; then
+                scripts=$(echo "$bs" | jq -r '.[]')
+              else
+                scripts=$(echo "$bs" | tr -d '"')
+              fi
+              # Check if any changed .sh matches any script in this version block
+              for s in $scripts; do
+                if echo "$CHANGED_SH" | grep -qF "$s"; then
+                  echo "Changed script '$s' belongs to version block '$ver_key' - using that version instead of default '$VERSION'"
+                  VERSION="$ver_key"
+                  break 2
+                fi
+              done
+            done
+          fi
+
           echo "BUILD_INFO_FILE=$BUILD_INFO_FILE" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
