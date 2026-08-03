@@ -379,6 +379,10 @@ jobs:
           source package-cache/scanner-env.sh
           sudo chown -R $USER:$USER .
           echo "--- Executing changed scripts for UBI8 ---"
+          # Filter CHANGED_FILES to only the script assigned to this UBI job so that
+          # execute_changed_scripts.py does not also run the UBI10 (or other) scripts
+          # that are present in the same PR.
+          export CHANGED_FILES=$(echo "$CHANGED_FILES" | grep -F "$BUILD_SCRIPT" || true)
           chmod +x ./gha-script/execute_changed_scripts.py
           python3 -u ./gha-script/execute_changed_scripts.py
 
@@ -405,6 +409,7 @@ jobs:
           source package-cache/scanner-env.sh
           sudo chown -R $USER:$USER .
           echo "--- Executing changed scripts for UBI9 ---"
+          export CHANGED_FILES=$(echo "$CHANGED_FILES" | grep -F "$BUILD_SCRIPT" || true)
           chmod +x ./gha-script/execute_changed_scripts.py
           python3 -u ./gha-script/execute_changed_scripts.py
 
@@ -431,6 +436,7 @@ jobs:
           source package-cache/scanner-env.sh
           sudo chown -R $USER:$USER .
           echo "--- Executing changed scripts for UBI10 ---"
+          export CHANGED_FILES=$(echo "$CHANGED_FILES" | grep -F "$BUILD_SCRIPT" || true)
           chmod +x ./gha-script/execute_changed_scripts.py
           python3 -u ./gha-script/execute_changed_scripts.py
 
