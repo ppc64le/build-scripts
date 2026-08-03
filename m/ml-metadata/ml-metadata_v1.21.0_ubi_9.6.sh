@@ -35,6 +35,7 @@ SCRIPT_DIR=$(dirname $SCRIPT)
 yum install -y autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils python${PYTHON_VERSION} python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-devel git unzip zip patch openssl-devel utf8proc tzdata diffutils libffi-devel
 source /opt/rh/gcc-toolset-13/enable
 
+ldconfig /usr/local/lib
 export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:${LD_LIBRARY_PATH}
 
 yum install -y java-21-openjdk-devel
