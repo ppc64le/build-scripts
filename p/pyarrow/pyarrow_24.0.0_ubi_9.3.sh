@@ -27,7 +27,7 @@ version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
 CURRENT_DIR="${PWD}"
 
 echo "Install dependencies and tools."
-yum install -y python3.11 python3.11-pip python3.11-devel wget git make  python3.11-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel
+yum install -y python3.11 python3.11-pip python3.11-devel wget git make  python3.11-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool libcurl-devel pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 # Install Rust compiler
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
