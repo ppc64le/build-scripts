@@ -43,9 +43,15 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-# COS configuration 
-COS_API_KEY = os.environ["GHA_CURRENCY_SERVICE_ID_API_KEY"]
-COS_SERVICE_INSTANCE_ID = os.environ["GHA_CURRENCY_SERVICE_ID"]
+# COS configuration
+# These are only available in currency builds (not PR builds).
+# If missing, post-processing is skipped gracefully.
+COS_API_KEY = os.environ.get("GHA_CURRENCY_SERVICE_ID_API_KEY", "")
+COS_SERVICE_INSTANCE_ID = os.environ.get("GHA_CURRENCY_SERVICE_ID", "")
+
+if not COS_API_KEY or not COS_SERVICE_INSTANCE_ID:
+    logger.info("COS credentials not set - skipping post-processing (PR build environment)")
+    sys.exit(0)
 COS_ENDPOINT = "https://s3.us.cloud-object-storage.appdomain.cloud"
 COS_BUCKET = "ose-power-artifacts-production"
 
