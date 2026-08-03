@@ -524,8 +524,12 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Run build_wheels.sh
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
+          THIS_TESTED_ON="$TESTED_ON"
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="$THIS_SCRIPT"
+          export TESTED_ON="$THIS_TESTED_ON"
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           if [ -z "$BUILD_SCRIPT_CHANGED" ]; then echo "Skipping  -  no .sh changes"; exit 0; fi
