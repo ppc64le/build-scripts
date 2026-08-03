@@ -18,7 +18,8 @@ set -eo pipefail
 OS_NAME="$(awk -F= '/^ID=/{gsub(/"/,"",$2); print $2; exit}' /etc/os-release || echo unknown)"
 
 PACKAGE_NAME=next.js
-PACKAGE_VERSION=${1:-v16.2.6}
+PACKAGE_VERSION="v${1:-16.2.6}"
+PACKAGE_VERSION="${PACKAGE_VERSION#vv}"
 PACKAGE_URL=https://github.com/vercel/next.js.git
 PACKAGE_DIR=next.js
 RUST_TOOLCHAIN=${RUST_TOOLCHAIN:-nightly-2025-12-06}
@@ -135,8 +136,8 @@ if [ -z "$RSPACK_BINARY" ]; then
 fi
 echo "✓ rspack binary found: $RSPACK_BINARY"
 
-# Build Turborepo 
-echo "==========================================="
+# Build Turborepo (separate repository)
+echo "=========================================="
 echo "Building Turborepo..."
 echo "=========================================="
 cd "${WORK_DIR}"
@@ -245,7 +246,7 @@ sed -i \
     packages/next/src/server/app-render/postponed-state.test.ts
 
 
-echo "---------------------Unit Tests-------------------------"
+echo "---------------------Unit Tests---------------------"
 pnpm test-unit -u
 
 # Patch next-webdriver.ts to throw a ppc64le skip sentinel 
