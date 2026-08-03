@@ -21,8 +21,8 @@
 PACKAGE_NAME=mysql-connector-python
 PACKAGE_VERSION=${1:-9.7.0}
 PACKAGE_URL=https://github.com/mysql/mysql-connector-python
-# PACKAGE_DIR points to the installable sub-package, not the repo root. The wrapper uses PACKAGE_DIR as the working directory for wheel building, so it must resolve to the directory containing pyproject.toml.
-PACKAGE_DIR=mysql-connector-python/mysql-connector-python
+# PACKAGE_DIR is set after cloning so it resolves to an absolute path the
+# wrapper can cd into regardless of where CURRENT_DIR is.
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
@@ -129,8 +129,11 @@ else
     git checkout "$PACKAGE_VERSION" || exit 1
 fi
 
-# Move into the sub-package directory that contains pyproject.toml. PACKAGE_DIR is set to mysql-connector-python/mysql-connector-python so that the wrapper's wheel-build step also lands in this directory.
+# Move into the sub-package directory that contains pyproject.toml.
 cd mysql-connector-python || exit 1
+
+# Expose the absolute path so the wrapper's wheel-build step can locate it.
+PACKAGE_DIR=$(pwd)
 
 # Install with C extension.
 # MYSQL_CAPI env var is read by cpydist/__init__.py (line 179) — no need to pass --with-mysql-capi flag (modern pip >= 23 rejects unknown --with-* flags).
