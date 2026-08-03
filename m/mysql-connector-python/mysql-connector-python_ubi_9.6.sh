@@ -28,12 +28,6 @@ PACKAGE_DIR=mysql-connector-python/mysql-connector-python
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
 
-# Disable any stale MySQL community repos registered by previous runs — their metadata endpoint is unreachable and causes yum calls to time out.
-for repo in mysql-8.4-lts-community mysql-8.0-community mysql-connectors-community \
-            mysql-tools-community mysql-tools-8.4-lts-community; do
-    yum config-manager --disable "${repo}" 2>/dev/null || true
-done
-
 # Install system build dependencies. cmake + ncurses-devel are needed to build MySQL 8.0 client library from source. MySQL does not publish ppc64le RPMs; we build libmysqlclient ourselves.
 yum install -y git gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ python3 python3-devel python3-pip make cmake openssl openssl-devel ncurses-devel wget sudo
 
