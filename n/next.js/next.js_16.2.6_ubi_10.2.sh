@@ -233,8 +233,9 @@ pnpm swc-build-native || {
 pnpm build
 
 # Patch dist/build/swc/index.js to force-load ppc64le native binding for tests
+SWC_BINDING="${WORK_DIR}/${PACKAGE_DIR}/packages/next-swc/native/next-swc.linux-powerpc64le-gnu.node"
 sed -z -i \
-    "s|let bindings = customBindings;\n    let bindingsPath = customBindingsPath;|let bindings = customBindings;\n    let bindingsPath = customBindingsPath;\n\n    if (!bindings) { try { bindingsPath = \"/next.js/packages/next-swc/native/next-swc.linux-powerpc64le-gnu.node\"; bindings = require(bindingsPath); console.log(\"Loaded native ppc64le binding from:\", bindingsPath); } catch (e) { console.error(\"ppc64le native load failed:\", e.message); } }|" \
+    "s|let bindings = customBindings;\n    let bindingsPath = customBindingsPath;|let bindings = customBindings;\n    let bindingsPath = customBindingsPath;\n\n    if (!bindings) { try { bindingsPath = \"${SWC_BINDING}\"; bindings = require(bindingsPath); console.log(\"Loaded native ppc64le binding from:\", bindingsPath); } catch (e) { console.error(\"ppc64le native load failed:\", e.message); } }|" \
     packages/next/dist/build/swc/index.js
 
 sed -i \
