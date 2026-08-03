@@ -1,5 +1,5 @@
 {
-  "maintainer": "ramnathnayak-ibm",
+  "maintainer": "shivansh-ibm",
   "package_name": "cryptography",
   "github_url": "https://github.com/pyca/cryptography",
   "version": "43.0.1",
@@ -15,5 +15,11 @@
   },
   "43.0.1": {
     "build_script": "cryptography_43.0.1_ubi_9.3.sh"
+  },
+  "44.0.0": {
+  	"build_script": [
+  		"cryptography_43.0.1_ubi_9.3.sh",
+  		"cryptograhpy_44.0.0_ubi_10.1.sh"
+  	]
   }
 }
