@@ -329,14 +329,16 @@ jobs:
             DOCKER_BUILD="false"
           fi
 
-          cat <<EOF > package-cache/scanner-env.sh
-          export PACKAGE_NAME=$PACKAGE_NAME
-          export VERSION=$VERSION
-          export PACKAGE_DIR=$PACKAGE_DIR
-          export WHEEL_BUILD=$WHEEL_BUILD
-          export BUILD_DOCKER=$DOCKER_BUILD
-          export CHANGED_FILES="$CHANGED_FILES"
-          EOF
+          # Write scanner-env.sh without leading indentation spaces.
+          # CHANGED_FILES is written via a separate heredoc so its newlines are preserved.
+          {
+            echo "export PACKAGE_NAME=$PACKAGE_NAME"
+            echo "export VERSION=$VERSION"
+            echo "export PACKAGE_DIR=$PACKAGE_DIR"
+            echo "export WHEEL_BUILD=$WHEEL_BUILD"
+            echo "export BUILD_DOCKER=$DOCKER_BUILD"
+            printf 'export CHANGED_FILES=%q\n' "$CHANGED_FILES"
+          } > package-cache/scanner-env.sh
 
           mv variable.sh package-cache/
 
