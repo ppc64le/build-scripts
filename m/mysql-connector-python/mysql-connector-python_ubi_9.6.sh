@@ -21,8 +21,9 @@
 PACKAGE_NAME=mysql-connector-python
 PACKAGE_VERSION=${1:-9.7.0}
 PACKAGE_URL=https://github.com/mysql/mysql-connector-python
-# PACKAGE_DIR is set after cloning so it resolves to an absolute path the
-# wrapper can cd into regardless of where CURRENT_DIR is.
+# PACKAGE_DIR is relative to CURRENT_DIR (the wrapper's starting directory).
+# The clone is done from CURRENT_DIR so this path is always valid.
+PACKAGE_DIR=mysql-connector-python/mysql-connector-python
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
@@ -100,6 +101,10 @@ mkdir -p "${MYSQL_CAPI_PREFIX}/lib/plugin"
 pip3 install --upgrade pip setuptools wheel build
 pip3 install pytest
 
+# Return to CURRENT_DIR (set by the wrapper) before cloning so the repo
+# lands at $CURRENT_DIR/mysql-connector-python — matching PACKAGE_DIR above.
+cd "${CURRENT_DIR:-.}" || exit 1
+
 # Clone the connector repository
 REPO_DIR=mysql-connector-python
 if [ -d "$REPO_DIR" ]; then
@@ -117,9 +122,6 @@ fi
 
 # Move into the sub-package directory that contains pyproject.toml.
 cd mysql-connector-python || exit 1
-
-# Expose the absolute path so the wrapper's wheel-build step can locate it.
-PACKAGE_DIR=$(pwd)
 
 # Install with C extension.
 # MYSQL_CAPI env var is read by cpydist/__init__.py (line 179) — no need to pass --with-mysql-capi flag (modern pip >= 23 rejects unknown --with-* flags).
