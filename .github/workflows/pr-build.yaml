@@ -565,7 +565,11 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Run build_wheels.sh
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
+          THIS_TESTED_ON="$TESTED_ON"
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="$THIS_SCRIPT"
+          export TESTED_ON="$THIS_TESTED_ON"
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
@@ -604,7 +608,11 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Run build_wheels.sh
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
+          THIS_TESTED_ON="$TESTED_ON"
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="$THIS_SCRIPT"
+          export TESTED_ON="$THIS_TESTED_ON"
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
@@ -644,47 +652,11 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Run build_wheels.sh
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
+          THIS_TESTED_ON="$TESTED_ON"
           source package-cache/variable.sh; source package-cache/scanner-env.sh
-          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
-          BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
-          [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          sudo chown -R $USER:$USER .
-          export ENABLE_CVE_SCAN=false
-          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
-      - name: Verify wheel was produced
-        run: |
-          if ls *.whl 1>/dev/null 2>&1; then
-            echo "Wheel built successfully: $(ls *.whl)"
-          else
-            echo "No wheel produced."
-            exit 1
-          fi
-
-  wheel_build_ubi8_py314:
-    needs: build_info
-    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi8 != '' }}
-    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
-    continue-on-error: true
-    env:
-      PYTHON_VERSION: "3.14"
-      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi8).script }}
-      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: Install system dependencies
-        run: sudo apt update -y
-      - name: Download package-cache
-        uses: actions/download-artifact@v4
-        with:
-          name: package-cache
-      - name: Extract package cache
-        run: tar -xzf package-cache.tar.gz
-      - name: Run build_wheels.sh
-        run: |
-          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="$THIS_SCRIPT"
+          export TESTED_ON="$THIS_TESTED_ON"
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
@@ -725,7 +697,11 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Run build_wheels.sh
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
+          THIS_TESTED_ON="$TESTED_ON"
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="$THIS_SCRIPT"
+          export TESTED_ON="$THIS_TESTED_ON"
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
@@ -764,7 +740,11 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Run build_wheels.sh
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
+          THIS_TESTED_ON="$TESTED_ON"
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="$THIS_SCRIPT"
+          export TESTED_ON="$THIS_TESTED_ON"
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
@@ -803,7 +783,11 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Run build_wheels.sh
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
+          THIS_TESTED_ON="$TESTED_ON"
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="$THIS_SCRIPT"
+          export TESTED_ON="$THIS_TESTED_ON"
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
@@ -843,7 +827,11 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Run build_wheels.sh
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
+          THIS_TESTED_ON="$TESTED_ON"
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="$THIS_SCRIPT"
+          export TESTED_ON="$THIS_TESTED_ON"
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
@@ -883,7 +871,11 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Run build_wheels.sh
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
+          THIS_TESTED_ON="$TESTED_ON"
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="$THIS_SCRIPT"
+          export TESTED_ON="$THIS_TESTED_ON"
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
@@ -924,7 +916,11 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Run build_wheels.sh
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
+          THIS_TESTED_ON="$TESTED_ON"
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="$THIS_SCRIPT"
+          export TESTED_ON="$THIS_TESTED_ON"
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
@@ -964,7 +960,11 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Run build_wheels.sh
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
+          THIS_TESTED_ON="$TESTED_ON"
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="$THIS_SCRIPT"
+          export TESTED_ON="$THIS_TESTED_ON"
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
@@ -1004,7 +1004,11 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Run build_wheels.sh
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
+          THIS_TESTED_ON="$TESTED_ON"
           source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="$THIS_SCRIPT"
+          export TESTED_ON="$THIS_TESTED_ON"
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
