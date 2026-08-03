@@ -23,6 +23,7 @@ PACKAGE_VERSION=${1:-v1.5.4}
 PACKAGE_DIR=duckdb-python
 PACKAGE_URL=https://github.com/duckdb/duckdb-python.git
 PYTHON_VERSION=3.12
+SOURCE_ROOT="$(pwd)"
 
 # Install necessary system packages
 dnf install -y \
@@ -39,7 +40,7 @@ gcc --version
 python3.12 -m pip install --upgrade pip setuptools
 
 # -- Build wheel --------------------------------------------------------------
-pip3.12 wheel --no-cache-dir --only-binary :none "duckdb==${PACKAGE_VERSION}" -w "${CURRENT_DIR}/dist/"
+python3.12 -m pip wheel . --no-deps -w "${CURRENT_DIR}/dist/"
 
 WHEEL=$(find "${CURRENT_DIR}/dist" -name "duckdb-*.whl" | head -1)
 if [ -z "$WHEEL" ]; then
@@ -48,12 +49,15 @@ if [ -z "$WHEEL" ]; then
 fi
 echo "Wheel: $WHEEL"
 
-# -- Install ------------------------------------------------------------------
-cd dist
-pip3.12 install "$WHEEL"
+# Copy wheel to /home/tester so the wrapper script can locate it without rebuilding
+if [ -d /home/tester ]; then
+    cp "${WHEEL}" /home/tester/
+fi
 
-# Run tests
-cd /
+cd "${SOURCE_ROOT}"
+
+# -- Install ------------------------------------------------------------------
+pip3.12 install "$WHEEL"
 
 if ! python${PYTHON_VERSION} - <<EOF
 import duckdb
