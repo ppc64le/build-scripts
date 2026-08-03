@@ -34,21 +34,7 @@ for repo in mysql-8.4-lts-community mysql-8.0-community mysql-connectors-communi
 done
 
 # Install system build dependencies. cmake + ncurses-devel are needed to build MySQL 8.0 client library from source. MySQL does not publish ppc64le RPMs; we build libmysqlclient ourselves.
-yum install -y \
-    git \
-    gcc-toolset-13 \
-    gcc-toolset-13-gcc \
-    gcc-toolset-13-gcc-c++ \
-    python3 \
-    python3-devel \
-    python3-pip \
-    make \
-    cmake \
-    openssl \
-    openssl-devel \
-    ncurses-devel \
-    wget \
-    sudo
+yum install -y git gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ python3 python3-devel python3-pip make cmake openssl openssl-devel ncurses-devel wget sudo
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -150,15 +136,7 @@ fi
 #     require a running mysqld (config returns None without a server).
 #   - RefreshOptionTests::test_deprecated:
 #     asserts against an old deprecation message string that changed in 9.7.0.
-if ! python3 -m pytest tests/test_constants.py \
-                       tests/test_conversion.py \
-                       tests/test_errorcode.py \
-                       tests/test_errors.py \
-                       tests/test_locales.py \
-                       tests/test_utils.py \
-                       tests/test_protocol.py \
-                       -k "not (MySQLConverterIntegrationTests or MySQLConverterAioIntegrationTests or MySQLConverterStrFallbackTests or test_deprecated)" \
-                       -v --tb=short 2>&1; then
+if ! python3 -m pytest tests/test_constants.py tests/test_conversion.py tests/test_errorcode.py tests/test_errors.py tests/test_locales.py tests/test_utils.py tests/test_protocol.py -k "not (MySQLConverterIntegrationTests or MySQLConverterAioIntegrationTests or MySQLConverterStrFallbackTests or test_deprecated)" -v --tb=short --disable-warnings 2>&1; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
