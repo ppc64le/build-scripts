@@ -26,7 +26,7 @@ PACKAGE_URL=https://github.com/silnrsi/graphite
 # Install dependencies and tools.
 # cmake is required to build the native libgraphite2.so.3 shared library,
 # which the Python ctypes bindings load at import time.
-yum install -y wget gcc gcc-c++ gcc-gfortran git make cmake python3-devel openssl-devel
+yum install -y wget gcc gcc-c++ gcc-gfortran git make cmake python3-devel openssl-devel python3-pip
 
 #clone repository
 git clone $PACKAGE_URL
@@ -50,15 +50,35 @@ cd ..
 echo "/usr/local/lib" > /etc/ld.so.conf.d/graphite2.conf
 ldconfig
 
-# Install the Python ctypes bindings.
-if ! python3 setup.py install ; then
+# Stage libgraphite2.so.3 into python/graphite2/lib/ — the exact fallback
+# path __init__.py already uses when ctypes.find_library returns None:
+#   libpath = os.path.join(wheel, 'lib', 'libgraphite2.so')
+mkdir -p python/graphite2/lib
+cp build_cmake/src/libgraphite2.so.3.2.1 python/graphite2/lib/libgraphite2.so.3.2.1
+ln -sf libgraphite2.so.3.2.1             python/graphite2/lib/libgraphite2.so.3
+ln -sf libgraphite2.so.3                 python/graphite2/lib/libgraphite2.so
+
+# Patch setup.py to declare the staged .so files as package_data so that
+# bdist_wheel includes them inside the wheel archive.
+sed -i "s|    packages         = \['graphite2'\],|    packages         = ['graphite2'],\n    package_data     = {'graphite2': ['lib/libgraphite2.so*']},|" setup.py
+
+# Build the wheel — graphite2/lib/libgraphite2.so* is now included.
+pip3 install wheel
+mkdir -p dist
+python3 setup.py bdist_wheel --dist-dir dist/
+
+WHEEL_FILE=$(ls dist/graphite2-*.whl | head -1)
+echo "Arch-specific self-contained wheel: $WHEEL_FILE"
+
+# Install from the wheel.
+if ! pip3 install "$WHEEL_FILE" ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-# Verify the import succeeds (ctypes must find libgraphite2.so.3 at runtime).
+# Verify the import succeeds.
 if ! python3 -c "import graphite2; print('graphite2 import successful')" ; then
     echo "------------------$PACKAGE_NAME:Import_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
