@@ -68,81 +68,18 @@ echo "--------------------openblas installed-------------------------------"
 python3.12 -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata
 echo "Installed required deps from pypi"
 python3.12 -m pip install pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
-echo "Installed required deps from pypi"
-git clone https://github.com/scipy/scipy
-cd scipy/
-git checkout v1.15.2
-git submodule update --init
-echo "instaling scipy......."
-python3.12 -m pip install .
+# echo "Installed required deps from pypi"
+echo "-------------------- Installing Python dependencies ----------------"
+
+IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
+
+python3.12 -m pip install \
+  --prefer-binary \
+  --trusted-host wheels.developerfirst.ibm.com \
+  --extra-index-url ${IBM_WHEELS} \
+  scipy==1.15.2 abseil-cpp==20240116.2 libprotobuf==4.25.8 protobuf==4.25.8
 cd $SCRIPT_DIR
 echo "--------------------scipy installed-------------------------------"
-
-#cloning abseil-cpp
-ABSEIL_VERSION=20240116.2
-ABSEIL_URL="https://github.com/abseil/abseil-cpp"
-
-git clone $ABSEIL_URL -b $ABSEIL_VERSION
-
-echo "------------abseil-cpp cloned--------------"
-
-#building libprotobuf
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
-
-git clone https://github.com/protocolbuffers/protobuf
-cd protobuf
-git checkout v4.25.8
-
-LIBPROTO_DIR=$(pwd)
-mkdir -p $LIBPROTO_DIR/local/libprotobuf
-LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
-
-git submodule update --init --recursive
-rm -rf ./third_party/googletest | true
-rm -rf ./third_party/abseil-cpp | true
-
-cp -r $SCRIPT_DIR/abseil-cpp ./third_party/
-
-mkdir build
-cd build
-
-echo "Building libprotobuf"
-cmake -G "Ninja" \
-  ${CMAKE_ARGS} \
-   -DCMAKE_BUILD_TYPE=Release \
-   -DCMAKE_CXX_STANDARD=17 \
-   -DCMAKE_C_COMPILER=$C_COMPILER \
-   -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-   -DCMAKE_INSTALL_PREFIX=$LIBPROTO_INSTALL \
-   -Dprotobuf_BUILD_TESTS=OFF \
-   -Dprotobuf_BUILD_LIBUPB=OFF \
-   -Dprotobuf_BUILD_SHARED_LIBS=ON \
-   -Dprotobuf_ABSL_PROVIDER="module" \
-   -Dprotobuf_JSONCPP_PROVIDER="package" \
-   -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
-   ..
-echo "building libprotobuf...."
-cmake --build . --verbose
-echo "Installing libprotobuf...."
-cmake --install .
-
-cd ..
-
-echo "Building protobuf"
-export PROTOC=$LIBPROTO_DIR/build/protoc
-export LD_LIBRARY_PATH=$SCRIPT_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
-export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
-export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
-export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
-
-#Apply patch
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
-git apply set_cpp_to_17_v4.25.3.patch
-
-echo "Installing protobuf...."
-cd python
-python3.12 -m pip install . --no-build-isolation
 cd $SCRIPT_DIR
 
 echo "------------ libprotobuf,protobuf installed--------------"
