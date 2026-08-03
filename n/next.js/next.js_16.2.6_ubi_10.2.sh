@@ -23,8 +23,9 @@ PACKAGE_VERSION="${PACKAGE_VERSION#vv}"
 PACKAGE_URL=https://github.com/vercel/next.js.git
 PACKAGE_DIR=next.js
 RUST_TOOLCHAIN=${RUST_TOOLCHAIN:-nightly-2025-12-06}
-WORK_DIR="$(pwd)"
 PNPM_VERSION="10.24.0"
+SCRIPT_DIR="$(cd "$(dirname "$(realpath "$0")")" && pwd)"
+WORK_DIR="$(dirname "$(dirname "${SCRIPT_DIR}")")"
 
 echo "=========================================="
 echo "Building Next.js ${PACKAGE_VERSION} on ppc64le"
@@ -179,7 +180,6 @@ git clean -fd
 
 # Apply ppc64le patch
 PATCH_FILE="next.js_${PACKAGE_VERSION#v}.patch"
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 if [ ! -f "${SCRIPT_DIR}/${PATCH_FILE}" ]; then
     wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/n/next.js/${PATCH_FILE} \
         -O "${SCRIPT_DIR}/${PATCH_FILE}"
