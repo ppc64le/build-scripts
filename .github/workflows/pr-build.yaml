@@ -66,11 +66,11 @@ jobs:
 
           if [ -n "$RELEVANT_CHANGES" ]; then
             echo "should_build=true" >> $GITHUB_OUTPUT
-            echo "✅ Found relevant changes:"
+            echo "Found relevant changes:"
             echo "$RELEVANT_CHANGES"
           else
             echo "should_build=false" >> $GITHUB_OUTPUT
-            echo "⏭️ Skipping PR build CI check - no changes related to build_info.json, build scripts (.sh), or Dockerfile"
+            echo "Skipping PR build CI check - no changes related to build_info.json, build scripts (.sh), or Dockerfile"
           fi
 
   build_info:
@@ -78,23 +78,27 @@ jobs:
     if: needs.check_changes.outputs.should_build == 'true'
     runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
     outputs:
-      wheel_build_enabled: ${{ steps.set_flags.outputs.wheel_build_enabled }}
-      has_sh_changes: ${{ steps.set_flags.outputs.has_sh_changes }}
+      wheel_build_enabled:    ${{ steps.set_flags.outputs.wheel_build_enabled }}
+      has_sh_changes:         ${{ steps.set_flags.outputs.has_sh_changes }}
       has_dockerfile_changes: ${{ steps.set_flags.outputs.has_dockerfile_changes }}
-      docker_build_enabled: ${{ steps.set_flags.outputs.docker_build_enabled }}
-      build_package_enabled: ${{ steps.set_flags.outputs.build_package_enabled }}
+      docker_build_enabled:   ${{ steps.set_flags.outputs.docker_build_enabled }}
+      build_package_enabled:  ${{ steps.set_flags.outputs.build_package_enabled }}
+      # Per-UBI-major named outputs  -  each is a {script,tested_on} JSON object or ""
+      script_ubi8:  ${{ steps.emit.outputs.script_ubi8 }}
+      script_ubi9:  ${{ steps.emit.outputs.script_ubi9 }}
+      script_ubi10: ${{ steps.emit.outputs.script_ubi10 }}
 
     steps:
       - name: Checkout code (Pull Request)
         if: github.event_name == 'pull_request'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Checkout code (Workflow Dispatch)
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           ref: refs/pull/${{ inputs.pr_number }}/head
 
@@ -147,7 +151,7 @@ jobs:
           # Reuse changed files from check_changes job
           CHANGED_FILES="${{ needs.check_changes.outputs.changed_files }}"
 
-          # If workflow_dispatch, check_changes did not compute changed_files — fetch them now
+          # If workflow_dispatch, check_changes did not compute changed_files  -  fetch them now
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             git fetch origin ${{ github.base_ref }} --depth=1
             CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
@@ -189,20 +193,40 @@ jobs:
           chmod +x ./gha-script/read_buildinfo.sh
           bash ./gha-script/read_buildinfo.sh
 
+      - name: Emit per-UBI outputs
+        id: emit
+        run: |
+          source variable.sh
+          echo "SCRIPT_UBI8=$SCRIPT_UBI8"
+          echo "SCRIPT_UBI9=$SCRIPT_UBI9"
+          echo "SCRIPT_UBI10=$SCRIPT_UBI10"
+          # Use multiline delimiter syntax so JSON double-quotes are not truncated
+          {
+            echo "script_ubi8<<__EOF__"
+            echo "$SCRIPT_UBI8"
+            echo "__EOF__"
+            echo "script_ubi9<<__EOF__"
+            echo "$SCRIPT_UBI9"
+            echo "__EOF__"
+            echo "script_ubi10<<__EOF__"
+            echo "$SCRIPT_UBI10"
+            echo "__EOF__"
+          } >> $GITHUB_OUTPUT
+
       - name: Set job control flags
         id: set_flags
         run: |
           if [ -z "$BUILD_INFO_FILE" ]; then
-            echo "❌ BUILD_INFO_FILE is not set — cannot determine job control flags"
+            echo "ERROR: BUILD_INFO_FILE is not set  -  cannot determine job control flags"
             exit 1
           fi
           if [ ! -f "$BUILD_INFO_FILE" ]; then
-            echo "❌ BUILD_INFO_FILE does not exist: $BUILD_INFO_FILE"
+            echo "ERROR: BUILD_INFO_FILE does not exist: $BUILD_INFO_FILE"
             exit 1
           fi
 
           PACKAGE_DIR=$(jq -r '.package_dir // ""' $BUILD_INFO_FILE)
-          # Strip trailing slash if present — prevents double-slash in regex (e.g. "m/multidict/" → "m/multidict")
+          # Strip trailing slash if present  -  prevents double-slash in regex (e.g. "m/multidict/" -> "m/multidict")
           PACKAGE_DIR="${PACKAGE_DIR%/}"
           WHEEL_BUILD=$(jq -r '.wheel_build // "false"' $BUILD_INFO_FILE)
 
@@ -222,10 +246,10 @@ jobs:
           # Set outputs for wheel builds
           if [ "$WHEEL_BUILD" == "true" ] && [ -n "$SH_SCRIPT_CHANGED" ]; then
             echo "wheel_build_enabled=true" >> $GITHUB_OUTPUT
-            echo "✅ Wheel builds will run (WHEEL_BUILD=true and .sh scripts changed)"
+            echo "Wheel builds will run (WHEEL_BUILD=true and .sh scripts changed)"
           else
             echo "wheel_build_enabled=false" >> $GITHUB_OUTPUT
-            echo "⏭️ Wheel builds will be skipped (WHEEL_BUILD=$WHEEL_BUILD, .sh changes: ${SH_SCRIPT_CHANGED:-none})"
+            echo "Wheel builds will be skipped (WHEEL_BUILD=$WHEEL_BUILD, .sh changes: ${SH_SCRIPT_CHANGED:-none})"
           fi
 
           # Set output for sh changes
@@ -239,7 +263,7 @@ jobs:
           if [ "$DOCKER_BUILD" == "true" ] && [ -n "$DOCKERFILE_CHANGED" ]; then
             echo "docker_build_enabled=true" >> $GITHUB_OUTPUT
             echo "has_dockerfile_changes=true" >> $GITHUB_OUTPUT
-            echo "✅ Docker build will run (BUILD_DOCKER=true and Dockerfile changed)"
+            echo "Docker build will run (BUILD_DOCKER=true and Dockerfile changed)"
           else
             echo "docker_build_enabled=false" >> $GITHUB_OUTPUT
             if [ -n "$DOCKERFILE_CHANGED" ]; then
@@ -247,17 +271,17 @@ jobs:
             else
               echo "has_dockerfile_changes=false" >> $GITHUB_OUTPUT
             fi
-            echo "⏭️ Docker build will be skipped (BUILD_DOCKER=$DOCKER_BUILD, Dockerfile changes: ${DOCKERFILE_CHANGED:-none})"
+            echo "Docker build will be skipped (BUILD_DOCKER=$DOCKER_BUILD, Dockerfile changes: ${DOCKERFILE_CHANGED:-none})"
           fi
 
           # Set output for build job (runs when build_info.json or .sh scripts change)
           BUILD_INFO_CHANGED=$(echo "$CHANGED_FILES" | grep 'build_info\.json' || true)
           if [ -n "$BUILD_INFO_CHANGED" ] || [ -n "$SH_SCRIPT_CHANGED" ]; then
             echo "build_package_enabled=true" >> $GITHUB_OUTPUT
-            echo "✅ Build package job will run (build_info.json or .sh scripts changed)"
+            echo "Build package job will run (build_info.json or .sh scripts changed)"
           else
             echo "build_package_enabled=false" >> $GITHUB_OUTPUT
-            echo "⏭️ Build package job will be skipped (no build_info.json or .sh script changes)"
+            echo "Build package job will be skipped (no build_info.json or .sh script changes)"
           fi
 
       - name: Create scanner-env.sh
@@ -289,420 +313,658 @@ jobs:
         run: tar -czf package-cache.tar.gz package-cache/
 
       - name: Upload package cache
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
            name: package-cache
            path: package-cache.tar.gz
 
-  build:
-    needs: build_info
-    if: needs.build_info.outputs.build_package_enabled == 'true'
-    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
+  # ---------------------------------------------------------------------------
+  # BUILD JOBS  -  one per UBI major version.
+  # Runs execute_changed_scripts.py inside the correct UBI container.
+  # Each job only runs when a script exists for that UBI version.
+  # All three are parallel (no inter-dependency).
+  # ---------------------------------------------------------------------------
 
+  build_ubi8:
+    needs: build_info
+    if: ${{ needs.build_info.outputs.build_package_enabled == 'true' && needs.build_info.outputs.script_ubi8 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
+    env:
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi8).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-
       - name: Download package-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
-      - name: Build Package
+      - name: Build Package (UBI8)
         run: |
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
-
-          echo "------------------- variable.sh -----------------------------"
-          cat package-cache/variable.sh
-          echo "------------------- scanner-env.sh -----------------------------"
-          cat package-cache/scanner-env.sh
-
           sudo chown -R $USER:$USER .
-          echo "------------------- Executing changed scripts -----------------------------"
+          echo "--- Executing changed scripts for UBI8 ---"
           chmod +x ./gha-script/execute_changed_scripts.py
           python3 -u ./gha-script/execute_changed_scripts.py
 
-# ===================== WHEEL JOBS =====================
-
-
-  wheel_build_py310:
+  build_ubi9:
     needs: build_info
-    if: needs.build_info.outputs.wheel_build_enabled == 'true'
-    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
-    continue-on-error: false
+    if: ${{ needs.build_info.outputs.build_package_enabled == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
     env:
-      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-      GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi9).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Build Package (UBI9)
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          sudo chown -R $USER:$USER .
+          echo "--- Executing changed scripts for UBI9 ---"
+          chmod +x ./gha-script/execute_changed_scripts.py
+          python3 -u ./gha-script/execute_changed_scripts.py
+
+  build_ubi10:
+    needs: build_info
+    if: ${{ needs.build_info.outputs.build_package_enabled == 'true' && needs.build_info.outputs.script_ubi10 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
+    env:
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi10).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Build Package (UBI10)
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          sudo chown -R $USER:$USER .
+          echo "--- Executing changed scripts for UBI10 ---"
+          chmod +x ./gha-script/execute_changed_scripts.py
+          python3 -u ./gha-script/execute_changed_scripts.py
+
+  # ---------------------------------------------------------------------------
+  # WHEEL BUILD JOBS  -  one job per UBI version per Python version.
+  # All parallel. UBI10 supports py312-py314 only (py310/py311 not supported).
+  # PR builds do not run scan steps.
+  # ---------------------------------------------------------------------------
+
+  wheel_build_ubi8_py310:
+    needs: build_info
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi8 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
+    env:
       PYTHON_VERSION: "3.10"
-
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi8).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
-
       - name: Install system dependencies
-        run: |
-          sudo apt update -y
-
-      - name: Download package-cache from previous step
-        uses: actions/download-artifact@v7
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
       - name: Run build_wheels.sh
         run: |
-          ls
-          echo "---------------------updated cache-----------------------"
-          ls package-cache
-
-          chmod +x package-cache/variable.sh
-          chmod +x package-cache/scanner-env.sh
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
-
-          # CONTROL FLAG HERE
-          if [ "$WHEEL_BUILD" != "true" ]; then
-            echo "Skipping wheel build as WHEEL_BUILD=false"
-            exit 0
-          fi
-
-          # Check if any .sh build script is modified in this package
+          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
-
-          if [[ -z "$BUILD_SCRIPT_CHANGED" ]]; then
-            echo "Skipping wheel build as no .sh build script changes detected"
-            exit 0
-          fi
-
+          if [ -z "$BUILD_SCRIPT_CHANGED" ]; then echo "Skipping  -  no .sh changes"; exit 0; fi
           sudo chown -R $USER:$USER .
+          export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
+      - name: Verify wheel was produced
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            echo "Wheel built successfully: $(ls *.whl)"
+          else
+            echo "No wheel produced."
+            exit 1
+          fi
 
-          echo "===========after execution =================="
-          sudo apt update -y
-          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
-          sudo uname -a
-
-
-  wheel_build_py311:
+  wheel_build_ubi8_py311:
     needs: build_info
-    if: needs.build_info.outputs.wheel_build_enabled == 'true'
-    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
-    continue-on-error: false
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi8 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
     env:
-      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-      GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
       PYTHON_VERSION: "3.11"
-
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi8).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
-
       - name: Install system dependencies
-        run: |
-          sudo apt update -y
-
-      - name: Download package-cache from previous step
-        uses: actions/download-artifact@v7
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
       - name: Run build_wheels.sh
         run: |
-          ls
-          echo "---------------------updated cache-----------------------"
-          ls package-cache
-
-          chmod +x package-cache/variable.sh
-          chmod +x package-cache/scanner-env.sh
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-
-          # CONTROL FLAG HERE
-          if [ "$WHEEL_BUILD" != "true" ]; then
-            echo "Skipping wheel build as WHEEL_BUILD=false"
-            exit 0
-          fi
-
-          # Check if any .sh build script is modified in this package
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
-
-          if [[ -z "$BUILD_SCRIPT_CHANGED" ]]; then
-            echo "Skipping wheel build as no .sh build script changes detected"
-            exit 0
+          [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
+          sudo chown -R $USER:$USER .
+          export ENABLE_CVE_SCAN=false
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+      - name: Verify wheel was produced
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            echo "Wheel built successfully: $(ls *.whl)"
+          else
+            echo "No wheel produced."
+            exit 1
           fi
 
-          sudo chown -R $USER:$USER .
-          chmod +x ./gha-script/build_wheels.sh
-          bash ./gha-script/build_wheels.sh
-
-          echo "===========after execution =================="
-          sudo apt update -y
-          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
-          sudo uname -a
-
-
-  wheel_build_py312:
+  wheel_build_ubi8_py312:
     needs: build_info
-    if: needs.build_info.outputs.wheel_build_enabled == 'true'
-    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
-    continue-on-error: false
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi8 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
     env:
-      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-      GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
       PYTHON_VERSION: "3.12"
-
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi8).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
-
       - name: Install system dependencies
-        run: |
-          sudo apt update -y
-
-      - name: Download package-cache from previous step
-        uses: actions/download-artifact@v7
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
       - name: Run build_wheels.sh
         run: |
-          ls
-          echo "---------------------updated cache-----------------------"
-          ls package-cache
-
-          chmod +x package-cache/variable.sh
-          chmod +x package-cache/scanner-env.sh
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-
-          # CONTROL FLAG HERE
-          if [ "$WHEEL_BUILD" != "true" ]; then
-            echo "Skipping wheel build as WHEEL_BUILD=false"
-            exit 0
-          fi
-
-          # Check if any .sh build script is modified in this package
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
-
-          if [[ -z "$BUILD_SCRIPT_CHANGED" ]]; then
-            echo "Skipping wheel build as no .sh build script changes detected"
-            exit 0
+          [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
+          sudo chown -R $USER:$USER .
+          export ENABLE_CVE_SCAN=false
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+      - name: Verify wheel was produced
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            echo "Wheel built successfully: $(ls *.whl)"
+          else
+            echo "No wheel produced."
+            exit 1
           fi
 
-          sudo chown -R $USER:$USER .
-          chmod +x ./gha-script/build_wheels.sh
-          bash ./gha-script/build_wheels.sh
-
-          echo "===========after execution =================="
-          sudo apt update -y
-          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
-          sudo uname -a
-
-
-  wheel_build_py313:
+  wheel_build_ubi8_py313:
     needs: build_info
-    if: needs.build_info.outputs.wheel_build_enabled == 'true'
-    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi8 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
     continue-on-error: true
     env:
-      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-      GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
       PYTHON_VERSION: "3.13"
-
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi8).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
-
       - name: Install system dependencies
-        run: |
-          sudo apt update -y
-
-      - name: Download package-cache from previous step
-        uses: actions/download-artifact@v7
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
       - name: Run build_wheels.sh
         run: |
-          ls
-          echo "---------------------updated cache-----------------------"
-          ls package-cache
-
-          chmod +x package-cache/variable.sh
-          chmod +x package-cache/scanner-env.sh
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-
-          # CONTROL FLAG HERE
-          if [ "$WHEEL_BUILD" != "true" ]; then
-            echo "Skipping wheel build as WHEEL_BUILD=false"
-            exit 0
-          fi
-
-          # Check if any .sh build script is modified in this package
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
-
-          if [[ -z "$BUILD_SCRIPT_CHANGED" ]]; then
-            echo "Skipping wheel build as no .sh build script changes detected"
-            exit 0
+          [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
+          sudo chown -R $USER:$USER .
+          export ENABLE_CVE_SCAN=false
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+      - name: Verify wheel was produced
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            echo "Wheel built successfully: $(ls *.whl)"
+          else
+            echo "No wheel produced."
+            exit 1
           fi
 
-          sudo chown -R $USER:$USER .
-          chmod +x ./gha-script/build_wheels.sh
-          bash ./gha-script/build_wheels.sh
-
-          echo "===========after execution =================="
-          sudo apt update -y
-          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
-          sudo uname -a
-
-
-  wheel_build_py314:
+  wheel_build_ubi8_py314:
     needs: build_info
-    if: needs.build_info.outputs.wheel_build_enabled == 'true'
-    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi8 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
     continue-on-error: true
     env:
-      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-      GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
       PYTHON_VERSION: "3.14"
-
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi8).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
-
       - name: Install system dependencies
-        run: |
-          sudo apt update -y
-
-      - name: Download package-cache from previous step
-        uses: actions/download-artifact@v7
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
       - name: Run build_wheels.sh
         run: |
-          ls
-          echo "---------------------updated cache-----------------------"
-          ls package-cache
-
-          chmod +x package-cache/variable.sh
-          chmod +x package-cache/scanner-env.sh
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-
-          # CONTROL FLAG HERE
-          if [ "$WHEEL_BUILD" != "true" ]; then
-            echo "Skipping wheel build as WHEEL_BUILD=false"
-            exit 0
-          fi
-
-          # Check if any .sh build script is modified in this package
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
-
-          if [[ -z "$BUILD_SCRIPT_CHANGED" ]]; then
-            echo "Skipping wheel build as no .sh build script changes detected"
-            exit 0
+          [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
+          sudo chown -R $USER:$USER .
+          export ENABLE_CVE_SCAN=false
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+      - name: Verify wheel was produced
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            echo "Wheel built successfully: $(ls *.whl)"
+          else
+            echo "No wheel produced."
+            exit 1
           fi
 
+  # UBI9 wheel jobs -----------------------------------------------------------
+
+  wheel_build_ubi9_py310:
+    needs: build_info
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
+    env:
+      PYTHON_VERSION: "3.10"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi9).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
+          BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
+          [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
           sudo chown -R $USER:$USER .
-          chmod +x ./gha-script/build_wheels.sh
-          bash ./gha-script/build_wheels.sh
+          export ENABLE_CVE_SCAN=false
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+      - name: Verify wheel was produced
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            echo "Wheel built successfully: $(ls *.whl)"
+          else
+            echo "No wheel produced."
+            exit 1
+          fi
 
-          echo "===========after execution =================="
-          sudo apt update -y
-          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
-          sudo uname -a
+  wheel_build_ubi9_py311:
+    needs: build_info
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
+    env:
+      PYTHON_VERSION: "3.11"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi9).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
+          BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
+          [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
+          sudo chown -R $USER:$USER .
+          export ENABLE_CVE_SCAN=false
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+      - name: Verify wheel was produced
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            echo "Wheel built successfully: $(ls *.whl)"
+          else
+            echo "No wheel produced."
+            exit 1
+          fi
 
+  wheel_build_ubi9_py312:
+    needs: build_info
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
+    env:
+      PYTHON_VERSION: "3.12"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi9).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
+          BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
+          [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
+          sudo chown -R $USER:$USER .
+          export ENABLE_CVE_SCAN=false
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+      - name: Verify wheel was produced
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            echo "Wheel built successfully: $(ls *.whl)"
+          else
+            echo "No wheel produced."
+            exit 1
+          fi
 
+  wheel_build_ubi9_py313:
+    needs: build_info
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
+    continue-on-error: true
+    env:
+      PYTHON_VERSION: "3.13"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi9).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
+          BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
+          [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
+          sudo chown -R $USER:$USER .
+          export ENABLE_CVE_SCAN=false
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+      - name: Verify wheel was produced
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            echo "Wheel built successfully: $(ls *.whl)"
+          else
+            echo "No wheel produced."
+            exit 1
+          fi
+
+  wheel_build_ubi9_py314:
+    needs: build_info
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
+    continue-on-error: true
+    env:
+      PYTHON_VERSION: "3.14"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi9).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
+          BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
+          [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
+          sudo chown -R $USER:$USER .
+          export ENABLE_CVE_SCAN=false
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+      - name: Verify wheel was produced
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            echo "Wheel built successfully: $(ls *.whl)"
+          else
+            echo "No wheel produced."
+            exit 1
+          fi
+
+  # UBI10 wheel jobs (py312-py314 only  -  py310/py311 not supported on UBI10) ----
+
+  wheel_build_ubi10_py312:
+    needs: build_info
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi10 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
+    env:
+      PYTHON_VERSION: "3.12"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi10).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
+          BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
+          [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
+          sudo chown -R $USER:$USER .
+          export ENABLE_CVE_SCAN=false
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+      - name: Verify wheel was produced
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            echo "Wheel built successfully: $(ls *.whl)"
+          else
+            echo "No wheel produced."
+            exit 1
+          fi
+
+  wheel_build_ubi10_py313:
+    needs: build_info
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi10 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
+    continue-on-error: true
+    env:
+      PYTHON_VERSION: "3.13"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi10).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
+          BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
+          [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
+          sudo chown -R $USER:$USER .
+          export ENABLE_CVE_SCAN=false
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+      - name: Verify wheel was produced
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            echo "Wheel built successfully: $(ls *.whl)"
+          else
+            echo "No wheel produced."
+            exit 1
+          fi
+
+  wheel_build_ubi10_py314:
+    needs: build_info
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi10 != '' }}
+    runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
+    continue-on-error: true
+    env:
+      PYTHON_VERSION: "3.14"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi10).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
+          BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
+          [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
+          sudo chown -R $USER:$USER .
+          export ENABLE_CVE_SCAN=false
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+      - name: Verify wheel was produced
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            echo "Wheel built successfully: $(ls *.whl)"
+          else
+            echo "No wheel produced."
+            exit 1
+          fi
+
+  # ---------------------------------------------------------------------------
+  # build_docker  -  only when Dockerfile changed and docker_build=true in build_info
+  # ---------------------------------------------------------------------------
   build_docker:
     needs: build_info
     if: needs.build_info.outputs.docker_build_enabled == 'true'
     runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-
       - name: Download package-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
       - name: Build Docker Image
         run: |
-          echo "===== Sourcing environment ====="
           ls package-cache
-
           chmod +x package-cache/variable.sh
           chmod +x package-cache/scanner-env.sh
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
-
           BUILD_DOCKER=$(echo "$BUILD_DOCKER" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
           DOCKERFILE_CHANGED=$(echo "$CHANGED_FILES" | grep -i 'Dockerfile' || true)
-
           if [[ "$BUILD_DOCKER" != "true" ]]; then
-            echo "Skipping Docker build as BUILD_DOCKER=$BUILD_DOCKER"
-            exit 0
+            echo "Skipping Docker build as BUILD_DOCKER=$BUILD_DOCKER"; exit 0
           fi
-
           if [[ -z "$DOCKERFILE_CHANGED" ]]; then
-            echo "Skipping Docker build as no Dockerfile changes detected in PR"
-            exit 0
+            echo "Skipping Docker build as no Dockerfile changes detected in PR"; exit 0
           fi
-
           echo "Dockerfile change detected, proceeding with build..."
-
-          echo "===== Starting Docker build ====="
           sudo chown -R $USER:$USER .
           chmod +x ./gha-script/build_docker.sh
           bash ./gha-script/build_docker.sh
-
-          echo "===== Docker images after build ====="
           docker images
-
-          echo "===== Saving Docker image ====="
           docker save -o package-cache/image.tar "$IMAGE_NAME"
-
           ls -lh package-cache/image.tar
