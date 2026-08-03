@@ -1,0 +1,16 @@
+{
+   "maintainer": "vivek sharma",
+   "package_name": "mistral-common",
+   "github_url": "https://github.com/mistralai/mistral-common",
+   "version": "v1.11.5",
+   "default_branch": "main",
+   "build_script": "mistral-common_ubi_9.6.sh",
+   "package_dir": "m/mistral-common",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"mistral-common_ubi_9.6.sh"
+  }
+}

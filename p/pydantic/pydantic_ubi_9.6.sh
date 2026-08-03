@@ -27,8 +27,8 @@ PACKAGE_DIR=pydantic
 
 # Install dependencies
 yum install -y git python3 python3-devel.ppc64le gcc-toolset-13 make wget sudo cmake
-pip3 install pytest hatchling
-
+# Downgrading pytest due to pytest 9.x incompatibility for test_deprecated_fields.py
+python3 -m pip install "pytest<9" hatchling
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -42,16 +42,40 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-if ! python3 -m pip install -e .; then
+# Pre-install pydantic-core from PyPI wheel to avoid source compilation.
+# Without this, pip builds pydantic-core from source using the bundled PyO3,
+# which caps at Python 3.13 for versions prior to pydantic v2.13.0.
+PYDANTIC_CORE_VERSION=$(grep -oP "pydantic-core==\K[0-9]+\.[0-9]+\.[0-9]+" pyproject.toml | head -1)
+pip install "pydantic-core==${PYDANTIC_CORE_VERSION}"
+
+if ! pip install -e .; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-pip3 install pytest-benchmark jsonschema pytest_examples dirty_equals pytz rich faker pytest-mock eval_type_backport
+pip3 install pytest-benchmark jsonschema pytest_examples dirty_equals pytz rich faker pytest-mock eval_type_backport pytest-run-parallel hypothesis pytest-timeout inline-snapshot black==24.10.0
+# Deselect test_missing_sentinel_pickle for v2.12.0–v2.13.3: those versions mark it
+# xfail(strict=True) unconditionally, but newer typing_extensions makes it pass → XPASS hard fail.
+# The fix landed in v2.13.4.
+PYTEST_DESELECT=""
+VERSION_CLEAN=$(echo "$PACKAGE_VERSION" | sed 's/^v//')
+MAJOR=$(echo "$VERSION_CLEAN" | cut -d. -f1)
+MINOR=$(echo "$VERSION_CLEAN" | cut -d. -f2)
+PATCH=$(echo "$VERSION_CLEAN" | cut -d. -f3)
+if [ "$MAJOR" -eq 2 ] && \
+   { [ "$MINOR" -eq 12 ] || { [ "$MINOR" -eq 13 ] && [ "$PATCH" -le 3 ]; }; }; then
+    PYTEST_DESELECT="--deselect tests/test_missing_sentinel.py::test_missing_sentinel_pickle"
+fi
 
-if ! (pytest); then
+# test_deferred_annotations_nested_model is xfail(strict=True) in v2.12.x but passes on
+# Python 3.14.1+ due to CPython fix (cpython#138164). The xfail marker was removed in v2.13.0.
+if [ "$MAJOR" -eq 2 ] && [ "$MINOR" -eq 12 ]; then
+    PYTEST_DESELECT="$PYTEST_DESELECT --deselect tests/test_deferred_annotations.py::test_deferred_annotations_nested_model"
+fi
+
+if ! (python3 -m pytest $PYTEST_DESELECT); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"

@@ -1,0 +1,16 @@
+{
+  "maintainer": "vrushanaik",
+  "package_name": "mysql-connector-python",
+  "github_url": "https://github.com/mysql/mysql-connector-python",
+  "version": "26.7.0",
+  "default_branch": "trunk",
+  "build_script": "mysql-connector-python_ubi_9.6.sh",
+  "package_dir": "m/mysql-connector-python",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "wheel_build": true,
+  "*": {
+    "build_script": "mysql-connector-python_ubi_9.6.sh"
+  }
+}

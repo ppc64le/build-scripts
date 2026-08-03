@@ -1,0 +1,16 @@
+{
+  "maintainer": "prabhuk25",
+  "package_name": "che-code",
+  "github_url": "https://github.com/che-incubator/che-code",
+  "version": "v7.117.0",
+  "package_dir": "e/eclipse-che/che-incubator/che-code",
+  "default_branch": "devel",
+  "build_script": "che_code_7.117.0_rhel_9.7.sh",
+  "docker_build": false,
+  "wheel_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "che_code_7.117.0_rhel_9.7.sh"
+  }
+}

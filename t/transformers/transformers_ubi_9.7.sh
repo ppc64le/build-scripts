@@ -14,8 +14,7 @@ set -eo pipefail
 #                  platform and package version. Functionality with newer
 #                  versions of the package or OS is not guaranteed.
 # -------------------------------------------------------------------------------
-
-PACKAGE_VERSION="v5.1.0"
+PACKAGE_VERSION=${1:-v5.1.0}
 PACKAGE_URL="https://github.com/huggingface/transformers.git"
 PACKAGE_DIR="transformers"
 TORCHCODEC_VERSION="v0.9.0"
@@ -105,7 +104,7 @@ rpm -e --nodeps openssl-fips-provider-so || true
 python -m pip install clearml phonemizer tiktoken
 python -m pip install -U "pydantic>=2"
 python -m pip install GitPython
-python -m pip install sentencepiece==0.1.97 parameterized datasets==4.0.0 setuptools wheel pytest timeout_decorator evaluate GitPython ruff psutil packaging pyyaml
+python -m pip install sentencepiece==0.1.97 parameterized datasets==4.0.0 setuptools wheel pytest timeout_decorator evaluate GitPython ruff psutil packaging pyyaml rich
 python -m pip install ruff
 python -m pip install "numpy<2"
 python -m pip install --no-cache-dir evaluate sacrebleu
@@ -119,7 +118,7 @@ cd "${PACKAGE_DIR}"
 git checkout "${PACKAGE_VERSION}"
 
 
-    if ! python -m pip install '.[torch]'; then
+    if ! python -m pip install '.[torch,serving]'; then
         echo "${PACKAGE_DIR} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | ${OS_NAME} | GitHub | Fail | Install_Fails"
         cd "${BUILD_HOME}"
         return 1
