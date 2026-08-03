@@ -377,14 +377,16 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Build Package (UBI8)
         run: |
+          # Capture the GHA job-level BUILD_SCRIPT before sourcing variable.sh,
+          # which overwrites BUILD_SCRIPT with the first/backward-compat script.
+          THIS_SCRIPT="$BUILD_SCRIPT"
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
           sudo chown -R $USER:$USER .
-          echo "--- Executing changed scripts for UBI8 ---"
-          # Filter CHANGED_FILES to only the script assigned to this UBI job so that
-          # execute_changed_scripts.py does not also run the UBI10 (or other) scripts
-          # that are present in the same PR.
-          export CHANGED_FILES=$(echo "$CHANGED_FILES" | grep -F "$BUILD_SCRIPT" || true)
+          echo "--- Executing changed scripts for UBI8 (script: $THIS_SCRIPT) ---"
+          # Filter CHANGED_FILES to only the script assigned to this UBI job.
+          export CHANGED_FILES=$(echo "$CHANGED_FILES" | grep -F "$THIS_SCRIPT" || true)
+          export BUILD_SCRIPT="$THIS_SCRIPT"
           chmod +x ./gha-script/execute_changed_scripts.py
           python3 -u ./gha-script/execute_changed_scripts.py
 
@@ -407,11 +409,13 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Build Package (UBI9)
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
           sudo chown -R $USER:$USER .
-          echo "--- Executing changed scripts for UBI9 ---"
-          export CHANGED_FILES=$(echo "$CHANGED_FILES" | grep -F "$BUILD_SCRIPT" || true)
+          echo "--- Executing changed scripts for UBI9 (script: $THIS_SCRIPT) ---"
+          export CHANGED_FILES=$(echo "$CHANGED_FILES" | grep -F "$THIS_SCRIPT" || true)
+          export BUILD_SCRIPT="$THIS_SCRIPT"
           chmod +x ./gha-script/execute_changed_scripts.py
           python3 -u ./gha-script/execute_changed_scripts.py
 
@@ -434,11 +438,13 @@ jobs:
         run: tar -xzf package-cache.tar.gz
       - name: Build Package (UBI10)
         run: |
+          THIS_SCRIPT="$BUILD_SCRIPT"
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
           sudo chown -R $USER:$USER .
-          echo "--- Executing changed scripts for UBI10 ---"
-          export CHANGED_FILES=$(echo "$CHANGED_FILES" | grep -F "$BUILD_SCRIPT" || true)
+          echo "--- Executing changed scripts for UBI10 (script: $THIS_SCRIPT) ---"
+          export CHANGED_FILES=$(echo "$CHANGED_FILES" | grep -F "$THIS_SCRIPT" || true)
+          export BUILD_SCRIPT="$THIS_SCRIPT"
           chmod +x ./gha-script/execute_changed_scripts.py
           python3 -u ./gha-script/execute_changed_scripts.py
 
