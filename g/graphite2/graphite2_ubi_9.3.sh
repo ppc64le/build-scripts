@@ -50,13 +50,58 @@ cd ..
 echo "/usr/local/lib" > /etc/ld.so.conf.d/graphite2.conf
 ldconfig
 
-# Stage libgraphite2.so.3 into python/graphite2/lib/ — the exact fallback
-# path __init__.py already uses when ctypes.find_library returns None:
-#   libpath = os.path.join(wheel, 'lib', 'libgraphite2.so')
+# Stage libgraphite2.so.3 into python/graphite2/lib/ — the bundled library
+# the wheel carries for self-contained use on any Power device.
+# Copy the real file for all three names (no symlinks) so the wheel zip
+# contains actual files that extract correctly on any target container.
 mkdir -p python/graphite2/lib
 cp build_cmake/src/libgraphite2.so.3.2.1 python/graphite2/lib/libgraphite2.so.3.2.1
-ln -sf libgraphite2.so.3.2.1             python/graphite2/lib/libgraphite2.so.3
-ln -sf libgraphite2.so.3                 python/graphite2/lib/libgraphite2.so
+cp build_cmake/src/libgraphite2.so.3.2.1 python/graphite2/lib/libgraphite2.so.3
+cp build_cmake/src/libgraphite2.so.3.2.1 python/graphite2/lib/libgraphite2.so
+
+# Patch __init__.py so the wheel's own lib/ is checked FIRST, before
+# ctypes.util.find_library() is called.  Without this patch, find_library()
+# can return a bare SONAME ("libgraphite2.so.3") on a system that has no
+# graphite2 installed, which is not None, so the wheel fallback is skipped
+# and LoadLibrary() fails with "No such file or directory".
+# Use a Python one-liner to do the replacement so indentation is exact.
+python3 - <<'PYEOF'
+import pathlib
+
+init = pathlib.Path("python/graphite2/__init__.py")
+src  = init.read_text()
+
+old = (
+    "libpath = os.environ.get('PYGRAPHITE2_LIBRARY_PATH',\n"
+    "                         ctypes.util.find_library(\"graphite2\"))\n"
+    "if libpath is None:\n"
+    "    # find wheel's library\n"
+    "    wheel = os.path.dirname(__file__)\n"
+    "    if os.name == 'nt':\n"
+    "        libpath = os.path.join(wheel, 'bin', 'graphite2.dll')\n"
+    "    else:\n"
+    "        libpath = os.path.join(wheel, 'lib', 'libgraphite2.so')"
+)
+
+new = (
+    "# Always prefer the library bundled inside the wheel so the wheel is\n"
+    "# self-contained.  Only fall back to the system library when the wheel\n"
+    "# carries no bundled copy (e.g. a plain source install).\n"
+    "_wheel_lib = os.path.join(os.path.dirname(__file__), 'lib', 'libgraphite2.so')\n"
+    "if os.path.exists(_wheel_lib):\n"
+    "    libpath = _wheel_lib\n"
+    "else:\n"
+    "    libpath = os.environ.get('PYGRAPHITE2_LIBRARY_PATH',\n"
+    "                             ctypes.util.find_library('graphite2'))"
+)
+
+if "_wheel_lib" not in src:
+    src = src.replace(old, new)
+    init.write_text(src)
+    print("__init__.py patched")
+else:
+    print("__init__.py already patched, skipping")
+PYEOF
 
 # Patch setup.py to declare the staged .so files as package_data so that
 # bdist_wheel includes them inside the wheel archive.
