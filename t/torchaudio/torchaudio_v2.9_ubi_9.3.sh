@@ -23,7 +23,7 @@ set -ex
 # Variables
 PACKAGE_NAME=audio
 PACKAGE_URL=https://github.com/pytorch/audio.git
-PACKAGE_VERSION=${1:-v2.9.0}
+PACKAGE_VERSION=${1:-v2.11.0}
 PACKAGE_DIR=./audio
 SCRIPT_DIR=$(pwd)
 
