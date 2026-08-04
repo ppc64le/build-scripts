@@ -73,7 +73,12 @@ pip install --upgrade pip setuptools wheel
 # Install Python runtime dependencies.
 # torch and humanize are imported at module level in the core package.
 # numpy and safetensors are needed for the test stage.
-pip install torch humanize "numpy>=1.24.4" "safetensors>=0.5.3"
+# torch has no ppc64le wheel on PyPI — install from the IBM wheels index.
+IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
+pip install --trusted-host wheels.developerfirst.ibm.com \
+    --extra-index-url "${IBM_WHEELS}" --prefer-binary \
+    torch
+pip install humanize "numpy>=1.24.4" "safetensors>=0.5.3"
 
 # ---------------------------------------------------------------------------
 # Step 0: Bootstrap Bazel from source
