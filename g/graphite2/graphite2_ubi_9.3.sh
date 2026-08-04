@@ -22,6 +22,7 @@
 PACKAGE_NAME=graphite2
 PACKAGE_VERSION=${1:-1.3.14}
 PACKAGE_URL=https://github.com/silnrsi/graphite
+CURRENT_DIR=$(pwd)
 
 # Install dependencies and tools.
 # cmake is required to build the native libgraphite2.so.3 shared library,
@@ -110,9 +111,9 @@ sed -i "s|    packages         = \['graphite2'\],|    packages         = ['graph
 # Build the wheel — graphite2/lib/libgraphite2.so* is now included.
 pip3 install wheel
 mkdir -p dist
-python3 setup.py bdist_wheel --dist-dir dist/
+python3 setup.py bdist_wheel --dist-dir "$CURRENT_DIR/"
 
-WHEEL_FILE=$(ls dist/graphite2-*.whl | head -1)
+WHEEL_FILE=$(ls "$CURRENT_DIR"/graphite2-*.whl | head -1)
 echo "Arch-specific self-contained wheel: $WHEEL_FILE"
 
 # Install from the wheel.
