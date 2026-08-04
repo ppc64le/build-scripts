@@ -1,5 +1,5 @@
 {
-  "maintainer": "Vrusha Naik <Vrusha.Naik@ibm.com>",
+  "maintainer": "vrushanaik",
   "package_name": "debugpy",
   "github_url": "https://github.com/microsoft/debugpy.git",
   "version": "v1.8.20",
