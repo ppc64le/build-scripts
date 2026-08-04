@@ -462,9 +462,13 @@ print("  aws.BUILD patched OK" if changed else "  aws.BUILD already patched — 
 PYEOF
 
 # ---------------------------------------------------------------------------
-# Step 7: Patch cpp/Makefile — build s3 target only (drop streamer, gcs, azure)
+# Step 7: Patch cpp/Makefile — build streamer + s3 targets (drop gcs, azure)
+# The py/ packaging layer resolves the bazel-out symlink for libstreamer.so
+# when assembling the s3 wheel; if libstreamer.so was not built in this Bazel
+# output tree the symlink target is missing and setup.py raises FileNotFoundError.
+# We therefore keep streamer:libstreamer.so in the build so the symlink is valid.
 # ---------------------------------------------------------------------------
-echo "==> Patching cpp/Makefile (s3 target only)"
+echo "==> Patching cpp/Makefile (streamer + s3 targets, drop gcs and azure)"
 
 python3 - <<'PYEOF'
 path = "cpp/Makefile"
@@ -485,9 +489,12 @@ OLD_BUILD = (
     "\t\t--define USE_SYSTEM_LIBS=${USE_SYSTEM_LIBS} \\\n"
     '\t\t"--config=${ARCH}"'
 )
-# S3 wheel needs libstreamers3.so only
+# S3 wheel: build streamer first (py/ packaging needs the libstreamer.so
+# symlink target to exist), then build libstreamers3.so; drop gcs and azure.
 NEW_BUILD = (
     "build:\n"
+    "\tbazel build streamer:libstreamer.so \\\n"
+    '\t\t"--config=${ARCH}" && \\\n'
     "\tbazel build s3:libstreamers3.so \\\n"
     "\t\t--define USE_SYSTEM_LIBS=${USE_SYSTEM_LIBS} \\\n"
     '\t\t"--config=${ARCH}"'
@@ -712,4 +719,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
