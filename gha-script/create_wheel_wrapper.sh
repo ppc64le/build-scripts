@@ -385,16 +385,24 @@ echo
 echo "=== Post Processing wheel ${wheel_final} with SHA: ${SHA256_VALUE} ==="
 echo
 
-# post processing of wheels (Suffix addition, license addition, metadata addition)
-if python ${POST_PROCESS_SCRIPT_PATH} ${wheel_final} ${SHA256_VALUE}; then
+# In PR builds ENABLE_CVE_SCAN=false and COS credentials are absent.
+# Skip post-processing entirely  -  PRs only verify the wheel builds, not publish them.
+if [ "${ENABLE_CVE_SCAN:-true}" = "false" ]; then
     echo
-    echo "===> SUCCESS: Wheels post process successfully."
+    echo "===> Skipping post-processing in PR build (ENABLE_CVE_SCAN=false)."
     echo
 else
-    echo
-    echo "===> ERROR: Failed to post process wheels."
-    echo
-    exit 1
+    # post processing of wheels (Suffix addition, license addition, metadata addition)
+    if python ${POST_PROCESS_SCRIPT_PATH} ${wheel_final} ${SHA256_VALUE}; then
+        echo
+        echo "===> SUCCESS: Wheels post process successfully."
+        echo
+    else
+        echo
+        echo "===> ERROR: Failed to post process wheels."
+        echo
+        exit 1
+    fi
 fi
 
 # CVE scan runs after post-processing so the report is named after the final
