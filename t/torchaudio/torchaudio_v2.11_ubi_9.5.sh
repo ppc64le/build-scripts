@@ -185,17 +185,23 @@ export USE_FFMPEG=OFF
 export BUILD_SOX=OFF
 export USE_OPENMP=OFF
 export BUILD_TORCHAUDIO_PYTHON_EXTENSION=ON
-export LIBPROTO_INSTALL=${SCRIPT_DIR}/protobuf/local/libprotobuf
-export Protobuf_INCLUDE_DIR=${LIBPROTO_INSTALL}/include
-export Protobuf_LIBRARIES=${LIBPROTO_INSTALL}/lib64
-export Protobuf_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf.so
-export Protobuf_LITE_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf-lite.so
-export Protobuf_PROTOC_EXECUTABLE=${LIBPROTO_INSTALL}/bin/protoc
-export LD_LIBRARY_PATH=${SCRIPT_DIR}/pytorch/torch/lib64/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=${SCRIPT_DIR}/pytorch/build/lib/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PATH
-export PATH="${SCRIPT_DIR}/protobuf/local/libprotobuf/bin/protoc:${PATH}"
-export LD_LIBRARY_PATH="${SCRIPT_DIR}/OpenBLAS:/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
-export LD_LIBRARY_PATH="${SCRIPT_DIR}/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
+# Use the protobuf built by PyTorch
+export LIBPROTO_INSTALL=${SCRIPT_DIR}/pytorch/build
+
+export Protobuf_DIR=${SCRIPT_DIR}/pytorch/build/third_party/protobuf/cmake/lib64/cmake/protobuf
+
+export Protobuf_INCLUDE_DIR=${SCRIPT_DIR}/pytorch/third_party/protobuf/src
+export Protobuf_LIBRARIES=${SCRIPT_DIR}/pytorch/build/lib
+export Protobuf_LIBRARY=${SCRIPT_DIR}/pytorch/build/lib/libprotobuf.so
+export Protobuf_LITE_LIBRARY=${SCRIPT_DIR}/pytorch/build/lib/libprotobuf-lite.so
+export Protobuf_PROTOC_EXECUTABLE=${SCRIPT_DIR}/pytorch/build/bin/protoc
+
+export CMAKE_PREFIX_PATH="${SCRIPT_DIR}/pytorch/build/third_party/protobuf/cmake:/usr/local/lib64/python3.12/site-packages/torch/share/cmake:${CMAKE_PREFIX_PATH}"
+export CMAKE_ARGS="-DProtobuf_DIR=${Protobuf_DIR}"
+
+export PATH="${SCRIPT_DIR}/pytorch/build/bin:${PATH}"
+
+export LD_LIBRARY_PATH="${SCRIPT_DIR}/pytorch/build/lib:${SCRIPT_DIR}/pytorch/torch/lib64:/usr/local/lib64:/usr/local/lib:${LD_LIBRARY_PATH}"
 
 PY_VER=$(python3.12 -c 'import sys; print(f"{sys.version_info.major}{sys.version_info.minor}")')
 export LD_LIBRARY_PATH="${SCRIPT_DIR}/audio/build/lib.linux-ppc64le-cpython-${PY_VER}/torchaudio/lib:$LD_LIBRARY_PATH"
