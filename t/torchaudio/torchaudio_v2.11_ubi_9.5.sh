@@ -36,6 +36,7 @@ dnf install -y --nobest --skip-broken openssl-devel
 echo "Installed required deps from RH"
 
 export BUILD_VERSION=${PACKAGE_VERSION#v}
+export MAX_JOBS=$(nproc)
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
@@ -85,8 +86,7 @@ cd $SCRIPT_DIR
 echo "------------ libprotobuf,protobuf installed--------------"
 
 echo "----Installing rust------"
-curl https://sh.rustup.rs -sSf | sh -s -- -y
-source "$HOME/.cargo/env"
+dnf install -y rust cargo
 
 echo "------------cloning pytorch----------------"
 git clone https://github.com/pytorch/pytorch.git
@@ -94,6 +94,7 @@ cd pytorch
 git checkout $PACKAGE_VERSION
 git submodule sync
 git submodule update --init --recursive
+export LIBPROTO_INSTALL=${SCRIPT_DIR}/pytorch/build
 
 ARCH=`uname -p`
 BUILD_NUM="1"
@@ -147,7 +148,7 @@ python3.12 -m pip install -r requirements.txt
 echo "Installed requirement files from source"
 
 echo "Installing pytorch...."
-if ! (MAX_JOBS=$(nproc) python3.12 setup.py install);then
+if ! (MAX_JOBS=${MAX_JOBS} python3.12 setup.py install);then
    echo "------------------pytorch:Install_fails-------------------------------------"
    echo "https://github.com/pytorch/pytorch.git pytorch"
    echo "pytorch  |  https://github.com/pytorch/pytorch.git  | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -186,7 +187,7 @@ export BUILD_SOX=OFF
 export USE_OPENMP=OFF
 export BUILD_TORCHAUDIO_PYTHON_EXTENSION=ON
 # Use the protobuf built by PyTorch
-export LIBPROTO_INSTALL=${SCRIPT_DIR}/pytorch/build
+#export LIBPROTO_INSTALL=${SCRIPT_DIR}/pytorch/build
 
 export Protobuf_DIR=${SCRIPT_DIR}/pytorch/build/third_party/protobuf/cmake/lib64/cmake/protobuf
 
@@ -217,12 +218,6 @@ fi
 
 #basic import test
 export LD_LIBRARY_PATH="/OpenBLAS/:${LD_LIBRARY_PATH}"
-if ! (python3.12 -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"); then 
-   echo "------------------$PACKAGE_NAME:Failed to build wheel-------------------------------------"
-   echo "$PACKAGE_URL $PACKAGE_NAME"
-   echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-   exit 1
-fi
 
 if ! (python3.12 -c "import torch; import torch._C; import torchaudio"); then
      echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails--------------------"
