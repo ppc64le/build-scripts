@@ -1,9 +1,6 @@
 name: Currency Build
 on:
   workflow_dispatch:
-    branches:
-      - master
-
     inputs:
       package_name:
         description: 'Name of the package to build'
@@ -54,8 +51,14 @@ run-name: >
       format('Currency Build {0} && Unique ID {1}', inputs.package_name, inputs.unique_id)
   }}
 
-
 jobs:
+
+  # ---------------------------------------------------------------------------
+  # build_info: reads build_info.json, runs read_buildinfo.sh, emits
+  # per-UBI-major outputs (script_ubi8, script_ubi9, script_ubi10).
+  # Each output is a JSON object string  {"script":"...","tested_on":"..."}
+  # or an empty string "" when that UBI version has no script for this package.
+  # ---------------------------------------------------------------------------
   build_info:
     runs-on: ubuntu-24.04-ppc64le-p10
     env:
@@ -67,15 +70,19 @@ jobs:
       ENABLE_TRIVY: ${{ inputs.enable_trivy }}
       ENABLE_SYFT: ${{ inputs.enable_syft }}
       ENABLE_GRYPE: ${{ inputs.enable_grype }}
+    outputs:
+      script_ubi8:  ${{ steps.emit.outputs.script_ubi8 }}
+      script_ubi9:  ${{ steps.emit.outputs.script_ubi9 }}
+      script_ubi10: ${{ steps.emit.outputs.script_ubi10 }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Install system packages
         run: |
           sudo apt update -y
           sudo apt install -y jq file
-          
+
       - name: Install Python dependencies
         run: |
           pip3 install --force-reinstall -v "requests==2.31.0"
@@ -92,35 +99,50 @@ jobs:
           cat variable.sh
           echo "======================="
 
+      - name: Emit per-UBI outputs
+        id: emit
+        run: |
+          source variable.sh
+          echo "SCRIPT_UBI8=$SCRIPT_UBI8"
+          echo "SCRIPT_UBI9=$SCRIPT_UBI9"
+          echo "SCRIPT_UBI10=$SCRIPT_UBI10"
+          # Use multiline delimiter syntax so JSON double-quotes are not truncated
+          {
+            echo "script_ubi8<<__EOF__"
+            echo "$SCRIPT_UBI8"
+            echo "__EOF__"
+            echo "script_ubi9<<__EOF__"
+            echo "$SCRIPT_UBI9"
+            echo "__EOF__"
+            echo "script_ubi10<<__EOF__"
+            echo "$SCRIPT_UBI10"
+            echo "__EOF__"
+          } >> $GITHUB_OUTPUT
+
       - name: Create scanner-env.sh
         run: |
-          echo "Creating package-cache........."
           mkdir package-cache
-          echo "Creating scanner-env.sh ......."
           echo "export VALIDATE_BUILD_SCRIPT='${{ inputs.validate_build_script }}'" > scanner-env.sh
-          echo "export BUILD_DOCKER='${{ inputs.build_docker }}'" >> scanner-env.sh
-          echo "export PACKAGE_NAME='${{ inputs.package_name }}'" >> scanner-env.sh         
+          echo "export BUILD_DOCKER='${{ inputs.build_docker }}'"                  >> scanner-env.sh
+          echo "export PACKAGE_NAME='${{ inputs.package_name }}'"                  >> scanner-env.sh
           echo "===== scanner-env.sh ====="
           cat scanner-env.sh
           echo "=========================="
-          echo "Moving scanner-env.sh and variable.sh into package-cache............"
-          sudo mv variable.sh package-cache
-          sudo mv scanner-env.sh package-cache
-          echo "Moved scanner-env.sh and variable.sh into package-cache............"
+          sudo mv variable.sh package-cache/
+          sudo mv scanner-env.sh package-cache/
 
       - name: Archive package cache
         run: tar -czf package-cache.tar.gz package-cache/
 
-      - name: Upload variable.sh and scanner-env.sh via package-cache
-        uses: actions/upload-artifact@v6
+      - name: Upload package-cache artifact
+        uses: actions/upload-artifact@v4
         with:
           name: package-cache
           path: package-cache.tar.gz
 
   # ---------------------------------------------------------------------------
-  # install_scan_tools: Installs grype ONCE (static Go binary — fully portable)
-  # and caches it as an artifact for all wheel_build_pyXXX jobs.
-  # Scancode-toolkit is fetched once and distributed as an artifact too.
+  # install_scan_tools: installs grype + fetches scancode-toolkit source ONCE.
+  # Skipped entirely when wheel_build=false.
   # ---------------------------------------------------------------------------
   install_scan_tools:
     needs: build_info
@@ -128,7 +150,7 @@ jobs:
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Install system dependencies
         run: |
@@ -141,7 +163,7 @@ jobs:
           bash ./gha-script/scanner-scripts/fetch_scancode_toolkit.sh
 
       - name: Upload scancode-toolkit-src artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: scancode-toolkit-src
           path: scancode-toolkit-src.tar.gz
@@ -157,1098 +179,1403 @@ jobs:
             echo "[INFO] Checksum verification successful."
             tar -xzf grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz
           else
-            echo "[ERROR] Checksum verification FAILED for grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz."
+            echo "[ERROR] Checksum verification FAILED."
             exit 1
           fi
           mkdir -p scan-tools-bin
           mv grype scan-tools-bin/grype
           chmod +x scan-tools-bin/grype
-          echo "Grype version:"
           scan-tools-bin/grype version
 
       - name: Archive grype binary
         run: tar -czf scan-tools-cache.tar.gz scan-tools-bin/
 
       - name: Upload scan-tools-cache artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: scan-tools-cache
           path: scan-tools-cache.tar.gz
 
-        
-  build:
-    needs: build_info
-    if: ${{ inputs.validate_build_script == 'true' }}
-    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
-    steps:
-      - uses: actions/checkout@v6
+  # ---------------------------------------------------------------------------
+  # BUILD JOBS — one per UBI major version.
+  # Each job runs build_package.sh inside the correct UBI container.
+  # build_ubi9 always runs (every package has at least a UBI9 script).
+  # build_ubi8 / build_ubi10 only run when that UBI version has a script.
+  # All three are independent of each other (fully parallel).
+  # ---------------------------------------------------------------------------
 
+  build_ubi8:
+    needs: build_info
+    if: ${{ inputs.validate_build_script == 'true' && needs.build_info.outputs.script_ubi8 != '' }}
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
+    env:
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi8).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}
+    steps:
+      - uses: actions/checkout@v4
       - name: Download package-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-      
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
-      - name: Build Package
+      - name: Build Package (UBI8)
         env:
           GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
-          echo "Sourcing variable.sh and scanner-env.sh..........................................."
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
-          echo "===== variable.sh ====="
-          cat package-cache/variable.sh
-          echo "===== scanner-env.sh ====="
-          cat package-cache/scanner-env.sh
-          echo "==============LSCPU================"
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi8).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}"
+          echo "===== variable.sh ====="; cat package-cache/variable.sh
+          echo "BUILD_SCRIPT=$BUILD_SCRIPT  TESTED_ON=$TESTED_ON"
           lscpu
-          echo "==================================="
           chmod +x ./gha-script/build_package.sh
           bash ./gha-script/build_package.sh
           cloned_package=$(ls -td -- */ | head -n 1)
-          sudo mv "$cloned_package" package-cache
+          sudo mv "$cloned_package" package-cache/
           echo "export CLONED_PACKAGE=\"$cloned_package\"" >> package-cache/scanner-env.sh
-          echo "-------------updated scanner-env.sh-----------------------"
-          cat  package-cache/scanner-env.sh
-          echo "---------------------------------------------"
-          cd package-cache
-          sudo chown $USER:$USER -R .
+          cd package-cache && sudo chown $USER:$USER -R .
           chmod +x ../gha-script/pre_process.sh
           bash ../gha-script/pre_process.sh
           cd $GITHUB_WORKSPACE
-          gzip build_log
+          gzip build_log && mv build_log.gz build_log_UBI8.gz
           chmod +x ./gha-script/upload-scripts/upload_file.sh
-          bash ./gha-script/upload-scripts/upload_file.sh build_log.gz
-
-      - name: Fix permissions on package-cache
-        run: |
-          USER=$(whoami)
-          echo "Current user: $USER"
-          echo "Fixing ownership and permissions for package-cache"
-          sudo chown -R $USER:$USER package-cache
-          sudo chmod -R u+rwX,go+rX,go-w package-cache
-          
-      - name: Archive updated package cache
+          bash ./gha-script/upload-scripts/upload_file.sh build_log_UBI8.gz
+      - name: Fix permissions
+        run: sudo chown -R $USER:$USER package-cache && sudo chmod -R u+rwX,go+rX,go-w package-cache
+      - name: Archive updated package-cache
         run: tar -czf package-cache.tar.gz package-cache/
-
-      - name: Upload updated package-cache
-        uses: actions/upload-artifact@v6
+      - name: Upload updated package-cache (UBI8)
+        uses: actions/upload-artifact@v4
         with:
-          name: updated-package-cache
+          name: updated-package-cache-ubi8
           path: package-cache.tar.gz
 
-          
-  # ---------------------------------------------------------------------------
-  # wheel_build_pyXXX jobs: build wheel → run CVE scan (generalized_wheel_scanner)
-  # → run scancode scan → run grype scan → upload all results to COS.
-  # Grype is reused from the install_scan_tools artifact (static binary).
-  # ---------------------------------------------------------------------------
-
-  wheel_build_py310:
-    needs:
-      - build_info
-      - install_scan_tools
-    if: ${{ inputs.wheel_build == 'true' }}
+  build_ubi9:
+    needs: build_info
+    if: ${{ inputs.validate_build_script == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     env:
-      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-      GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
-      PYTHON_VERSION: "3.10"
-      PACKAGE_NAME: ${{ inputs.package_name }}
-      VERSION: ${{ inputs.version }}
-
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi9).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Install system dependencies
-        run: |
-          sudo apt update -y
-
+      - uses: actions/checkout@v4
       - name: Download package-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
-      - name: Download scan-tools-cache
-        uses: actions/download-artifact@v7
-        with:
-          name: scan-tools-cache
-
-      - name: Extract scan tools
-        run: |
-          tar -xzf scan-tools-cache.tar.gz
-          echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
-
-      - name: Cache pip downloads for scancode-toolkit
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: scancode-pip-ppc64le-v32.4.0
-
-      - name: Download scancode-toolkit-src artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: scancode-toolkit-src
-
-      - name: Extract scancode-toolkit source
-        run: tar -xzf scancode-toolkit-src.tar.gz
-
-      - name: Run build_wheels.sh
-        run: |
-          ls
-          echo "---------------------updated cache-----------------------"
-          ls package-cache
-          chmod +x package-cache/variable.sh
-          chmod +x package-cache/scanner-env.sh
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-        
-          pwd
-          ls -lh
-          chmod +x ./gha-script/build_wheels.sh
-          bash ./gha-script/build_wheels.sh
-
-          WORKSPACE=$(pwd)
-          
-          # Use wheel name for log naming
-          WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
-          WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
-          LOG_NAME="${WHEEL_BASE}_py310_log.gz"
-
-          # Compress and rename the log file
-          gzip "$WORKSPACE/wheel_build_log"
-          mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
-
-          chmod +x ./gha-script/upload-scripts/upload_file.sh
-          bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
-
-      - name: Run scancode scan on wheel
-        run: |
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
-          bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
-          echo "-------------------------scancode outputs-----------------------------------------"
-          ls *.json 2>/dev/null || echo "No JSON output files yet"
-
-      - name: Run grype scan on wheel
-        run: |
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
-          chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
-          bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
-          echo "-------------------------grype outputs-----------------------------------------"
-          ls *.json 2>/dev/null || echo "No JSON output files yet"
-
-      - name: Collect and upload wheel scan results to COS
-        run: |
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-
-          mkdir -p wheel_scancode_py310
-          find . -maxdepth 1 -type f -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py310/ \;
-          echo "Scancode outputs:"
-          ls -lh wheel_scancode_py310
-
-          tar cvzf wheel_scancode_py310.tar.gz wheel_scancode_py310
-          chmod +x ./gha-script/upload-scripts/upload_file.sh
-          bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py310.tar.gz
-
-          mkdir -p grype_wheel_py310
-          find . -maxdepth 1 -type f -name "*_grype_output.json" -exec cp {} grype_wheel_py310/ \;
-          echo "Grype outputs:"
-          ls -lh grype_wheel_py310
-
-          tar cvzf grype_wheel_py310.tar.gz grype_wheel_py310
-          bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py310.tar.gz
-
-      - name: Upload wheel to COS
-        run: |
-          if ls *.whl 1> /dev/null 2>&1; then
-            sudo chmod a+r *.whl
-            WHEEL_FILE=$(ls *.whl)
-            SHA256_VALUE=$(cat sha256.sha)
-            chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
-          else
-            echo "No wheel file found!"
-            exit 1
-          fi
-
-      - name: Upload CVE report to COS
+      - name: Build Package (UBI9)
         env:
           GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
-          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
-          if [ -n "$WHEEL_FILE" ]; then
-            CVE_REPORT="${WHEEL_FILE%.whl}_cve_report.json"
-            if [ -f "$CVE_REPORT" ]; then
-              echo "Uploading CVE report: $CVE_REPORT"
-              source package-cache/variable.sh
-              source package-cache/scanner-env.sh
-              chmod +x ./gha-script/upload-scripts/upload_file.sh
-              bash ./gha-script/upload-scripts/upload_file.sh "$CVE_REPORT"
-            else
-              echo "WARNING: CVE report not found: $CVE_REPORT — skipping upload."
-            fi
-          else
-            echo "WARNING: No wheel found — skipping CVE report upload."
-          fi
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi9).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}"
+          echo "===== variable.sh ====="; cat package-cache/variable.sh
+          echo "BUILD_SCRIPT=$BUILD_SCRIPT  TESTED_ON=$TESTED_ON"
+          lscpu
+          chmod +x ./gha-script/build_package.sh
+          bash ./gha-script/build_package.sh
+          cloned_package=$(ls -td -- */ | head -n 1)
+          sudo mv "$cloned_package" package-cache/
+          echo "export CLONED_PACKAGE=\"$cloned_package\"" >> package-cache/scanner-env.sh
+          cd package-cache && sudo chown $USER:$USER -R .
+          chmod +x ../gha-script/pre_process.sh
+          bash ../gha-script/pre_process.sh
+          cd $GITHUB_WORKSPACE
+          gzip build_log && mv build_log.gz build_log_UBI9.gz
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh build_log_UBI9.gz
+      - name: Fix permissions
+        run: sudo chown -R $USER:$USER package-cache && sudo chmod -R u+rwX,go+rX,go-w package-cache
+      - name: Archive updated package-cache
+        run: tar -czf package-cache.tar.gz package-cache/
+      - name: Upload updated package-cache (UBI9)
+        uses: actions/upload-artifact@v4
+        with:
+          name: updated-package-cache-ubi9
+          path: package-cache.tar.gz
 
-  wheel_build_py311:
-    needs:
-      - build_info
-      - install_scan_tools
-    if: ${{ inputs.wheel_build == 'true' }}
+  build_ubi10:
+    needs: build_info
+    if: ${{ inputs.validate_build_script == 'true' && needs.build_info.outputs.script_ubi10 != '' }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     env:
-      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-      GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi10).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Build Package (UBI10)
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi10).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}"
+          echo "===== variable.sh ====="; cat package-cache/variable.sh
+          echo "BUILD_SCRIPT=$BUILD_SCRIPT  TESTED_ON=$TESTED_ON"
+          lscpu
+          chmod +x ./gha-script/build_package.sh
+          bash ./gha-script/build_package.sh
+          cloned_package=$(ls -td -- */ | head -n 1)
+          sudo mv "$cloned_package" package-cache/
+          echo "export CLONED_PACKAGE=\"$cloned_package\"" >> package-cache/scanner-env.sh
+          cd package-cache && sudo chown $USER:$USER -R .
+          chmod +x ../gha-script/pre_process.sh
+          bash ../gha-script/pre_process.sh
+          cd $GITHUB_WORKSPACE
+          gzip build_log && mv build_log.gz build_log_UBI10.gz
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh build_log_UBI10.gz
+      - name: Fix permissions
+        run: sudo chown -R $USER:$USER package-cache && sudo chmod -R u+rwX,go+rX,go-w package-cache
+      - name: Archive updated package-cache
+        run: tar -czf package-cache.tar.gz package-cache/
+      - name: Upload updated package-cache (UBI10)
+        uses: actions/upload-artifact@v4
+        with:
+          name: updated-package-cache-ubi10
+          path: package-cache.tar.gz
+
+  # ---------------------------------------------------------------------------
+  # WHEEL BUILD JOBS — one job per UBI version per Python version.
+  # All 15 jobs are fully parallel (none depend on the build jobs above).
+  # UBI10 does not support Python 3.10 — those jobs are skipped via if:.
+  # Each job needs install_scan_tools for grype/scancode artifacts.
+  # ---------------------------------------------------------------------------
+
+  wheel_build_ubi8_py311:
+    needs: [build_info, install_scan_tools]
+    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi8 != '' }}
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
+    env:
       PYTHON_VERSION: "3.11"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi8).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}
       PACKAGE_NAME: ${{ inputs.package_name }}
-      VERSION: ${{ inputs.version }}
-
+      VERSION:      ${{ inputs.version }}
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      GHA_CURRENCY_SERVICE_ID:         ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Install system dependencies
-        run: |
-          sudo apt update -y
-
+        run: sudo apt update -y
       - name: Download package-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
       - name: Download scan-tools-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: scan-tools-cache
-
       - name: Extract scan tools
-        run: |
-          tar -xzf scan-tools-cache.tar.gz
-          echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
-
-      - name: Cache pip downloads for scancode-toolkit
+        run: tar -xzf scan-tools-cache.tar.gz && echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+      - name: Cache pip (scancode)
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
-
-      - name: Download scancode-toolkit-src artifact
-        uses: actions/download-artifact@v7
+      - name: Download scancode-toolkit-src
+        uses: actions/download-artifact@v4
         with:
           name: scancode-toolkit-src
-
       - name: Extract scancode-toolkit source
         run: tar -xzf scancode-toolkit-src.tar.gz
-
       - name: Run build_wheels.sh
         run: |
-          ls
-          echo "---------------------updated cache-----------------------"
-          ls package-cache
-          chmod +x package-cache/variable.sh
-          chmod +x package-cache/scanner-env.sh
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
-          
-          echo "===== Checking files before log compression ====="
-          pwd
-          ls -lh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi8).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}"
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
-  
-          echo "===========after execution =================="
-          sudo apt update -y
-          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
-          sudo uname -a
-  
-          echo "===== AFTER BUILD: checking for wheel_build_log ====="
-          WORKSPACE=$(pwd)
-          echo "Workspace = $WORKSPACE"
-          ls -lh
-
-          echo "----- specifically checking for wheel_build_log -----"
-          ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
-          
-          # Use wheel name for log naming
-          WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
-          WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
-          LOG_NAME="${WHEEL_BASE}_py311_log.gz"
-  
-          echo "Found wheel_build_log — compressing it"
-          gzip "$WORKSPACE/wheel_build_log"
-          mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
-  
-          echo "Final log file to upload: $LOG_NAME"
-          chmod +x ./gha-script/upload-scripts/upload_file.sh
-          bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
-          ls -lh "$WORKSPACE/$LOG_NAME"
-
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py311_log}.gz"
+          [ -z "$WHEEL_FILE" ] && LOG_NAME="wheel_build_log_ubi8_py311.gz"
+          gzip wheel_build_log && mv wheel_build_log.gz "$LOG_NAME"
+          bash ./gha-script/upload-scripts/upload_file.sh "$LOG_NAME"
       - name: Run scancode scan on wheel
         run: |
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
           bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
-          echo "-------------------------scancode outputs-----------------------------------------"
-          ls *.json 2>/dev/null || echo "No JSON output files yet"
-
       - name: Run grype scan on wheel
         run: |
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
           chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
           bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
-          echo "-------------------------grype outputs-----------------------------------------"
-          ls *.json 2>/dev/null || echo "No JSON output files yet"
-
-      - name: Collect and upload wheel scan results to COS
+      - name: Upload wheel scan results
         run: |
           source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-
           mkdir -p wheel_scancode_py311
-          find . -maxdepth 1 -type f -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py311/ \;
-          echo "Scancode outputs:"
-          ls -lh wheel_scancode_py311
-
-          tar cvzf wheel_scancode_py311.tar.gz wheel_scancode_py311
-          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          find . -maxdepth 1 -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py311/ \;
+          tar czf wheel_scancode_py311.tar.gz wheel_scancode_py311
           bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py311.tar.gz
-
           mkdir -p grype_wheel_py311
-          find . -maxdepth 1 -type f -name "*_grype_output.json" -exec cp {} grype_wheel_py311/ \;
-          echo "Grype outputs:"
-          ls -lh grype_wheel_py311
-
-          tar cvzf grype_wheel_py311.tar.gz grype_wheel_py311
+          find . -maxdepth 1 -name "*_grype_output.json" -exec cp {} grype_wheel_py311/ \;
+          tar czf grype_wheel_py311.tar.gz grype_wheel_py311
           bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py311.tar.gz
-
       - name: Upload wheel to COS
         run: |
-          if ls *.whl 1> /dev/null 2>&1; then
-            sudo chmod a+r *.whl
-            WHEEL_FILE=$(ls *.whl)
-            SHA256_VALUE=$(cat sha256.sha)
+          if ls *.whl 1>/dev/null 2>&1; then
+            sudo chmod a+r *.whl; WHEEL_FILE=$(ls *.whl); SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
             bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
-            echo "No wheel file found!"
-            exit 1
+            echo "No wheel file found!"; exit 1
           fi
-
-      - name: Upload CVE report to COS
-        env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      - name: Upload CVE report
         run: |
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
-          if [ -n "$WHEEL_FILE" ]; then
-            CVE_REPORT="${WHEEL_FILE%.whl}_cve_report.json"
-            if [ -f "$CVE_REPORT" ]; then
-              echo "Uploading CVE report: $CVE_REPORT"
-              source package-cache/variable.sh
-              source package-cache/scanner-env.sh
-              chmod +x ./gha-script/upload-scripts/upload_file.sh
-              bash ./gha-script/upload-scripts/upload_file.sh "$CVE_REPORT"
-            else
-              echo "WARNING: CVE report not found: $CVE_REPORT — skipping upload."
-            fi
-          else
-            echo "WARNING: No wheel found — skipping CVE report upload."
-          fi
+          [ -n "$WHEEL_FILE" ] && CVE="${WHEEL_FILE%.whl}_cve_report.json" && [ -f "$CVE" ] && bash ./gha-script/upload-scripts/upload_file.sh "$CVE" || true
 
-  wheel_build_py312:
-    needs:
-      - build_info
-      - install_scan_tools
-    if: ${{ inputs.wheel_build == 'true' }}
+  wheel_build_ubi8_py312:
+    needs: [build_info, install_scan_tools]
+    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi8 != '' }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     env:
-      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-      GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
       PYTHON_VERSION: "3.12"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi8).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}
       PACKAGE_NAME: ${{ inputs.package_name }}
-      VERSION: ${{ inputs.version }}
-
+      VERSION:      ${{ inputs.version }}
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      GHA_CURRENCY_SERVICE_ID:         ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Install system dependencies
-        run: |
-          sudo apt update -y
-
+        run: sudo apt update -y
       - name: Download package-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
       - name: Download scan-tools-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: scan-tools-cache
-
       - name: Extract scan tools
-        run: |
-          tar -xzf scan-tools-cache.tar.gz
-          echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
-
-      - name: Cache pip downloads for scancode-toolkit
+        run: tar -xzf scan-tools-cache.tar.gz && echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+      - name: Cache pip (scancode)
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
-
-      - name: Download scancode-toolkit-src artifact
-        uses: actions/download-artifact@v7
+      - name: Download scancode-toolkit-src
+        uses: actions/download-artifact@v4
         with:
           name: scancode-toolkit-src
-
       - name: Extract scancode-toolkit source
         run: tar -xzf scancode-toolkit-src.tar.gz
-
       - name: Run build_wheels.sh
         run: |
-          ls
-          echo "---------------------updated cache-----------------------"
-          ls package-cache
-          chmod +x package-cache/variable.sh
-          chmod +x package-cache/scanner-env.sh
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-        
-          echo "===== Checking files before log compression ====="
-          pwd
-          ls -lh
-          chmod +x ./gha-script/build_wheels.sh
-          bash ./gha-script/build_wheels.sh
-  
-          echo "===========after execution =================="
-          sudo apt update -y
-          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
-          sudo uname -a
-
-          echo "===== AFTER BUILD: checking for wheel_build_log ====="
-          WORKSPACE=$(pwd)
-          echo "Workspace = $WORKSPACE"
-          ls -lh
-  
-          echo "----- specifically checking for wheel_build_log -----"
-          ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
-        
-          # Use wheel name for log naming
-          WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
-          WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
-          LOG_NAME="${WHEEL_BASE}_py312_log.gz"
-
-          echo "Found wheel_build_log — compressing it"
-          gzip "$WORKSPACE/wheel_build_log"
-          mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
-
-          echo "Final log file to upload: $LOG_NAME"
-          chmod +x ./gha-script/upload-scripts/upload_file.sh
-          bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
-          ls -lh "$WORKSPACE/$LOG_NAME"
-
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi8).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi8).tested_on }}"
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py312_log}.gz"
+          [ -z "$WHEEL_FILE" ] && LOG_NAME="wheel_build_log_ubi8_py312.gz"
+          gzip wheel_build_log && mv wheel_build_log.gz "$LOG_NAME"
+          bash ./gha-script/upload-scripts/upload_file.sh "$LOG_NAME"
       - name: Run scancode scan on wheel
         run: |
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
           bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
-          echo "-------------------------scancode outputs-----------------------------------------"
-          ls *.json 2>/dev/null || echo "No JSON output files yet"
-
       - name: Run grype scan on wheel
         run: |
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
           chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
           bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
-          echo "-------------------------grype outputs-----------------------------------------"
-          ls *.json 2>/dev/null || echo "No JSON output files yet"
-
-      - name: Collect and upload wheel scan results to COS
+      - name: Upload wheel scan results
         run: |
           source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-
           mkdir -p wheel_scancode_py312
-          find . -maxdepth 1 -type f -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py312/ \;
-          echo "Scancode outputs:"
-          ls -lh wheel_scancode_py312
-
-          tar cvzf wheel_scancode_py312.tar.gz wheel_scancode_py312
-          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          find . -maxdepth 1 -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py312/ \;
+          tar czf wheel_scancode_py312.tar.gz wheel_scancode_py312
           bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py312.tar.gz
-
           mkdir -p grype_wheel_py312
-          find . -maxdepth 1 -type f -name "*_grype_output.json" -exec cp {} grype_wheel_py312/ \;
-          echo "Grype outputs:"
-          ls -lh grype_wheel_py312
-
-          tar cvzf grype_wheel_py312.tar.gz grype_wheel_py312
+          find . -maxdepth 1 -name "*_grype_output.json" -exec cp {} grype_wheel_py312/ \;
+          tar czf grype_wheel_py312.tar.gz grype_wheel_py312
           bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py312.tar.gz
-
       - name: Upload wheel to COS
         run: |
-          if ls *.whl 1> /dev/null 2>&1; then
-            sudo chmod a+r *.whl
-            WHEEL_FILE=$(ls *.whl)
-            SHA256_VALUE=$(cat sha256.sha)
+          if ls *.whl 1>/dev/null 2>&1; then
+            sudo chmod a+r *.whl; WHEEL_FILE=$(ls *.whl); SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
             bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
-            echo "No wheel file found!"
-            exit 1
+            echo "No wheel file found!"; exit 1
           fi
-
-      - name: Upload CVE report to COS
-        env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      - name: Upload CVE report
         run: |
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
-          if [ -n "$WHEEL_FILE" ]; then
-            CVE_REPORT="${WHEEL_FILE%.whl}_cve_report.json"
-            if [ -f "$CVE_REPORT" ]; then
-              echo "Uploading CVE report: $CVE_REPORT"
-              source package-cache/variable.sh
-              source package-cache/scanner-env.sh
-              chmod +x ./gha-script/upload-scripts/upload_file.sh
-              bash ./gha-script/upload-scripts/upload_file.sh "$CVE_REPORT"
-            else
-              echo "WARNING: CVE report not found: $CVE_REPORT — skipping upload."
-            fi
+          [ -n "$WHEEL_FILE" ] && CVE="${WHEEL_FILE%.whl}_cve_report.json" && [ -f "$CVE" ] && bash ./gha-script/upload-scripts/upload_file.sh "$CVE" || true
+
+  # UBI9 wheel jobs (py310-py314) ------------------------------------------------
+
+  wheel_build_ubi9_py310:
+    needs: [build_info, install_scan_tools]
+    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
+    env:
+      PYTHON_VERSION: "3.10"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi9).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}
+      PACKAGE_NAME: ${{ inputs.package_name }}
+      VERSION:      ${{ inputs.version }}
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      GHA_CURRENCY_SERVICE_ID:         ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Download scan-tools-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: scan-tools-cache
+      - name: Extract scan tools
+        run: tar -xzf scan-tools-cache.tar.gz && echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+      - name: Cache pip (scancode)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: scancode-pip-ppc64le-v32.4.0
+      - name: Download scancode-toolkit-src
+        uses: actions/download-artifact@v4
+        with:
+          name: scancode-toolkit-src
+      - name: Extract scancode-toolkit source
+        run: tar -xzf scancode-toolkit-src.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi9).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}"
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py310_log}.gz"
+          [ -z "$WHEEL_FILE" ] && LOG_NAME="wheel_build_log_ubi9_py310.gz"
+          gzip wheel_build_log && mv wheel_build_log.gz "$LOG_NAME"
+          bash ./gha-script/upload-scripts/upload_file.sh "$LOG_NAME"
+      - name: Run scancode scan on wheel
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+      - name: Run grype scan on wheel
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
+          chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
+      - name: Upload wheel scan results
+        run: |
+          source package-cache/variable.sh
+          mkdir -p wheel_scancode_py310; find . -maxdepth 1 -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py310/ \;
+          tar czf wheel_scancode_py310.tar.gz wheel_scancode_py310; bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py310.tar.gz
+          mkdir -p grype_wheel_py310; find . -maxdepth 1 -name "*_grype_output.json" -exec cp {} grype_wheel_py310/ \;
+          tar czf grype_wheel_py310.tar.gz grype_wheel_py310; bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py310.tar.gz
+      - name: Upload wheel to COS
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            sudo chmod a+r *.whl; WHEEL_FILE=$(ls *.whl); SHA256_VALUE=$(cat sha256.sha)
+            chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
-            echo "WARNING: No wheel found — skipping CVE report upload."
+            echo "No wheel file found!"; exit 1
           fi
-  
-  wheel_build_py313:
-    needs:
-      - build_info
-      - install_scan_tools
-    if: ${{ inputs.wheel_build == 'true' }}
+      - name: Upload CVE report
+        run: |
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          [ -n "$WHEEL_FILE" ] && CVE="${WHEEL_FILE%.whl}_cve_report.json" && [ -f "$CVE" ] && bash ./gha-script/upload-scripts/upload_file.sh "$CVE" || true
+
+  wheel_build_ubi9_py311:
+    needs: [build_info, install_scan_tools]
+    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
+    env:
+      PYTHON_VERSION: "3.11"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi9).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}
+      PACKAGE_NAME: ${{ inputs.package_name }}
+      VERSION:      ${{ inputs.version }}
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      GHA_CURRENCY_SERVICE_ID:         ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Download scan-tools-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: scan-tools-cache
+      - name: Extract scan tools
+        run: tar -xzf scan-tools-cache.tar.gz && echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+      - name: Cache pip (scancode)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: scancode-pip-ppc64le-v32.4.0
+      - name: Download scancode-toolkit-src
+        uses: actions/download-artifact@v4
+        with:
+          name: scancode-toolkit-src
+      - name: Extract scancode-toolkit source
+        run: tar -xzf scancode-toolkit-src.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi9).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}"
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py311_log}.gz"
+          [ -z "$WHEEL_FILE" ] && LOG_NAME="wheel_build_log_ubi9_py311.gz"
+          gzip wheel_build_log && mv wheel_build_log.gz "$LOG_NAME"
+          bash ./gha-script/upload-scripts/upload_file.sh "$LOG_NAME"
+      - name: Run scancode scan on wheel
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+      - name: Run grype scan on wheel
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
+          chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
+      - name: Upload wheel scan results
+        run: |
+          source package-cache/variable.sh
+          mkdir -p wheel_scancode_py311; find . -maxdepth 1 -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py311/ \;
+          tar czf wheel_scancode_py311.tar.gz wheel_scancode_py311; bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py311.tar.gz
+          mkdir -p grype_wheel_py311; find . -maxdepth 1 -name "*_grype_output.json" -exec cp {} grype_wheel_py311/ \;
+          tar czf grype_wheel_py311.tar.gz grype_wheel_py311; bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py311.tar.gz
+      - name: Upload wheel to COS
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            sudo chmod a+r *.whl; WHEEL_FILE=$(ls *.whl); SHA256_VALUE=$(cat sha256.sha)
+            chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
+          else
+            echo "No wheel file found!"; exit 1
+          fi
+      - name: Upload CVE report
+        run: |
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          [ -n "$WHEEL_FILE" ] && CVE="${WHEEL_FILE%.whl}_cve_report.json" && [ -f "$CVE" ] && bash ./gha-script/upload-scripts/upload_file.sh "$CVE" || true
+
+  wheel_build_ubi9_py312:
+    needs: [build_info, install_scan_tools]
+    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
+    env:
+      PYTHON_VERSION: "3.12"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi9).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}
+      PACKAGE_NAME: ${{ inputs.package_name }}
+      VERSION:      ${{ inputs.version }}
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      GHA_CURRENCY_SERVICE_ID:         ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Download scan-tools-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: scan-tools-cache
+      - name: Extract scan tools
+        run: tar -xzf scan-tools-cache.tar.gz && echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+      - name: Cache pip (scancode)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: scancode-pip-ppc64le-v32.4.0
+      - name: Download scancode-toolkit-src
+        uses: actions/download-artifact@v4
+        with:
+          name: scancode-toolkit-src
+      - name: Extract scancode-toolkit source
+        run: tar -xzf scancode-toolkit-src.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi9).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}"
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py312_log}.gz"
+          [ -z "$WHEEL_FILE" ] && LOG_NAME="wheel_build_log_ubi9_py312.gz"
+          gzip wheel_build_log && mv wheel_build_log.gz "$LOG_NAME"
+          bash ./gha-script/upload-scripts/upload_file.sh "$LOG_NAME"
+      - name: Run scancode scan on wheel
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+      - name: Run grype scan on wheel
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
+          chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
+      - name: Upload wheel scan results
+        run: |
+          source package-cache/variable.sh
+          mkdir -p wheel_scancode_py312; find . -maxdepth 1 -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py312/ \;
+          tar czf wheel_scancode_py312.tar.gz wheel_scancode_py312; bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py312.tar.gz
+          mkdir -p grype_wheel_py312; find . -maxdepth 1 -name "*_grype_output.json" -exec cp {} grype_wheel_py312/ \;
+          tar czf grype_wheel_py312.tar.gz grype_wheel_py312; bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py312.tar.gz
+      - name: Upload wheel to COS
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            sudo chmod a+r *.whl; WHEEL_FILE=$(ls *.whl); SHA256_VALUE=$(cat sha256.sha)
+            chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
+          else
+            echo "No wheel file found!"; exit 1
+          fi
+      - name: Upload CVE report
+        run: |
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          [ -n "$WHEEL_FILE" ] && CVE="${WHEEL_FILE%.whl}_cve_report.json" && [ -f "$CVE" ] && bash ./gha-script/upload-scripts/upload_file.sh "$CVE" || true
+
+  wheel_build_ubi9_py313:
+    needs: [build_info, install_scan_tools]
+    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     continue-on-error: true
     env:
-      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-      GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
       PYTHON_VERSION: "3.13"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi9).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}
       PACKAGE_NAME: ${{ inputs.package_name }}
-      VERSION: ${{ inputs.version }}
-      
+      VERSION:      ${{ inputs.version }}
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      GHA_CURRENCY_SERVICE_ID:         ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Install system dependencies
-        run: |
-          sudo apt update -y
-  
+        run: sudo apt update -y
       - name: Download package-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
       - name: Download scan-tools-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: scan-tools-cache
-
       - name: Extract scan tools
-        run: |
-          tar -xzf scan-tools-cache.tar.gz
-          echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
-
-      - name: Cache pip downloads for scancode-toolkit
+        run: tar -xzf scan-tools-cache.tar.gz && echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+      - name: Cache pip (scancode)
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
-
-      - name: Download scancode-toolkit-src artifact
-        uses: actions/download-artifact@v7
+      - name: Download scancode-toolkit-src
+        uses: actions/download-artifact@v4
         with:
           name: scancode-toolkit-src
-
       - name: Extract scancode-toolkit source
         run: tar -xzf scancode-toolkit-src.tar.gz
-
       - name: Run build_wheels.sh
         run: |
-          ls
-          echo "---------------------updated cache-----------------------"
-          ls package-cache
-          chmod +x package-cache/variable.sh
-          chmod +x package-cache/scanner-env.sh
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          
-          echo "===== Checking files before log compression ====="
-          pwd
-          ls -lh
-          chmod +x ./gha-script/build_wheels.sh
-          bash ./gha-script/build_wheels.sh
-  
-          echo "===========after execution =================="
-          sudo apt update -y
-          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
-          sudo uname -a
-
-          echo "===== AFTER BUILD: checking for wheel_build_log ====="
-          WORKSPACE=$(pwd)
-          echo "Workspace = $WORKSPACE"
-          ls -lh
-  
-          echo "----- specifically checking for wheel_build_log -----"
-          ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
-          
-          # Use wheel name for log naming
-          WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
-          WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
-          LOG_NAME="${WHEEL_BASE}_py313_log.gz"
-  
-          echo "Found wheel_build_log — compressing it"
-          gzip "$WORKSPACE/wheel_build_log"
-          mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
-
-          echo "Final log file to upload: $LOG_NAME"
-          chmod +x ./gha-script/upload-scripts/upload_file.sh
-          bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
-          ls -lh "$WORKSPACE/$LOG_NAME"
-
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi9).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}"
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py313_log}.gz"
+          [ -z "$WHEEL_FILE" ] && LOG_NAME="wheel_build_log_ubi9_py313.gz"
+          gzip wheel_build_log && mv wheel_build_log.gz "$LOG_NAME"
+          bash ./gha-script/upload-scripts/upload_file.sh "$LOG_NAME"
       - name: Run scancode scan on wheel
         run: |
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
           bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
-          echo "-------------------------scancode outputs-----------------------------------------"
-          ls *.json 2>/dev/null || echo "No JSON output files yet"
-
       - name: Run grype scan on wheel
         run: |
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
           chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
           bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
-          echo "-------------------------grype outputs-----------------------------------------"
-          ls *.json 2>/dev/null || echo "No JSON output files yet"
-
-      - name: Collect and upload wheel scan results to COS
+      - name: Upload wheel scan results
         run: |
           source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-
-          mkdir -p wheel_scancode_py313
-          find . -maxdepth 1 -type f -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py313/ \;
-          echo "Scancode outputs:"
-          ls -lh wheel_scancode_py313
-
-          tar cvzf wheel_scancode_py313.tar.gz wheel_scancode_py313
-          chmod +x ./gha-script/upload-scripts/upload_file.sh
-          bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py313.tar.gz
-
-          mkdir -p grype_wheel_py313
-          find . -maxdepth 1 -type f -name "*_grype_output.json" -exec cp {} grype_wheel_py313/ \;
-          echo "Grype outputs:"
-          ls -lh grype_wheel_py313
-
-          tar cvzf grype_wheel_py313.tar.gz grype_wheel_py313
-          bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py313.tar.gz
-
+          mkdir -p wheel_scancode_py313; find . -maxdepth 1 -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py313/ \;
+          tar czf wheel_scancode_py313.tar.gz wheel_scancode_py313; bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py313.tar.gz
+          mkdir -p grype_wheel_py313; find . -maxdepth 1 -name "*_grype_output.json" -exec cp {} grype_wheel_py313/ \;
+          tar czf grype_wheel_py313.tar.gz grype_wheel_py313; bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py313.tar.gz
       - name: Upload wheel to COS
         run: |
-          if ls *.whl 1> /dev/null 2>&1; then
-            sudo chmod a+r *.whl
-            WHEEL_FILE=$(ls *.whl)
-            SHA256_VALUE=$(cat sha256.sha)
+          if ls *.whl 1>/dev/null 2>&1; then
+            sudo chmod a+r *.whl; WHEEL_FILE=$(ls *.whl); SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
             bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
-            echo "No wheel file found!"
-            exit 1
+            echo "No wheel file found!"; exit 1
           fi
-
-      - name: Upload CVE report to COS
-        env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      - name: Upload CVE report
         run: |
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
-          if [ -n "$WHEEL_FILE" ]; then
-            CVE_REPORT="${WHEEL_FILE%.whl}_cve_report.json"
-            if [ -f "$CVE_REPORT" ]; then
-              echo "Uploading CVE report: $CVE_REPORT"
-              source package-cache/variable.sh
-              source package-cache/scanner-env.sh
-              chmod +x ./gha-script/upload-scripts/upload_file.sh
-              bash ./gha-script/upload-scripts/upload_file.sh "$CVE_REPORT"
-            else
-              echo "WARNING: CVE report not found: $CVE_REPORT — skipping upload."
-            fi
-          else
-            echo "WARNING: No wheel found — skipping CVE report upload."
-          fi
+          [ -n "$WHEEL_FILE" ] && CVE="${WHEEL_FILE%.whl}_cve_report.json" && [ -f "$CVE" ] && bash ./gha-script/upload-scripts/upload_file.sh "$CVE" || true
 
-  wheel_build_py314:
-    needs:
-      - build_info
-      - install_scan_tools
-    if: ${{ inputs.wheel_build == 'true' }}
+  wheel_build_ubi9_py314:
+    needs: [build_info, install_scan_tools]
+    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     continue-on-error: true
     env:
-      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-      GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
       PYTHON_VERSION: "3.14"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi9).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}
       PACKAGE_NAME: ${{ inputs.package_name }}
-      VERSION: ${{ inputs.version }}
-      
+      VERSION:      ${{ inputs.version }}
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      GHA_CURRENCY_SERVICE_ID:         ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Install system dependencies
-        run: |
-          sudo apt update -y
-  
+        run: sudo apt update -y
       - name: Download package-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
       - name: Download scan-tools-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: scan-tools-cache
-
       - name: Extract scan tools
-        run: |
-          tar -xzf scan-tools-cache.tar.gz
-          echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
-
-      - name: Cache pip downloads for scancode-toolkit
+        run: tar -xzf scan-tools-cache.tar.gz && echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+      - name: Cache pip (scancode)
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: scancode-pip-ppc64le-v32.4.0
-
-      - name: Download scancode-toolkit-src artifact
-        uses: actions/download-artifact@v7
+      - name: Download scancode-toolkit-src
+        uses: actions/download-artifact@v4
         with:
           name: scancode-toolkit-src
-
       - name: Extract scancode-toolkit source
         run: tar -xzf scancode-toolkit-src.tar.gz
-
       - name: Run build_wheels.sh
         run: |
-          ls
-          echo "---------------------updated cache-----------------------"
-          ls package-cache
-          chmod +x package-cache/variable.sh
-          chmod +x package-cache/scanner-env.sh
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          
-          echo "===== Checking files before log compression ====="
-          pwd
-          ls -lh
-          chmod +x ./gha-script/build_wheels.sh
-          bash ./gha-script/build_wheels.sh
-  
-          echo "===========after execution =================="
-          sudo apt update -y
-          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
-          sudo uname -a
-
-          echo "===== AFTER BUILD: checking for wheel_build_log ====="
-          WORKSPACE=$(pwd)
-          echo "Workspace = $WORKSPACE"
-          ls -lh
-  
-          echo "----- specifically checking for wheel_build_log -----"
-          ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
-          
-          # Use wheel name for log naming
-          WHEEL_FILE=$(ls "$WORKSPACE"/*.whl | head -n 1)
-          WHEEL_BASE=$(basename "${WHEEL_FILE%.whl}")
-          LOG_NAME="${WHEEL_BASE}_py314_log.gz"
-  
-          echo "Found wheel_build_log — compressing it"
-          gzip "$WORKSPACE/wheel_build_log"
-          mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
-
-          echo "Final log file to upload: $LOG_NAME"
-          chmod +x ./gha-script/upload-scripts/upload_file.sh
-          bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
-          ls -lh "$WORKSPACE/$LOG_NAME"
-
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi9).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi9).tested_on }}"
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py314_log}.gz"
+          [ -z "$WHEEL_FILE" ] && LOG_NAME="wheel_build_log_ubi9_py314.gz"
+          gzip wheel_build_log && mv wheel_build_log.gz "$LOG_NAME"
+          bash ./gha-script/upload-scripts/upload_file.sh "$LOG_NAME"
       - name: Run scancode scan on wheel
         run: |
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
           bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
-          echo "-------------------------scancode outputs-----------------------------------------"
-          ls *.json 2>/dev/null || echo "No JSON output files yet"
-
       - name: Run grype scan on wheel
         run: |
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
           chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
           bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
-          echo "-------------------------grype outputs-----------------------------------------"
-          ls *.json 2>/dev/null || echo "No JSON output files yet"
-
-      - name: Collect and upload wheel scan results to COS
+      - name: Upload wheel scan results
         run: |
           source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-
-          mkdir -p wheel_scancode_py314
-          find . -maxdepth 1 -type f -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py314/ \;
-          echo "Scancode outputs:"
-          ls -lh wheel_scancode_py314
-
-          tar cvzf wheel_scancode_py314.tar.gz wheel_scancode_py314
-          chmod +x ./gha-script/upload-scripts/upload_file.sh
-          bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py314.tar.gz
-
-          mkdir -p grype_wheel_py314
-          find . -maxdepth 1 -type f -name "*_grype_output.json" -exec cp {} grype_wheel_py314/ \;
-          echo "Grype outputs:"
-          ls -lh grype_wheel_py314
-
-          tar cvzf grype_wheel_py314.tar.gz grype_wheel_py314
-          bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py314.tar.gz
-
+          mkdir -p wheel_scancode_py314; find . -maxdepth 1 -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py314/ \;
+          tar czf wheel_scancode_py314.tar.gz wheel_scancode_py314; bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py314.tar.gz
+          mkdir -p grype_wheel_py314; find . -maxdepth 1 -name "*_grype_output.json" -exec cp {} grype_wheel_py314/ \;
+          tar czf grype_wheel_py314.tar.gz grype_wheel_py314; bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py314.tar.gz
       - name: Upload wheel to COS
         run: |
-          if ls *.whl 1> /dev/null 2>&1; then
-            sudo chmod a+r *.whl
-            WHEEL_FILE=$(ls *.whl)
-            SHA256_VALUE=$(cat sha256.sha)
+          if ls *.whl 1>/dev/null 2>&1; then
+            sudo chmod a+r *.whl; WHEEL_FILE=$(ls *.whl); SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
             bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
-            echo "No wheel file found!"
-            exit 1
+            echo "No wheel file found!"; exit 1
           fi
-
-      - name: Upload CVE report to COS
-        env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      - name: Upload CVE report
         run: |
           WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
-          if [ -n "$WHEEL_FILE" ]; then
-            CVE_REPORT="${WHEEL_FILE%.whl}_cve_report.json"
-            if [ -f "$CVE_REPORT" ]; then
-              echo "Uploading CVE report: $CVE_REPORT"
-              source package-cache/variable.sh
-              source package-cache/scanner-env.sh
-              chmod +x ./gha-script/upload-scripts/upload_file.sh
-              bash ./gha-script/upload-scripts/upload_file.sh "$CVE_REPORT"
-            else
-              echo "WARNING: CVE report not found: $CVE_REPORT — skipping upload."
-            fi
+          [ -n "$WHEEL_FILE" ] && CVE="${WHEEL_FILE%.whl}_cve_report.json" && [ -f "$CVE" ] && bash ./gha-script/upload-scripts/upload_file.sh "$CVE" || true
+
+  # UBI10 wheel jobs (py311–py314 only — py310 not supported on UBI10) -----------
+
+  wheel_build_ubi10_py312:
+    needs: [build_info, install_scan_tools]
+    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi10 != '' }}
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
+    env:
+      PYTHON_VERSION: "3.12"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi10).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}
+      PACKAGE_NAME: ${{ inputs.package_name }}
+      VERSION:      ${{ inputs.version }}
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      GHA_CURRENCY_SERVICE_ID:         ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Download scan-tools-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: scan-tools-cache
+      - name: Extract scan tools
+        run: tar -xzf scan-tools-cache.tar.gz && echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+      - name: Cache pip (scancode)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: scancode-pip-ppc64le-v32.4.0
+      - name: Download scancode-toolkit-src
+        uses: actions/download-artifact@v4
+        with:
+          name: scancode-toolkit-src
+      - name: Extract scancode-toolkit source
+        run: tar -xzf scancode-toolkit-src.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi10).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}"
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py312_log}.gz"
+          [ -z "$WHEEL_FILE" ] && LOG_NAME="wheel_build_log_ubi10_py312.gz"
+          gzip wheel_build_log && mv wheel_build_log.gz "$LOG_NAME"
+          bash ./gha-script/upload-scripts/upload_file.sh "$LOG_NAME"
+      - name: Run scancode scan on wheel
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+      - name: Run grype scan on wheel
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
+          chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
+      - name: Upload wheel scan results
+        run: |
+          source package-cache/variable.sh
+          mkdir -p wheel_scancode_py312; find . -maxdepth 1 -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py312/ \;
+          tar czf wheel_scancode_py312.tar.gz wheel_scancode_py312; bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py312.tar.gz
+          mkdir -p grype_wheel_py312; find . -maxdepth 1 -name "*_grype_output.json" -exec cp {} grype_wheel_py312/ \;
+          tar czf grype_wheel_py312.tar.gz grype_wheel_py312; bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py312.tar.gz
+      - name: Upload wheel to COS
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            sudo chmod a+r *.whl; WHEEL_FILE=$(ls *.whl); SHA256_VALUE=$(cat sha256.sha)
+            chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
-            echo "WARNING: No wheel found — skipping CVE report upload."
+            echo "No wheel file found!"; exit 1
           fi
+      - name: Upload CVE report
+        run: |
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          [ -n "$WHEEL_FILE" ] && CVE="${WHEEL_FILE%.whl}_cve_report.json" && [ -f "$CVE" ] && bash ./gha-script/upload-scripts/upload_file.sh "$CVE" || true
+
+  wheel_build_ubi10_py313:
+    needs: [build_info, install_scan_tools]
+    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi10 != '' }}
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
+    continue-on-error: true
+    env:
+      PYTHON_VERSION: "3.13"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi10).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}
+      PACKAGE_NAME: ${{ inputs.package_name }}
+      VERSION:      ${{ inputs.version }}
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      GHA_CURRENCY_SERVICE_ID:         ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Download scan-tools-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: scan-tools-cache
+      - name: Extract scan tools
+        run: tar -xzf scan-tools-cache.tar.gz && echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+      - name: Cache pip (scancode)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: scancode-pip-ppc64le-v32.4.0
+      - name: Download scancode-toolkit-src
+        uses: actions/download-artifact@v4
+        with:
+          name: scancode-toolkit-src
+      - name: Extract scancode-toolkit source
+        run: tar -xzf scancode-toolkit-src.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi10).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}"
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py313_log}.gz"
+          [ -z "$WHEEL_FILE" ] && LOG_NAME="wheel_build_log_ubi10_py313.gz"
+          gzip wheel_build_log && mv wheel_build_log.gz "$LOG_NAME"
+          bash ./gha-script/upload-scripts/upload_file.sh "$LOG_NAME"
+      - name: Run scancode scan on wheel
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+      - name: Run grype scan on wheel
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
+          chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
+      - name: Upload wheel scan results
+        run: |
+          source package-cache/variable.sh
+          mkdir -p wheel_scancode_py313; find . -maxdepth 1 -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py313/ \;
+          tar czf wheel_scancode_py313.tar.gz wheel_scancode_py313; bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py313.tar.gz
+          mkdir -p grype_wheel_py313; find . -maxdepth 1 -name "*_grype_output.json" -exec cp {} grype_wheel_py313/ \;
+          tar czf grype_wheel_py313.tar.gz grype_wheel_py313; bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py313.tar.gz
+      - name: Upload wheel to COS
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            sudo chmod a+r *.whl; WHEEL_FILE=$(ls *.whl); SHA256_VALUE=$(cat sha256.sha)
+            chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
+          else
+            echo "No wheel file found!"; exit 1
+          fi
+      - name: Upload CVE report
+        run: |
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          [ -n "$WHEEL_FILE" ] && CVE="${WHEEL_FILE%.whl}_cve_report.json" && [ -f "$CVE" ] && bash ./gha-script/upload-scripts/upload_file.sh "$CVE" || true
+
+  wheel_build_ubi10_py314:
+    needs: [build_info, install_scan_tools]
+    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi10 != '' }}
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
+    continue-on-error: true
+    env:
+      PYTHON_VERSION: "3.14"
+      BUILD_SCRIPT: ${{ fromJson(needs.build_info.outputs.script_ubi10).script }}
+      TESTED_ON:    ${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}
+      PACKAGE_NAME: ${{ inputs.package_name }}
+      VERSION:      ${{ inputs.version }}
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      GHA_CURRENCY_SERVICE_ID:         ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install system dependencies
+        run: sudo apt update -y
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Download scan-tools-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: scan-tools-cache
+      - name: Extract scan tools
+        run: tar -xzf scan-tools-cache.tar.gz && echo "$GITHUB_WORKSPACE/scan-tools-bin" >> $GITHUB_PATH
+      - name: Cache pip (scancode)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: scancode-pip-ppc64le-v32.4.0
+      - name: Download scancode-toolkit-src
+        uses: actions/download-artifact@v4
+        with:
+          name: scancode-toolkit-src
+      - name: Extract scancode-toolkit source
+        run: tar -xzf scancode-toolkit-src.tar.gz
+      - name: Run build_wheels.sh
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export BUILD_SCRIPT="${{ fromJson(needs.build_info.outputs.script_ubi10).script }}"
+          export TESTED_ON="${{ fromJson(needs.build_info.outputs.script_ubi10).tested_on }}"
+          chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          LOG_NAME="${WHEEL_FILE:+${WHEEL_FILE%.whl}_py314_log}.gz"
+          [ -z "$WHEEL_FILE" ] && LOG_NAME="wheel_build_log_ubi10_py314.gz"
+          gzip wheel_build_log && mv wheel_build_log.gz "$LOG_NAME"
+          bash ./gha-script/upload-scripts/upload_file.sh "$LOG_NAME"
+      - name: Run scancode scan on wheel
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+      - name: Run grype scan on wheel
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
+          chmod +x ./gha-script/scanner-scripts/grype_wheel_scan.sh
+          bash ./gha-script/scanner-scripts/grype_wheel_scan.sh
+      - name: Upload wheel scan results
+        run: |
+          source package-cache/variable.sh
+          mkdir -p wheel_scancode_py314; find . -maxdepth 1 -name "*_output.json" ! -name "*_grype_output.json" -exec cp {} wheel_scancode_py314/ \;
+          tar czf wheel_scancode_py314.tar.gz wheel_scancode_py314; bash ./gha-script/upload-scripts/upload_file.sh wheel_scancode_py314.tar.gz
+          mkdir -p grype_wheel_py314; find . -maxdepth 1 -name "*_grype_output.json" -exec cp {} grype_wheel_py314/ \;
+          tar czf grype_wheel_py314.tar.gz grype_wheel_py314; bash ./gha-script/upload-scripts/upload_file.sh grype_wheel_py314.tar.gz
+      - name: Upload wheel to COS
+        run: |
+          if ls *.whl 1>/dev/null 2>&1; then
+            sudo chmod a+r *.whl; WHEEL_FILE=$(ls *.whl); SHA256_VALUE=$(cat sha256.sha)
+            chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
+          else
+            echo "No wheel file found!"; exit 1
+          fi
+      - name: Upload CVE report
+        run: |
+          WHEEL_FILE=$(ls *.whl 2>/dev/null | head -n 1)
+          [ -n "$WHEEL_FILE" ] && CVE="${WHEEL_FILE%.whl}_cve_report.json" && [ -f "$CVE" ] && bash ./gha-script/upload-scripts/upload_file.sh "$CVE" || true
 
   # ---------------------------------------------------------------------------
-  # wheel_license_extract: Runs after all wheel builds complete. Downloads the
-  # per-Python-version scancode JSON files from COS and extracts SPDX licenses.
+  # WHEEL LICENSE EXTRACT — one per UBI version.
+  # Downloads per-Python-version scancode JSON from COS and extracts licenses.
+  # Runs after all wheel jobs for that UBI version finish (at least one must succeed).
   # ---------------------------------------------------------------------------
-  wheel_license_extract:
-    if: ${{ inputs.wheel_build == 'true' && (needs.wheel_build_py310.result == 'success' || needs.wheel_build_py311.result == 'success' || needs.wheel_build_py312.result == 'success' || needs.wheel_build_py313.result == 'success' || needs.wheel_build_py314.result == 'success') }}
+
+  wheel_license_extract_ubi8:
     needs:
-      - wheel_build_py310
-      - wheel_build_py311
-      - wheel_build_py312
-      - wheel_build_py313
-      - wheel_build_py314
+      - wheel_build_ubi8_py311
+      - wheel_build_ubi8_py312
+    if: |
+      always() &&
+      inputs.wheel_build == 'true' &&
+      needs.build_info.outputs.script_ubi8 != '' &&
+      (needs.wheel_build_ubi8_py311.result == 'success' ||
+       needs.wheel_build_ubi8_py312.result == 'success')
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
+      - uses: actions/checkout@v4
       - name: Download package-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
-      - name: Download scancode JSON outputs from COS
+      - name: Download scancode JSON outputs from COS and extract licenses
         env:
           GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
-
-          echo "Downloading per-version scancode archives from COS..."
           mkdir -p all_wheel_scancode
-
           chmod +x ./gha-script/download-scripts/download_file.sh
           for PY_VER in py310 py311 py312 py313 py314; do
             ARCHIVE="wheel_scancode_${PY_VER}.tar.gz"
-            echo "Attempting to download $ARCHIVE..."
             bash ./gha-script/download-scripts/download_file.sh "$ARCHIVE" \
               || echo "Warning: $ARCHIVE not found on COS (skipped)"
             if [ -f "$ARCHIVE" ]; then
               tar -xzf "$ARCHIVE"
               find "wheel_scancode_${PY_VER}" -type f -name "*.json" \
                 -exec cp {} all_wheel_scancode/ \; 2>/dev/null || true
-              echo "Collected JSON files from $ARCHIVE"
             fi
           done
-
-          echo "All scancode JSON files available:"
-          ls -lh all_wheel_scancode
-
-      - name: Extract licenses from each scancode JSON
-        run: |
-          echo "===== License extraction per wheel ====="
+          echo "Scancode JSON files collected:"; ls -lh all_wheel_scancode
           for JSON_FILE in all_wheel_scancode/*.json; do
-            [ -f "$JSON_FILE" ] || { echo "No JSON files found — skipping."; break; }
+            [ -f "$JSON_FILE" ] || { echo "No JSON files — skipping."; break; }
             echo "--- $JSON_FILE ---"
             python3 ./gha-script/licenses_extract_script.py "$JSON_FILE"
           done
-          echo "========================================"
 
-  
-  source_scanner:
-    needs: build
-    if: ${{ inputs.validate_build_script == 'true' }}
+  wheel_license_extract_ubi9:
+    needs:
+      - wheel_build_ubi9_py310
+      - wheel_build_ubi9_py311
+      - wheel_build_ubi9_py312
+      - wheel_build_ubi9_py313
+      - wheel_build_ubi9_py314
+    if: |
+      always() &&
+      inputs.wheel_build == 'true' &&
+      needs.build_info.outputs.script_ubi9 != '' &&
+      (needs.wheel_build_ubi9_py310.result == 'success' ||
+       needs.wheel_build_ubi9_py311.result == 'success' ||
+       needs.wheel_build_ubi9_py312.result == 'success' ||
+       needs.wheel_build_ubi9_py313.result == 'success' ||
+       needs.wheel_build_ubi9_py314.result == 'success')
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
-      - uses: actions/checkout@v6
-
+      - uses: actions/checkout@v4
       - name: Download package-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
-          name: updated-package-cache
-
+          name: package-cache
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
-      - name: Prepare scanner environment
+      - name: Download scancode JSON outputs from COS and extract licenses
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
-          echo "Sourcing variable.sh..."
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
-          echo "---------updated scanner-env.sh cat----------------"
-          cat package-cache/scanner-env.sh
-          echo "scanner-env.sh created with:"
-          cat package-cache/scanner-env.sh
+          mkdir -p all_wheel_scancode
+          chmod +x ./gha-script/download-scripts/download_file.sh
+          for PY_VER in py310 py311 py312 py313 py314; do
+            ARCHIVE="wheel_scancode_${PY_VER}.tar.gz"
+            bash ./gha-script/download-scripts/download_file.sh "$ARCHIVE" \
+              || echo "Warning: $ARCHIVE not found on COS (skipped)"
+            if [ -f "$ARCHIVE" ]; then
+              tar -xzf "$ARCHIVE"
+              find "wheel_scancode_${PY_VER}" -type f -name "*.json" \
+                -exec cp {} all_wheel_scancode/ \; 2>/dev/null || true
+            fi
+          done
+          echo "Scancode JSON files collected:"; ls -lh all_wheel_scancode
+          for JSON_FILE in all_wheel_scancode/*.json; do
+            [ -f "$JSON_FILE" ] || { echo "No JSON files — skipping."; break; }
+            echo "--- $JSON_FILE ---"
+            python3 ./gha-script/licenses_extract_script.py "$JSON_FILE"
+          done
 
+  wheel_license_extract_ubi10:
+    needs:
+      - wheel_build_ubi10_py312
+      - wheel_build_ubi10_py313
+      - wheel_build_ubi10_py314
+    if: |
+      always() &&
+      inputs.wheel_build == 'true' &&
+      needs.build_info.outputs.script_ubi10 != '' &&
+      (needs.wheel_build_ubi10_py312.result == 'success' ||
+       needs.wheel_build_ubi10_py313.result == 'success' ||
+       needs.wheel_build_ubi10_py314.result == 'success')
+    runs-on: ubuntu-24.04-ppc64le-p10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Download scancode JSON outputs from COS and extract licenses
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          mkdir -p all_wheel_scancode
+          chmod +x ./gha-script/download-scripts/download_file.sh
+          for PY_VER in py312 py313 py314; do
+            ARCHIVE="wheel_scancode_${PY_VER}.tar.gz"
+            bash ./gha-script/download-scripts/download_file.sh "$ARCHIVE" \
+              || echo "Warning: $ARCHIVE not found on COS (skipped)"
+            if [ -f "$ARCHIVE" ]; then
+              tar -xzf "$ARCHIVE"
+              find "wheel_scancode_${PY_VER}" -type f -name "*.json" \
+                -exec cp {} all_wheel_scancode/ \; 2>/dev/null || true
+            fi
+          done
+          echo "Scancode JSON files collected:"; ls -lh all_wheel_scancode
+          for JSON_FILE in all_wheel_scancode/*.json; do
+            [ -f "$JSON_FILE" ] || { echo "No JSON files — skipping."; break; }
+            echo "--- $JSON_FILE ---"
+            python3 ./gha-script/licenses_extract_script.py "$JSON_FILE"
+          done
+
+  # ---------------------------------------------------------------------------
+  # source_scanner_ubiN: scans the cloned source tree (trivy / syft / grype).
+  # One job per UBI version, each depending on its respective build_ubiN job.
+  # Only runs when the corresponding build_ubiN succeeded and has a script.
+  # ---------------------------------------------------------------------------
+  source_scanner_ubi8:
+    needs: build_ubi8
+    if: ${{ always() && inputs.validate_build_script == 'true' && needs.build_ubi8.result == 'success' }}
+    runs-on: ubuntu-24.04-ppc64le-p10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download updated package-cache (UBI8)
+        uses: actions/download-artifact@v4
+        with:
+          name: updated-package-cache-ubi8
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Download scan-tools-cache
+        if: ${{ inputs.enable_grype == 'true' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: scan-tools-cache
+      - name: Extract scan tools
+        if: ${{ inputs.enable_grype == 'true' }}
+        run: tar -xzf scan-tools-cache.tar.gz
+      - name: Prepare scanner environment
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          cat package-cache/scanner-env.sh
       - name: Run Trivy Scan
         if: ${{ inputs.enable_trivy == 'true' }}
         run: |
-          echo ".................Sourcing variable.sh and scanner-env.sh...................."
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          cat package-cache/scanner-env.sh
-                         
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           chmod +x ./gha-script/scanner-scripts/trivy_code_scan.sh
-          bash ./gha-script/scanner-scripts/trivy_code_scan.sh;
+          bash ./gha-script/scanner-scripts/trivy_code_scan.sh
           mkdir source_trivy
-          mv package-cache/trivy_source_vulnerabilities_results.json package-cache/trivy_source_sbom_results.cyclonedx source_trivy
-
+          mv package-cache/trivy_source_vulnerabilities_results.json \
+             package-cache/trivy_source_sbom_results.cyclonedx source_trivy
       - name: Run Syft Scan
         if: ${{ inputs.enable_syft == 'true' }}
         run: |
-          echo ".................Sourcing variable.sh and scanner-env.sh...................."
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           chmod +x ./gha-script/scanner-scripts/syft_code_scan.sh
           bash ./gha-script/scanner-scripts/syft_code_scan.sh
           mkdir source_syft
           mv package-cache/syft_source_sbom_results.json source_syft
-
       - name: Run Grype Scan
         if: ${{ inputs.enable_grype == 'true' }}
         run: |
-          echo ".................Sourcing variable.sh and scanner-env.sh...................."
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
           chmod +x ./gha-script/scanner-scripts/grype_code_scan.sh
           bash ./gha-script/scanner-scripts/grype_code_scan.sh
           mkdir source_grype
-          mv package-cache/grype_source_sbom_results.json package-cache/grype_source_vulnerabilities_results.json source_grype
-
+          mv package-cache/grype_source_sbom_results.json \
+             package-cache/grype_source_vulnerabilities_results.json source_grype
       - name: Upload Scanner Results
         env:
-           GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
           mkdir source
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          find source_trivy -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
+          find source_syft  -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
+          find source_grype -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
+          tar cvzf source_scanner_ubi8.tar.gz source
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh source_scanner_ubi8.tar.gz
+
+  source_scanner_ubi9:
+    needs: build_ubi9
+    if: ${{ always() && inputs.validate_build_script == 'true' && needs.build_ubi9.result == 'success' }}
+    runs-on: ubuntu-24.04-ppc64le-p10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download updated package-cache (UBI9)
+        uses: actions/download-artifact@v4
+        with:
+          name: updated-package-cache-ubi9
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Download scan-tools-cache
+        if: ${{ inputs.enable_grype == 'true' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: scan-tools-cache
+      - name: Extract scan tools
+        if: ${{ inputs.enable_grype == 'true' }}
+        run: tar -xzf scan-tools-cache.tar.gz
+      - name: Prepare scanner environment
+        run: |
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+          cat package-cache/scanner-env.sh
+      - name: Run Trivy Scan
+        if: ${{ inputs.enable_trivy == 'true' }}
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/trivy_code_scan.sh
+          bash ./gha-script/scanner-scripts/trivy_code_scan.sh
+          mkdir source_trivy
+          mv package-cache/trivy_source_vulnerabilities_results.json \
+             package-cache/trivy_source_sbom_results.cyclonedx source_trivy
+      - name: Run Syft Scan
+        if: ${{ inputs.enable_syft == 'true' }}
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/syft_code_scan.sh
+          bash ./gha-script/scanner-scripts/syft_code_scan.sh
+          mkdir source_syft
+          mv package-cache/syft_source_sbom_results.json source_syft
+      - name: Run Grype Scan
+        if: ${{ inputs.enable_grype == 'true' }}
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
+          chmod +x ./gha-script/scanner-scripts/grype_code_scan.sh
+          bash ./gha-script/scanner-scripts/grype_code_scan.sh
+          mkdir source_grype
+          mv package-cache/grype_source_sbom_results.json \
+             package-cache/grype_source_vulnerabilities_results.json source_grype
+      - name: Upload Scanner Results
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+        run: |
+          mkdir source
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           find source_trivy -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
-          find source_syft -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
+          find source_syft  -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
           find source_grype -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
-          tar cvzf source_scanner.tar.gz source
+          tar cvzf source_scanner_ubi9.tar.gz source
           chmod +x ./gha-script/upload-scripts/upload_file.sh
-          bash ./gha-script/upload-scripts/upload_file.sh source_scanner.tar.gz
+          bash ./gha-script/upload-scripts/upload_file.sh source_scanner_ubi9.tar.gz
 
+  source_scanner_ubi10:
+    needs: build_ubi10
+    if: ${{ always() && inputs.validate_build_script == 'true' && needs.build_ubi10.result == 'success' }}
+    runs-on: ubuntu-24.04-ppc64le-p10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download updated package-cache (UBI10)
+        uses: actions/download-artifact@v4
+        with:
+          name: updated-package-cache-ubi10
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Download scan-tools-cache
+        if: ${{ inputs.enable_grype == 'true' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: scan-tools-cache
+      - name: Extract scan tools
+        if: ${{ inputs.enable_grype == 'true' }}
+        run: tar -xzf scan-tools-cache.tar.gz
+      - name: Prepare scanner environment
+        run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          cat package-cache/scanner-env.sh
+      - name: Run Trivy Scan
+        if: ${{ inputs.enable_trivy == 'true' }}
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/trivy_code_scan.sh
+          bash ./gha-script/scanner-scripts/trivy_code_scan.sh
+          mkdir source_trivy
+          mv package-cache/trivy_source_vulnerabilities_results.json \
+             package-cache/trivy_source_sbom_results.cyclonedx source_trivy
+      - name: Run Syft Scan
+        if: ${{ inputs.enable_syft == 'true' }}
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/syft_code_scan.sh
+          bash ./gha-script/scanner-scripts/syft_code_scan.sh
+          mkdir source_syft
+          mv package-cache/syft_source_sbom_results.json source_syft
+      - name: Run Grype Scan
+        if: ${{ inputs.enable_grype == 'true' }}
+        run: |
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
+          chmod +x ./gha-script/scanner-scripts/grype_code_scan.sh
+          bash ./gha-script/scanner-scripts/grype_code_scan.sh
+          mkdir source_grype
+          mv package-cache/grype_source_sbom_results.json \
+             package-cache/grype_source_vulnerabilities_results.json source_grype
+      - name: Upload Scanner Results
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+        run: |
+          mkdir source
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          find source_trivy -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
+          find source_syft  -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
+          find source_grype -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
+          tar cvzf source_scanner_ubi10.tar.gz source
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh source_scanner_ubi10.tar.gz
+
+  # ---------------------------------------------------------------------------
+  # build_docker / image_scanner
+  # ---------------------------------------------------------------------------
   build_docker:
-    needs: build_info 
+    needs: build_info
     if: ${{ inputs.build_docker == 'true' }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     steps:
-      - uses: actions/checkout@v6
-
+      - uses: actions/checkout@v4
       - name: Download package-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: package-cache
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
       - name: Build Docker Image
         run: |
-          echo "................................Sourcing scanner-env.sh............................."
           ls package-cache
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
@@ -1256,21 +1583,17 @@ jobs:
           bash ./gha-script/build_docker.sh
           docker save -o package-cache/image.tar "$IMAGE_NAME"
           docker images
-          
       - name: Upload Docker Image
         env:
           GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           chmod +x ./gha-script/upload-scripts/upload_docker_image.sh
           bash ./gha-script/upload-scripts/upload_docker_image.sh
-
       - name: Archive package cache with image
         run: tar -czf package-cache.tar.gz package-cache/
-
       - name: Upload package-cache with image.tar
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: package-cache-with-image
           path: package-cache.tar.gz
@@ -1280,132 +1603,114 @@ jobs:
     if: ${{ inputs.build_docker == 'true' }}
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
-      - uses: actions/checkout@v6
-
+      - uses: actions/checkout@v4
       - name: Download package-cache
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: package-cache-with-image
-
       - name: Extract package cache
         run: tar -xzf package-cache.tar.gz
-
+      - name: Download scan-tools-cache
+        if: ${{ inputs.enable_grype == 'true' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: scan-tools-cache
+      - name: Extract scan tools
+        if: ${{ inputs.enable_grype == 'true' }}
+        run: tar -xzf scan-tools-cache.tar.gz
       - name: Load Docker Image
         run: |
-          echo "Sourcing variable.sh ..........................................."
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          echo ".......................Loading iamge.tar ............................"
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           docker load -i "package-cache/image.tar"
-
       - name: Run Trivy Image Scan
         if: ${{ inputs.enable_trivy == 'true' }}
         run: |
-          echo ".................Sourcing variable.sh and scanner-env.sh...................."
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           chmod +x ./gha-script/scanner-scripts/trivy_image_scan.sh
           bash ./gha-script/scanner-scripts/trivy_image_scan.sh
           mkdir image_trivy
           mv trivy_image_vulnerabilities_results.json trivy_image_sbom_results.cyclonedx image_trivy
-
       - name: Run Syft Image Scan
         if: ${{ inputs.enable_syft == 'true' }}
         run: |
-          echo ".................Sourcing variable.sh and scanner-env.sh...................."
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          chmod +x ./script/scanner-scripts/syft_image_scan.sh
-          bash ./script/scanner-scripts/syft_image_scan.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/syft_image_scan.sh
+          bash ./gha-script/scanner-scripts/syft_image_scan.sh
           mkdir image_syft
           mv syft_image_sbom_results.json image_syft
-
       - name: Run Grype Image Scan
         if: ${{ inputs.enable_grype == 'true' }}
         run: |
-          echo ".................Sourcing variable.sh and scanner-env.sh...................."
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
+          export GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype"
           chmod +x ./gha-script/scanner-scripts/grype_image_scan.sh
           bash ./gha-script/scanner-scripts/grype_image_scan.sh
           mkdir image_grype
           mv grype_image_sbom_results.json grype_image_vulnerabilities_results.json image_grype
-
       - name: Upload Image Scanner Results
         env:
           GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
           mkdir image
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
+          source package-cache/variable.sh; source package-cache/scanner-env.sh
           find image_trivy -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
-          find image_syft -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
+          find image_syft  -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
           find image_grype -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
           tar cvzf image_scanner.tar.gz image
           chmod +x ./gha-script/upload-scripts/upload_file.sh
           bash ./gha-script/upload-scripts/upload_file.sh image_scanner.tar.gz
 
+  # ---------------------------------------------------------------------------
+  # final_summary: runs after all parallel tracks complete.
+  # Uses always() so it runs even when optional jobs (ubi8/ubi10) were skipped.
+  # Requires at least one of build_ubi8/ubi9/ubi10 to have succeeded.
+  # ---------------------------------------------------------------------------
   final_summary:
-      name: Final Summary Stage
-      needs:
-        - build
-        - source_scanner
-        - wheel_build_py310
-        - wheel_build_py311
-        - wheel_build_py312 
-        - wheel_build_py313
-        - wheel_build_py314
-        - wheel_license_extract
-
-      if: |
-        always() &&
-        needs.build.result == 'success' &&
-        needs.source_scanner.result == 'success'
-
-      runs-on: ubuntu-24.04-ppc64le-p10
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v6
-          
-        - name: Download package-cache
-          uses: actions/download-artifact@v7
-          with:
-            name: package-cache
-            
-        - name: Extract package cache
-          run: tar -xzf package-cache.tar.gz
-        
-        - name: Create and activate venv
-          run: |
-            python -m venv venv
-            source venv/bin/activate
-            python -m pip install --upgrade pip
-            pip install requests deprecated xlsxwriter packaging
-            
-            # Export environment variables
-            export PYTHONPATH=$(pwd):$(pwd)/process_bom/
-
-        - name: Summarize build results
-          env : 
-            PACKAGE_NAME: ${{ inputs.package_name }}
-            VERSION: ${{ inputs.version }}
-            IAM_WRITER_API_KEY: ${{ secrets.IAM_WRITER_API_KEY }}
-            SERVICE_INSTANCE_ID: ${{ secrets.SERVICE_INSTANCE_ID }}
-          run: |
-                echo "Sourcing variable.sh and scanner-env.sh..........................................."
-                chmod +x package-cache/variable.sh
-                chmod +x package-cache/scanner-env.sh
-                source package-cache/variable.sh
-                source package-cache/scanner-env.sh
-                echo "===== variable.sh ====="
-                cat package-cache/variable.sh
-                echo "===== scanner-env.sh ====="
-                cat package-cache/scanner-env.sh
-                echo "-------------package name : ${PACKAGE_NAME}--------------------"
-                echo "-------------version : ${VERSION}--------------------"
-                pwd
-                chmod +x process_bom/*.py || true
-                # Export environment variables
-                export PYTHONPATH="/tmp/_actions-runner-working-dir/build-scripts/build-scripts:/tmp/_actions-runner-working-dir/build-scripts/build-scripts/process_bom"
-                python -m process_bom.run_currency_processor
-                
+    name: Final Summary Stage
+    needs:
+      - build_ubi8
+      - build_ubi9
+      - build_ubi10
+      - wheel_license_extract_ubi8
+      - wheel_license_extract_ubi9
+      - wheel_license_extract_ubi10
+      - source_scanner_ubi8
+      - source_scanner_ubi9
+      - source_scanner_ubi10
+    if: |
+      always() &&
+      (needs.build_ubi8.result == 'success' ||
+       needs.build_ubi9.result == 'success' ||
+       needs.build_ubi10.result == 'success')
+    runs-on: ubuntu-24.04-ppc64le-p10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+      - name: Create and activate venv
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install requests deprecated xlsxwriter packaging
+      - name: Summarize build results
+        env:
+          PACKAGE_NAME: ${{ inputs.package_name }}
+          VERSION:      ${{ inputs.version }}
+          IAM_WRITER_API_KEY:    ${{ secrets.IAM_WRITER_API_KEY }}
+          SERVICE_INSTANCE_ID:   ${{ secrets.SERVICE_INSTANCE_ID }}
+        run: |
+          chmod +x package-cache/variable.sh
+          chmod +x package-cache/scanner-env.sh
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          echo "===== variable.sh =====";    cat package-cache/variable.sh
+          echo "===== scanner-env.sh ====="; cat package-cache/scanner-env.sh
+          echo "Package: ${PACKAGE_NAME}  Version: ${VERSION}"
+          chmod +x process_bom/*.py || true
+          export PYTHONPATH="/tmp/_actions-runner-working-dir/build-scripts/build-scripts:/tmp/_actions-runner-working-dir/build-scripts/build-scripts/process_bom"
+          python -m process_bom.run_currency_processor
