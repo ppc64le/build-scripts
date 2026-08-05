@@ -187,8 +187,6 @@ export BUILD_SOX=OFF
 export USE_OPENMP=OFF
 export BUILD_TORCHAUDIO_PYTHON_EXTENSION=ON
 # Use the protobuf built by PyTorch
-#export LIBPROTO_INSTALL=${SCRIPT_DIR}/pytorch/build
-
 export Protobuf_DIR=${SCRIPT_DIR}/pytorch/build/third_party/protobuf/cmake/lib64/cmake/protobuf
 
 export Protobuf_INCLUDE_DIR=${SCRIPT_DIR}/pytorch/third_party/protobuf/src
