@@ -37,17 +37,9 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
 
 # Install rust
-if ! command -v rustc &> /dev/null
-then
-    wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
-    tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
-    cd rust-1.75.0-powerpc64le-unknown-linux-gnu
-    sudo ./install.sh
-    export PATH=$HOME/.cargo/bin:$PATH
-    rustc -V
-    cargo -V
-    cd ../
-fi
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+source "$HOME/.cargo/env"
+
 
 # Clone the repo
 git clone $PACKAGE_URL
