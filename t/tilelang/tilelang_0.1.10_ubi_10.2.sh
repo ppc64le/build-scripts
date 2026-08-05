@@ -21,7 +21,7 @@
 set -e
 
 PACKAGE_NAME=tilelang
-PACKAGE_VERSION=${1:-0.1.10}
+PACKAGE_VERSION=${1:-v0.1.10}
 PACKAGE_URL=https://github.com/tile-ai/tilelang
 PACKAGE_DIR=tilelang
 CURRENT_DIR=$(pwd)
@@ -119,7 +119,7 @@ pip install --trusted-host wheels.developerfirst.ibm.com \
 cd $CURRENT_DIR
 git clone --recursive $PACKAGE_URL $PACKAGE_DIR
 cd $PACKAGE_DIR
-git checkout "v${PACKAGE_VERSION}"
+git checkout "${PACKAGE_VERSION}"
 git submodule sync --recursive
 git submodule update --init --recursive
 
