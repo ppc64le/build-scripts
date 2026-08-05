@@ -7,28 +7,20 @@ EXTRA_ARGS=${3:-""}
 POST_PROCESS_SCRIPT_PATH=${4:-"post_process_wheel.py"}
 CURRENT_DIR=$(pwd)
 
-# Use sudo for privileged commands when running as a non-root user.
-# dockerfile_non_root grants test_user passwordless sudo, so this is always safe.
-# When already root, sudo is not needed (and may not be installed), so skip it.
-if [[ "$(id -u)" -ne 0 ]]; then
-    YUM="sudo yum"
-    SUDO="sudo"
-else
-    YUM="yum"
-    SUDO=""
-fi
+# install git  -  required by generate_sha() for all Python versions and UBI versions
+yum install -y git
 
-# install gcc — select toolset version based on UBI major version
+# install gcc  -  select toolset version based on UBI major version
 UBI_MAJOR=$(grep -oP '(?<=^VERSION_ID=")[0-9]+' /etc/os-release || grep -oP 'release \K[0-9]+' /etc/redhat-release 2>/dev/null || echo "8")
 if [[ "$UBI_MAJOR" -ge 10 ]]; then
     GCC_TOOLSET="gcc-toolset-15"
-    $YUM install -y "$GCC_TOOLSET"
-    # On UBI 10, SCL (Software Collections) was dropped — there is no enable script.
+    yum install -y "$GCC_TOOLSET"
+    # On UBI 10, SCL (Software Collections) was dropped  -  there is no enable script.
     # Activate the toolset by prepending its bin directory to PATH directly.
     export PATH="/opt/rh/${GCC_TOOLSET}/root/usr/bin:$PATH"
 else
     GCC_TOOLSET="gcc-toolset-13"
-    $YUM install -y "$GCC_TOOLSET"
+    yum install -y "$GCC_TOOLSET"
     source /opt/rh/${GCC_TOOLSET}/enable
 fi
 gcc --version
@@ -48,49 +40,53 @@ install_python_version() {
     echo
     case $version in
     "3.11" | "3.12")
-        $YUM install -y python${version} python${version}-devel python${version}-pip
+        yum install -y python${version} python${version}-devel python${version}-pip
         ;;
     "3.10")
         if ! python3.10 --version &>/dev/null; then
-            $YUM install -y zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
-            $YUM install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
+            yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
+            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             wget https://www.python.org/ftp/python/3.10.20/Python-3.10.20.tgz
             tar xf Python-3.10.20.tgz
             cd Python-3.10.20
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
-            echo "/usr/local/lib" | $SUDO tee /etc/ld.so.conf.d/python-local.conf && $SUDO ldconfig
+            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
             echo "Completed..."
             cd .. && rm -rf Python-3.10.20.tgz
         fi
         ;;
     "3.13")
         if ! python3.13 --version &>/dev/null; then
-            $YUM install -y zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
-            $YUM install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
+            yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
+            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             wget https://www.python.org/ftp/python/3.13.10/Python-3.13.10.tgz
             tar xzf Python-3.13.10.tgz
             cd Python-3.13.10
             ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
             make altinstall
-            echo "/usr/local/lib" | $SUDO tee /etc/ld.so.conf.d/python-local.conf && $SUDO ldconfig
+            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
             cd .. && rm -rf Python-3.13.10.tgz
         fi
         ;;
     "3.14")
         if ! python3.14 --version &>/dev/null; then
-            $YUM install -y zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
-            $YUM install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
-            wget https://www.python.org/ftp/python/3.14.3/Python-3.14.3.tgz
-            tar xzf Python-3.14.3.tgz
-            cd Python-3.14.3
-            ./configure --prefix=/usr/local --enable-optimizations --enable-shared
-            make -j2
-            make altinstall
-            echo "/usr/local/lib" | $SUDO tee /etc/ld.so.conf.d/python-local.conf && $SUDO ldconfig
-            cd .. && rm -rf Python-3.14.3.tgz
+            if [[ "$UBI_MAJOR" -ge 10 ]]; then
+                yum install -y python3.14 python3.14-devel python3.14-pip
+            else
+                yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
+                yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
+                wget https://www.python.org/ftp/python/3.14.3/Python-3.14.3.tgz
+                tar xzf Python-3.14.3.tgz
+                cd Python-3.14.3
+                ./configure --prefix=/usr/local --enable-optimizations --enable-shared
+                make -j2
+                make altinstall
+                echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
+                cd .. && rm -rf Python-3.14.3.tgz
+            fi
         fi
         ;;
     *)
@@ -345,16 +341,31 @@ fi
 cd "$CURRENT_DIR"
 wheel_final=(*.whl)
 
-echo
-echo "============== Running CVE scan on: ${wheel_final} =============="
-echo
+# ---------------------------------------------------------------------------
+# run_cve_scan: runs generalized_wheel_scanner.py on the built wheel.
+#
+# To skip CVE scanning when testing wheel creation locally, comment out the
+# run_cve_scan call below (search for "run_cve_scan" further down).
+#
+# In CI the ENABLE_CVE_SCAN env var controls this:
+#   ENABLE_CVE_SCAN=false  -> skip (set by pr-build.yaml)
+#   unset or "true"        -> run  (default for currency-build.yaml)
+# ---------------------------------------------------------------------------
+run_cve_scan() {
+    local wheel=$1
+    local build_script=$2
 
-# Run CVE scanner — passes wheel + original build script so Lane 3 can parse
-# git clone/checkout lines for source-built lib names and versions.
-# Scanner is non-blocking — failure does not stop the build.
-SCANNER_PATH="gha-script/generalized_wheel_scanner.py"
-if [ -f "$SCANNER_PATH" ]; then
-    if python "$SCANNER_PATH" "${wheel_final}" "${BUILD_SCRIPT_PATH}"; then
+    SCANNER_PATH="gha-script/generalized_wheel_scanner.py"
+    if [ ! -f "$SCANNER_PATH" ]; then
+        echo "===> WARNING: $SCANNER_PATH not found, skipping CVE scan."
+        return 0
+    fi
+
+    echo
+    echo "============== Running CVE scan on: ${wheel} =============="
+    echo
+
+    if python "$SCANNER_PATH" "${wheel}" "${build_script}"; then
         echo
         echo "===> CVE scan completed successfully."
         echo
@@ -363,9 +374,7 @@ if [ -f "$SCANNER_PATH" ]; then
         echo "===> WARNING: CVE scan failed. Continuing build."
         echo
     fi
-else
-    echo "===> WARNING: $SCANNER_PATH not found, skipping CVE scan."
-fi
+}
 
 echo
 echo "============== Generating sha for: ${wheel_final} =============="
@@ -380,27 +389,37 @@ echo
 echo "=== Post Processing wheel ${wheel_final} with SHA: ${SHA256_VALUE} ==="
 echo
 
-# Save CVE report name before post-processing renames the wheel
-cve_report_old="${wheel_final%.whl}_cve_report.json"
-
-# post processing of wheels (Suffix addition, license addition, metadata addition)
-if python ${POST_PROCESS_SCRIPT_PATH} ${wheel_final} ${SHA256_VALUE}; then
+# In PR builds ENABLE_CVE_SCAN=false and COS credentials are absent.
+# Skip post-processing entirely  -  PRs only verify the wheel builds, not publish them.
+if [ "${ENABLE_CVE_SCAN:-true}" = "false" ]; then
     echo
-    echo "===> SUCCESS: Wheels post process successfully."
+    echo "===> Skipping post-processing in PR build (ENABLE_CVE_SCAN=false)."
     echo
 else
-    echo
-    echo "===> ERROR: Failed to post process wheels."
-    echo
-    exit 1
+    # post processing of wheels (Suffix addition, license addition, metadata addition)
+    if python ${POST_PROCESS_SCRIPT_PATH} ${wheel_final} ${SHA256_VALUE}; then
+        echo
+        echo "===> SUCCESS: Wheels post process successfully."
+        echo
+    else
+        echo
+        echo "===> ERROR: Failed to post process wheels."
+        echo
+        exit 1
+    fi
 fi
 
-# Rename CVE report to match the post-processed wheel filename
+# CVE scan runs after post-processing so the report is named after the final
+# wheel filename (with +ppc64leN suffix) from the start  -  no rename needed.
 wheel_post_processed=(*.whl)
-cve_report_new="${wheel_post_processed[0]%.whl}_cve_report.json"
-if [ -f "$cve_report_old" ] && [ "$cve_report_old" != "$cve_report_new" ]; then
-    mv "$cve_report_old" "$cve_report_new"
-    echo "===> CVE report renamed: $cve_report_old → $cve_report_new"
+
+# Call run_cve_scan  -  comment out this block locally to skip CVE scanning.
+if [ "${ENABLE_CVE_SCAN:-true}" = "false" ]; then
+    echo
+    echo "===> Skipping CVE scan (ENABLE_CVE_SCAN=false)."
+    echo
+else
+    run_cve_scan "${wheel_post_processed[0]}" "${BUILD_SCRIPT_PATH}"
 fi
 
 echo
