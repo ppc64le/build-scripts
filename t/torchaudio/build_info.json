@@ -21,10 +21,10 @@
   "v2.9.*": {
     "build_script": "torchaudio_v2.9_ubi_9.3.sh"
   },
-  "v2.10.*": {
+  "v2.10.0": {
     "build_script": "torchaudio_v2.11_ubi_9.5.sh"
   },
-   "v2.11.*": {
+   "v2.11.0": {
     "build_script": "torchaudio_v2.11_ubi_9.5.sh"
   },
   "v2.*.*": {
