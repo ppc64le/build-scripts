@@ -243,7 +243,7 @@ jobs:
           # This guarantees every changed script in the PR is tested regardless of
           # how build_info.json version blocks are structured or overlap.
           # If no .sh files changed (build_info.json only), this loop does nothing.
-          while IFS= read -r changed_script; do
+          while read -r changed_script; do
             [[ "$changed_script" != *.sh ]] && continue
             [ ! -f "$changed_script" ] && continue
             raw_tested_on=$(grep "^# Tested on" "$changed_script" | head -1 \
