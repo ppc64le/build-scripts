@@ -73,16 +73,20 @@ install_python_version() {
         ;;
     "3.14")
         if ! python3.14 --version &>/dev/null; then
-            yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
-            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
-            wget https://www.python.org/ftp/python/3.14.3/Python-3.14.3.tgz
-            tar xzf Python-3.14.3.tgz
-            cd Python-3.14.3
-            ./configure --prefix=/usr/local --enable-optimizations --enable-shared
-            make -j2
-            make altinstall
-            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
-            cd .. && rm -rf Python-3.14.3.tgz
+            if [[ "$UBI_MAJOR" -ge 10 ]]; then
+                yum install -y python3.14 python3.14-devel python3.14-pip
+            else
+                yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
+                yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
+                wget https://www.python.org/ftp/python/3.14.3/Python-3.14.3.tgz
+                tar xzf Python-3.14.3.tgz
+                cd Python-3.14.3
+                ./configure --prefix=/usr/local --enable-optimizations --enable-shared
+                make -j2
+                make altinstall
+                echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
+                cd .. && rm -rf Python-3.14.3.tgz
+            fi
         fi
         ;;
     *)
