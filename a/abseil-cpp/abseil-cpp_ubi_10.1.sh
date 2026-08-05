@@ -24,8 +24,6 @@ PACKAGE_URL=https://github.com/abseil/abseil-cpp
 
 # install core dependencies
 yum install -y python3.12-pip python3.12-devel git  gcc gcc-c++ cmake wget
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-
 python3.12 -m pip install cmake setuptools ninja
 
 # Setting Paths and creating directories
