@@ -23,16 +23,6 @@ PACKAGE_VERSION=${1:-1.8.0}
 PACKAGE_URL=https://github.com/scikit-learn/scikit-learn.git
 PACKAGE_DIR=scikit-learn
 
-# scikit-learn 1.8.0 requires Python >= 3.11
-PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
-PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
-if [ "$PYTHON_MINOR" -lt 11 ]; then
-    echo "------------------$PACKAGE_NAME:Build_not_supported------------------------------"
-    echo "scikit-learn 1.8.0 requires Python >= 3.11, detected Python $PYTHON_VERSION"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Unsupported_Python_Version"
-    exit 1
-fi
-
 yum install -y --disablerepo="*rpmfusion*" \
     git gcc gcc-c++ make libtool cmake clang \
     openssl-devel bzip2-devel libffi-devel xz zlib-devel wget \
@@ -40,6 +30,15 @@ yum install -y --disablerepo="*rpmfusion*" \
     gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran \
     libevent-devel openblas-devel
 
+# scikit-learn 1.8.0 requires Python >= 3.11; exit early for unsupported versions
+PYTHON_VERSION=$(python3.11 --version 2>&1 | awk '{print $2}')
+PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
+if [ "$PYTHON_MINOR" -lt 11 ]; then
+    echo "------------------$PACKAGE_NAME:Build_not_supported------------------------------"
+    echo "scikit-learn 1.8.0 requires Python >= 3.11, detected Python $PYTHON_VERSION"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Unsupported_Python_Version"
+    exit 1
+fi
 
 # Setup GCC toolset
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
