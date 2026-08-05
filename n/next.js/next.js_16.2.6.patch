@@ -1,0 +1,164 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 8dc34de238..f78ccc8b8a 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -509,3 +509,16 @@ virtue = { git = "https://github.com/bgw/virtue.git", branch = "bgw/fix-generic-
+ mdxjs = { git = "https://github.com/vercel-labs/mdxjs-rs-turbopack.git", branch = "turbopack" }
+ # Doesn't compile on recent nightly versions because of https://github.com/Michael-F-Bryan/include_dir/pull/117
+ include_dir = { git = "https://github.com/vercel-labs/include_dir", branch = "turbopack" }
++wasmer = { git = "https://github.com/xingxue-ibm/wasmer", branch = "powerpc64-port" }
++
++wasmer-vm = { git = "https://github.com/xingxue-ibm/wasmer", branch = "powerpc64-port" }
++
++wasmer-compiler = { git = "https://github.com/xingxue-ibm/wasmer", branch = "powerpc64-port" }
++
++wasmer-compiler-cranelift = { git = "https://github.com/xingxue-ibm/wasmer", branch = "powerpc64-port" }
++
++wasmer-journal = { git = "https://github.com/xingxue-ibm/wasmer", branch = "powerpc64-port" }
++
++wasmer-wasix = { git = "https://github.com/xingxue-ibm/wasmer", branch = "powerpc64-port" }
++
++wasmer-wasix-types = { git = "https://github.com/xingxue-ibm/wasmer", branch = "powerpc64-port" }
+
+diff --git a/apps/bundle-analyzer/package.json b/apps/bundle-analyzer/package.json
+index df05aea404..d630f9de6a 100644
+--- a/apps/bundle-analyzer/package.json
++++ b/apps/bundle-analyzer/package.json
+@@ -3,7 +3,7 @@
+   "version": "16.0.2-canary.16",
+   "private": true,
+   "scripts": {
+-    "build": "cross-env NEXT_TEST_NATIVE_IGNORE_LOCAL_INSTALL=true NEXT_TEST_NATIVE_DIR=no next build --no-mangling",
++    "build": "echo Skipping bundle-analyzer-ui on ppc64le",
+     "dev": "cross-env NEXT_TEST_NATIVE_IGNORE_LOCAL_INSTALL=true NEXT_TEST_NATIVE_DIR=no next dev",
+     "lint": "eslint .",
+     "start": "cross-env NEXT_TEST_NATIVE_IGNORE_LOCAL_INSTALL=true NEXT_TEST_NATIVE_DIR=no next start"
+diff --git a/crates/next-napi-bindings/build.rs b/crates/next-napi-bindings/build.rs
+index 212c67b304..ab96196328 100644
+--- a/crates/next-napi-bindings/build.rs
++++ b/crates/next-napi-bindings/build.rs
+@@ -27,12 +27,16 @@ fn main() -> anyhow::Result<()> {
+     // Make the Next.js version available as a build-time environment variable
+     println!("cargo:rustc-env=NEXTJS_VERSION={nextjs_version}");
+ 
++    // Replace CargoBuilder and emit the target triple manually
++    let target = env::var("TARGET").unwrap_or_default();
++
++    println!("cargo:rustc-env=VERGEN_CARGO_TARGET_TRIPLE={target}");
++
++    println!("cargo:rerun-if-env-changed=TARGET");
++
+     // Generates, stores build-time information as static values.
+     // There are some places relying on correct values for this (i.e telemetry),
+     // So failing build if this fails.
+-    let cargo = vergen_gitcl::CargoBuilder::default()
+-        .target_triple(true)
+-        .build()?;
+     // We use the git dirty state to disable filesystem cache (filesystem cache relies on a
+     // commit hash to be safe). One tradeoff of this is that we must invalidate the rust build more
+     // often.
+@@ -58,7 +62,6 @@ fn main() -> anyhow::Result<()> {
+         .build()?;
+     vergen_gitcl::Emitter::default()
+         .fail_on_error()
+-        .add_instructions(&cargo)?
+         .add_instructions(&git)?
+         .emit()?;
+
+diff --git a/package.json b/package.json
+index d61c7bbdb4..c23f12d27b 100644
+--- a/package.json
++++ b/package.json
+@@ -153,7 +153,7 @@
+     "@rspack/core": "1.6.7",
+     "@slack/web-api": "7.9.1",
+     "@swc/cli": "0.1.55",
+-    "@swc/core": "1.11.24",
++    "@swc/core": "1.15.24",
+     "@swc/helpers": "0.5.15",
+     "@swc/types": "0.1.7",
+     "@taskr/esnext": "1.1.0",
+diff --git a/packages/eslint-config-next/src/index.ts b/packages/eslint-config-next/src/index.ts
+index ea24e0c9d9..8afbf2f916 100644
+--- a/packages/eslint-config-next/src/index.ts
++++ b/packages/eslint-config-next/src/index.ts
+@@ -2,13 +2,15 @@ import type { Linter } from 'eslint'
+ 
+ // plugins
+ import next from '@next/eslint-plugin-next'
+-import react from 'eslint-plugin-react'
+-import reactHooks from 'eslint-plugin-react-hooks'
+ import tsEslint from 'typescript-eslint'
+ // import * as ... for plugins without default export
+ import * as importPlugin from 'eslint-plugin-import'
+ import * as jsxA11yPlugin from 'eslint-plugin-jsx-a11y'
++import reactPlugin from 'eslint-plugin-react'
++import reactHooksPlugin from 'eslint-plugin-react-hooks'
+ 
++const react = reactPlugin as any
++const reactHooks = reactHooksPlugin as any
+ // utils
+ import globals from 'globals'
+ import eslintParser from './parser'
+
+diff --git a/packages/next/package.json b/packages/next/package.json
+index 7f49c27cc8..a7e7aafd50 100644
+--- a/packages/next/package.json
++++ b/packages/next/package.json
+@@ -178,7 +178,7 @@
+     "@storybook/react-webpack5": "8.6.0",
+     "@storybook/test": "8.6.0",
+     "@storybook/test-runner": "0.21.0",
+-    "@swc/core": "1.11.24",
++    "@swc/core": "1.15.24",
+     "@swc/types": "0.1.7",
+     "@taskr/clear": "1.1.0",
+     "@taskr/esnext": "1.1.0",
+
+diff --git a/packages/next/src/server/serve-static.ts b/packages/next/src/server/serve-static.ts
+index 3202f59fe7..5f48465777 100644
+--- a/packages/next/src/server/serve-static.ts
++++ b/packages/next/src/server/serve-static.ts
+@@ -29,13 +29,12 @@ export function serveStatic(
+       .on('finish', resolve)
+   })
+ }
++export const getContentType = (extWithoutDot: string): string | null =>
++  (send.mime as any).getType?.(extWithoutDot) ??
++  (send.mime as any).lookup?.(extWithoutDot) ??
++  null
+ 
+-export const getContentType: (extWithoutDot: string) => string | null =
+-  'getType' in send.mime
+-    ? (extWithoutDot: string) => send.mime.getType(extWithoutDot)
+-    : (extWithoutDot: string) => (send.mime as any).lookup(extWithoutDot)
+-
+-export const getExtension: (contentType: string) => string | null =
+-  'getExtension' in send.mime
+-    ? (contentType: string) => send.mime.getExtension(contentType)
+-    : (contentType: string) => (send.mime as any).extension(contentType)
++export const getExtension = (contentType: string): string | null =>
++  (send.mime as any).getExtension?.(contentType) ??
++  (send.mime as any).extension?.(contentType) ??
++  null
+
+diff --git a/test/jest-global-setup.ts b/test/jest-global-setup.ts
+index 5b668053cc..625c371d17 100644
+--- a/test/jest-global-setup.ts
++++ b/test/jest-global-setup.ts
+@@ -1,4 +1,4 @@
+-import { checkBuildFreshness } from './lib/check-build-freshness'
++import { checkBuildFreshness } from './lib/check-build-freshness.js'
+ 
+ export default async function globalSetup() {
+   await checkBuildFreshness()
+
+diff --git a/packages/eslint-config-next/src/eslint-plugin-react.d.ts b/packages/eslint-config-next/src/eslint-plugin-react.d.ts
+new file mode 100644
+--- /dev/null
++++ b/packages/eslint-config-next/src/eslint-plugin-react.d.ts
+@@ -0,0 +1,4 @@
++declare module 'eslint-plugin-react' {
++  const plugin: any;
++  export default plugin;
++}
