@@ -8,7 +8,7 @@
 # Language      : Python
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Rosman Carino <rcarino@ibm.com>
+# Maintainer    : ICH <ich@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -45,6 +45,9 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 pip3 install cffi setuptools wheel pytest
 
 # Build and install oniguruma from source (provides libonig + headers for CFFI compile)
+# /usr/local/lib is not in the default ld search path on UBI 9; register it explicitly
+# so libonig.so.5 is found at runtime (each Python-version container is independent)
+echo "/usr/local/lib" > /etc/ld.so.conf.d/local.conf
 if ! ldconfig -p | grep -q libonig; then
     ONIGURUMA_CLONE=$(mktemp -d)
     git init "$ONIGURUMA_CLONE"
@@ -60,6 +63,7 @@ if ! ldconfig -p | grep -q libonig; then
     cd -
     rm -rf "$ONIGURUMA_CLONE"
 fi
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
 # Clone the repo (use pre-cloned dir if present)
 if [ -d "$PACKAGE_DIR" ]; then
