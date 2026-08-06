@@ -197,7 +197,7 @@ if [ -n "$TEMP_BUILD_SCRIPT_PATH" ]; then
     package_url=$(grep -oP '(?<=^PACKAGE_URL=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
     package_name=$(basename "$package_url" .git)
 
-    source "$TEMP_BUILD_SCRIPT_PATH" "$EXTRA_ARGS" "$PYTHON_VERSION"
+    source "$TEMP_BUILD_SCRIPT_PATH" "$EXTRA_ARGS"
 fi
 
 # checking if wheel is generated through script itself
@@ -389,31 +389,25 @@ echo
 echo "=== Post Processing wheel ${wheel_final} with SHA: ${SHA256_VALUE} ==="
 echo
 
-# In PR builds ENABLE_CVE_SCAN=false and COS credentials are absent.
-# Skip post-processing entirely  -  PRs only verify the wheel builds, not publish them.
-if [ "${ENABLE_CVE_SCAN:-true}" = "false" ]; then
+# Post-processing: license injection, IBM classifier, version suffix, RECORD update.
+# Always runs. When COS credentials are absent (PR builds), post_process_wheel.py
+# skips only suffix resolution and uses fallback suffix "ppc64le0" instead.
+if python ${POST_PROCESS_SCRIPT_PATH} ${wheel_final} ${SHA256_VALUE}; then
     echo
-    echo "===> Skipping post-processing in PR build (ENABLE_CVE_SCAN=false)."
+    echo "===> SUCCESS: Wheel post-processed successfully."
     echo
 else
-    # post processing of wheels (Suffix addition, license addition, metadata addition)
-    if python ${POST_PROCESS_SCRIPT_PATH} ${wheel_final} ${SHA256_VALUE}; then
-        echo
-        echo "===> SUCCESS: Wheels post process successfully."
-        echo
-    else
-        echo
-        echo "===> ERROR: Failed to post process wheels."
-        echo
-        exit 1
-    fi
+    echo
+    echo "===> ERROR: Failed to post-process wheel."
+    echo
+    exit 1
 fi
 
 # CVE scan runs after post-processing so the report is named after the final
 # wheel filename (with +ppc64leN suffix) from the start  -  no rename needed.
+# Controlled by ENABLE_CVE_SCAN (default: true). Set to false in PR builds.
 wheel_post_processed=(*.whl)
 
-# Call run_cve_scan  -  comment out this block locally to skip CVE scanning.
 if [ "${ENABLE_CVE_SCAN:-true}" = "false" ]; then
     echo
     echo "===> Skipping CVE scan (ENABLE_CVE_SCAN=false)."
