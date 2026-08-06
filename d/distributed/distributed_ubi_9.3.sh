@@ -56,7 +56,7 @@ if ! python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
     echo "Attempting to build with isolation..."
 
     # Attempt to build the wheel without isolation
-    if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
+    if ! python3.12 -m build --wheel --outdir="$CURRENT_DIR/"; then
         echo "------------------$PACKAGE_NAME:wheel_build_fails-------------------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME"
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Wheel_Build_Fails"
