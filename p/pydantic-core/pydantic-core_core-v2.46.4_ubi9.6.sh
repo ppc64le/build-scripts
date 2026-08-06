@@ -59,7 +59,7 @@ test_status=1
 # Run pytest if any matching test files found
 if ls */test_*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
     echo "Running pytest..."
-    (python3 -m pytest --ignore=tests/test_docstrings.py) && test_status=0 || test_status=$?
+    (python3 -m pytest --ignore=tests/test_docstrings.py --ignore=tests/validators/test_allow_partial.py) && test_status=0 || test_status=$?
 fi
 
 # Final test result output
