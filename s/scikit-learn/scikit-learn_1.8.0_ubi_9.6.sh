@@ -30,14 +30,14 @@ yum install -y --disablerepo="*rpmfusion*" \
     gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran \
     libevent-devel openblas-devel
 
-# scikit-learn 1.8.0 requires Python >= 3.11; exit early for unsupported versions
+# scikit-learn 1.8.0 requires Python >= 3.11; skip gracefully for unsupported versions
 PYTHON_VERSION=$(python3.11 --version 2>&1 | awk '{print $2}')
 PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
 if [ "$PYTHON_MINOR" -lt 11 ]; then
     echo "------------------$PACKAGE_NAME:Build_not_supported------------------------------"
     echo "scikit-learn 1.8.0 requires Python >= 3.11, detected Python $PYTHON_VERSION"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Unsupported_Python_Version"
-    exit 1
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Skip |  Unsupported_Python_Version"
+    exit 0
 fi
 
 # Setup GCC toolset
@@ -110,14 +110,13 @@ export PY_IGNORE_IMPORTMISMATCH=1
 
 # On Python 3.14, skip test_random_projection_numerical_consistency due to
 # a known numpy broadcast incompatibility with float32/float64 component shapes
-PYTHON_MINOR=$(python3 --version 2>&1 | awk '{print $2}' | cut -d. -f2)
+PYTHON_MINOR=$(python3.11 --version 2>&1 | awk '{print $2}' | cut -d. -f2)
+PYTEST_ARGS=()
 if [ "$PYTHON_MINOR" -ge 14 ]; then
-    PYTEST_ARGS="-k not test_random_projection_numerical_consistency"
-else
-    PYTEST_ARGS=""
+    PYTEST_ARGS=(-k "not test_random_projection_numerical_consistency")
 fi
 
-if ! pytest sklearn/tests/test_random_projection.py $PYTEST_ARGS; then
+if ! pytest sklearn/tests/test_random_projection.py "${PYTEST_ARGS[@]}"; then
     echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
