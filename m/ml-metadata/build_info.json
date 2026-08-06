@@ -2,7 +2,7 @@
     "maintainer":"PrernaKumbhar20",
     "package_name" : "ml-metadata",
     "github_url": "https://github.com/google/ml-metadata.git",
-    "version": "master",
+    "version": "v1.21.0",
     "wheel_build" : true,
     "default_branch": "master",
     "package_dir": "m/ml-metadata",

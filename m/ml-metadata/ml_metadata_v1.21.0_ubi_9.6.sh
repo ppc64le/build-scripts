@@ -41,6 +41,7 @@ export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:${LD_LIBRARY_PATH}
 yum install -y java-21-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
+export SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION#v}
 
 mkdir bazel
 cd bazel
