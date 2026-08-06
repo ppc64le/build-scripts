@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : torch-c-dlpack-ext
-# Version       : 0.1.5
+# Version       : v0.1.12
 # Source repo   : https://github.com/apache/tvm-ffi (addons/torch_c_dlpack_ext/)
 # Tested on     : UBI:10.2
 # Language      : Python, C++
