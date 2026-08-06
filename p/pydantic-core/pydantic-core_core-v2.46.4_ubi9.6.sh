@@ -17,7 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-set -ex 
+set -e
 
 # Variables
 PACKAGE_NAME=pydantic-core
