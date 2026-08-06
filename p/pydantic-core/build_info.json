@@ -10,6 +10,9 @@
    "wheel_build": true,
    "validate_build_script": true,
    "use_non_root_user": false,
+   "v*.*.*": {
+     "build_script":"pydantic-core_ubi_9.6.sh"
+   },
    "*": {
      "build_script":"pydantic-core_ubi_9.6.sh"
   }
