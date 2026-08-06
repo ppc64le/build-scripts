@@ -43,17 +43,19 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-# COS configuration
-# These are only available in currency builds (not PR builds).
-# If missing, post-processing is skipped gracefully.
+# COS configuration — only available in currency builds.
+# When absent, suffix resolution is skipped and PR_BUILD_FALLBACK_SUFFIX is used;
+# all other post-processing steps (license injection, classifier, RECORD) still run.
 COS_API_KEY = os.environ.get("GHA_CURRENCY_SERVICE_ID_API_KEY", "")
 COS_SERVICE_INSTANCE_ID = os.environ.get("GHA_CURRENCY_SERVICE_ID", "")
-
-if not COS_API_KEY or not COS_SERVICE_INSTANCE_ID:
-    logger.info("COS credentials not set - skipping post-processing (PR build environment)")
-    sys.exit(0)
 COS_ENDPOINT = "https://s3.us.cloud-object-storage.appdomain.cloud"
 COS_BUCKET = "ose-power-artifacts-production"
+
+# Suffix used in PR builds when COS credentials are absent and suffix
+# resolution cannot be performed. "ppc64le0" is intentionally distinct
+# from published suffixes (ppc64le1, ppc64le2, …) so it is never
+# confused with a real release wheel.
+PR_BUILD_FALLBACK_SUFFIX = "ppc64le0"
 
 # License extraction utilities
 LICENSE_PATTERN = re.compile(r"^(LICENSE|COPYING)(\..*)?$")
@@ -407,7 +409,16 @@ def regenerate_record(extract_path, dist_info_dir):
         logger.exception(f"Failed to regenerate RECORD file → {e}")
 
 def resolve_suffix(client, package, version, wheel_name, wheel_sha256):
-    # Resolve a unique suffix for the wheel based on its name and local hash
+    # Resolve a unique suffix for the wheel based on its name and local hash.
+    # When client is None (PR build — no COS credentials), skip COS lookup
+    # and return PR_BUILD_FALLBACK_SUFFIX directly.
+    if client is None:
+        logger.info(
+            f"COS client not available (PR build) — skipping suffix resolution, "
+            f"using fallback suffix '{PR_BUILD_FALLBACK_SUFFIX}'"
+        )
+        return PR_BUILD_FALLBACK_SUFFIX
+
     try:
         logger.info(f"Resolving suffix for package={package}, version={version}, wheel={wheel_name}")
         parts = wheel_name[:-4].rsplit("-", 3)
@@ -598,16 +609,22 @@ def main():
     wheel_path = sys.argv[1]
     wheel_sha256 = sys.argv[2]
 
-    # Resolve suffix using COS
     wheel_name = os.path.basename(wheel_path)
     parts = wheel_name.split("-")
     package = parts[0]
     version = parts[1]
 
-    client = create_cos_client()
-    if client is None:
-        logger.error("COS client creation failed")
-        sys.exit(1)
+    # Create COS client only when credentials are available (currency builds).
+    # In PR builds credentials are absent — client stays None and resolve_suffix
+    # will return PR_BUILD_FALLBACK_SUFFIX without contacting COS.
+    if COS_API_KEY and COS_SERVICE_INSTANCE_ID:
+        client = create_cos_client()
+        if client is None:
+            logger.error("COS client creation failed")
+            sys.exit(1)
+    else:
+        logger.info("COS credentials not set — running in PR build mode (suffix resolution skipped)")
+        client = None
 
     suffix = resolve_suffix(
         client,
@@ -616,7 +633,7 @@ def main():
         wheel_name,
         wheel_sha256
     )
-    
+
     new_wheel = process_wheel(wheel_path, suffix)
     if not new_wheel:
         logger.error("Wheel processing failed")
