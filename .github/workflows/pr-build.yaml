@@ -179,6 +179,10 @@ jobs:
 
           PACKAGE_NAME=$(jq -r '.package_name // ""' $BUILD_INFO_FILE)
           VERSION=$(jq -r '.version // ""' $BUILD_INFO_FILE)
+          # Preserve the raw .version field from build_info.json as the real package
+          # version (e.g. "v2.11.0"). VERSION may be overwritten below by the matched
+          # version block key (e.g. "v2.10.*"), which is only a pattern for resolution.
+          PACKAGE_VERSION="$VERSION"
 
           # Pick the version block whose build_script list has the MOST overlap
           # with the changed .sh files. This correctly handles the case where a
@@ -222,6 +226,7 @@ jobs:
           echo "BUILD_INFO_FILE=$BUILD_INFO_FILE" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
           echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
           echo "$CHANGED_FILES" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -380,7 +385,7 @@ jobs:
           # CHANGED_FILES is written via a separate heredoc so its newlines are preserved.
           {
             echo "export PACKAGE_NAME=$PACKAGE_NAME"
-            echo "export VERSION=$VERSION"
+            echo "export VERSION=$PACKAGE_VERSION"
             echo "export PACKAGE_DIR=$PACKAGE_DIR"
             echo "export WHEEL_BUILD=$WHEEL_BUILD"
             echo "export BUILD_DOCKER=$DOCKER_BUILD"
@@ -532,11 +537,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          # Override VERSION with the actual package version from the script header.
-          # VERSION in variable.sh/scanner-env.sh is the build_info.json version block
-          # key (e.g. "v2.10.*"), which is a match pattern, not a real git tag.
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -580,8 +580,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -627,8 +625,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -672,8 +668,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -717,8 +711,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -763,8 +755,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -809,8 +799,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -856,8 +844,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -902,8 +888,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -948,8 +932,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
