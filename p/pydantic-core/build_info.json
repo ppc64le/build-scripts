@@ -14,7 +14,7 @@
      "build_script":"pydantic-core_ubi_9.6.sh"
    },
    "core-v*.*.*": {
-     "build_script":"pydantic-core_ubi_9.6.sh"
+     "build_script":"pydantic-core_core-v2.46.4_ubi9.6.sh"
    },
    "*": {
      "build_script":"pydantic-core_ubi_9.6.sh"
