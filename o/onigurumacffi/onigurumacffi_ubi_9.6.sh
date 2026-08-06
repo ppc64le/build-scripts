@@ -8,7 +8,7 @@
 # Language      : Python
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : ICH <ich@us.ibm.com>
+# Maintainer    : Rosman Carino <rcarino@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -35,14 +35,15 @@ SOURCE=Github
 
 # Install system dependencies
 # oniguruma-devel is not available on UBI 9; build oniguruma from source below
-yum install -y git python3-devel gcc-toolset-13 make wget sudo autoconf automake libtool
+# python3.12 is the minimum version satisfying onigurumacffi's python_requires>=3.10
+yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13 make wget sudo autoconf automake libtool
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 # Install Python build dependencies
-pip3 install cffi setuptools wheel pytest
+python3.12 -m pip install cffi setuptools wheel pytest
 
 # Build and install oniguruma from source (provides libonig + headers for CFFI compile)
 # /usr/local/lib is not in the default ld search path on UBI 9; register it explicitly
@@ -80,7 +81,7 @@ else
 fi
 
 # Install the package (builds the CFFI extension against libonig)
-if ! python3 -m pip install ./; then
+if ! python3.12 -m pip install ./; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
@@ -88,7 +89,7 @@ if ! python3 -m pip install ./; then
 fi
 
 # Run tests
-if ! python3 -m pytest tests/; then
+if ! python3.12 -m pytest tests/; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
