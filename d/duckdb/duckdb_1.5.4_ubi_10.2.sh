@@ -24,25 +24,16 @@ PACKAGE_NAME=duckdb-python
 PACKAGE_VERSION=${1:-v1.5.4}
 PACKAGE_DIR=duckdb-python
 PACKAGE_URL=https://github.com/duckdb/duckdb-python.git
-PYTHON_VERSION=3.12
+PYTHON_VERSION=${2:-3.12}
 SOURCE_ROOT="$(pwd)"
 
 # Install necessary system packages
-dnf install -y \
-    git \
-    gcc-toolset-15 \
-    make \
-    cmake \
-    ninja-build \
-    libomp-devel \
-    python3.12 \
-    python3.12-devel \
-    python3.12-pip
+dnf install -y git gcc-toolset-15 make cmake ninja-build libomp-devel python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip
 
 export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
 gcc --version
 
-python3.12 -m pip install --upgrade pip setuptools build wheel ninja pybind11
+python${PYTHON_VERSION} -m pip install --upgrade pip setuptools build wheel ninja pybind11
 
 # Clone the repository
 git clone ${PACKAGE_URL}
@@ -57,7 +48,7 @@ export DUCKDB_BUILD_PYTHON=1
 export DUCKDB_BUILD_STATIC=1
 
 # -- Build wheel --------------------------------------------------------------
-python3.12 -m build --wheel
+python${PYTHON_VERSION} -m build --wheel
 
 WHEEL=$(find dist -name "duckdb-*.whl" | head -1)
 if [ -z "$WHEEL" ]; then
@@ -74,7 +65,7 @@ fi
 cd "${SOURCE_ROOT}"
 
 # -- Install ------------------------------------------------------------------
-python3.12 -m pip install "${PACKAGE_DIR}/${WHEEL}"
+python${PYTHON_VERSION} -m pip install "${PACKAGE_DIR}/${WHEEL}"
 
 if ! python${PYTHON_VERSION} - <<EOF
 import duckdb
