@@ -579,7 +579,12 @@ def process_wheel(wheel_path, suffix):
                 new_wheel_name = wheel_name.replace(old_version, f"{old_version}+{suffix}", 1)
 
         new_wheel_path = os.path.join(wheel_dir, new_wheel_name)
-        os.remove(wheel_path)
+        # Only remove the original when the repacked wheel has a different path
+        # (i.e. suffix was added). In PR builds the name is unchanged so
+        # wheel_path == new_wheel_path — the repacked file IS the original
+        # location and must not be deleted.
+        if new_wheel_path != wheel_path:
+            os.remove(wheel_path)
         logger.info("Processing wheel completed")
         return new_wheel_path
     except Exception as e:
