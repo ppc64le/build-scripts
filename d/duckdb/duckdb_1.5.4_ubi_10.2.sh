@@ -28,7 +28,7 @@ PYTHON_VERSION=${2:-3.12}
 SOURCE_ROOT="$(pwd)"
 
 # Install necessary system packages
-dnf install -y git gcc-toolset-15 make cmake ninja-build libomp-devel python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip
+dnf install -y git gcc-toolset-15 make cmake ninja-build libomp-devel python3 python3-devel python3-pip
 
 export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
 gcc --version
