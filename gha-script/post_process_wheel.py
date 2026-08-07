@@ -51,11 +51,6 @@ COS_SERVICE_INSTANCE_ID = os.environ.get("GHA_CURRENCY_SERVICE_ID", "")
 COS_ENDPOINT = "https://s3.us.cloud-object-storage.appdomain.cloud"
 COS_BUCKET = "ose-power-artifacts-production"
 
-# Suffix used in PR builds when COS credentials are absent and suffix
-# resolution cannot be performed. "ppc64le0" is intentionally distinct
-# from published suffixes (ppc64le1, ppc64le2, …) so it is never
-# confused with a real release wheel.
-PR_BUILD_FALLBACK_SUFFIX = "ppc64le0"
 
 # License extraction utilities
 LICENSE_PATTERN = re.compile(r"^(LICENSE|COPYING)(\..*)?$")
@@ -411,13 +406,13 @@ def regenerate_record(extract_path, dist_info_dir):
 def resolve_suffix(client, package, version, wheel_name, wheel_sha256):
     # Resolve a unique suffix for the wheel based on its name and local hash.
     # When client is None (PR build — no COS credentials), skip COS lookup
-    # and return PR_BUILD_FALLBACK_SUFFIX directly.
+    # and return None to signal that suffix addition should be skipped entirely.
     if client is None:
         logger.info(
-            f"COS client not available (PR build) — skipping suffix resolution, "
-            f"using fallback suffix '{PR_BUILD_FALLBACK_SUFFIX}'"
+            "COS client not available (PR build) — skipping suffix resolution, "
+            "no suffix will be added to the wheel."
         )
-        return PR_BUILD_FALLBACK_SUFFIX
+        return None
 
     try:
         logger.info(f"Resolving suffix for package={package}, version={version}, wheel={wheel_name}")
@@ -557,27 +552,31 @@ def process_wheel(wheel_path, suffix):
                 if existing_license_files:
                     update_record(dist_info, existing_license_files)
 
-                # Version suffix processing
-                old_version = read_version_from_metadata(dist_info)
-            
-                if old_version is None:
-                   logger.error("Version not found in METADATA, cannot proceed")
-                   sys.exit(1)
-                   
-                new_version = build_new_version(old_version, suffix)
-                update_metadata_version(dist_info, new_version)
-                dist_info = rename_dist_info_dir(extract_path, old_version, new_version)
-                regenerate_record(extract_path, dist_info)
+                # Version suffix processing — skipped in PR builds (suffix is None).
+                if suffix is not None:
+                    old_version = read_version_from_metadata(dist_info)
+
+                    if old_version is None:
+                        logger.error("Version not found in METADATA, cannot proceed")
+                        sys.exit(1)
+
+                    new_version = build_new_version(old_version, suffix)
+                    update_metadata_version(dist_info, new_version)
+                    dist_info = rename_dist_info_dir(extract_path, old_version, new_version)
+                    regenerate_record(extract_path, dist_info)
+                else:
+                    logger.info("Suffix addition skipped (PR build — no COS credentials).")
 
             # Pack wheel
             subprocess.run(["wheel", "pack", extract_path, "-d", wheel_dir], check=True)
 
         new_wheel_name = wheel_name
-        if "+" in old_version:
-            base, local = old_version.split("+", 1)
-            new_wheel_name = wheel_name.replace(f"{base}+{local}", f"{base}+{local}{suffix}", 1)
-        else:
-            new_wheel_name = wheel_name.replace(old_version, f"{old_version}+{suffix}", 1)
+        if suffix is not None and old_version is not None:
+            if "+" in old_version:
+                base, local = old_version.split("+", 1)
+                new_wheel_name = wheel_name.replace(f"{base}+{local}", f"{base}+{local}{suffix}", 1)
+            else:
+                new_wheel_name = wheel_name.replace(old_version, f"{old_version}+{suffix}", 1)
 
         new_wheel_path = os.path.join(wheel_dir, new_wheel_name)
         os.remove(wheel_path)
