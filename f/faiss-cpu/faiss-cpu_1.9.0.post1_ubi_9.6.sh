@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package           : faiss
+# Package           : faiss-cpu
 # Version           : 1.9.0.post1
 # Source repo       : https://github.com/faiss-wheels/faiss-wheels
 # Tested on         : UBI 9.6
