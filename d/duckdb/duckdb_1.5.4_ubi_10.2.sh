@@ -18,6 +18,8 @@
 #
 # -----------------------------------------------------------------------------
 
+set -e
+
 PACKAGE_NAME=duckdb-python
 PACKAGE_VERSION=${1:-v1.5.4}
 PACKAGE_DIR=duckdb-python
@@ -27,9 +29,12 @@ SOURCE_ROOT="$(pwd)"
 
 # Install necessary system packages
 dnf install -y \
+    git \
     gcc-toolset-15 \
+    make \
     cmake \
     ninja-build \
+    libomp-devel \
     python3.12 \
     python3.12-devel \
     python3.12-pip
@@ -37,12 +42,24 @@ dnf install -y \
 export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
 gcc --version
 
-python3.12 -m pip install --upgrade pip setuptools
+python3.12 -m pip install --upgrade pip setuptools build wheel ninja pybind11
+
+# Clone the repository
+git clone ${PACKAGE_URL}
+cd ${PACKAGE_NAME}
+git checkout ${PACKAGE_VERSION}
+
+# Populate the DuckDB C++ engine submodule — without this the CMake
+# configure step fails because external/duckdb/ is an empty directory.
+git submodule update --init --recursive
+
+export DUCKDB_BUILD_PYTHON=1
+export DUCKDB_BUILD_STATIC=1
 
 # -- Build wheel --------------------------------------------------------------
-python3.12 -m pip wheel . --no-deps -w "${CURRENT_DIR}/dist/"
+python3.12 -m build --wheel
 
-WHEEL=$(find "${CURRENT_DIR}/dist" -name "duckdb-*.whl" | head -1)
+WHEEL=$(find dist -name "duckdb-*.whl" | head -1)
 if [ -z "$WHEEL" ]; then
     echo "ERROR: wheel not found after build"
     exit 1
@@ -57,7 +74,7 @@ fi
 cd "${SOURCE_ROOT}"
 
 # -- Install ------------------------------------------------------------------
-pip3.12 install "$WHEEL"
+python3.12 -m pip install "${PACKAGE_DIR}/${WHEEL}"
 
 if ! python${PYTHON_VERSION} - <<EOF
 import duckdb
