@@ -5,7 +5,7 @@
     "version": "1.9.0.post1",
     "default_branch": "main",
     "build_script": "faiss_cpu_1.9.0.post1_ubi_9.6.sh",
-    "package_dir": "f/faiss-wheel",
+    "package_dir": "f/faiss-cpu",
     "docker_build": true,
     "validate_build_script": true,
     "use_non_root_user": false,
