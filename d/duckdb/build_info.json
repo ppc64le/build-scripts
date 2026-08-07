@@ -11,7 +11,10 @@
   "wheel_build" : true,
   "use_non_root_user": false,
   "1.5.4": {
-     "build_script": "duckdb_1.5.4_ubi_10.2.sh"
+     "build_script": [
+      "duckdb_1.5.4_ubi_9.6.sh",
+      "duckdb_1.5.4_ubi_10.2.sh"
+     ]
   },
   "*": {
      "build_script": "duckdb_ubi_9.6.sh"
