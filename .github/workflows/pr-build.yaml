@@ -223,6 +223,21 @@ jobs:
             fi
           fi
 
+          # Validate that the resolved version block key matches the 'version' field
+          # value exactly. A mismatch (e.g. key "1.5.4" vs field "v1.5.4") means
+          # currency-build, which uses the 'version' field as user input, will fail
+          # to find the block and fall back to "*", silently skipping UBI variants.
+          # Skip this check when:
+          #   - VERSION equals PACKAGE_VERSION (no override happened, or they already match)
+          #   - VERSION contains "*" (wildcard/glob key - intentionally different from field)
+          if [ "$VERSION" != "$PACKAGE_VERSION" ] && [[ "$VERSION" != *"*"* ]]; then
+            echo "ERROR: version block key '$VERSION' does not match the 'version' field value '$PACKAGE_VERSION' in build_info.json."
+            echo "       Currency-build receives VERSION='$PACKAGE_VERSION' as user input and would"
+            echo "       fail to find key '$VERSION', falling back to '*' and skipping UBI variants."
+            echo "       Fix: rename the version block key from '$VERSION' to '$PACKAGE_VERSION'."
+            exit 1
+          fi
+
           echo "BUILD_INFO_FILE=$BUILD_INFO_FILE" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
