@@ -223,6 +223,21 @@ jobs:
             fi
           fi
 
+          # Validate that the resolved version block key matches the 'version' field
+          # value exactly. A mismatch (e.g. key "1.5.4" vs field "v1.5.4") means
+          # currency-build, which uses the 'version' field as user input, will fail
+          # to find the block and fall back to "*", silently skipping UBI variants.
+          # Skip this check when:
+          #   - VERSION equals PACKAGE_VERSION (no override happened, or they already match)
+          #   - VERSION contains "*" (wildcard/glob key - intentionally different from field)
+          if [ "$VERSION" != "$PACKAGE_VERSION" ] && [[ "$VERSION" != *"*"* ]]; then
+            echo "ERROR: version block key '$VERSION' does not match the 'version' field value '$PACKAGE_VERSION' in build_info.json."
+            echo "       Currency-build receives VERSION='$PACKAGE_VERSION' as user input and would"
+            echo "       fail to find key '$VERSION', falling back to '*' and skipping UBI variants."
+            echo "       Fix: rename the version block key from '$VERSION' to '$PACKAGE_VERSION'."
+            exit 1
+          fi
+
           echo "BUILD_INFO_FILE=$BUILD_INFO_FILE" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
@@ -242,43 +257,74 @@ jobs:
         run: |
           source variable.sh
 
-          # Safety net: for every changed .sh file, if its UBI major slot is still
-          # empty (read_buildinfo.sh loaded the wrong or incomplete version block),
-          # read the script's own "# Tested on" header and fill the slot directly.
-          # This guarantees every changed script in the PR is tested regardless of
-          # how build_info.json version blocks are structured or overlap.
+          # Validation: for every changed .sh file enforce two hard rules:
+          #   1. The script MUST have a '# Tested on' header  -  it is mandatory.
+          #   2. The UBI slot for that script MUST already be populated by
+          #      read_buildinfo.sh via the version block in build_info.json.
+          #      An empty slot means the version block key does not match VERSION
+          #      (e.g. "1.5.4" vs "v1.5.4") and Currency-build would silently skip it.
+          # Both conditions cause a hard stop  -  the PR must not be merged until fixed.
           # If no .sh files changed (build_info.json only), this loop does nothing.
+          validation_failed=false
           while read -r changed_script; do
             [[ "$changed_script" != *.sh ]] && continue
             [ ! -f "$changed_script" ] && continue
+            script_name=$(basename "$changed_script")
             raw_tested_on=$(grep "^# Tested on" "$changed_script" | head -1 \
               | cut -d ':' -f2- \
               | sed 's/^[[:space:]]*//' \
               | tr '[:lower:]' '[:upper:]' \
               | sed 's/[[:space:]]*:[[:space:]]*/:/g; s/UBI[[:space:]]*/UBI/g')
-            [ -z "$raw_tested_on" ] && continue
+
+            # Rule 1: '# Tested on' is mandatory in every build script.
+            if [ -z "$raw_tested_on" ]; then
+              echo "ERROR: '$script_name' is missing the mandatory '# Tested on' header."
+              echo "       Every build script must declare the UBI version it targets, e.g.:"
+              echo "       # Tested on     : UBI:10.2"
+              validation_failed=true
+              continue
+            fi
+
             major=$(echo "$raw_tested_on" | sed 's/.*UBI\([0-9][0-9]*\).*/\1/')
-            case "$major" in ''|*[!0-9]*) continue ;; esac
-            script_name=$(basename "$changed_script")
-            entry=$(jq -n --arg s "$script_name" --arg t "$raw_tested_on" '{"script":$s,"tested_on":$t}')
+            case "$major" in ''|*[!0-9]*)
+              echo "ERROR: '$script_name' has an unrecognised '# Tested on' value: '$raw_tested_on'."
+              echo "       Expected format: UBI:<major>.<minor>  e.g. UBI:10.2"
+              validation_failed=true
+              continue
+            esac
+
+            # Rule 2: the UBI slot must already be filled by read_buildinfo.sh.
             case "$major" in
               8)
                 if [ -z "$SCRIPT_UBI8" ]; then
-                  echo "Filling SCRIPT_UBI8 from changed script: $script_name"
-                  SCRIPT_UBI8="$entry"
+                  echo "ERROR: '$script_name' targets UBI8 (# Tested on: $raw_tested_on) but SCRIPT_UBI8 is empty."
+                  echo "       The version block key in build_info.json does not match VERSION='$VERSION'."
+                  echo "       Fix the version block key so it exactly matches the 'version' field value."
+                  validation_failed=true
                 fi ;;
               9)
                 if [ -z "$SCRIPT_UBI9" ]; then
-                  echo "Filling SCRIPT_UBI9 from changed script: $script_name"
-                  SCRIPT_UBI9="$entry"
+                  echo "ERROR: '$script_name' targets UBI9 (# Tested on: $raw_tested_on) but SCRIPT_UBI9 is empty."
+                  echo "       The version block key in build_info.json does not match VERSION='$VERSION'."
+                  echo "       Fix the version block key so it exactly matches the 'version' field value."
+                  validation_failed=true
                 fi ;;
               10)
                 if [ -z "$SCRIPT_UBI10" ]; then
-                  echo "Filling SCRIPT_UBI10 from changed script: $script_name"
-                  SCRIPT_UBI10="$entry"
+                  echo "ERROR: '$script_name' targets UBI10 (# Tested on: $raw_tested_on) but SCRIPT_UBI10 is empty."
+                  echo "       The version block key in build_info.json does not match VERSION='$VERSION'."
+                  echo "       Fix the version block key so it exactly matches the 'version' field value."
+                  validation_failed=true
                 fi ;;
             esac
           done <<< "$CHANGED_FILES"
+
+          if [ "$validation_failed" = "true" ]; then
+            echo ""
+            echo "PR blocked: fix the errors above in build_info.json or the build script(s) before merging."
+            echo "Currency-build has no safety net and would silently produce an incomplete build."
+            exit 1
+          fi
 
           echo "SCRIPT_UBI8=$SCRIPT_UBI8"
           echo "SCRIPT_UBI9=$SCRIPT_UBI9"
