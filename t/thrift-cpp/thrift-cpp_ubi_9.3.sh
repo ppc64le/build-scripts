@@ -35,7 +35,7 @@ wget https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz
 tar -xvf flex-2.6.4.tar.gz
 cd flex-2.6.4
 echo "Configuring flex installation..."
-./configure --prefix=/usr/local
+./configure --prefix=/usr
 echo "Compiling the source code for flex..."
 make -j$(nproc)
 echo "Installing flex..."

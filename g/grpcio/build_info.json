@@ -1,12 +1,12 @@
 {
-    "maintainer": "saisrivatsa",
+    "maintainer": "Varsha Kumar",
     "package_name": "grpcio",
     "github_url": "https://github.com/grpc/grpc.git",
-    "version": "v1.76.0",
+    "version": "v1.81.1",
     "wheel_build" : true,
     "package_dir": "g/grpcio",
     "default_branch": "master",
-    "build_script": "grpcio_1.76.0_ubi_9.6.sh",
+    "build_script": "grpcio_1.81.1_ubi_9.6.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": "false",
@@ -16,7 +16,10 @@
     "v1.54.3":{
       "build_script":"grpcio_1.53.0_ubi_9.3.sh"
      },
+    "v1.81.1":{
+      "build_script":"grpcio_1.81.1_ubi_9.6.sh"
+     },
     "v1.*.*": {
-      "build_script": "grpcio_1.76.0_ubi_9.6.sh"
+      "build_script": "grpcio_1.81.1_ubi_9.6.sh"
     }
   }

@@ -1,0 +1,16 @@
+{
+   "maintainer": "bhagyashrigais",
+   "package_name": "tvm-ffi",
+   "github_url": "https://github.com/apache/tvm-ffi.git",
+   "version": "v0.1.9",
+   "default_branch": "main",
+   "build_script": "tvm_ffi_ubi_9.6.sh",
+   "package_dir": "t/tvm-ffi",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"tvm_ffi_ubi_9.6.sh"
+  }
+}

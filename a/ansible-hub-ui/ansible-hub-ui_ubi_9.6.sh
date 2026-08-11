@@ -40,6 +40,13 @@ git checkout $PACKAGE_VERSION
 sed -i '/"@ls-lint\/ls-lint"/d' package.json
 sed -i '/"lint:ls": "ls-lint"/d' package.json
 
+# Fix pyproject.toml: The original file only contains [tool.towncrier] section for changelog management.
+# Python's build system requires a [project] section with 'name' and 'version' metadata to generate
+# a proper wheel file. Without this, the build produces 'unknown-0.0.0-py3-none-any.whl'.
+# This sed command inserts the [project] section before [tool.towncrier], preserving the original content.
+# This ensures any downstream wheel building process will have the correct package metadata.
+sed -i '/^\[tool\.towncrier\]/i [project]\nname = "ansible-hub-ui"\nversion = "'"$PACKAGE_VERSION"'"\n' pyproject.toml
+
 #Install dependencies
 if ! npm install ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"

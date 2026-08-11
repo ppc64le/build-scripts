@@ -6,7 +6,6 @@ import sys
 import docker
 import json
 import datetime
-
 import re
 
 
@@ -172,7 +171,6 @@ def trigger_script_validation_checks(file_name):
         container = client.containers.run(
             image_name,
             "/home/tester/{}".format(file_name),
-            network = 'host',
             detach = True,
             volumes = {
                 current_dir : {'bind': '/home/tester/', 'mode': 'rw'}
@@ -273,7 +271,16 @@ def trigger_build_validation_ci(pr_number):
 
     print(f"pull_request_file_url:{pull_request_file_url}" )
     
-    req_response = requests.get(pull_request_file_url)
+    # Get GitHub token from environment variable
+    github_token = os.environ.get('GITHUB_TOKEN')
+    headers = {}
+    if github_token:
+        headers['Authorization'] = f'Bearer {github_token}'
+        print("Using authenticated GitHub API request")
+    else:
+        print("Warning: GITHUB_TOKEN not found, using unauthenticated request (subject to rate limits)")
+    
+    req_response = requests.get(pull_request_file_url, headers=headers)
     
     if req_response.status_code != 200:
         print(f"Error calling GitHub API. Status Code: {req_response.status_code}")
@@ -308,14 +315,11 @@ def trigger_build_validation_ci(pr_number):
             # perform basic validation check
             trigger_basic_validation_checks(file_name)
 
-            #check ci-check from package header  
-            ci_check=package_data['ci_check'].lower()
-            if ci_check=="true":
+            # Script execution moved to build job via execute_changed_scripts.py
+            # This avoids duplicate execution - validation happens here, actual build happens in build job
+            print("✅ Basic validation passed for {} (headers, license, line endings)".format(file_name))
+            print("   Script execution will happen in build job with proper version parameter")
 
-                # Build/test script files
-                trigger_script_validation_checks(file_name)
-            else:
-                print("Skipping Build script validation for {} as CI-Check flag is set to False".format(file_name))
             # Keep track of validated files.
             validated_file_list.append(file_name)
         elif file_name.lower().endswith('build_info.json') and status != "removed":

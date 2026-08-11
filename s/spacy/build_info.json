@@ -1,0 +1,16 @@
+{
+  "maintainer": "puneetsharma21",
+  "package_name": "spacy",
+  "github_url": "https://github.com/explosion/spaCy",
+  "version": "release-v3.8.7",
+  "wheel_build" : true,
+  "package_dir": "s/spacy",
+  "default_branch": "master",
+  "build_script": "spacy_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"spacy_ubi_9.6.sh"
+  }
+}

@@ -45,7 +45,7 @@ SCRIPT_DIR=$(pwd)
 
 #Building abesil-cpp,libprotobuf and protobuf 
 
-pip install --upgrade pip setuptools wheel ninja packaging pytest 
+pip install --upgrade pip "setuptools<80" wheel ninja packaging pytest
 
 # cmake installing from source 
 echo " -------------------------- Cmake Installing -------------------------- " 
@@ -73,7 +73,7 @@ mkdir -p $LIBPROTO_DIR/local/libprotobuf
 LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
 
 git submodule update --init --recursive
-rm -rf ./third_party/googletest | true
+rm -rf ./third_party/googletest || true
 
 mkdir build
 cd build
@@ -111,7 +111,7 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p
 git apply set_cpp_to_17_v4.25.3.patch
 
 cd python
-pip install .
+pip install . --no-build-isolation
 
 echo " -------------------------- libprotobuf and  protobuf installed -------------------------- "
 
@@ -123,6 +123,27 @@ echo " -------------------------- Sentencepiece Installing ---------------------
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+
+echo "-------------------------- Patch license metadata --------------------------"
+cd python
+
+cp -f ../LICENSE . 2>/dev/null || true
+
+if ! grep -q '^license *=.*' pyproject.toml; then
+    echo "Patching pyproject.toml to include license..."
+
+    sed -i '/^\[project\]$/a license = "Apache-2.0"' pyproject.toml
+    sed -i '/^license = "Apache-2.0"$/a license-files = ["LICENSE"]' pyproject.toml
+fi
+
+# Ensure LICENSE included in source dist
+if [ ! -f MANIFEST.in ]; then
+    echo "include LICENSE" > MANIFEST.in
+elif ! grep -q LICENSE MANIFEST.in; then
+    echo "include LICENSE" >> MANIFEST.in
+fi
+
+cd ..
 
 export PATH="$LIBPROTO_INSTALL/bin:${PATH}"
 export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib:${LD_LIBRARY_PATH}"
@@ -151,7 +172,7 @@ make -j $(nproc)
 make install
 cd ../python
 
-if ! pip install .; then
+if ! pip install . --no-build-isolation; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

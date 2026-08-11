@@ -1,0 +1,40 @@
+diff --git a/accelerate/src/numpy_formathandler.pyx b/accelerate/src/numpy_formathandler.pyx
+index 0c01d78e..90b7cf9a 100644
+--- a/accelerate/src/numpy_formathandler.pyx
++++ b/accelerate/src/numpy_formathandler.pyx
+@@ -1,3 +1,4 @@
++from numpy cimport npy_intp
+ """Accelerator for numpy format handler operations"""
+ from ctypes import c_void_p
+ import numpy as np
+@@ -19,7 +20,7 @@ cdef extern from "numpy/arrayobject.h":
+     int NPY_ARRAY_FORCECAST
+     int PyArray_ISCARRAY( np.ndarray instance )
+     int PyArray_ISCARRAY_RO( np.ndarray instance )
+-    cdef np.ndarray PyArray_Zeros(int nd, np.Py_intptr_t* dims, np.dtype, int fortran)
++    cdef np.ndarray PyArray_Zeros(int nd, npy_intp* dims, np.dtype, int fortran)
+     cdef np.ndarray PyArray_EnsureArray(object)
+     cdef int PyArray_FillWithScalar(object, object)
+     cdef void import_array()
+diff --git a/accelerate/src/vbo.pyx b/accelerate/src/vbo.pyx
+index f3e204e5..14bea137 100644
+--- a/accelerate/src/vbo.pyx
++++ b/accelerate/src/vbo.pyx
+@@ -187,7 +187,7 @@ cdef class VBO:
+         assert not self.created, """Already created the buffer"""
+         buffers = self.get_implementation().glGenBuffers(1)
+         try:
+-            self.buffer = long( buffers )
++            self.buffer = int(buffers)
+         except (TypeError,ValueError), err:
+             self.buffer = buffers[0]
+         self.target = self.c_resolve( self.target_spec )
+@@ -241,7 +241,7 @@ cdef class VBO:
+         """Add an integer to this VBO (offset)"""
+         if hasattr( other, 'offset' ):
+             other = other.offset
+-        assert isinstance( other, (int,long) ), """Only know how to add integer/long offsets"""
++        assert isinstance( other, (int,) ), """Only know how to add integer/long offsets"""
+         return VBOOffset( self, other )
+     cdef int check_live( self ):
+         if self.data is _NULL:

@@ -1,0 +1,16 @@
+{
+  "maintainer": "Manya.Rusiya@ibm.com",
+  "package_name": "agno",
+  "github_url": "https://github.com/agno-agi/agno",
+  "version": "v2.6.6",
+  "default_branch": "master",
+  "build_script": "agno_v2.6.6_ubi9.7.sh", 
+  "package_dir": "a/agno",
+  "use_non_root_user": false,
+  "validate_build_script":true,
+  "docker_build": false,
+  "wheel_build" : true,
+  "v*.*.*": {
+      "build_script": "agno_v2.6.6_ubi9.7.sh"
+  }
+}

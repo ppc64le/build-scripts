@@ -10,6 +10,7 @@
 	"validate_build_script": true,
 	"wheel_build" : true,
 	"use_non_root_user": false,
+	"wheel_name": "pulsar-client",
 	"*": {
 	   "build_script": "pulsar-client-python_ubi_9.3.sh"
 	}

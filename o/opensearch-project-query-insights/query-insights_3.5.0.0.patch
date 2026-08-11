@@ -1,0 +1,25 @@
+diff --git a/build.gradle b/build.gradle
+index a221264..a47c96c 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -143,7 +143,7 @@ spotless {
+     }
+     removeUnusedImports()
+     importOrder()
+-    eclipse().withP2Mirrors(Map.of("https://download.eclipse.org/", "https://mirror.umd.edu/eclipse/")).configFile rootProject.file('config/formatterConfig.xml')
++    eclipse('4.32').withP2Mirrors(Map.of("https://download.eclipse.org/", "https://mirror.umd.edu/eclipse/")).configFile(rootProject.file("config/formatterConfig.xml"))
+     trimTrailingWhitespace()
+     endWithNewline()
+   }
+diff --git a/gradle.properties b/gradle.properties
+index 7717686..d204f86 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -9,3 +9,7 @@
+ org.gradle.caching=true
+ org.gradle.warning.mode=none
+ org.gradle.parallel=true
++org.gradle.native=false
++
++#Use plain console output (no rich formatting that requires native platform)
++org.gradle.console=plain

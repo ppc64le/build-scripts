@@ -43,5 +43,5 @@ where = ["local"]
 thriftcpp = ["bin/*", "lib/*", "lib/**/*", "include/**/*"]
 
 [tool.distutils.bdist_wheel]
-plat-name = "manylinux2014_ppc64le"  # Explicitly set the platform tag
+plat-name = "linux_ppc64le"  # Explicitly set the platform tag
 universal = false  # Disable universal wheel (forces platform-specific build)

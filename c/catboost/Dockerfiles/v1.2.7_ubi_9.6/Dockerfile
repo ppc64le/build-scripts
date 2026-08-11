@@ -48,8 +48,9 @@ RUN set -ex \
 && ./configure --with-system-ffi --with-computed-gotos --enable-loadable-sqlite-extensions \
 && make -j"$(nproc)" \
 && make altinstall \
-&& ln -sf "$(which python3.11)" /usr/bin/python3 \
-&& ln -sf "$(which pip3.11)" /usr/bin/pip3 \
+&& PY_MINOR="${PYTHON_VERSION%.*}" \
+&& ln -sf "/usr/local/bin/python${PY_MINOR}" /usr/bin/python3 \
+&& ln -sf "/usr/local/bin/python${PY_MINOR}" /usr/bin/pip3 \
 && python3 -V && pip3 -V \
 \
 && python3 -m pip install -U "pip<24" "setuptools==68.2.2" "wheel==0.41.3" testpath pytest \
@@ -102,6 +103,10 @@ RUN set -ex \
 && grep -n 'yasm/1.3.0' "$CONANFILE" || true \
 && grep -n 'ragel/6.10' "$CONANFILE" || true \
 \
+&& echo -e "\n[+] Remove rotten_tomatoes dataset function\n" \
+&& DATASETS_FILE="$REPO_DIR/catboost/python-package/catboost/datasets.py" \
+&& sed -i '/^def rotten_tomatoes():/,/^def /{/^def rotten_tomatoes():/!{/^def /!d}}; /^def rotten_tomatoes():/d' "$DATASETS_FILE" \
+\
 && RAGEL_BUILD="$WORKDIR/_ragel_build" \
 && rm -rf "$RAGEL_BUILD" \
 && mkdir -p "$RAGEL_BUILD" \
@@ -122,8 +127,10 @@ RUN set -ex \
 \
 && cd "$PKG_DIR" \
 && rm -rf build dist *.egg-info .eggs || true \
-&& mkdir -p build/temp.linux-ppc64le-cpython-311/bin \
-&& ln -sf "$RAGEL_BIN" build/temp.linux-ppc64le-cpython-311/bin/ragel \
+&& PYTAG="${PYTHON_VERSION%%.*}${PYTHON_VERSION#*.}" \
+&& PYTAG="${PYTAG%%.*}" \
+&& mkdir -p "build/temp.linux-ppc64le-cpython-${PYTAG}/bin" \
+&& ln -sf "$RAGEL_BIN" "build/temp.linux-ppc64le-cpython-${PYTAG}/bin/ragel" \
 \
 && ret=0 \
 && python3 setup.py bdist_wheel --no-widget || ret=$? \
@@ -162,6 +169,9 @@ RUN set -ex \
 # ==============================================================================
 FROM registry.access.redhat.com/ubi9/ubi:9.6 AS runtime
 
+ARG PYTHON_VERSION=3.11.5
+ENV PYTHON_VERSION=${PYTHON_VERSION}
+
 WORKDIR /root
 
 RUN set -ex \
@@ -174,8 +184,9 @@ COPY --from=builder /usr/local/ /usr/local/
 COPY --from=builder /out/ /tmp/wheels/
 
 RUN set -ex \
-&& ln -sf /usr/local/bin/python3.11 /usr/bin/python3 \
-&& ln -sf /usr/local/bin/pip3.11 /usr/bin/pip3 \
+&& PY_MINOR="${PYTHON_VERSION%.*}" \
+&& ln -sf "/usr/local/bin/python${PY_MINOR}" /usr/bin/python3 \
+&& ln -sf "/usr/local/bin/python${PY_MINOR}" /usr/bin/pip3 \
 && python3 -V && pip3 -V \
 && python3 -m pip install -U pip \
 && python3 -m pip install /tmp/wheels/*.whl \

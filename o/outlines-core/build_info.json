@@ -9,5 +9,12 @@
    "docker_build": false,
    "wheel_build": true,
    "validate_build_script": true,
-   "use_non_root_user": false
+   "use_non_root_user": false,
+   "auditwheel_exclude": [
+     "libc10.so",
+     "libtorch.so",
+     "libtorch_cpu.so",
+     "libtorch_python.so",
+     "libshm.so"
+   ]
 }

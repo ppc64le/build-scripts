@@ -1,0 +1,17 @@
+{
+
+    "maintainer": "bhagyashrigai",
+    "package_name": "sqlite-vec",
+    "github_url": "https://github.com/asg017/sqlite-vec.git",
+    "version": "v0.1.9",
+    "default_branch": "main",
+    "package_dir": "s/sqlite-vec",
+    "build_script": "sqlite-vec_ubi_9.6.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "wheel_build" : true,
+    "docker_build": "false",
+    "*" : {
+       "build_script": "sqlite-vec_ubi_9.6.sh"
+    }
+}

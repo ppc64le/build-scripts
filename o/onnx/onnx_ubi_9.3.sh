@@ -27,21 +27,22 @@ CURRENT_DIR="${PWD}"
 
 echo "Installing dependencies..."
 yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12-devel python3.12 python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
+yum install -y jq curl --allowerasing
+source /opt/rh/gcc-toolset-13/enable
+
 export PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 
 echo " ------------------------------------------ Openblas Installing ------------------------------------------ "
-
 #clone and install openblas from source
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
-git checkout v0.3.29
+git checkout v0.3.32
 git submodule update --init
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/openblas/pyproject.toml
-sed -i "s/{PACKAGE_VERSION}/v0.3.29/g" pyproject.toml
+sed -i "s/{PACKAGE_VERSION}/v0.3.32/g" pyproject.toml
 
 PREFIX=local/openblas
 OPENBLAS_SOURCE=$(pwd)
@@ -85,10 +86,8 @@ build_opts+=(NUM_THREADS=8)
 build_opts+=(NO_AFFINITY=1)
 
 # Build OpenBLAS
-make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
-
-# Install OpenBLAS
-CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
+make -j${MAX_JOBS} TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=$(nproc) DYNAMIC_ARCH=1 INTERFACE64=0 CFLAGS="${CF}"
+make install PREFIX=${PREFIX}
 OpenBLASInstallPATH=$(pwd)/$PREFIX
 OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
 OpenBLASPCFile=$(find . -name openblas.pc)
@@ -100,7 +99,6 @@ sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/in
 
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
-
 echo " ------------------------------------------ Openblas Successfully Installed ------------------------------------------ "
 
 
@@ -127,8 +125,8 @@ echo " ------------------------------------------ Abseil-CPP Cloned ------------
 cd $CURRENT_DIR
 
 # Setting paths and versions
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
+export C_COMPILER=$(command -v gcc)
+export CXX_COMPILER=$(command -v g++)
 echo "C Compiler set to $C_COMPILER"
 echo "CXX Compiler set to $CXX_COMPILER"
 

@@ -1,0 +1,79 @@
+diff --git a/src/cpp/session/SessionOptions.cpp b/src/cpp/session/SessionOptions.cpp
+index 41f3c985e3..26d2c8443a 100644
+--- a/src/cpp/session/SessionOptions.cpp
++++ b/src/cpp/session/SessionOptions.cpp
+@@ -62,7 +62,7 @@
+ #elif defined(__amd64__)
+ # define kQuartoArch "x86_64"
+ #else
+-# error "unknown or unsupported platform architecture"
++#  define kQuartoArch "ppc64le"
+ #endif
+
+ using namespace rstudio::core;
+diff --git a/src/cpp/shared_core/json/Json.cpp b/src/cpp/shared_core/json/Json.cpp
+index d0a7416bbb..182e50452b 100644
+--- a/src/cpp/shared_core/json/Json.cpp
++++ b/src/cpp/shared_core/json/Json.cpp
+@@ -26,6 +26,7 @@
+ #endif
+
+ #include <shared_core/json/Json.hpp>
++#include <boost/system/is_error_code_enum.hpp>
+
+ #include <sstream>
+
+@@ -432,7 +433,7 @@ Error Value::coerce(const std::string& in_schema,
+    rapidjson::ParseResult result = sd.Parse(in_schema.c_str());
+    if (result.IsError())
+    {
+-      error = Error(result.Code(), ERROR_LOCATION);
++      error = Error(rapidjson::make_error_code(result.Code()), ERROR_LOCATION);
+       error.addProperty("offset", result.Offset());
+       return error;
+    }
+@@ -452,7 +453,7 @@ Error Value::coerce(const std::string& in_schema,
+       {
+          // If this is the same as the last invalid piece we tried to remove, then removing
+          // it didn't actually fix the problem.
+-         error = Error(rapidjson::kParseErrorUnspecificSyntaxError, ERROR_LOCATION);
++         error = Error(rapidjson::make_error_code(rapidjson::kParseErrorUnspecificSyntaxError), ERROR_LOCATION);
+          error.addProperty("keyword", validator.GetInvalidSchemaKeyword());
+          invalid.StringifyUriFragment(sb);
+          error.addProperty("document", sb.GetString());
+@@ -694,7 +695,7 @@ Error Value::parse(const char* in_jsonStr)
+    if (result.IsError())
+    {
+       std::string message = "An error occurred while parsing json. Offset: " + std::to_string(result.Offset());
+-      return Error(result.Code(), message, ERROR_LOCATION);
++      return Error(rapidjson::make_error_code(result.Code()), message, ERROR_LOCATION);
+    }
+
+    return Success();
+@@ -794,7 +795,7 @@ Error Value::validate(const std::string& in_schema) const
+    rapidjson::ParseResult result = sd.Parse(in_schema.c_str());
+    if (result.IsError())
+    {
+-      error = Error(result.Code(), ERROR_LOCATION);
++      error = Error(rapidjson::make_error_code(result.Code()), ERROR_LOCATION);
+       error.addProperty("offset", result.Offset());
+       return error;
+    }
+@@ -805,7 +806,7 @@ Error Value::validate(const std::string& in_schema) const
+    if (!m_impl->Document->Accept(validator))
+    {
+       rapidjson::StringBuffer sb;
+-      error = Error(rapidjson::kParseErrorUnspecificSyntaxError, ERROR_LOCATION);
++      error = Error(rapidjson::make_error_code(rapidjson::kParseErrorUnspecificSyntaxError), ERROR_LOCATION);
+       validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);
+       error.addProperty("schema", sb.GetString());
+       error.addProperty("keyword", validator.GetInvalidSchemaKeyword());
+@@ -984,7 +985,7 @@ Error Object::getSchemaDefaults(const std::string& in_schema, Object& out_schema
+       return error;
+
+    if (!schema.isObject())
+-      return Error(rapidjson::kParseErrorValueInvalid, ERROR_LOCATION);
++      return Error(rapidjson::make_error_code(rapidjson::kParseErrorValueInvalid), ERROR_LOCATION);
+
+    out_schemaDefaults = ::rstudio::core::json::getSchemaDefaults(schema.getObject());
+    return Success();

@@ -61,7 +61,7 @@ fi
 
 # Test the package
 python3.12 -c "import matplotlib; print(matplotlib.__file__)"
-python3.12 -m pip install  "pyparsing<3.2"  "patchelf>=0.11.0" "setuptools_scm>=7" 'meson-python<0.17.0,>=0.13.1'
+python3.12 -m pip install "pyparsing<3.2" "patchelf>=0.11.0" "setuptools_scm<8" "meson-python<0.17.0,>=0.13.1"
 pytest ./lib/matplotlib/tests/test_units.py
 
 

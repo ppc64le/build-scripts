@@ -1,15 +1,18 @@
 {
-  "maintainer": "Prachi.Gaonkar@ibm.com",
+  "maintainer": "Shubhada.Salunkhe@ibm.com",
   "package_name": "opensearch-project-query-insights",
   "github_url": "https://github.com/opensearch-project/query-insights",
-  "version": "3.3.0.0",
-  "required_versions":{"Releases": ["*"], "Tags": ["*"]},
+  "version": "3.5.0.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["3.5.0.0"]},
   "default_branch": "main",
   "package_dir": "o/opensearch-project-query-insights",
-  "build_script": "opensearch-project-query-insights_3.3.0.0_ubi_9.6.sh",
+  "build_script": "opensearch-project-query-insights_3.5.0.0_ubi_9.6.sh",
   "validate_build_script": true,
   "use_non_root_user": true,
   "docker_build": false,
+  "3.5.0.0": {
+    "build_script": "opensearch-project-query-insights_3.5.0.0_ubi_9.6.sh"
+  },
   "3.3.0.0": {
     "build_script": "opensearch-project-query-insights_3.3.0.0_ubi_9.6.sh"
   },

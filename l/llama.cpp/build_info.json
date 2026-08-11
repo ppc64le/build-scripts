@@ -1,0 +1,16 @@
+{
+  "maintainer": "shalinib-ibm",
+  "package_name": "llama.cpp",
+  "github_url": "https://github.com/ggml-org/llama.cpp",
+  "version": "Release",
+  "wheel_build": true,
+  "docker_build": false,
+  "build_script": "llama_cpp_ubi_9.6.sh",
+  "validate_build_script": true,
+  "package_dir": "l/llama.cpp",
+  "default_branch": "master",
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "llama_cpp_ubi_9.6.sh"
+  }
+}

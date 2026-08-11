@@ -1,16 +1,22 @@
 {
-   "maintainer": "rusiyamanya",
+   "maintainer": "Ryder Salinas <rbsalinas@ibm.com>",
    "package_name": "uvloop",
    "github_url": "https://github.com/MagicStack/uvloop",
-   "version": "v0.21.0",
+   "version": "v0.22.1",
    "wheel_build" : true,
    "default_branch": "master",
-   "build_script": "uvloop_ubi_9.3.sh",
+   "build_script": "uvloop_0.22.1_ubi_9.6.sh",
    "package_dir": "u/uvloop",
    "docker_build": false,
    "validate_build_script": true,
    "use_non_root_user": false,
-   "*": {
+   "v0.22.1": {
+    "build_script": "uvloop_0.22.1_ubi_9.6.sh"
+  },
+   "v0.21.0": {
     "build_script": "uvloop_ubi_9.3.sh"
+  },
+   "*": {
+    "build_script": "uvloop_0.22.1_ubi_9.6.sh"
   }
 }

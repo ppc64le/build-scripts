@@ -1,0 +1,15 @@
+{
+  "maintainer": "Veenious D Geevarghese",
+  "package_name": "next.js",
+  "github_url": "https://github.com/vercel/next.js",
+  "version": "16.2.6",
+  "default_branch": "canary",
+  "package_dir": "n/next.js",
+  "build_script": "next.js_16.2.6_ubi_10.2.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "16.*.*": {
+    "build_script": "next.js_16.2.6_ubi_10.2.sh"
+  }
+}

@@ -23,10 +23,10 @@ index bf374cd..c53c6b9 100644
        COMMAND docker create --name onnxruntime_backend_ort ${TRITON_ONNXRUNTIME_DOCKER_IMAGE}
        COMMAND rm -fr onnxruntime
 diff --git a/tools/gen_ort_dockerfile.py b/tools/gen_ort_dockerfile.py
-index 13f38ac..4f5071c 100755
+index c462558..c3d58a9 100755
 --- a/tools/gen_ort_dockerfile.py
 +++ b/tools/gen_ort_dockerfile.py
-@@ -126,26 +126,32 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
+@@ -134,27 +134,31 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
          df += """
  # The manylinux container defaults to Python 3.7, but some feature installation
  # requires a higher version.
@@ -38,34 +38,35 @@ index 13f38ac..4f5071c 100755
 -ENV PYTHON_BIN_PATH=${PYBIN}/python${PYVER} \
 -    PATH=${PYBIN}:${PATH}
 +RUN yum install -y wget && \
-+   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-26.el9.noarch.rpm \
-+        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-26.el9.noarch.rpm \
++   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-35.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-35.el9.noarch.rpm \
 +        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
 +        dnf config-manager --set-enabled crb &&\
 +        dnf install gperf libarchive-devel numactl-devel readline-devel libusb patch -y && \
-+        dnf remove -y centos-gpg-keys-9.0-26.el9.noarch centos-stream-repos-9.0-26.el9.noarch
++        dnf remove -y centos-gpg-keys-9.0-35.el9.noarch centos-stream-repos-9.0-35.el9.noarch
  
- RUN yum install -y \\
+ RUN dnf install -y \\
          ca-certificates \\
 -        curl \\
          git \\
-         gnupg \\
--        gnupg1 \
+-        gnupg \\
          openssl-devel \\
--        python3-pip \
+-        python3-pip \\
+         wget \\
+-        zip
++        zip \\
 +        python3.12 \\
 +        python3.12-pip \\
 +        python3.12-devel \\
-+        python3.12-numpy \\
-         wget \\
++        python3.12-numpy \\ 
 +        cmake \\
-+        g++ \\
-         zip
++        g++  
  
--RUN pip3 install patchelf==0.17.2
+-RUN pipx install cmake==4.0.3 --force
 +RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
-+RUN pip3 install patchelf==0.17.2 cmake packaging wheel
-+
++RUN pip3 install patchelf==0.17.2 cmake==4.0.3 packaging wheel
+ 
+-RUN pip3 install patchelf==0.17.2 numpy>=2.0.0
  """
      else:
          if os.getenv("CCACHE_REMOTE_ONLY") and os.getenv("CCACHE_REMOTE_STORAGE"):

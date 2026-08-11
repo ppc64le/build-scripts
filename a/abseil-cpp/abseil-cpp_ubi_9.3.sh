@@ -64,6 +64,7 @@ cmake --install .
 cd $Source_DIR
 
 cp -r  $PREFIX/* $abseilcpp/
+export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
 
 #create pyproject.toml file
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/abseil-cpp/pyproject.toml

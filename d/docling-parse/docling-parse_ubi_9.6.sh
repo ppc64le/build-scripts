@@ -23,7 +23,7 @@ set -e
 # Variables
 PACKAGE_DIR="docling-parse"
 PACKAGE_NAME="docling-parse"
-PACKAGE_VERSION="${1:-v4.7.1}"
+PACKAGE_VERSION="${1:-v5.11.0}"
 PACKAGE_URL="https://github.com/docling-project/docling-parse.git"
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
@@ -33,6 +33,7 @@ SOURCE=Github
 echo "Installing required packages..."
 yum install -y git wget gcc gcc-c++ python3.12-devel python3.12-pip zlib zlib-devel libjpeg-devel libjpeg-turbo libjpeg-turbo-devel freetype-devel
 python3.12 -m pip install build pytest wheel
+python3.12 -m pip install huggingface-hub
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH

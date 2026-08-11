@@ -29,7 +29,6 @@ def trigger_script_validation_checks(file_name, version, image_name):
             container = client.containers.run(
                 image=image_name,
                 command=command,
-                network='host',
                 detach=True,
                 volumes={current_dir: {'bind': '/home/tester/', 'mode': 'rw'}},
                 stderr=True,

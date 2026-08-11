@@ -48,7 +48,7 @@ class CurrencyProcessor:
         result = {}
         cos = COSWrapper(CLOUD_OBJECT_CVE_SBOM_BUCKET)
 
-        python_versions = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        python_versions = [ "3.10", "3.11", "3.12", "3.13", "3.14"]   
 
         for py_version in python_versions:
             artifact_name = f"{package_name}/{version}/{package_name}_{version}_wheel_py{py_version}_log.gz"
@@ -67,14 +67,34 @@ class CurrencyProcessor:
         return result
     
     def _get_build_status_from_log(self, content: str) -> str:
-        content = content.lower()
-        success_messages = f"exit 0"
-        failure_messages = f"exit 1", f"exit 127"
-        if success_messages in content:
-            return "success"
-        for failure_message in failure_messages:
-            if failure_message in content:
+        lines = content.splitlines()
+        success_messages = [
+            "SUCCESS: Wheels post process successfully."
+        ]
+        failure_messages = [
+            "ERROR: Auditwheel failed.",
+            "ERROR: Expected exactly 1 wheel but found",
+            "ERROR: Auditwheel failed to repair wheel:",
+            "ERROR: Skipped wheel is not universal i.e(*any.whl).",
+            "Wheel Creation Failed for Python.",
+            "ERROR: Failed to post process wheels."
+        ]
+        # --- Check success first (exact line match) ---
+        for line in lines:
+            line_clean = line.strip().lower()
+            # Remove ===> prefix if present
+            if line_clean.startswith("===>"):
+                line_clean = line_clean[4:].strip()
+            for success in success_messages:
+                if line_clean == success.lower():
+                    return "success"
+
+        # --- Check failure next (substring match) ---
+        content_lower = content.lower()
+        for failure in failure_messages:
+            if failure.lower() in content_lower:
                 return "failure"
+        # --- Default fallback ---
         return "success"
 
     def _get_package_details(self, package_name: str, version: str):

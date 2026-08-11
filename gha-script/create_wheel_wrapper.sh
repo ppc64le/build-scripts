@@ -1,72 +1,92 @@
 #!/bin/bash -e
 
+# variables
 PYTHON_VERSION=$1
 BUILD_SCRIPT_PATH=${2:-""}
-EXTRA_ARGS="${@:3}" # Capture all additional arguments passed to the script
-CURRENT_DIR="${PWD}"
-EXIT_CODE=0
+EXTRA_ARGS=${3:-""}
+POST_PROCESS_SCRIPT_PATH=${4:-"post_process_wheel.py"}
+CURRENT_DIR=$(pwd)
 
-#install gcc
-yum install -y gcc-toolset-13 zip unzip 
-source /opt/rh/gcc-toolset-13/enable
+# install git  -  required by generate_sha() for all Python versions and UBI versions
+yum install -y git
+
+# install gcc  -  select toolset version based on UBI major version
+UBI_MAJOR=$(grep -oP '(?<=^VERSION_ID=")[0-9]+' /etc/os-release || grep -oP 'release \K[0-9]+' /etc/redhat-release 2>/dev/null || echo "8")
+if [[ "$UBI_MAJOR" -ge 10 ]]; then
+    GCC_TOOLSET="gcc-toolset-15"
+    yum install -y "$GCC_TOOLSET"
+    # On UBI 10, SCL (Software Collections) was dropped  -  there is no enable script.
+    # Activate the toolset by prepending its bin directory to PATH directly.
+    export PATH="/opt/rh/${GCC_TOOLSET}/root/usr/bin:$PATH"
+else
+    GCC_TOOLSET="gcc-toolset-13"
+    yum install -y "$GCC_TOOLSET"
+    source /opt/rh/${GCC_TOOLSET}/enable
+fi
 gcc --version
 
-# Temporary build script path
+# temporary build script path
 if [ -n "$BUILD_SCRIPT_PATH" ]; then
     TEMP_BUILD_SCRIPT_PATH="temp_build_script.sh"
 else
     TEMP_BUILD_SCRIPT_PATH=""
 fi
 
-# Function to install a specific Python version
+# function to install a specific Python version
 install_python_version() {
     local version=$1
-    echo "Installing Python version: $version"
+    echo
+    echo "==================== Installing Python version: $version ===================="
+    echo
     case $version in
-    "3.9" | "3.11" | "3.12")
-        echo "Starting python installing..."
+    "3.11" | "3.12")
         yum install -y python${version} python${version}-devel python${version}-pip
         ;;
     "3.10")
         if ! python3.10 --version &>/dev/null; then
-            echo "Installing dependencies required for python installation..."
-            yum install -y sudo zlib-devel wget ncurses git
-            echo "Installing..."
-            yum install -y make cmake openssl-devel
-            echo "Installing..."
+            yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
             yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
-            echo "Starting python installing..."
-            wget https://www.python.org/ftp/python/3.10.15/Python-3.10.15.tgz
-            tar xf Python-3.10.15.tgz
-            cd Python-3.10.15
-            ./configure --prefix=/usr/local --enable-optimizations
-            echo "Still building..."
+            wget https://www.python.org/ftp/python/3.10.20/Python-3.10.20.tgz
+            tar xf Python-3.10.20.tgz
+            cd Python-3.10.20
+            ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
-            echo "Still building..."
             make altinstall
+            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
             echo "Completed..."
-            cd .. && rm -rf Python-3.10.15.tgz
+            cd .. && rm -rf Python-3.10.20.tgz
         fi
         ;;
     "3.13")
         if ! python3.13 --version &>/dev/null; then
-            echo "Installing dependencies required for python installation..."
-            yum install -y sudo zlib-devel wget ncurses git
-            echo "Installing..."
-            yum install -y make cmake openssl-devel
-            echo "Installing..."
+            yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
             yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
-            echo "Starting python installing..."
-            wget https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tgz
-            tar xzf Python-3.13.0.tgz
-            cd Python-3.13.0
-            ./configure --prefix=/usr/local --enable-optimizations
-            echo "Still building..."
+            wget https://www.python.org/ftp/python/3.13.10/Python-3.13.10.tgz
+            tar xzf Python-3.13.10.tgz
+            cd Python-3.13.10
+            ./configure --prefix=/usr/local --enable-optimizations --enable-shared
             make -j2
-            echo "Still building..."
             make altinstall
-            echo "Completed..."
-            cd .. && rm -rf Python-3.13.0.tgz
+            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
+            cd .. && rm -rf Python-3.13.10.tgz
+        fi
+        ;;
+    "3.14")
+        if ! python3.14 --version &>/dev/null; then
+            if [[ "$UBI_MAJOR" -ge 10 ]]; then
+                yum install -y python3.14 python3.14-devel python3.14-pip
+            else
+                yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
+                yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
+                wget https://www.python.org/ftp/python/3.14.3/Python-3.14.3.tgz
+                tar xzf Python-3.14.3.tgz
+                cd Python-3.14.3
+                ./configure --prefix=/usr/local --enable-optimizations --enable-shared
+                make -j2
+                make altinstall
+                echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
+                cd .. && rm -rf Python-3.14.3.tgz
+            fi
         fi
         ;;
     *)
@@ -76,18 +96,21 @@ install_python_version() {
     esac
 }
 
-# Install the specified Python version
+# install the specified Python version
 install_python_version "$PYTHON_VERSION"
 
-# Function to copy and format the build script
+# function to copy and format the build script
 format_build_script() {
     if [ -n "$BUILD_SCRIPT_PATH" ]; then
         cp "$BUILD_SCRIPT_PATH" "$TEMP_BUILD_SCRIPT_PATH"
 
-        # Modify the build script for compatibility
+        # modify the build script for compatibility
         sed -i 's/\bpython[0-9]\+\.[0-9]\+ -m pip /pip /g' "$TEMP_BUILD_SCRIPT_PATH"
-        sed -i 's/python[0-9]\+\.[0-9]\+/python/g' "$TEMP_BUILD_SCRIPT_PATH"
-        sed -i 's/python3 /python /g' "$TEMP_BUILD_SCRIPT_PATH"
+        #sed -i 's/python[0-9]\+\.[0-9]\+/python/g' "$TEMP_BUILD_SCRIPT_PATH"
+        #sed -i 's/python3 /python /g' "$TEMP_BUILD_SCRIPT_PATH"
+		#TODO: Below change introduces a temporary workaround for building Python from source and will be reverted to above to sed commands after a proper solution is in place.
+		sed -i '/^\s*yum remove\|^\s*dnf remove/! s/python[0-9]\+\.[0-9]\+/python/g' "$TEMP_BUILD_SCRIPT_PATH"
+        sed -i '/^\s*yum remove\|^\s*dnf remove/! s/python3 /python /g' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i 's/pip3 /pip /g' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i '/-m venv/d' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i '/bin\/activate/d' "$TEMP_BUILD_SCRIPT_PATH"
@@ -102,16 +125,16 @@ format_build_script() {
     fi
 }
 
-# Function to create a virtual environment
+# function to create a virtual environment
 create_venv() {
     local VENV_DIR=$1
     local python_version=$2
 
-    "python$python_version" -m venv --system-site-packages "$VENV_DIR"
+    "python$python_version" -m venv "$VENV_DIR"
     source "$VENV_DIR/bin/activate"
 }
 
-# Function to clean up the virtual environment
+# function to clean up the virtual environment
 cleanup() {
     local VENV_DIR=$1
 
@@ -119,136 +142,289 @@ cleanup() {
     rm -rf "$VENV_DIR"
 }
 
-# Function to modify the metadata file after wheel creation
-modify_metadata_file() {
-    local wheel_path="$1"
-    
-    # Create a temporary directory for unzipping the wheel file
-    temp_dir="temp_directory"
-    mkdir -p "$temp_dir"
+# function to create SHA256 for wheel
+generate_sha() {
+    local build_script=$1
+    local python_version=$2
+    local cur_dir=$3
+    local wheel=$4
 
-    # Extract wheel to temp directory
-    unzip -q "$wheel_path" -d "$temp_dir"
+    # Mark repo as safe (to avoid dubious ownership issue)
+    git config --global --add safe.directory $cur_dir
 
-    # Find metadata file
-    local metadata_file
-    metadata_file=$(find "$temp_dir" -name METADATA -path "*.dist-info/*")
+    BUILD_SCRIPT_DATE=$(git log -1 --format=%ci -- "${build_script}")
+    PACKAGE_LANGUAGE=${PACKAGE_LANGUAGE:-python}
 
-    # New classifier to add
-    local new_classifier="Classifier: Environment :: MetaData :: IBM Python Ecosystem"
+    # Check required variables
+    : "${PACKAGE_NAME:?PACKAGE_NAME is required}"
+    : "${PACKAGE_VERSION:?PACKAGE_VERSION is required}"
+    : "${BUILD_SCRIPT_DATE:?BUILD_SCRIPT_DATE is required}"
 
-    # Only proceed if the classifier is not already present
-    if grep -q "^$new_classifier$" "$metadata_file"; then
-        echo "Classifier already exists in $wheel_path — no changes made."
+    if [[ "$wheel" == *any.whl || "$wheel" == *abi3* || "$wheel" == *none* ]]; then
+        string_to_hash="${PACKAGE_NAME}_${PACKAGE_VERSION}_${PACKAGE_LANGUAGE}_${BUILD_SCRIPT_DATE}"
     else
-        awk -v new_classifier="$new_classifier" '
-            BEGIN {
-                found_classifier = 0
-                output = ""
-            }
-            /^Classifier:/ {
-                found_classifier = 1
-                last_classifier_line = NR
-            }
-            {
-                lines[NR] = $0
-            }
-            END {
-                if (found_classifier) {
-                    for (i = 1; i <= NR; i++) {
-                        print lines[i]
-                        if (i == last_classifier_line) {
-                            print new_classifier
-                        }
-                    }
-                } else {
-                    print new_classifier
-                    for (i = 1; i <= NR; i++) {
-                        print lines[i]
-                    }
-                }
-            }
-        ' "$metadata_file" > "$metadata_file.tmp" && mv "$metadata_file.tmp" "$metadata_file"
-
-        # Get the original wheel file name
-        wheel_file_name=$(basename "$wheel_path")
-
-        # Repack wheel
-        cd "$temp_dir" && zip -q -r "$CURRENT_DIR/$wheel_file_name" ./*
-
-        echo "Added IBM classifier to $wheel_path"
+        : "${python_version:?python_version is required}"
+        string_to_hash="${PACKAGE_NAME}_${PACKAGE_VERSION}_${PACKAGE_LANGUAGE}_${python_version}_${BUILD_SCRIPT_DATE}"
     fi
 
-    # Clean up
-    rm -rf "$CURRENT_DIR/$temp_dir"
+    SHA_VALUE=$(echo -n "$string_to_hash" | sha256sum | awk '{print $1}')
+
+    echo "$SHA_VALUE" > "$cur_dir/sha256.sha"
+
+    echo
+    echo "===> SHA256 successfully generated for $string_to_hash "
+    echo "===> SHA256: $SHA_VALUE "
+    echo
 }
 
-# Format the build script if it's non-empty
+# format the build script if it's non-empty
 if [ -n "$BUILD_SCRIPT_PATH" ]; then
     format_build_script
 fi
 
-echo "Processing Package with Python $PYTHON_VERSION"
-
-# Create and activate virtual environment
+# create and activate virtual environment
 VENV_DIR="$CURRENT_DIR/pyvenv_$PYTHON_VERSION"
 create_venv "$VENV_DIR" "$PYTHON_VERSION"
 
-echo "=============== Running package build-script starts =================="
+echo
+echo "==================== Running package build-script starts ===================="
+echo
 
 if [ -n "$TEMP_BUILD_SCRIPT_PATH" ]; then
-    echo "Installing required dependencies..."
-    python$PYTHON_VERSION -m pip install --upgrade pip wheel build pytest nox tox requests setuptools
-    echo "Installing required dependencies completed..."
+    python$PYTHON_VERSION -m pip install --upgrade pip wheel build pytest nox tox requests setuptools ibm-cos-sdk auditwheel "patchelf>=0.14"
 
     package_dir=$(grep -oP '(?<=^PACKAGE_DIR=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
     package_url=$(grep -oP '(?<=^PACKAGE_URL=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
     package_name=$(basename "$package_url" .git)
 
-    echo "Running the build script..."
-    source "$TEMP_BUILD_SCRIPT_PATH" "$EXTRA_ARGS"
-    
-else
-    echo "No build script to run, skipping execution."
+    source "$TEMP_BUILD_SCRIPT_PATH" "$EXTRA_ARGS" "$PYTHON_VERSION"
 fi
 
-#checking if wheel is generated through script itself
+# checking if wheel is generated through script itself
 cd $CURRENT_DIR
 if ls *.whl 1>/dev/null 2>&1; then
-    echo "Wheel file already exist in the current directory:"
-    ls *.whl
+    echo
+    echo "===> Wheel file already exists in the current directory: $(ls *.whl)"
+    echo
 else
-    #Navigating to the package directory to build wheel
+    
+    # to handle where setup.py or pyproject.toml file is present
     if [ -d "$package_dir" ]; then
-        echo "Navigating to the package directory: $package_dir"
+        echo
+        echo "===> Navigating to the package directory: $package_dir"
+        echo
         cd "$package_dir"
     else
-        echo "package_dir not found, Navigating to package_name: $package_name"
+        echo
+        echo "===> Package_dir not found, navigating to package_name: $package_name"
+        echo
         cd "$package_name"
     fi
 
-    echo "=============== Building wheel =================="
+    echo
+    echo "==================== Building wheel ===================="
+    echo
 
-    # Attempt to build the wheel without isolation
+    # wheel creation without isolation
     if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
-        echo "============ Wheel Creation Failed for Python $PYTHON_VERSION (without isolation) ================="
-        echo "Attempting to build with isolation..."
+        
+        echo
+        echo "===> Wheel Creation Failed for Python $PYTHON_VERSION (without isolation)"
+        echo
 
-        # Attempt to build the wheel without isolation
+        # wheel creation with isolation
         if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
-            echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
-            EXIT_CODE=1
+            echo
+            echo "===> Wheel Creation Failed for Python $PYTHON_VERSION"
+            echo
+            exit 1
         fi
     fi
 fi
 
-cd $CURRENT_DIR
-if ls *.whl 1>/dev/null 2>&1; then
-    echo "=============== Modifying Metadata file =================="
-    #add modifying metadata file
-    wheel_file=$(ls *.whl 1>/dev/null 2>&1 && echo *.whl)
-    modify_metadata_file "$wheel_file"
+cd "$CURRENT_DIR"
+shopt -s nullglob
+wheels=("$CURRENT_DIR"/*.whl)
+wheel_count=${#wheels[@]}
+
+# check the wheel count in the current dir
+if [ "$wheel_count" -ne 1 ]; then
+    echo
+    echo "===> ERROR: Expected exactly 1 wheel but found $wheel_count"
+    echo
+    exit 1
 fi
+
+wheel_file="${wheels[0]}"
+
+echo 
+echo "==== Running auditwheel repair on: ${wheel_file} ===="
+echo 
+
+# location of repaired wheel
+WHEELHOUSE="$CURRENT_DIR/wheelhouse"
+mkdir -p "$WHEELHOUSE"
+
+# Build auditwheel exclusion arguments from build_info.json
+EXCLUDE_ARGS=()
+if [ -n "$AUDITWHEEL_EXCLUDE" ]; then
+  echo "Adding package-specific auditwheel exclusions: $AUDITWHEEL_EXCLUDE"
+  read -ra exclude_libs <<< "$AUDITWHEEL_EXCLUDE"
+  for lib in "${exclude_libs[@]}"; do
+    EXCLUDE_ARGS+=("--exclude" "$lib")
+  done
+else
+  echo "No auditwheel exclusions defined in build_info.json"
+fi
+
+echo "Auditwheel exclusion arguments: ${EXCLUDE_ARGS[*]}"
+
+# run auditwheel
+set +e
+audit_output=$(auditwheel repair "$wheel_file" --wheel-dir "$WHEELHOUSE" "${EXCLUDE_ARGS[@]}" 2>&1)
+audit_status=$?
+set -e
+
+echo
+echo "===> Result of running auditwheel on the wheel:" 
+echo
+echo "$audit_output"
+echo
+
+# error case
+if echo "$audit_output" | grep -q "ValueError: Cannot repair wheel"; then
+    echo
+    echo "===>ERROR: Auditwheel failed to repair wheel: ${wheel_file}"
+    echo
+    exit 1
+
+# skipped case (no-arch wheels)
+elif echo "$audit_output" | grep -q "This does not look like a platform wheel"; then
+    
+    echo
+    echo "===> Auditwheel skipped for: ${wheel_file}"
+    echo
+
+    if [[ "$wheel_file" == *none* ]]; then
+        echo
+        echo "===> Pure Python wheel detected. (No-arch wheel)"
+        echo
+    else
+        echo
+        echo "===> ERROR: Skipped wheel is not universal i.e(*any.whl)."
+        echo
+        exit 1
+    fi
+
+# success case
+elif [ "$audit_status" -eq 0 ]; then
+    echo
+    echo "===> Auditwheel succeeded for $wheel_file"
+    echo
+
+    rm -f "$CURRENT_DIR"/*.whl
+    cp "$WHEELHOUSE"/*.whl "$CURRENT_DIR"
+    
+    echo
+    echo "===> Repaired wheel $(basename "$WHEELHOUSE"/*.whl) copied at $CURRENT_DIR"
+    echo
+
+# any other case
+else
+    echo
+    echo "===> ERROR: Auditwheel failed."
+    echo
+    exit 1
+fi
+
+
+cd "$CURRENT_DIR"
+wheel_final=(*.whl)
+
+# ---------------------------------------------------------------------------
+# run_cve_scan: runs generalized_wheel_scanner.py on the built wheel.
+#
+# To skip CVE scanning when testing wheel creation locally, comment out the
+# run_cve_scan call below (search for "run_cve_scan" further down).
+#
+# In CI the ENABLE_CVE_SCAN env var controls this:
+#   ENABLE_CVE_SCAN=false  -> skip (set by pr-build.yaml)
+#   unset or "true"        -> run  (default for currency-build.yaml)
+# ---------------------------------------------------------------------------
+run_cve_scan() {
+    local wheel=$1
+    local build_script=$2
+
+    SCANNER_PATH="gha-script/generalized_wheel_scanner.py"
+    if [ ! -f "$SCANNER_PATH" ]; then
+        echo "===> WARNING: $SCANNER_PATH not found, skipping CVE scan."
+        return 0
+    fi
+
+    echo
+    echo "============== Running CVE scan on: ${wheel} =============="
+    echo
+
+    if python "$SCANNER_PATH" "${wheel}" "${build_script}"; then
+        echo
+        echo "===> CVE scan completed successfully."
+        echo
+    else
+        echo
+        echo "===> WARNING: CVE scan failed. Continuing build."
+        echo
+    fi
+}
+
+echo
+echo "============== Generating sha for: ${wheel_final} =============="
+echo
+
+# generate sha256
+generate_sha "$BUILD_SCRIPT_PATH" "$PYTHON_VERSION" "$CURRENT_DIR" "$wheel_final"
+
+SHA256_VALUE=$(cat sha256.sha)
+
+echo
+echo "=== Post Processing wheel ${wheel_final} with SHA: ${SHA256_VALUE} ==="
+echo
+
+# In PR builds ENABLE_CVE_SCAN=false and COS credentials are absent.
+# Skip post-processing entirely  -  PRs only verify the wheel builds, not publish them.
+if [ "${ENABLE_CVE_SCAN:-true}" = "false" ]; then
+    echo
+    echo "===> Skipping post-processing in PR build (ENABLE_CVE_SCAN=false)."
+    echo
+else
+    # post processing of wheels (Suffix addition, license addition, metadata addition)
+    if python ${POST_PROCESS_SCRIPT_PATH} ${wheel_final} ${SHA256_VALUE}; then
+        echo
+        echo "===> SUCCESS: Wheels post process successfully."
+        echo
+    else
+        echo
+        echo "===> ERROR: Failed to post process wheels."
+        echo
+        exit 1
+    fi
+fi
+
+# CVE scan runs after post-processing so the report is named after the final
+# wheel filename (with +ppc64leN suffix) from the start  -  no rename needed.
+wheel_post_processed=(*.whl)
+
+# Call run_cve_scan  -  comment out this block locally to skip CVE scanning.
+if [ "${ENABLE_CVE_SCAN:-true}" = "false" ]; then
+    echo
+    echo "===> Skipping CVE scan (ENABLE_CVE_SCAN=false)."
+    echo
+else
+    run_cve_scan "${wheel_post_processed[0]}" "${BUILD_SCRIPT_PATH}"
+fi
+
+echo
+echo "============ Final wheel: $(ls -t *.whl 2>/dev/null | head -1) ==========="
+echo
 
 # Clean up virtual environment
 cleanup "$VENV_DIR"
@@ -256,4 +432,4 @@ cleanup "$VENV_DIR"
 # Remove temporary build script
 [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
 
-exit $EXIT_CODE
+exit 0

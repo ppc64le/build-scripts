@@ -1,0 +1,22 @@
+diff --git a/libs/langchain/uv.lock b/libs/langchain/uv.lock
+index 9aa3091327..772f80f685 100644
+--- a/libs/langchain/uv.lock
++++ b/libs/langchain/uv.lock
+@@ -2447,7 +2447,7 @@ dev = [
+     { name = "jupyter" },
+     { name = "langchain-core" },
+     { name = "langchain-text-splitters" },
+-    { name = "playwright" },
++#    { name = "playwright" },
+     { name = "setuptools" },
+ ]
+ lint = [
+@@ -2534,7 +2534,7 @@ dev = [
+     { name = "jupyter", specifier = ">=1.0.0,<2.0.0" },
+     { name = "langchain-core", editable = "../core" },
+     { name = "langchain-text-splitters", editable = "../text-splitters" },
+-    { name = "playwright", specifier = ">=1.28.0,<2.0.0" },
++#    { name = "playwright", specifier = ">=1.28.0,<2.0.0" },
+     { name = "setuptools", specifier = ">=67.6.1,<83.0.0" },
+ ]
+ lint = [

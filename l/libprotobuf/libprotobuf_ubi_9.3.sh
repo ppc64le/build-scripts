@@ -95,6 +95,8 @@ cmake --install .
 
 cd ..
 
+export LD_LIBRARY_PATH=$LIBPROTO_INSTALL/lib64:$LIBPROTO_DIR/build/third_party/abseil-cpp/absl/base:$LD_LIBRARY_PATH
+
 #create pyproject.toml for libprotobuf
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/l/libprotobuf/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml

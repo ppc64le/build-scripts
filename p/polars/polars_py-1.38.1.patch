@@ -1,0 +1,277 @@
+diff --git a/meta.yaml b/meta.yaml
+new file mode 100644
+index 0000000000..9a83e40bca
+--- /dev/null
++++ b/meta.yaml
+@@ -0,0 +1,32 @@
++package:
++  name: NAME
++  version: "VERSION"
++
++source:
++  path: .
++
++build:
++  number: 0
++  string: "py311_0"
++
++  script: |
++    set -ex
++    ls -l
++
++    WHEEL="WHEELFILE"
++    {{ PYTHON }} -m pip install "$WHEEL" --no-deps --ignore-installed -vv
++
++  # 🔥 critical fixes
++  missing_dso_whitelist:
++    - /lib64/libm.so.6
++    - /lib64/libc.so.6
++    - /lib64/ld64.so.2
++
++requirements:
++  host:
++    - python 3.11
++    - pip
++
++  run:
++    - python >=3.11,<3.12
++    - libgcc
+diff --git a/requirements.txt b/requirements.txt
+new file mode 100644
+index 0000000000..5ba6a8d3c2
+--- /dev/null
++++ b/requirements.txt
+@@ -0,0 +1,233 @@
++accessible-pygments==0.0.5
++adbc-driver-manager==1.10.0
++adbc-driver-sqlite==1.10.0
++aiobotocore==3.3.0
++aiohappyeyeballs==2.6.1
++aiohttp==3.13.3
++aioitertools==0.13.0
++aiosignal==1.4.0
++aiosqlite==0.22.1
++alabaster==1.0.0
++altair==6.0.0
++annotated-types==0.7.0
++apeye==1.4.1
++apeye-core==1.1.5
++arro3-core==0.8.0
++attrs==25.4.0
++autodocsumm==0.2.14
++azure-core==1.39.0
++azure-identity==1.25.3
++babel==2.18.0
++backrefs==5.9
++beautifulsoup4==4.14.3
++bleach==6.3.0
++blinker==1.9.0
++bokeh==3.9.0
++boto3==1.42.70
++boto3-stubs==1.42.71
++botocore==1.42.70
++botocore-stubs==1.42.41
++build==1.4.0
++CacheControl==0.14.4
++cachetools==6.2.6
++certifi==2026.2.25
++cffi==2.0.0
++charset-normalizer==3.4.6
++click==8.3.1
++cloudpickle==3.1.2
++colorama==0.4.6
++colorcet==3.1.0
++commonmark==0.9.1
++contourpy==1.3.3
++coverage==7.13.5
++cryptography==46.0.5
++cssutils==2.11.1
++cycler==0.12.1
++deltalake==1.5.0
++Deprecated==1.3.1
++dict2css==0.3.0.post1
++docutils==0.21.2
++domdf_python_tools==3.10.0
++duckdb==1.5.0
++et_xmlfile==2.0.0
++execnet==2.1.2
++faicons==0.2.2
++fastexcel==0.19.0
++filelock==3.25.2
++Flask==3.1.3
++flask-cors==6.0.2
++fonttools==4.62.1
++frozenlist==1.8.0
++fsspec==2026.2.0
++gevent==25.9.1
++ghp-import==2.1.0
++google-auth==2.49.1
++google-auth-stubs==0.3.0
++graphviz==0.21
++great-tables==0.21.0
++greenlet==3.3.2
++grpc-stubs==1.53.0.6
++grpcio==1.78.0
++hjson==3.1.0
++holoviews==1.22.1
++html5lib==1.1
++htmltools==0.6.0
++hvplot==0.12.2
++hypothesis==6.151.9
++idna==3.11
++imagesize==2.0.0
++importlib_metadata==8.7.1
++importlib_resources==6.5.2
++iniconfig==2.3.0
++itsdangerous==2.2.0
++jax==0.4.30
++Jinja2==3.1.6
++jmespath==1.1.0
++jsonschema==4.26.0
++jsonschema-specifications==2025.9.1
++kiwisolver==1.5.0
++linkify-it-py==2.1.0
++livereload==2.7.0
++Markdown==3.10.2
++markdown-exec==1.10.0
++markdown-it-py==4.0.0
++MarkupSafe==3.0.3
++material-plausible-plugin==0.3.0
++matplotlib==3.10.8
++maturin==1.12.6
++mdit-py-plugins==0.5.0
++mdurl==0.1.2
++mergedeep==1.3.4
++mizani==0.14.4
++mkdocs==1.6.1
++mkdocs-get-deps==0.2.2
++mkdocs-macros-plugin==1.3.7
++mkdocs-material==9.6.20
++mkdocs-material-extensions==1.3.1
++mkdocs-redirects==1.2.1
++ml_dtypes==0.5.4
++mmh3==5.2.1
++more-itertools==10.8.0
++moto==5.0.9
++mpmath==1.3.0
++msal==1.35.1
++msal-extensions==1.3.1
++msgpack==1.1.2
++multidict==6.7.1
++mypy==1.14.1
++mypy_extensions==1.1.0
++narwhals==2.18.0
++natsort==8.4.0
++networkx==3.6.1
++numba==0.64.0
++numpy==2.4.3
++numpydoc==1.8.0
++openpyxl==3.1.5
++opt_einsum==3.4.0
++orjson==3.11.7
++packaging==26.0
++paginate==0.5.7
++pandas==3.0.1
++pandas-stubs==3.0.0.260204
++panel==1.8.10
++param==2.3.2
++patchelf==0.17.2.4
++pathspec==1.0.4
++patsy==1.0.2
++pillow==12.1.1
++platformdirs==4.9.4
++plotly==6.6.0
++plotnine==0.15.3
++pluggy==1.6.0
++propcache==0.4.1
++py-partiql-parser==0.5.5
++pyarrow==23.0.1
++pyasn1==0.6.3
++pyasn1_modules==0.4.2
++pycparser==3.0
++pydantic==2.12.5
++pydantic_core==2.41.5
++pydata-sphinx-theme==0.16.0
++PyGithub==2.6.1
++Pygments==2.19.2
++pygments-ansi-color==0.3.0
++pyiceberg==0.11.1
++pyiceberg-core==0.8.0
++PyJWT==2.12.1
++pymdown-extensions==10.21
++PyNaCl==1.6.2
++pyparsing==3.3.2
++pyproject_hooks==1.2.0
++pyroaring==1.0.3
++pytest==8.3.2
++pytest-codspeed==3.2.0
++pytest-cov==6.0.0
++pytest-xdist==3.6.1
++python-dateutil==2.9.0.post0
++pytz==2026.1.post1
++pyviz_comms==3.0.6
++PyYAML==6.0.3
++pyyaml_env_tag==1.1
++referencing==0.37.0
++requests==2.32.5
++responses==0.26.0
++rich==14.3.3
++rpds-py==0.30.0
++ruamel.yaml==0.19.1
++ruff==0.14.3
++s3fs==2026.2.0
++s3transfer==0.16.0
++scipy==1.17.1
++seaborn==0.13.2
++six==1.17.0
++snowballstemmer==3.0.1
++sortedcontainers==2.4.0
++soupsieve==2.8.3
++Sphinx==8.1.3
++sphinx-autodoc-typehints==3.0.1
++sphinx-autosummary-accessors==2023.4.0
++sphinx-copybutton==0.5.2
++sphinx-favicon==1.0.1
++sphinx-jinja2-compat==0.4.1
++sphinx-prompt==1.10.2
++sphinx-tabs==3.4.5
++sphinx-toolbox==3.8.1
++sphinx_design==0.6.1
++sphinx_reredirects==0.1.5
++sphinxcontrib-applehelp==2.0.0
++sphinxcontrib-devhelp==2.0.0
++sphinxcontrib-htmlhelp==2.1.0
++sphinxcontrib-jsmath==1.0.1
++sphinxcontrib-qthelp==2.0.0
++sphinxcontrib-serializinghtml==2.0.0
++SQLAlchemy==2.0.48
++statsmodels==0.14.6
++strictyaml==1.7.3
++super_collections==0.6.2
++sympy==1.14.0
++tabulate==0.10.0
++tenacity==9.1.4
++termcolor==3.3.0
++tornado==6.5.5
++tqdm==4.67.3
++types-awscrt==0.31.3
++types-requests==2.32.4.20260107
++types-s3transfer==0.16.0
++typing-inspection==0.4.2
++typing_extensions==4.15.0
++uc-micro-py==2.0.0
++urllib3==2.6.3
++uv==0.10.11
++watchdog==6.0.0
++webencodings==0.5.1
++Werkzeug==3.1.6
++wrapt==2.1.2
++xlsx2csv==0.8.6
++xlsxwriter==3.2.9
++xmltodict==1.0.4
++xyzservices==2025.11.0
++yarl==1.23.0
++zipp==3.23.0
++zope.event==6.1
++zope.interface==8.2
++zstandard==0.25.0

@@ -1,0 +1,39 @@
+[build-system]
+requires = [
+    "setuptools",
+    "wheel",
+    "auditwheel>=5.0.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "numactl"
+version = "{PACKAGE_VERSION}"
+description = "NUMA policy control library and utilities"
+
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: C",
+  "License :: GNU General Public License v2 (GPLv2)",
+  "Operating System :: POSIX :: Linux",
+]
+
+[project.urls]
+homepage = "https://github.com/numactl/numactl"
+upstream = "https://github.com/numactl/numactl"
+
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["local"]
+
+[tool.setuptools.package-data]
+numactl = [
+    "lib/**/*",
+    "lib64/**/*",
+    "include/**/*",
+    "bin/**/*"
+]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_ppc64le"
+universal = false

@@ -1,0 +1,41 @@
+diff --git a/build.gradle b/build.gradle
+index ff55bf02..7fecfcbd 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -64,7 +64,7 @@ buildscript {
+         notifications_core_build_download = 'https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/' + opensearch_no_snapshot +
+                 '/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-notifications-core-' + notifications_no_snapshot + '.zip'
+ 
+-        kotlin_version = System.getProperty("kotlin.version", "2.2.0")
++        kotlin_version = System.getProperty("kotlin.version", "2.2.20")
+ 
+         security_plugin_version = System.getProperty("security.version", opensearch_build)
+         ccr_version = System.getProperty("ccr.version", opensearch_build)
+@@ -201,8 +201,8 @@ ext {
+     ['esnode.pem', 'esnode-key.pem', 'kirk.pem', 'kirk-key.pem', 'root-ca.pem', 'sample.pem', 'test-kirk.jks'].forEach { file ->
+         File local = getLayout().getBuildDirectory().file(file).get().getAsFile()
+         download.run {
+-            src "https://raw.githubusercontent.com/opensearch-project/security/refs/heads/main/bwc-test/src/test/resources/security/" + file
+-            dest local
++            src "https://raw.githubusercontent.com/opensearch-project/security/3.5/bwc-test/src/test/resources/security/" + file
++	    dest local
+             overwrite false
+         }
+         processResources {
+diff --git a/gradle.properties b/gradle.properties
+index 86f05171..07e679b4 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -1,5 +1,10 @@
++org.gradle.native=false
++
++#Use plain console output (no rich formatting that requires native platform)
++org.gradle.console=plain
++
+ # Kotlin compiler memory settings
+ kotlin.daemon.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m
+ 
+ # Gradle daemon memory settings
+-org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m
+\ No newline at end of file
++org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m

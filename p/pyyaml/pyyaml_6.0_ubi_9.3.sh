@@ -32,7 +32,7 @@ import sys
 print(f"{sys.version_info.major}.{sys.version_info.minor}")
 EOF
 )
-if [[ "$PYVER" == "3.13" ]]; then
+if [[ "$PYVER" == "3.13" || "$PYVER" == "3.14" ]]; then
     pip3 install "cython>=3.0" wheel pytest
 else
     pip3 install "cython<3.0.0" wheel pytest
@@ -45,8 +45,8 @@ git clone $PACKAGE_URL $PACKAGE_NAME
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-# ----- Apply patch ONLY for Python 3.13 -----
-if [[ "$PYVER" == "3.13" ]]; then
+# ----- Apply patch ONLY for Python 3.13/3.14 -----
+if [[ "$PYVER" == "3.13" || "$PYVER" == "3.14" ]]; then
 
 cat << 'EOF' > patch_yaml_yaml_py313.patch
 diff --git a/yaml/_yaml.pyx b/yaml/_yaml.pyx
@@ -69,10 +69,11 @@ index 1b2c3f1..a8d9d42 100644
      cdef const char *value
 EOF
 
-echo "Applying Python 3.13 compatibility patch..."
+echo "Applying Python 3.13+ compatibility patch..."
 git apply patch_yaml_yaml_py313.patch
 
 fi
+
 if ! python3 setup.py install ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"

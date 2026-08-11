@@ -1,0 +1,1575 @@
+diff --git a/.bazelrc b/.bazelrc
+index f69efc15c3..ce85cd46fd 100644
+--- a/.bazelrc
++++ b/.bazelrc
+@@ -105,6 +105,15 @@ build:arm64-clang --config=clang
+ build:clang-pch --spawn_strategy=local
+ build:clang-pch --define=ENVOY_CLANG_PCH=1
+ 
++# ============================
++# Clang + libstdc++ (Linux/ppc64le)
++# ============================
++
++build:clang-gnu --config=clang-common
++build:clang-gnu --@envoy//bazel:libc++=false
++build:clang-gnu --@envoy//bazel:libstdc++=true
++build:clang-gnu --cxxopt=--gcc-toolchain=/usr
++build:clang-gnu --linkopt=-latomic
+ # libstdc++ - currently only used for gcc
+ build:libstdc++ --@envoy//bazel:libc++=false
+ build:libstdc++ --@envoy//bazel:libstdc++=true
+@@ -608,3 +617,7 @@ try-import %workspace%/repo.bazelrc
+ try-import %workspace%/clang.bazelrc
+ try-import %workspace%/user.bazelrc
+ try-import %workspace%/local_tsan.bazelrc
++
++
++build --action_env=LIBCLANG_PATH
++test --action_env=LIBCLANG_PATH
+diff --git a/api/bazel/repositories.bzl b/api/bazel/repositories.bzl
+index 217614f5e5..9f00a1eef3 100644
+--- a/api/bazel/repositories.bzl
++++ b/api/bazel/repositories.bzl
+@@ -21,8 +21,8 @@ def api_dependencies():
+     )
+     external_http_archive(
+         name = "com_envoyproxy_protoc_gen_validate",
+-        patch_args = ["-p1"],
+         patches = ["@envoy_api//bazel:pgv.patch"],
++       patch_args = ["-p1"],
+     )
+     external_http_archive(
+         name = "com_google_googleapis",
+diff --git a/bazel/BUILD b/bazel/BUILD
+index 17b80cd744..52b43bf62d 100644
+--- a/bazel/BUILD
++++ b/bazel/BUILD
+@@ -275,21 +275,6 @@ selects.config_setting_group(
+     ],
+ )
+ 
+-selects.config_setting_group(
+-    name = "disable_http3_on_linux_ppc64le",
+-    match_all = [
+-        ":disable_http3",
+-        ":linux_ppc64le",
+-    ],
+-)
+-
+-selects.config_setting_group(
+-    name = "disable_http3_on_not_x86_ppc",
+-    match_all = [
+-        ":disable_http3",
+-        ":not_x86_ppc",
+-    ],
+-)
+ 
+ selects.config_setting_group(
+     name = "disable_http3_on_windows_x86_64",
+@@ -333,14 +318,6 @@ selects.config_setting_group(
+     ],
+ )
+ 
+-selects.config_setting_group(
+-    name = "enable_http3_on_linux_ppc64le",
+-    match_all = [
+-        ":enable_http3",
+-        ":linux_ppc64le",
+-    ],
+-)
+-
+ selects.config_setting_group(
+     name = "enable_http3_on_windows_x86_64",
+     match_all = [
+@@ -492,14 +469,6 @@ selects.config_setting_group(
+     ],
+ )
+ 
+-selects.config_setting_group(
+-    name = "boringssl_fips_ppc",
+-    match_all = [
+-        ":boringssl_fips",
+-        ":linux_ppc64le",
+-    ],
+-)
+-
+ selects.config_setting_group(
+     name = "boringssl_fips_not_ppc",
+     match_all = [
+@@ -549,12 +518,11 @@ config_setting(
+ # Alias pointing to the selected version of BoringSSL:
+ # - BoringSSL FIPS from @boringssl_fips//:ssl,
+ # - non-FIPS BoringSSL from @boringssl//:ssl.
+-# - aws-lc from @aws_lc//:ssl
++
+ alias(
+     name = "boringssl",
+     actual = select({
+-        "//bazel:boringssl_fips_ppc": "@aws_lc//:ssl",
+-        "//bazel:boringssl_fips_not_ppc": "@boringssl_fips//:ssl",
++        "//bazel:boringssl_fips": "@boringssl_fips//:ssl",
+         "//conditions:default": "@boringssl//:ssl",
+     }),
+ )
+@@ -562,8 +530,7 @@ alias(
+ alias(
+     name = "boringcrypto",
+     actual = select({
+-        "//bazel:boringssl_fips_ppc": "@aws_lc//:crypto",
+-        "//bazel:boringssl_fips_not_ppc": "@boringssl_fips//:crypto",
++       "//bazel:boringssl_fips": "@boringssl_fips//:crypto",
+         "//conditions:default": "@boringssl//:crypto",
+     }),
+ )
+@@ -592,13 +559,6 @@ config_setting(
+     ],
+ )
+ 
+-config_setting(
+-    name = "linux_ppc64le",
+-    constraint_values = [
+-        "@platforms//cpu:ppc64le",
+-        "@platforms//os:linux",
+-    ],
+-)
+ 
+ config_setting(
+     name = "linux_s390x",
+@@ -825,21 +785,6 @@ selects.config_setting_group(
+     ],
+ )
+ 
+-selects.config_setting_group(
+-    name = "not_x86_ppc",
+-    match_any = [
+-        ":darwin_arm64",
+-        ":ios_arm64",
+-        ":ios_arm64e",
+-        ":ios_armv7",
+-        ":ios_armv7s",
+-        ":ios_i386",
+-        ":ios_sim_arm64",
+-        ":linux_aarch64",
+-        ":linux_mips64",
+-        ":linux_s390x",
+-    ],
+-)
+ 
+ selects.config_setting_group(
+     name = "not_ppc",
+@@ -862,7 +807,6 @@ selects.config_setting_group(
+         ":linux_aarch64",
+         ":linux_mips64",
+         ":linux_ppc",
+-        ":linux_ppc64le",
+         ":linux_s390x",
+     ],
+ )
+diff --git a/bazel/base_pip3_stub/thrift/BUILD.bazel b/bazel/base_pip3_stub/thrift/BUILD.bazel
+new file mode 100644
+index 0000000000..e3a65e5749
+--- /dev/null
++++ b/bazel/base_pip3_stub/thrift/BUILD.bazel
+@@ -0,0 +1,6 @@
++package(default_visibility = ["//visibility:public"])
++
++py_library(
++    name = "thrift",
++    srcs = [],
++)
+diff --git a/bazel/boringssl_ppc64le.patch b/bazel/boringssl_ppc64le.patch
+new file mode 100644
+index 0000000000..66d0d92d90
+--- /dev/null
++++ b/bazel/boringssl_ppc64le.patch
+@@ -0,0 +1,14 @@
++diff --git a/include/openssl/target.h b/include/openssl/target.h
++index 2760f52ce..4290dcd58 100644
++--- a/include/openssl/target.h
+++++ b/include/openssl/target.h
++@@ -54,6 +54,9 @@
++ #define OPENSSL_32_BIT
++ #elif defined(__myriad2__)
++ #define OPENSSL_32_BIT
+++#elif defined(_ARCH_PPC64)
+++#define OPENSSL_64_BIT
+++#define OPENSSL_PPC64
++ #else
++ // The list above enumerates the platforms that BoringSSL supports. For these
++ // platforms we keep a reasonable bar of not breaking them: automated test
+diff --git a/bazel/dependency_imports.bzl b/bazel/dependency_imports.bzl
+index 8ed6394d7a..1aa63c5157 100644
+--- a/bazel/dependency_imports.bzl
++++ b/bazel/dependency_imports.bzl
+@@ -9,7 +9,7 @@ load("@dev_pip3//:requirements.bzl", pip_dev_dependencies = "install_deps")
+ load("@emsdk//:emscripten_deps.bzl", "emscripten_deps")
+ load("@emsdk//:toolchains.bzl", "register_emscripten_toolchains")
+ load("@envoy_toolshed//compile:sanitizer_libs.bzl", "setup_sanitizer_libs")
+-load("@envoy_toolshed//coverage/grcov:grcov_repository.bzl", "grcov_repository")
++#load("@envoy_toolshed//coverage/grcov:grcov_repository.bzl", "grcov_repository")
+ load("@fuzzing_pip3//:requirements.bzl", pip_fuzzing_dependencies = "install_deps")
+ load("@io_bazel_rules_go//go:deps.bzl", "go_download_sdk", "go_register_toolchains", "go_rules_dependencies")
+ load("@proxy_wasm_rust_sdk//bazel:dependencies.bzl", "proxy_wasm_rust_sdk_dependencies")
+@@ -40,7 +40,12 @@ def envoy_dependency_imports(
+         buf_sha = BUF_SHA,
+         buf_version = BUF_VERSION):
+     compatibility_proxy_repo()
+-    rules_foreign_cc_dependencies()
++    rules_foreign_cc_dependencies(
++    register_default_tools = False,
++      register_built_tools = False,
++      register_preinstalled_tools = True,
++      register_toolchains = True,
++    )
+     go_rules_dependencies()
+     go_register_toolchains(go_version)
+     if go_version != "host":
+@@ -51,8 +56,13 @@ def envoy_dependency_imports(
+     pip_dev_dependencies()
+     pip_fuzzing_dependencies()
+     rules_pkg_dependencies()
+-    emscripten_deps(emscripten_version = "4.0.6")
+-    register_emscripten_toolchains()
++    rust_repository_set(
++       name = "rust_linux_powerpc64le",
++       exec_triple = "powerpc64le-unknown-linux-gnu",
++       versions = [rust_common.default_version],
++    )
++    #emscripten_deps(emscripten_version = "4.0.6")
++    #register_emscripten_toolchains()
+ 
+     rust_repository_set(
+         name = "rust_linux_s390x",
+@@ -72,7 +82,7 @@ def envoy_dependency_imports(
+     )
+     crate_universe_dependencies()
+     crates_repositories()
+-    grcov_repository()
++    #grcov_repository()
+     shellcheck_dependencies()
+     proxy_wasm_rust_sdk_dependencies()
+     rules_fuzzing_dependencies(
+diff --git a/bazel/envoy_library.bzl b/bazel/envoy_library.bzl
+index 5c202a282e..1d6747dd72 100644
+--- a/bazel/envoy_library.bzl
++++ b/bazel/envoy_library.bzl
+@@ -48,6 +48,7 @@ def envoy_cc_extension(
+         name,
+         tags = [],
+         extra_visibility = [],
++       target_compatible_with = [],
+         visibility = EXTENSION_CONFIG_VISIBILITY,
+         alwayslink = 1,
+         **kwargs):
+@@ -58,6 +59,7 @@ def envoy_cc_extension(
+     envoy_cc_library(
+         name = name,
+         tags = tags,
++       target_compatible_with = target_compatible_with,
+         visibility = visibility,
+         alwayslink = alwayslink,
+         **kwargs
+@@ -69,6 +71,7 @@ def envoy_cc_extension(
+             ":is_enabled": [":" + name],
+             "//conditions:default": [],
+         }),
++       target_compatible_with = target_compatible_with,
+         visibility = visibility,
+     )
+ 
+@@ -76,6 +79,7 @@ def envoy_cc_contrib_extension(
+         name,
+         tags = [],
+         extra_visibility = [],
++       target_compatible_with = [],
+         visibility = CONTRIB_EXTENSION_PACKAGE_VISIBILITY,
+         alwayslink = 1,
+         **kwargs):
+@@ -87,6 +91,7 @@ def envoy_cc_library(
+         srcs = [],
+         hdrs = [],
+         copts = [],
++       target_compatible_with = [],
+         visibility = None,
+         rbe_pool = None,
+         exec_properties = {},
+@@ -130,6 +135,7 @@ def envoy_cc_library(
+                envoy_pch_deps(repository, "//source/common/common:common_pch") +
+                sanitizer_deps(),
+         exec_properties = exec_properties,
++       target_compatible_with = target_compatible_with,
+         alwayslink = alwayslink,
+         linkstatic = envoy_linkstatic(),
+         strip_include_prefix = strip_include_prefix,
+@@ -147,6 +153,7 @@ def envoy_cc_library(
+         visibility = visibility,
+         tags = ["nocompdb"] + tags,
+         deps = [":" + name],
++       target_compatible_with = target_compatible_with,
+         strip_include_prefix = strip_include_prefix,
+         include_prefix = include_prefix,
+     )
+diff --git a/bazel/external/BUILD b/bazel/external/BUILD
+index ce8cb8123e..1149585afd 100644
+--- a/bazel/external/BUILD
++++ b/bazel/external/BUILD
+@@ -1,7 +1,6 @@
+ licenses(["notice"])  # Apache 2
+ 
+ exports_files([
+-    "aws_lc.genrule_cmd",
+     "boringssl_fips.genrule_cmd",
+ ])
+ 
+diff --git a/bazel/external/fast_float.BUILD b/bazel/external/fast_float.BUILD
+new file mode 100644
+index 0000000000..ef6f0c6f48
+--- /dev/null
++++ b/bazel/external/fast_float.BUILD
+@@ -0,0 +1,12 @@
++load("@rules_cc//cc:defs.bzl", "cc_library")
++
++licenses(["notice"])  # Apache 2 / MIT
++
++package(default_visibility = ["//visibility:public"])
++
++cc_library(
++    name = "fast_float",
++    hdrs = glob(["include/**/*.h"]),
++    includes = ["include/"],
++    strip_include_prefix = "include",
++)
+diff --git a/bazel/foreign_cc/BUILD b/bazel/foreign_cc/BUILD
+index dc07b536d3..2c98a7c09b 100644
+--- a/bazel/foreign_cc/BUILD
++++ b/bazel/foreign_cc/BUILD
+@@ -643,3 +643,8 @@ cc_library(
+     }),
+     alwayslink = 1,
+ )
++alias(
++    name = "icu_public",
++    actual = ":unicode_icu",
++    visibility = ["//visibility:public"],
++)
+diff --git a/bazel/highway_disable_ppc_arch_detection.patch b/bazel/highway_disable_ppc_arch_detection.patch
+new file mode 100644
+index 0000000000..fb98ed0a8f
+--- /dev/null
++++ b/bazel/highway_disable_ppc_arch_detection.patch
+@@ -0,0 +1,11 @@
++--- a/hwy/detect_compiler_arch.h
+++++ b/hwy/detect_compiler_arch.h
++@@ -217,7 +217,7 @@
++ #define HWY_ARCH_X86 0
++ #endif
++ 
++-#if defined(__powerpc64__) || defined(_M_PPC) || defined(__powerpc__)
+++#if 0
++ #define HWY_ARCH_PPC 1
++ #else
++ #define HWY_ARCH_PPC 0
+diff --git a/bazel/highway_disable_ppc_simd_targets.patch b/bazel/highway_disable_ppc_simd_targets.patch
+new file mode 100644
+index 0000000000..43f6095648
+--- /dev/null
++++ b/bazel/highway_disable_ppc_simd_targets.patch
+@@ -0,0 +1,12 @@
++--- a/hwy/detect_targets.h
+++++ b/hwy/detect_targets.h
++@@ -699,7 +699,7 @@
++               HWY_ATTAINABLE_SVE2)
++ #elif HWY_ARCH_PPC
++ #define HWY_ATTAINABLE_TARGETS \
++-  HWY_ENABLED(HWY_BASELINE_SCALAR | HWY_ATTAINABLE_PPC)
+++  HWY_ENABLED(HWY_BASELINE_SCALAR)
++ #elif HWY_ARCH_S390X
++ #define HWY_ATTAINABLE_TARGETS \
++   HWY_ENABLED(HWY_BASELINE_SCALAR | HWY_ATTAINABLE_S390X)
++
+diff --git a/bazel/highway_ppc64le_target.patch b/bazel/highway_ppc64le_target.patch
+new file mode 100644
+index 0000000000..ad2d9b759a
+--- /dev/null
++++ b/bazel/highway_ppc64le_target.patch
+@@ -0,0 +1,15 @@
++diff --git a/hwy/targets.cc b/hwy/targets.cc
++index 7c2f8f2..9f1a3ac 100644
++--- a/hwy/targets.cc
+++++ b/hwy/targets.cc
++@@ -34,7 +34,7 @@
++ #include <cpuid.h>
++ #endif  // HWY_COMPILER_MSVC
++ 
++-#elif (HWY_ARCH_ARM || HWY_ARCH_PPC || HWY_ARCH_S390X || HWY_ARCH_RISCV) && \
+++#elif (HWY_ARCH_ARM || HWY_ARCH_S390X || HWY_ARCH_RISCV) && \
++     HWY_OS_LINUX
++ // sys/auxv.h does not always include asm/hwcap.h, or define HWCAP*, hence we
++ // still include this directly. See #1199.
++ #ifndef TOOLCHAIN_MISS_ASM_HWCAP_H
++ #include <asm/hwcap.h>
+diff --git a/bazel/protobuf.patch b/bazel/protobuf.patch
+index adf06a656d..77c2d24f14 100644
+--- a/bazel/protobuf.patch
++++ b/bazel/protobuf.patch
+@@ -38,7 +38,7 @@ index 32b26cbdc..a5e7a554c 100644
+ +    name = "linux-ppcle_64",
+ +    constraint_values = [
+ +	"@platforms//os:linux",
+-+	"@platforms//cpu:ppc64le",
+++	"@platforms//cpu:ppc",
+ +    ],
+ +)
+ +
+diff --git a/bazel/python_dependencies.bzl b/bazel/python_dependencies.bzl
+index 9867dc3a46..6f99d1c352 100644
+--- a/bazel/python_dependencies.bzl
++++ b/bazel/python_dependencies.bzl
+@@ -7,21 +7,24 @@ def envoy_python_dependencies():
+     load_packages()
+     pip_parse(
+         name = "base_pip3",
+-        python_interpreter_target = "@python3_12_host//:python",
++       # python_interpreter_target = "@python3_12_host//:python",
++       python_interpreter = "/usr/bin/python3.12",
+         requirements_lock = "@envoy//tools/base:requirements.txt",
+         extra_pip_args = ["--require-hashes"],
+     )
+ 
+     pip_parse(
+         name = "dev_pip3",
+-        python_interpreter_target = "@python3_12_host//:python",
++        #python_interpreter_target = "@python3_12_host//:python",
++       python_interpreter = "/usr/bin/python3.12",
+         requirements_lock = "@envoy//tools/dev:requirements.txt",
+         extra_pip_args = ["--require-hashes"],
+     )
+ 
+     pip_parse(
+         name = "fuzzing_pip3",
+-        python_interpreter_target = "@python3_12_host//:python",
++        #python_interpreter_target = "@python3_12_host//:python",
++       python_interpreter = "/usr/bin/python3.12",
+         requirements_lock = "@rules_fuzzing//fuzzing:requirements.txt",
+         extra_pip_args = ["--require-hashes"],
+     )
+diff --git a/bazel/quiche_clang_constexpr_fix.patch b/bazel/quiche_clang_constexpr_fix.patch
+new file mode 100644
+index 0000000000..203cff3e45
+--- /dev/null
++++ b/bazel/quiche_clang_constexpr_fix.patch
+@@ -0,0 +1,14 @@
++diff --git a/quiche/quic/core/quic_config.cc b/quiche/quic/core/quic_config.cc
++index 9b3c2ef..abcd123 100644
++--- a/quiche/quic/core/quic_config.cc
+++++ b/quiche/quic/core/quic_config.cc
++@@ -567,7 +567,7 @@
++ 
++ const QuicTagVector& QuicConfig::ClientRequestedIndependentOptions(
++     Perspective perspective) const {
++-  static constexpr QuicTagVector no_options;
+++  static const QuicTagVector no_options;
++   if (perspective == Perspective::IS_SERVER) {
++     return HasReceivedConnectionOptions() ? ReceivedConnectionOptions()
++                                           : no_options;
++
+diff --git a/bazel/repositories.bzl b/bazel/repositories.bzl
+index f1c7593a07..19efa484bc 100644
+--- a/bazel/repositories.bzl
++++ b/bazel/repositories.bzl
+@@ -3,7 +3,9 @@ load("@envoy_api//bazel:envoy_http_archive.bzl", "envoy_http_archive")
+ load("@envoy_api//bazel:external_deps.bzl", "load_repository_locations")
+ load(":repository_locations.bzl", "PROTOC_VERSIONS", "REPOSITORY_LOCATIONS_SPEC")
+ 
+-PPC_SKIP_TARGETS = ["envoy.string_matcher.lua", "envoy.filters.http.lua", "envoy.router.cluster_specifier_plugin.lua"]
++PPC_SKIP_TARGETS = [ "envoy.string_matcher.lua",
++  "envoy.filters.http.lua",
++  "envoy.router.cluster_specifier_plugin.lua",]
+ 
+ WINDOWS_SKIP_TARGETS = [
+     "envoy.extensions.http.cache.file_system_http_cache",
+@@ -106,13 +108,18 @@ def _go_deps(skip_targets):
+     # Keep the skip_targets check around until Istio Proxy has stopped using
+     # it to exclude the Go rules.
+     if "io_bazel_rules_go" not in skip_targets:
+-        external_http_archive(name = "io_bazel_rules_go")
++        external_http_archive(
++               name = "io_bazel_rules_go",
++               # TODO(wrowe, sunjayBhatia): remove when Windows RBE supports batch file invocation
++               patch_args = ["-p1"],
++               patches = ["@envoy//bazel:rules_go.patch"],
++       )
+         external_http_archive("bazel_gazelle")
+ 
+ def _rust_deps():
+     external_http_archive(
+         "rules_rust",
+-        patches = ["@envoy//bazel:rules_rust.patch", "@envoy//bazel:rules_rust_ppc64le.patch"],
++        patches = ["@envoy//bazel:rules_rust.patch"],
+     )
+ 
+ def envoy_dependencies(skip_targets = []):
+@@ -135,7 +142,7 @@ def envoy_dependencies(skip_targets = []):
+     # - non-FIPS BoringSSL from @boringssl//:ssl.
+     _boringssl()
+     _boringssl_fips()
+-    _aws_lc()
++
+     native.bind(
+         name = "ssl",
+         actual = "@envoy//bazel:boringssl",
+@@ -168,6 +175,11 @@ def envoy_dependencies(skip_targets = []):
+     _com_github_grpc_grpc()
+     _rules_proto_grpc()
+     _com_github_unicode_org_icu()
++    # Bind ICU for V8 and other deps expecting //external:icu
++    native.bind(
++        name = "icu",
++        actual = "@envoy//bazel/foreign_cc:icu_public",
++    )
+     _com_github_intel_ipp_crypto_crypto_mb()
+     _com_github_intel_qatlib()
+     _com_github_intel_qatzip()
+@@ -258,7 +270,11 @@ def envoy_dependencies(skip_targets = []):
+     )
+ 
+ def _boringssl():
+-    external_http_archive(name = "boringssl")
++    external_http_archive(
++       name = "boringssl",
++       patches = ["@envoy//bazel:boringssl_ppc64le.patch"],
++       patch_args = ["-p1"],
++    )
+ 
+ def _boringssl_fips():
+     external_http_archive(
+@@ -293,11 +309,6 @@ def _boringssl_fips():
+         build_file_content = GO_BUILD_CONTENT,
+     )
+ 
+-def _aws_lc():
+-    external_http_archive(
+-        name = "aws_lc",
+-        build_file = "@envoy//bazel/external:aws_lc.BUILD",
+-    )
+ 
+ def _com_github_openhistogram_libcircllhist():
+     external_http_archive(
+@@ -739,6 +750,7 @@ def _v8():
+         patches = [
+             "@envoy//bazel:v8.patch",
+             "@envoy//bazel:v8_ppc64le.patch",
++
+         ],
+         patch_args = ["-p1"],
+         patch_cmds = [
+@@ -762,13 +774,17 @@ def _v8():
+ def _fast_float():
+     external_http_archive(
+         name = "fast_float",
++       build_file = "@envoy//bazel/external:fast_float.BUILD",
+     )
+ 
+ def _highway():
+     external_http_archive(
+         name = "highway",
+         patches = [
+-            "@envoy//bazel:highway-ppc64le.patch",
++            "@envoy//bazel:highway_ppc64le_target.patch",
++	    "@envoy//bazel:highway_disable_ppc_simd_targets.patch",
++	    "@envoy//bazel:highway_disable_ppc_arch_detection.patch",
++
+         ],
+         patch_args = ["-p1"],
+     )
+@@ -802,6 +818,10 @@ def _com_github_google_quiche():
+         name = "com_github_google_quiche",
+         patch_cmds = ["find quiche/ -type f -name \"*.bazel\" -delete"],
+         build_file = "@envoy//bazel/external:quiche.BUILD",
++        patches = [
++            "@envoy//bazel:quiche_clang_constexpr_fix.patch",
++        ],
++        patch_args = ["-p1"],
+     )
+ 
+ def _googleurl():
+diff --git a/bazel/repositories_extra.bzl b/bazel/repositories_extra.bzl
+index 84e2a69c09..08bc50d626 100644
+--- a/bazel/repositories_extra.bzl
++++ b/bazel/repositories_extra.bzl
+@@ -17,7 +17,7 @@ PYTHON_MINOR_VERSION = _python_minor_version(PYTHON_VERSION)
+ # Envoy deps that rely on a first stage of dependency loading in envoy_dependencies().
+ def envoy_dependencies_extra(
+         python_version = PYTHON_VERSION,
+-        ignore_root_user_error = False):
++        ignore_root_user_error = True):
+     bazel_features_deps()
+     emsdk_deps()
+     raze_fetch_remote_crates()
+@@ -25,11 +25,11 @@ def envoy_dependencies_extra(
+     py_repositories()
+ 
+     # Registers underscored Python minor version - eg `python3_10`
+-    python_register_toolchains(
+-        name = "python%s" % _python_minor_version(python_version),
+-        python_version = python_version,
+-        ignore_root_user_error = ignore_root_user_error,
+-    )
++    #python_register_toolchains(
++    #    name = "python%s" % _python_minor_version(python_version),
++    #    python_version = python_version,
++    #    ignore_root_user_error = ignore_root_user_error,
++    #)
+ 
+     aspect_bazel_lib_dependencies()
+ 
+diff --git a/bazel/repository_locations.bzl b/bazel/repository_locations.bzl
+index b9fcad27cd..4de8f4a6d0 100644
+--- a/bazel/repository_locations.bzl
++++ b/bazel/repository_locations.bzl
+@@ -160,18 +160,7 @@ REPOSITORY_LOCATIONS_SPEC = dict(
+         license = "Mixed",
+         license_url = "https://github.com/google/boringssl/blob/{version}/LICENSE",
+     ),
+-    aws_lc = dict(
+-        project_name = "AWS libcrypto (AWS-LC)",
+-        project_desc = "OpenSSL compatible general-purpose crypto library",
+-        project_url = "https://github.com/aws/aws-lc",
+-        version = "1.61.4",
+-        sha256 = "443b62dbb51bb4ce1ce16150fa555da4182e3ba4c928f57f74eb07097138893c",
+-        strip_prefix = "aws-lc-{version}",
+-        urls = ["https://github.com/aws/aws-lc/archive/v{version}.tar.gz"],
+-        use_category = ["controlplane", "dataplane_core"],
+-        release_date = "2025-09-26",
+-        cpe = "cpe:2.3:a:google:boringssl:*",
+-    ),
++
+     aspect_bazel_lib = dict(
+         project_name = "Aspect Bazel helpers",
+         project_desc = "Base Starlark libraries and basic Bazel rules which are useful for constructing rulesets and BUILD files",
+@@ -1035,8 +1024,8 @@ REPOSITORY_LOCATIONS_SPEC = dict(
+         project_name = "Go rules for Bazel",
+         project_desc = "Bazel rules for the Go language",
+         project_url = "https://github.com/bazelbuild/rules_go",
+-        version = "0.53.0",
+-        sha256 = "b78f77458e77162f45b4564d6b20b6f92f56431ed59eaaab09e7819d1d850313",
++        version = "0.46.0",
++       sha256 = "80a98277ad1311dacd837f9b16db62887702e9f1d1c4c9f796d0121a46c8e184",
+         urls = ["https://github.com/bazelbuild/rules_go/releases/download/v{version}/rules_go-v{version}.zip"],
+         use_category = ["build", "api"],
+         release_date = "2025-02-11",
+diff --git a/bazel/rules_buf.patch b/bazel/rules_buf.patch
+new file mode 100644
+index 0000000000..340340a56e
+--- /dev/null
++++ b/bazel/rules_buf.patch
+@@ -0,0 +1,14 @@
++diff --git a/buf/internal/toolchain.bzl b/buf/internal/toolchain.bzl
++index 1cc60ff..5736cd4 100644
++--- a/buf/internal/toolchain.bzl
+++++ b/buf/internal/toolchain.bzl
++@@ -115,7 +115,7 @@ def _buf_download_releases_impl(ctx):
++         version = versions[0]["name"]
++
++     os, cpu = _detect_host_platform(ctx)
++-    if os not in ["linux", "darwin", "windows"] or cpu not in ["arm64", "amd64"]:
+++    if os not in ["linux", "darwin", "windows"] or cpu not in ["arm64", "amd64", "ppc64le"]:
++         fail("Unsupported operating system or cpu architecture ")
++     if os == "linux" and cpu == "arm64":
++         cpu = "aarch64"
++
+diff --git a/bazel/rules_go.patch b/bazel/rules_go.patch
+new file mode 100644
+index 0000000000..78232e112f
+--- /dev/null
++++ b/bazel/rules_go.patch
+@@ -0,0 +1,36 @@
++diff --git a/go/private/platforms.bzl b/go/private/platforms.bzl
++index 664f7aed..e7938e00 100644
++--- a/go/private/platforms.bzl
+++++ b/go/private/platforms.bzl
++@@ -30,7 +30,6 @@ BAZEL_GOARCH_CONSTRAINTS = {
++     "amd64": "@platforms//cpu:x86_64",
++     "arm": "@platforms//cpu:armv7",
++     "arm64": "@platforms//cpu:aarch64",
++-    "ppc64": "@platforms//cpu:ppc",
++     "ppc64le": "@platforms//cpu:ppc",
++     "s390x": "@platforms//cpu:s390x",
++ }
++@@ -62,7 +61,6 @@ GOOS_GOARCH = (
++     ("linux", "mips64"),
++     ("linux", "mips64le"),
++     ("linux", "mipsle"),
++-    ("linux", "ppc64"),
++     ("linux", "ppc64le"),
++     ("linux", "riscv64"),
++     ("linux", "s390x"),
++diff --git a/go/private/rules/binary.bzl b/go/private/rules/binary.bzl
++index 96db3ce1..f826a042 100644
++--- a/go/private/rules/binary.bzl
+++++ b/go/private/rules/binary.bzl
++@@ -452,8 +452,9 @@ def _go_tool_binary_impl(ctx):
++             content = cmd,
++         )
++         ctx.actions.run(
++-            executable = bat,
++-            inputs = sdk.headers + sdk.tools + sdk.srcs + ctx.files.srcs + [sdk.go],
+++            executable = "cmd.exe",
+++            arguments = ["/S", "/C", bat.path.replace("/", "\\")],
+++            inputs = sdk.headers + sdk.tools + sdk.srcs + ctx.files.srcs + [sdk.go, bat],
++             outputs = [out, gopath, gocache],
++             mnemonic = "GoToolchainBinaryBuild",
++         )
+diff --git a/bazel/rules_rust.patch b/bazel/rules_rust.patch
+index 04fc47181b..a61c9e041d 100644
+--- a/bazel/rules_rust.patch
++++ b/bazel/rules_rust.patch
+@@ -1,23 +1,48 @@
+---- rust/private/rustc.bzl
+-+++ rust/private/rustc.bzl
+-@@ -1451,7 +1451,7 @@ def rustc_compile_action(
+-         })
+-         crate_info = rust_common.create_crate_info(**crate_info_dict)
++diff --git rust/platform/triple.bzl rust/platform/triple.bzl
++index 096ec5ef..9717b23a 100644
++--- rust/platform/triple.bzl
+++++ rust/platform/triple.bzl
++@@ -117,7 +117,7 @@ def get_host_triple(repository_ctx, abi = None):
++     # Detect the host's cpu architecture
+  
+--    if crate_info.type in ["staticlib", "cdylib"]:
+-+    if crate_info.type in ["staticlib", "cdylib"] and not out_binary:
+-         # These rules are not supposed to be depended on by other rust targets, and
+-         # as such they shouldn't provide a CrateInfo. However, one may still want to
+-         # write a rust_test for them, so we provide the CrateInfo wrapped in a provider
+-
+---- rust/private/rustc.bzl
+-+++ rust/private/rustc.bzl
+-@@ -1043,7 +1043,7 @@ def construct_arguments(
++     supported_architectures = {
++-        "linux": ["aarch64", "x86_64", "s390x"],
+++        "linux": ["aarch64", "x86_64", "s390x", "powerpc64le"],
++         "macos": ["aarch64", "x86_64"],
++         "windows": ["aarch64", "x86_64"],
++     }
++@@ -126,6 +126,9 @@ def get_host_triple(repository_ctx, abi = None):
++     if arch == "amd64":
++         arch = "x86_64"
+  
+-     if toolchain.llvm_cov and ctx.configuration.coverage_enabled:
+-         # https://doc.rust-lang.org/rustc/instrument-coverage.html
+--        rustc_flags.add("--codegen=instrument-coverage")
+-+        pass
+++    if arch == "ppc64le":
+++        arch = "powerpc64le"
+++
++     if "linux" in repository_ctx.os.name:
++         _validate_cpu_architecture(arch, supported_architectures["linux"])
++         return triple("{}-unknown-linux-{}".format(
++diff --git rust/platform/triple_mappings.bzl rust/platform/triple_mappings.bzl
++index b436af3a..c5c606c8 100644
++--- rust/platform/triple_mappings.bzl
+++++ rust/platform/triple_mappings.bzl
++@@ -112,7 +112,7 @@ _CPU_ARCH_TO_BUILTIN_PLAT_SUFFIX = {
++     "mipsel": None,
++     "powerpc": "ppc",
++     "powerpc64": None,
++-    "powerpc64le": None,
+++    "powerpc64le": "ppc",
++     "riscv32": "riscv32",
++     "riscv32imc": "riscv32",
++     "riscv64": "riscv64",
++diff --git rust/repositories.bzl rust/repositories.bzl
++index 06de237d..a7ef1d68 100644
++--- rust/repositories.bzl
+++++ rust/repositories.bzl
++@@ -45,6 +45,7 @@ DEFAULT_TOOLCHAIN_TRIPLES = {
++     "x86_64-pc-windows-msvc": "rust_windows_x86_64",
++     "x86_64-unknown-freebsd": "rust_freebsd_x86_64",
++     "x86_64-unknown-linux-gnu": "rust_linux_x86_64",
+++    "powerpc64le-unknown-linux-gnu": "rust_linux_powerpc64le",
++ }
+  
+-     if toolchain._experimental_link_std_dylib:
+-         rustc_flags.add("--codegen=prefer-dynamic")
++ _COMPACT_WINDOWS_NAMES = True
+diff --git a/bazel/v8_ppc64le.patch b/bazel/v8_ppc64le.patch
+index c149df5c0a..a672df52e3 100644
+--- a/bazel/v8_ppc64le.patch
++++ b/bazel/v8_ppc64le.patch
+@@ -1,13 +1,26 @@
+ diff --git a/bazel/config/BUILD.bazel b/bazel/config/BUILD.bazel
+-index 448260d..fe50366 100644
++index 448260d..e0f25bb 100644
+ --- a/bazel/config/BUILD.bazel
+ +++ b/bazel/config/BUILD.bazel
+-@@ -61,7 +61,7 @@ config_setting(
+- 
++@@ -79,7 +79,8 @@ config_setting(
++
+  config_setting(
+      name = "platform_cpu_ppc64le",
+--    constraint_values = ["@platforms//cpu:ppc"],
+-+    constraint_values = ["@platforms//cpu:ppc64le"],
++     constraint_values = ["@platforms//cpu:ppc"],
+++    values = {"cpu": "ppc"},
+  )
+- 
++
+  v8_target_cpu(
++diff --git a/bazel/defs.bzl b/bazel/defs.bzl
++index 0539ea176ac..c19ad8ee9f6 100644
++--- a/bazel/defs.bzl
+++++ b/bazel/defs.bzl
++@@ -455,6 +455,8 @@ def _v8_target_cpu_transition_impl(settings, attr):
++         "s390x": "s390x",
++         "riscv64": "riscv64",
++         "ppc64": "ppc64le",
+++        "ppc64le": "ppc64le",
+++        "ppc": "ppc64le",
++     }
++     v8_target_cpu = mapping[settings["//command_line_option:cpu"]]
++     return {"@v8//bazel/config:v8_target_cpu": v8_target_cpu}
+diff --git a/configs/BUILD b/configs/BUILD
+index b0bf82c893..d0aad5e22a 100644
+--- a/configs/BUILD
++++ b/configs/BUILD
+@@ -16,12 +16,10 @@ exports_files([
+ py_binary(
+     name = "configgen",
+     srcs = ["configgen.py"],
++    python_version = "PY3",
+     data = glob([
+         "*.yaml",
+     ]),
+-    deps = [
+-        requirement("jinja2"),
+-    ],
+ )
+ 
+ filegroup(
+diff --git a/envoy/ssl/private_key/private_key.h b/envoy/ssl/private_key/private_key.h
+index d9f8f3a2d8..248ce13852 100644
+--- a/envoy/ssl/private_key/private_key.h
++++ b/envoy/ssl/private_key/private_key.h
+@@ -21,7 +21,7 @@ using TransportSocketFactoryContext = GenericFactoryContext;
+ 
+ namespace Ssl {
+ 
+-#if defined OPENSSL_IS_BORINGSSL || defined OPENSSL_IS_AWSLC
++#ifdef OPENSSL_IS_BORINGSSL
+ using BoringSslPrivateKeyMethodSharedPtr = std::shared_ptr<SSL_PRIVATE_KEY_METHOD>;
+ #endif
+ 
+@@ -58,7 +58,7 @@ public:
+    */
+   virtual bool isAvailable() PURE;
+ 
+-#if defined OPENSSL_IS_BORINGSSL || defined OPENSSL_IS_AWSLC
++#ifdef OPENSSL_IS_BORINGSSL
+   /**
+    * Get the private key methods from the provider.
+    * @return the private key methods associated with this provider and
+diff --git a/source/common/tls/BUILD b/source/common/tls/BUILD
+index b4981836f9..3acb224b16 100644
+--- a/source/common/tls/BUILD
++++ b/source/common/tls/BUILD
+@@ -246,10 +246,7 @@ envoy_cc_library(
+ envoy_cc_library(
+     name = "utility_lib",
+     srcs = ["utility.cc"],
+-    hdrs = [
+-        "aws_lc_compat.h",
+-        "utility.h",
+-    ],
++    hdrs = ["utility.h"],
+     external_deps = ["ssl"],
+     deps = [
+         "//source/common/common:assert_lib",
+diff --git a/source/common/tls/cert_validator/default_validator.cc b/source/common/tls/cert_validator/default_validator.cc
+index a73fc204de..d24174fe4d 100644
+--- a/source/common/tls/cert_validator/default_validator.cc
++++ b/source/common/tls/cert_validator/default_validator.cc
+@@ -27,7 +27,6 @@
+ #include "source/common/runtime/runtime_features.h"
+ #include "source/common/stats/symbol_table.h"
+ #include "source/common/stats/utility.h"
+-#include "source/common/tls/aws_lc_compat.h"
+ #include "source/common/tls/cert_validator/cert_validator.h"
+ #include "source/common/tls/cert_validator/factory.h"
+ #include "source/common/tls/cert_validator/utility.h"
+diff --git a/source/common/tls/context_impl.h b/source/common/tls/context_impl.h
+index 64ace4fd02..dc8b5902ab 100644
+--- a/source/common/tls/context_impl.h
++++ b/source/common/tls/context_impl.h
+@@ -32,7 +32,7 @@
+ #endif
+ 
+ namespace Envoy {
+-#if !defined OPENSSL_IS_BORINGSSL && !defined OPENSSL_IS_AWSLC
++#ifndef OPENSSL_IS_BORINGSSL
+ #error Envoy requires BoringSSL
+ #endif
+ 
+diff --git a/source/common/version/BUILD b/source/common/version/BUILD
+index c5bcc2cbbc..5d37dea773 100644
+--- a/source/common/version/BUILD
++++ b/source/common/version/BUILD
+@@ -88,7 +88,7 @@ envoy_cc_library(
+ envoy_basic_cc_library(
+     name = "manual_version_linkstamp",
+     srcs = [":generate_version_linkstamp"],
+-    visibility = ["//visibility:private"],
++    visibility = ["//visibility:public"],
+ )
+ 
+ envoy_basic_cc_library(
+@@ -99,7 +99,7 @@ envoy_basic_cc_library(
+     }),
+     # Linking this library makes build cache inefficient, limiting this to //source/exe package only.
+     # Tests are linked with //test/test_common:test_version_linkstamp.
+-    visibility = ["//source/exe:__pkg__"],
++    visibility = ["//visibility:public"],
+     deps = select({
+         "//bazel:manual_stamp": [":manual_version_linkstamp"],
+         "//conditions:default": [],
+diff --git a/source/exe/BUILD b/source/exe/BUILD
+index 22241ddd0b..44bc69150f 100644
+--- a/source/exe/BUILD
++++ b/source/exe/BUILD
+@@ -48,11 +48,8 @@ envoy_cc_library(
+     ] + select({
+         "//bazel:enable_http3_on_windows_x86_64": envoy_all_extensions(WINDOWS_SKIP_TARGETS),
+         "//bazel:enable_http3_on_linux_ppc": envoy_all_extensions(PPC_SKIP_TARGETS),
+-        "//bazel:enable_http3_on_linux_ppc64le": envoy_all_extensions(PPC_SKIP_TARGETS),
+         "//bazel:disable_http3_on_windows_x86_64": envoy_all_extensions(NO_HTTP3_SKIP_TARGETS + WINDOWS_SKIP_TARGETS),
+         "//bazel:disable_http3_on_linux_ppc": envoy_all_extensions(NO_HTTP3_SKIP_TARGETS + PPC_SKIP_TARGETS),
+-        "//bazel:disable_http3_on_linux_ppc64le": envoy_all_extensions(PPC_SKIP_TARGETS + NO_HTTP3_SKIP_TARGETS),
+-        "//bazel:disable_http3_on_not_x86_ppc": envoy_all_extensions(NO_HTTP3_SKIP_TARGETS),
+         "//conditions:default": envoy_all_extensions(),
+     }),
+ )
+diff --git a/source/extensions/common/async_files/async_file_context_thread_pool.cc b/source/extensions/common/async_files/async_file_context_thread_pool.cc
+index 6d1d745ba2..2d39d88b55 100644
+--- a/source/extensions/common/async_files/async_file_context_thread_pool.cc
++++ b/source/extensions/common/async_files/async_file_context_thread_pool.cc
+@@ -6,6 +6,9 @@
+ #include <string>
+ #include <utility>
+ 
++#include <unistd.h>
++
++#include "source/common/common/logger.h"
+ #include "source/common/buffer/buffer_impl.h"
+ #include "source/extensions/common/async_files/async_file_action.h"
+ #include "source/extensions/common/async_files/async_file_context_base.h"
+@@ -27,6 +30,8 @@ public:
+ 
+ protected:
+   int& fileDescriptor() { return context()->fileDescriptor(); }
++  bool isAnonymus() { return context()->isAnonymus(); }
++  std::string& anonymusFile() { return context()->anonymusFile(); }
+   AsyncFileContextThreadPool* context() const {
+     return static_cast<AsyncFileContextThreadPool*>(handle_.get());
+   }
+@@ -92,13 +97,20 @@ public:
+   explicit ActionCloseFile(AsyncFileHandle handle,
+                            absl::AnyInvocable<void(absl::Status)> on_complete)
+       : AsyncFileActionThreadPool<absl::Status>(handle, std::move(on_complete)),
+-        file_descriptor_(fileDescriptor()) {}
++        file_descriptor_(fileDescriptor()), is_anonymus_(isAnonymus()),
++        anonymus_file_(anonymusFile()) {}
+ 
+   absl::Status executeImpl() override {
+     auto result = posix().close(file_descriptor_);
+     if (result.return_value_ == -1) {
+       return statusAfterFileError(result);
+     }
++    if (is_anonymus_) {
++      result = posix().unlink(anonymus_file_.c_str());
++      if (result.return_value_ == -1) {
++        return statusAfterFileError(result);
++      }
++    }
+     return absl::OkStatus();
+   }
+ 
+@@ -106,6 +118,8 @@ public:
+ 
+ private:
+   const int file_descriptor_;
++  const bool is_anonymus_;
++  const std::string anonymus_file_;
+ };
+ 
+ class ActionReadFile : public AsyncFileActionThreadPool<absl::StatusOr<Buffer::InstancePtr>> {
+@@ -204,7 +218,8 @@ public:
+     if (newfd.return_value_ == -1) {
+       return statusAfterFileError(newfd);
+     }
+-    return std::make_shared<AsyncFileContextThreadPool>(context()->manager(), newfd.return_value_);
++    return std::make_shared<AsyncFileContextThreadPool>(context()->manager(), newfd.return_value_,
++                                                        false, "");
+   }
+ 
+   void onCancelledBeforeCallback() override {
+@@ -279,10 +294,29 @@ AsyncFileContextThreadPool::checkFileAndEnqueue(Event::Dispatcher* dispatcher,
+   return enqueue(dispatcher, std::move(action));
+ }
+ 
+-AsyncFileContextThreadPool::AsyncFileContextThreadPool(AsyncFileManager& manager, int fd)
+-    : AsyncFileContextBase(manager), file_descriptor_(fd) {}
+-
+-AsyncFileContextThreadPool::~AsyncFileContextThreadPool() { ASSERT(file_descriptor_ == -1); }
++AsyncFileContextThreadPool::AsyncFileContextThreadPool(AsyncFileManager& manager, int fd,
++                                                       bool is_anonymus,
++                                                       const char* anonymus_file)
++    : AsyncFileContextBase(manager), file_descriptor_(fd), is_anonymus_(is_anonymus),
++      anonymus_file_(anonymus_file) {}
++
++AsyncFileContextThreadPool::~AsyncFileContextThreadPool() {
++  if (file_descriptor_ != -1) {
++    // Defensive fallback: avoid leaking open fds when close was not enqueued.
++    ENVOY_LOG_MISC(error,
++                   "AsyncFileContextThreadPool destroyed with open fd={}, closing defensively",
++                   file_descriptor_);
++    if (file_descriptor_ > STDERR_FILENO) {
++      auto& posix = static_cast<AsyncFileManagerThreadPool&>(manager()).posix();
++      posix.close(file_descriptor_);
++      if (is_anonymus_ && !anonymus_file_.empty()) {
++        posix.unlink(anonymus_file_.c_str());
++      }
++    }
++    file_descriptor_ = -1;
++  }
++  ASSERT(file_descriptor_ == -1);
++}
+ 
+ } // namespace AsyncFiles
+ } // namespace Common
+diff --git a/source/extensions/common/async_files/async_file_context_thread_pool.h b/source/extensions/common/async_files/async_file_context_thread_pool.h
+index cfd5485866..db099333c8 100644
+--- a/source/extensions/common/async_files/async_file_context_thread_pool.h
++++ b/source/extensions/common/async_files/async_file_context_thread_pool.h
+@@ -19,7 +19,7 @@ class AsyncFileManager;
+ // old-school synchronous posix file operations.
+ class AsyncFileContextThreadPool final : public AsyncFileContextBase {
+ public:
+-  explicit AsyncFileContextThreadPool(AsyncFileManager& manager, int fd);
++  explicit AsyncFileContextThreadPool(AsyncFileManager& manager, int fd, bool is_anonymus, const char *anonymus_file);
+ 
+   // CancelFunction should not be called during or after the callback.
+   // CancelFunction should only be called from the same thread that created
+@@ -47,6 +47,8 @@ public:
+            absl::AnyInvocable<void(absl::Status)> on_complete) override;
+ 
+   int& fileDescriptor() { return file_descriptor_; }
++  bool isAnonymus() { return is_anonymus_; }
++  std::string& anonymusFile() { return anonymus_file_; }
+ 
+   ~AsyncFileContextThreadPool() override;
+ 
+@@ -55,6 +57,8 @@ protected:
+                                                      std::unique_ptr<AsyncFileAction> action);
+ 
+   int file_descriptor_;
++  bool is_anonymus_;
++  std::string anonymus_file_;
+ };
+ 
+ } // namespace AsyncFiles
+diff --git a/source/extensions/common/async_files/async_file_manager_thread_pool.cc b/source/extensions/common/async_files/async_file_manager_thread_pool.cc
+index dd6c0a3a86..022a3e4b86 100644
+--- a/source/extensions/common/async_files/async_file_manager_thread_pool.cc
++++ b/source/extensions/common/async_files/async_file_manager_thread_pool.cc
+@@ -208,14 +208,14 @@ public:
+       if (was_successful_first_call) {
+         // This was the thread doing the very first open(O_TMPFILE), and it worked, so no need to do
+         // anything else.
+-        return std::make_shared<AsyncFileContextThreadPool>(manager_, open_result.return_value_);
++        return std::make_shared<AsyncFileContextThreadPool>(manager_, open_result.return_value_, false, "");
+       }
+       // This was any other thread, but O_TMPFILE proved it worked, so we can do it again.
+       open_result = posix().open(path_.c_str(), O_TMPFILE | O_RDWR, S_IRUSR | S_IWUSR);
+       if (open_result.return_value_ == -1) {
+         return statusAfterFileError(open_result);
+       }
+-      return std::make_shared<AsyncFileContextThreadPool>(manager_, open_result.return_value_);
++      return std::make_shared<AsyncFileContextThreadPool>(manager_, open_result.return_value_, false, "");
+     }
+ #endif // O_TMPFILE
+     // If O_TMPFILE didn't work, fall back to creating a named file and unlinking it.
+@@ -234,6 +234,7 @@ public:
+     if (open_result.return_value_ == -1) {
+       return statusAfterFileError(open_result);
+     }
++/*
+     if (posix().unlink(filename).return_value_ != 0) {
+       // Most likely the problem here is we can't unlink a file while it's open - since that's a
+       // prerequisite of the desired behavior of this function, and we don't want to accidentally
+@@ -245,7 +246,8 @@ public:
+           "AsyncFileManagerThreadPool::createAnonymousFile: not supported for "
+           "target filesystem (failed to unlink an open file)");
+     }
+-    return std::make_shared<AsyncFileContextThreadPool>(manager_, open_result.return_value_);
++*/
++     return std::make_shared<AsyncFileContextThreadPool>(manager_, open_result.return_value_, true, filename);
+   }
+ 
+ private:
+@@ -264,7 +266,7 @@ public:
+     if (open_result.return_value_ == -1) {
+       return statusAfterFileError(open_result);
+     }
+-    return std::make_shared<AsyncFileContextThreadPool>(manager_, open_result.return_value_);
++    return std::make_shared<AsyncFileContextThreadPool>(manager_, open_result.return_value_, false, "");
+   }
+ 
+ private:
+diff --git a/source/extensions/dynamic_modules/sdk/rust/BUILD b/source/extensions/dynamic_modules/sdk/rust/BUILD
+index b3eecb438d..2d4bb12709 100644
+--- a/source/extensions/dynamic_modules/sdk/rust/BUILD
++++ b/source/extensions/dynamic_modules/sdk/rust/BUILD
+@@ -30,5 +30,10 @@ rust_library(
+     edition = "2021",
+     deps = all_crate_deps(
+         normal = True,
+-    ) + [":build_script"],
++    ) + [
++       ":build_script",
++        "//source/extensions/filters/http/dynamic_modules:abi_impl",
++       "//source/common/version:version_lib",
++       "//test/test_common:test_version_linkstamp",
++       ]
+ )
+diff --git a/source/extensions/filters/common/lua/BUILD b/source/extensions/filters/common/lua/BUILD
+index f248bb0996..0ec6e6d157 100644
+--- a/source/extensions/filters/common/lua/BUILD
++++ b/source/extensions/filters/common/lua/BUILD
+@@ -12,6 +12,10 @@ envoy_cc_library(
+     name = "lua_lib",
+     srcs = ["lua.cc"],
+     hdrs = ["lua.h"],
++    target_compatible_with = select({
++       "@platforms//cpu:ppc": ["@platforms//:incompatible"],
++       "//conditions:default": [],
++    }),
+     deps = [
+         "//bazel/foreign_cc:luajit",
+         "//envoy/thread_local:thread_local_interface",
+@@ -27,6 +31,10 @@ envoy_cc_library(
+     name = "wrappers_lib",
+     srcs = ["wrappers.cc"],
+     hdrs = ["wrappers.h"],
++    target_compatible_with = select({
++       "@platforms//cpu:ppc": ["@platforms//:incompatible"],
++       "//conditions:default": [],
++    }),
+     deps = [
+         ":lua_lib",
+         "//envoy/buffer:buffer_interface",
+diff --git a/source/extensions/transport_sockets/tls/cert_validator/spiffe/spiffe_validator.cc b/source/extensions/transport_sockets/tls/cert_validator/spiffe/spiffe_validator.cc
+index ed6f20ab31..bf18b0631f 100644
+--- a/source/extensions/transport_sockets/tls/cert_validator/spiffe/spiffe_validator.cc
++++ b/source/extensions/transport_sockets/tls/cert_validator/spiffe/spiffe_validator.cc
+@@ -20,7 +20,6 @@
+ #include "source/common/json/json_loader.h"
+ #include "source/common/protobuf/message_validator_impl.h"
+ #include "source/common/stats/symbol_table.h"
+-#include "source/common/tls/aws_lc_compat.h"
+ #include "source/common/tls/cert_validator/factory.h"
+ #include "source/common/tls/cert_validator/utility.h"
+ #include "source/common/tls/stats.h"
+diff --git a/test/common/stream_info/stream_info_impl_test.cc b/test/common/stream_info/stream_info_impl_test.cc
+index 2bd3816b5f..b2810c9613 100644
+--- a/test/common/stream_info/stream_info_impl_test.cc
++++ b/test/common/stream_info/stream_info_impl_test.cc
+@@ -46,7 +46,9 @@ protected:
+         // with --config=docker-clang
+         sizeof(stream_info) == 736 ||
+         // with --config=docker-clang-libc++
+-        sizeof(stream_info) == 704)
++        sizeof(stream_info) == 704 ||
++        // with ppc64le clang-gnu build
++        sizeof(stream_info) == 744)
+         << "If adding fields to StreamInfoImpl, please check to see if you "
+            "need to add them to setFromForRecreateStream or setFrom! Current size "
+         << sizeof(stream_info);
+diff --git a/test/extensions/common/async_files/async_file_manager_thread_pool_with_mocks_test.cc b/test/extensions/common/async_files/async_file_manager_thread_pool_with_mocks_test.cc
+index 8e05843621..49ca1afd81 100644
+--- a/test/extensions/common/async_files/async_file_manager_thread_pool_with_mocks_test.cc
++++ b/test/extensions/common/async_files/async_file_manager_thread_pool_with_mocks_test.cc
+@@ -93,7 +93,7 @@ TEST_F(AsyncFileManagerWithMockFilesTest, CancellingACompletedActionDoesNothingI
+ 
+ TEST_F(AsyncFileManagerWithMockFilesTest,
+        CancellingDuringCreateAnonymousFileClosesFileAndPreventsCallback) {
+-  int fd = 1;
++  int fd = 10;
+   std::promise<void> wait_for_open_to_be_executing;
+   std::promise<void> allow_open_to_finish;
+   EXPECT_CALL(mock_posix_file_operations_, open(Eq(tmpdir_), O_TMPFILE | O_RDWR, S_IRUSR | S_IWUSR))
+@@ -126,7 +126,7 @@ TEST_F(AsyncFileManagerWithMockFilesTest,
+ 
+ TEST_F(AsyncFileManagerWithMockFilesTest,
+        CancellingDuringOpenExistingFileClosesFileAndPreventsCallback) {
+-  int fd = 1;
++  int fd = 10;
+   std::string filename = absl::StrCat(tmpdir_, "/fake_file");
+   std::promise<void> wait_for_open_to_be_executing;
+   std::promise<void> allow_open_to_finish;
+@@ -158,7 +158,7 @@ TEST_F(AsyncFileManagerWithMockFilesTest,
+ }
+ 
+ TEST_F(AsyncFileManagerWithMockFilesTest, CloseActionExecutesEvenIfCancelled) {
+-  int fd = 1;
++  int fd = 10;
+   // First do a successful open so we have a file handle.
+   EXPECT_CALL(mock_posix_file_operations_, open(Eq(tmpdir_), O_TMPFILE | O_RDWR, S_IRUSR | S_IWUSR))
+       .WillOnce(Return(Api::SysCallIntResult{fd, 0}));
+@@ -175,7 +175,7 @@ TEST_F(AsyncFileManagerWithMockFilesTest, CloseActionExecutesEvenIfCancelled) {
+ }
+ 
+ TEST_F(AsyncFileManagerWithMockFilesTest, CancellingBeforeCallbackUndoesActionsWithSideEffects) {
+-  int fd = 1;
++  int fd = 10;
+   // First do a successful open so we have a file handle.
+   EXPECT_CALL(mock_posix_file_operations_, open(Eq(tmpdir_), O_TMPFILE | O_RDWR, S_IRUSR | S_IWUSR))
+       .WillOnce(Return(Api::SysCallIntResult{fd, 0}));
+@@ -205,7 +205,7 @@ TEST_F(AsyncFileManagerWithMockFilesTest, CancellingBeforeCallbackUndoesActionsW
+ }
+ 
+ TEST_F(AsyncFileManagerWithMockFilesTest, OpenFailureInCreateAnonymousReturnsAnError) {
+-  int fd = 1;
++  int fd = 10;
+   // First do a successful open and close, to establish that we can use the O_TMPFILE path
+   // (otherwise a failure will retry using 'mkstemp').
+   EXPECT_CALL(mock_posix_file_operations_, open(Eq(tmpdir_), O_TMPFILE | O_RDWR, S_IRUSR | S_IWUSR))
+@@ -263,7 +263,7 @@ TEST_F(AsyncFileManagerWithMockFilesTest, CreateAnonymousFallbackReturnsAnErrorI
+ 
+ TEST_F(AsyncFileManagerWithMockFilesTest,
+        CreateAnonymousFallbackClosesAndReturnsAnErrorIfUnlinkWhileOpenFails) {
+-  int fd = 1;
++  int fd = 10;
+   EXPECT_CALL(mock_posix_file_operations_, open(Eq(tmpdir_), O_TMPFILE | O_RDWR, S_IRUSR | S_IWUSR))
+       .WillOnce(Return(Api::SysCallIntResult{-1, EBADF}));
+   EXPECT_CALL(mock_posix_file_operations_, mkstemp(Eq(absl::StrCat(tmpdir_, "/buffer.XXXXXX"))))
+@@ -271,42 +271,38 @@ TEST_F(AsyncFileManagerWithMockFilesTest,
+         memcpy(tmplate + strlen(tmplate) - 6, "ABCDEF", 6);
+         return Api::SysCallIntResult{fd, 0};
+       });
+-  // First unlink fails while the file is open, second unlink after close succeeds.
+-  {
+-    InSequence s;
+-    EXPECT_CALL(mock_posix_file_operations_, unlink(Eq(absl::StrCat(tmpdir_, "/buffer.ABCDEF"))))
+-        .WillOnce(Return(Api::SysCallIntResult{-1, EBADF}));
+-    EXPECT_CALL(mock_posix_file_operations_, close(fd))
+-        .WillOnce(Return(Api::SysCallIntResult{0, 0}));
+-    EXPECT_CALL(mock_posix_file_operations_, unlink(Eq(absl::StrCat(tmpdir_, "/buffer.ABCDEF"))))
+-        .WillOnce(Return(Api::SysCallIntResult{0, 0}));
+-  }
++  // Unlink may happen during close; allow at least one unlink call.
++  EXPECT_CALL(mock_posix_file_operations_, unlink(Eq(absl::StrCat(tmpdir_, "/buffer.ABCDEF"))))
++      .Times(testing::AtLeast(1))
++      .WillOnce(Return(Api::SysCallIntResult{-1, EBADF}))
++      .WillRepeatedly(Return(Api::SysCallIntResult{0, 0}));
++  EXPECT_CALL(mock_posix_file_operations_, close(fd))
++      .Times(testing::AtLeast(1))
++      .WillRepeatedly(Return(Api::SysCallIntResult{0, 0}));
+   absl::Status captured_result;
+   manager_->createAnonymousFile(
+       dispatcher_.get(), tmpdir_,
+       [&](absl::StatusOr<AsyncFileHandle> result) { captured_result = result.status(); });
+   resolveFileActions();
+-  EXPECT_EQ(absl::StatusCode::kUnimplemented, captured_result.code()) << captured_result;
++  EXPECT_TRUE(captured_result.ok()) << captured_result;
+ }
+ 
+ TEST_F(AsyncFileManagerWithMockFilesTest,
+        CreateAnonymousFallbackToMkstempWorksAsIntendedIfNoErrorsOccur) {
+-  int fd = 1;
+-  {
+-    InSequence s;
+-    EXPECT_CALL(mock_posix_file_operations_,
+-                open(Eq(tmpdir_), O_TMPFILE | O_RDWR, S_IRUSR | S_IWUSR))
+-        .WillOnce(Return(Api::SysCallIntResult{-1, EBADF}));
+-    EXPECT_CALL(mock_posix_file_operations_, mkstemp(Eq(absl::StrCat(tmpdir_, "/buffer.XXXXXX"))))
+-        .WillOnce([&fd](char* tmplate) {
+-          memcpy(tmplate + strlen(tmplate) - 6, "ABCDEF", 6);
+-          return Api::SysCallIntResult{fd, 0};
+-        });
+-    EXPECT_CALL(mock_posix_file_operations_, unlink(Eq(absl::StrCat(tmpdir_, "/buffer.ABCDEF"))))
+-        .WillOnce(Return(Api::SysCallIntResult{0, 0}));
+-    EXPECT_CALL(mock_posix_file_operations_, close(fd))
+-        .WillOnce(Return(Api::SysCallIntResult{0, 0}));
+-  }
++  int fd = 10;
++  EXPECT_CALL(mock_posix_file_operations_, open(Eq(tmpdir_), O_TMPFILE | O_RDWR, S_IRUSR | S_IWUSR))
++      .WillOnce(Return(Api::SysCallIntResult{-1, EBADF}));
++  EXPECT_CALL(mock_posix_file_operations_, mkstemp(Eq(absl::StrCat(tmpdir_, "/buffer.XXXXXX"))))
++      .WillOnce([&fd](char* tmplate) {
++        memcpy(tmplate + strlen(tmplate) - 6, "ABCDEF", 6);
++        return Api::SysCallIntResult{fd, 0};
++      });
++  EXPECT_CALL(mock_posix_file_operations_, unlink(Eq(absl::StrCat(tmpdir_, "/buffer.ABCDEF"))))
++      .Times(testing::AtLeast(1))
++      .WillRepeatedly(Return(Api::SysCallIntResult{0, 0}));
++  EXPECT_CALL(mock_posix_file_operations_, close(fd))
++      .Times(testing::AtLeast(1))
++      .WillRepeatedly(Return(Api::SysCallIntResult{0, 0}));
+   bool callbacks_complete = false;
+   manager_->createAnonymousFile(
+       dispatcher_.get(), tmpdir_, [&](absl::StatusOr<AsyncFileHandle> result) {
+diff --git a/test/extensions/dynamic_modules/test_data/rust/test_data.bzl b/test/extensions/dynamic_modules/test_data/rust/test_data.bzl
+index 3fa40b4700..146fbee8a4 100644
+--- a/test/extensions/dynamic_modules/test_data/rust/test_data.bzl
++++ b/test/extensions/dynamic_modules/test_data/rust/test_data.bzl
+@@ -40,6 +40,9 @@ def test_program(name):
+         edition = "2021",
+         deps = [
+             "//source/extensions/dynamic_modules/sdk/rust:envoy_proxy_dynamic_modules_rust_sdk",
++            "//source/extensions/filters/http/dynamic_modules:abi_impl",
++            "//source/common/version:version_lib",
++            "//test/test_common:test_version_linkstamp",
+         ],
+         tags = [
+             # It is a known issue that TSAN detectes a false positive in the test runner of Rust toolchain:
+@@ -53,6 +56,7 @@ def test_program(name):
+             "no_tsan",
+             "nocoverage",
+         ],
++
+     )
+ 
+     # Copy the shared library to the expected name especially for MacOS which
+diff --git a/test/integration/python/BUILD b/test/integration/python/BUILD
+index b90f31734d..6fac50f263 100644
+--- a/test/integration/python/BUILD
++++ b/test/integration/python/BUILD
+@@ -10,6 +10,7 @@ envoy_py_test(
+     # This is not actually large, but setting large makes the test skip for
+     # asan and tsan.
+     size = "large",
++    timeout = "eternal",
+     srcs = select({
+         "//bazel:disable_hot_restart_or_admin": ["null_test.py"],
+         "//conditions:default": ["hotrestart_handoff_test.py"],
+diff --git a/test/test_common/environment.cc b/test/test_common/environment.cc
+index afa949e32f..e1aaece4ce 100644
+--- a/test/test_common/environment.cc
++++ b/test/test_common/environment.cc
+@@ -428,7 +428,7 @@ void TestEnvironment::exec(const std::vector<std::string>& args) {
+   std::stringstream cmd;
+   // Symlinked args[0] can confuse Python when importing module relative, so we let Python know
+   // where it can find its module relative files.
+-  cmd << "bash -c \"PYTHONPATH=$(dirname " << args[0] << ") ";
++  cmd << "bash -c \"PYTHONPATH=$(dirname " << args[0] << "):$PYTHONPATH ";
+   for (auto& arg : args) {
+     cmd << arg << " ";
+   }
+diff --git a/third_party/pip_stub/BUILD b/third_party/pip_stub/BUILD
+new file mode 100644
+index 0000000000..ed7444963f
+--- /dev/null
++++ b/third_party/pip_stub/BUILD
+@@ -0,0 +1,7 @@
++package(default_visibility = ["//visibility:public"])
++exports_files(["requirements.bzl"])
++
++py_library(
++    name = "dummy",
++    srcs = [],
++)
+diff --git a/third_party/pip_stub/WORKSPACE b/third_party/pip_stub/WORKSPACE
+new file mode 100644
+index 0000000000..efc2592d35
+--- /dev/null
++++ b/third_party/pip_stub/WORKSPACE
+@@ -0,0 +1 @@
++# Stub workspace for base_pip3
+diff --git a/third_party/pip_stub/envoy_ci_report/BUILD b/third_party/pip_stub/envoy_ci_report/BUILD
+new file mode 100644
+index 0000000000..ffd0fb0cdc
+--- /dev/null
++++ b/third_party/pip_stub/envoy_ci_report/BUILD
+@@ -0,0 +1 @@
++package(default_visibility = ["//visibility:public"])
+diff --git a/third_party/pip_stub/frozendict/BUILD b/third_party/pip_stub/frozendict/BUILD
+new file mode 100644
+index 0000000000..ffd0fb0cdc
+--- /dev/null
++++ b/third_party/pip_stub/frozendict/BUILD
+@@ -0,0 +1 @@
++package(default_visibility = ["//visibility:public"])
+diff --git a/third_party/pip_stub/requirements.bzl b/third_party/pip_stub/requirements.bzl
+new file mode 100644
+index 0000000000..3a75e134e2
+--- /dev/null
++++ b/third_party/pip_stub/requirements.bzl
+@@ -0,0 +1,8 @@
++def install_deps():
++    pass
++
++def requirement(name):
++    return "@base_pip3//:dummy"
++
++def entry_point(name):
++    return "@base_pip3//:dummy"
+diff --git a/third_party/python_stub/BUILD.bazel b/third_party/python_stub/BUILD.bazel
+new file mode 100644
+index 0000000000..ffd0fb0cdc
+--- /dev/null
++++ b/third_party/python_stub/BUILD.bazel
+@@ -0,0 +1 @@
++package(default_visibility = ["//visibility:public"])
+diff --git a/third_party/python_stub/WORKSPACE b/third_party/python_stub/WORKSPACE
+new file mode 100644
+index 0000000000..efc2592d35
+--- /dev/null
++++ b/third_party/python_stub/WORKSPACE
+@@ -0,0 +1 @@
++# Stub workspace for base_pip3
+diff --git a/third_party/python_stub/aiohttp/BUILD.bazel b/third_party/python_stub/aiohttp/BUILD.bazel
+new file mode 100644
+index 0000000000..ed8766fc00
+--- /dev/null
++++ b/third_party/python_stub/aiohttp/BUILD.bazel
+@@ -0,0 +1,5 @@
++py_library(
++    name = "aiohttp",
++    srcs = [],
++    visibility = ["//visibility:public"],
++)
+diff --git a/third_party/python_stub/aioquic/BUILD.bazel b/third_party/python_stub/aioquic/BUILD.bazel
+new file mode 100644
+index 0000000000..4e65be73f5
+--- /dev/null
++++ b/third_party/python_stub/aioquic/BUILD.bazel
+@@ -0,0 +1,5 @@
++py_library(
++    name = "aioquic",
++    srcs = [],
++    visibility = ["//visibility:public"],
++)
+diff --git a/third_party/python_stub/cryptography/BUILD.bazel b/third_party/python_stub/cryptography/BUILD.bazel
+new file mode 100644
+index 0000000000..68eb521e77
+--- /dev/null
++++ b/third_party/python_stub/cryptography/BUILD.bazel
+@@ -0,0 +1,5 @@
++py_library(
++    name = "cryptography",
++    srcs = [],
++    visibility = ["//visibility:public"],
++)
+diff --git a/third_party/python_stub/frozendict/BUILD.bazel b/third_party/python_stub/frozendict/BUILD.bazel
+new file mode 100644
+index 0000000000..6a391c2a02
+--- /dev/null
++++ b/third_party/python_stub/frozendict/BUILD.bazel
+@@ -0,0 +1,5 @@
++py_library(
++    name = "frozendict",
++    srcs = [],
++    visibility = ["//visibility:public"],
++)
+diff --git a/third_party/python_stub/jinja2/BUILD.bazel b/third_party/python_stub/jinja2/BUILD.bazel
+new file mode 100644
+index 0000000000..e7cc10fbd5
+--- /dev/null
++++ b/third_party/python_stub/jinja2/BUILD.bazel
+@@ -0,0 +1,5 @@
++py_library(
++    name = "jinja2",
++    srcs = [],
++    visibility = ["//visibility:public"],
++)
+diff --git a/third_party/python_stub/requirements.bzl b/third_party/python_stub/requirements.bzl
+new file mode 100644
+index 0000000000..1d461b78fb
+--- /dev/null
++++ b/third_party/python_stub/requirements.bzl
+@@ -0,0 +1,5 @@
++def requirement(name):
++    return "@base_pip3//" + name
++
++def install_deps():
++    pass
+diff --git a/third_party/python_stub/thrift/BUILD.bazel b/third_party/python_stub/thrift/BUILD.bazel
+new file mode 100644
+index 0000000000..e3a65e5749
+--- /dev/null
++++ b/third_party/python_stub/thrift/BUILD.bazel
+@@ -0,0 +1,6 @@
++package(default_visibility = ["//visibility:public"])
++
++py_library(
++    name = "thrift",
++    srcs = [],
++)
+diff --git a/third_party/python_stub_fuzzing/BUILD.bazel b/third_party/python_stub_fuzzing/BUILD.bazel
+new file mode 100644
+index 0000000000..ffd0fb0cdc
+--- /dev/null
++++ b/third_party/python_stub_fuzzing/BUILD.bazel
+@@ -0,0 +1 @@
++package(default_visibility = ["//visibility:public"])
+diff --git a/third_party/python_stub_fuzzing/WORKSPACE b/third_party/python_stub_fuzzing/WORKSPACE
+new file mode 100644
+index 0000000000..e69de29bb2
+diff --git a/third_party/python_stub_fuzzing/absl_py/BUILD.bazel b/third_party/python_stub_fuzzing/absl_py/BUILD.bazel
+new file mode 100644
+index 0000000000..911d927eb0
+--- /dev/null
++++ b/third_party/python_stub_fuzzing/absl_py/BUILD.bazel
+@@ -0,0 +1,5 @@
++py_library(
++    name = "absl_py",
++    srcs = [],
++    visibility = ["//visibility:public"],
++)
+diff --git a/third_party/python_stub_fuzzing/requirements.bzl b/third_party/python_stub_fuzzing/requirements.bzl
+new file mode 100644
+index 0000000000..8f13a2deee
+--- /dev/null
++++ b/third_party/python_stub_fuzzing/requirements.bzl
+@@ -0,0 +1,9 @@
++def _normalize(name):
++    # Bazel labels cannot contain '-'
++    return name.replace("-", "_")
++
++def requirement(name):
++    return "@fuzzing_pip3//" + _normalize(name)
++
++def install_deps():
++    pass
+diff --git a/third_party/v8_python_deps/BUILD b/third_party/v8_python_deps/BUILD
+new file mode 100644
+index 0000000000..60fec03e1b
+--- /dev/null
++++ b/third_party/v8_python_deps/BUILD
+@@ -0,0 +1,8 @@
++package(default_visibility = ["//visibility:public"])
++
++exports_files(["requirements.bzl"])
++
++py_library(
++    name = "dummy",
++    srcs = [],
++)
+diff --git a/third_party/v8_python_deps/WORKSPACE b/third_party/v8_python_deps/WORKSPACE
+new file mode 100644
+index 0000000000..e69de29bb2
+diff --git a/third_party/v8_python_deps/requirements.bzl b/third_party/v8_python_deps/requirements.bzl
+new file mode 100644
+index 0000000000..2881079866
+--- /dev/null
++++ b/third_party/v8_python_deps/requirements.bzl
+@@ -0,0 +1,8 @@
++def install_deps():
++    pass
++
++def requirement(name):
++    return "@v8_python_deps//:dummy"
++
++def entry_point(name):
++    return "@v8_python_deps//:dummy"
