@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : chromadb
-# Version       : 1.5.10
+# Version       : latest
 # Source repo   : https://github.com/chroma-core/chroma
 # Tested on     : UBI:10.2
 # Language      : Python
@@ -26,6 +26,10 @@ WORKDIR=$(pwd)
 SCRIPT_PATH=$(dirname $(realpath $0))
 
 PROTOC_VERSION=31.1
+
+curl -O https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+dnf install -y epel-release-latest-9.noarch.rpm
+dnf update -y
 
 # Install dependencies.
 dnf -y install gcc g++ cmake autoconf unzip make git python3.13 python3.13-pip python3.13-devel
