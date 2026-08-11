@@ -2,7 +2,7 @@
   "maintainer": "Varsha Kumar",
   "package_name": "chromadb",
   "github_url": "https://github.com/chroma-core/chroma.git",
-  "version": "1.5.10",
+  "version": "latest",
   "wheel_build" : true,
   "package_dir": "c/chromadb",
   "default_branch": "main",
