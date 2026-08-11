@@ -18,30 +18,27 @@
 #
 # ----------------------------------------------------------------------------
 
-set -ex
+set -e
 
-PACKAGE_URL=https://github.com/google/ml-metadata.git
 PACKAGE_NAME=ml-metadata
 PACKAGE_VERSION=${1:-v1.21.0}
+PACKAGE_URL=https://github.com/google/ml-metadata.git
 PACKAGE_DIR=ml-metadata
-PYTHON_VERSION=${2:-3.11}
+CURRENT_DIR=$(pwd)
 
-wdir=`pwd`
-SCRIPT=$(readlink -f $0)
-SCRIPT_DIR=$(dirname $SCRIPT)
-
-#Install the dependencies
-#added gcc-toolset-13-binutils, gcc, gcc-c++ to resolve linker issues
-yum install -y autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils python${PYTHON_VERSION} python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-devel git unzip zip patch openssl-devel utf8proc tzdata diffutils libffi-devel
+# Install system dependencies — Python packages must come first (wrapper rule)
+yum install -y python3.12 python3.12-devel python3.12-pip autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-binutils git unzip zip patch openssl-devel utf8proc tzdata diffutils libffi-devel
 source /opt/rh/gcc-toolset-13/enable
 
 ldconfig /usr/local/lib
 export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:${LD_LIBRARY_PATH}
 
+# Java is required by Bazel
 yum install -y java-21-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
+# Build Bazel from source (no ppc64le binary provided upstream)
 mkdir bazel
 cd bazel
 wget https://github.com/bazelbuild/bazel/releases/download/7.7.0/bazel-7.7.0-dist.zip
@@ -52,68 +49,83 @@ env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
 cp output/bazel /usr/local/bin
 export PATH=/usr/local/bin:$PATH
 bazel --version
-cd $wdir
+cd "$CURRENT_DIR"
+
+# Upgrade pip and install build tools
+pip install --upgrade pip setuptools wheel build
+pip install numpy pytest
 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
-python${PYTHON_VERSION} -m pip install --upgrade pip
-python${PYTHON_VERSION} -m pip install numpy pytest build
 
+# Clone and checkout
+git clone "$PACKAGE_URL" "$PACKAGE_DIR"
+cd "$PACKAGE_DIR"
 
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME/
-git checkout $PACKAGE_VERSION
+# Robust tag checkout — try v-prefixed then bare
+if git rev-parse "${PACKAGE_VERSION}" &>/dev/null; then
+    git checkout "${PACKAGE_VERSION}"
+elif git rev-parse "v${PACKAGE_VERSION}" &>/dev/null; then
+    git checkout "v${PACKAGE_VERSION}"
+else
+    echo "ERROR: No git tag found for version '${PACKAGE_VERSION}'"
+    exit 1
+fi
 
+# Patch boringssl SHA/hash references in WORKSPACE for ppc64le compatibility
 sed -i 's|7a35bebd0e1eecbc5bf5bbf5eec03e86686c356802b5540872119bd26f84ecc7|579cb415458e9f3642da0a39a72f79fdfe6dc9c1713b3a823f1e276681b9703e|g' WORKSPACE
 sed -i 's|boringssl-16c8d3db1af20fcc04b5190b25242aadcb1fbb30|boringssl-648cbaf033401b7fe7acdce02f275b06a88aab5c|g' WORKSPACE
 sed -i 's|16c8d3db1af20fcc04b5190b25242aadcb1fbb30.tar.gz|648cbaf033401b7fe7acdce02f275b06a88aab5c.tar.gz|g' WORKSPACE
 
-#set correct PYTHON_LIB_PATH 
-export PYTHON_BIN_PATH=$(which python${PYTHON_VERSION})
-export PYTHON_LIB_PATH=$(python${PYTHON_VERSION} -c "import sysconfig; print(sysconfig.get_path('stdlib'))")
+# Set correct Python paths for Bazel
+export PYTHON_BIN_PATH=$(which python3.12)
+export PYTHON_LIB_PATH=$(python3.12 -c "import sysconfig; print(sysconfig.get_path('stdlib'))")
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:/opt/rh/gcc-toolset-13/root/usr/lib:/usr/lib64:/usr/lib
 
-#pre-fetch libmysqlclient and patch its cmake invocation to use system
-#gcc (/usr/bin/gcc) instead of gcc-toolset-13's cc, which requires
-#LIBCTF_1.1 from libctf.so.0 — a version not present on this system.
+# Pre-fetch libmysqlclient and patch its cmake invocation to use system gcc
+# (/usr/bin/gcc) instead of gcc-toolset-13's cc, which requires LIBCTF_1.1
+# from libctf.so.0 — a version not present on this system.
 bazel fetch @libmysqlclient//... 2>/dev/null || true
 LIBMYSQL_BUILD=$(find /root/.cache/bazel -name "BUILD.bazel" -path "*/libmysqlclient/*" 2>/dev/null | head -1)
 if [ -n "$LIBMYSQL_BUILD" ]; then
     sed -i 's|cmake \.\. -DCMAKE_BUILD_TYPE=Release \${CMAKE_ICONV_FLAG-}|cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ ${CMAKE_ICONV_FLAG-}|g' "$LIBMYSQL_BUILD"
-    echo "Patched libmysqlclient cmake: $(grep 'cmake \.\.' $LIBMYSQL_BUILD)"
+    echo "Patched libmysqlclient cmake: $(grep 'cmake \.\.' "$LIBMYSQL_BUILD")"
 else
     echo "ERROR: Could not find libmysqlclient BUILD.bazel to patch"
     exit 1
 fi
 
-#keep only build artifacts clean, preserve fetched repos
+# Keep only build artifacts clean, preserve fetched repos
 bazel clean 2>/dev/null || true
 
-if ! (python${PYTHON_VERSION} -m pip install .); then 
-     echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
-     echo "$PACKAGE_URL $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_fails"
-     exit 2;
+# Install the package
+if ! pip install --no-build-isolation .; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
 fi
 
-if ! python${PYTHON_VERSION} -m build --wheel --no-isolation --outdir="$wdir/"; then
-        echo "============ Wheel Creation Failed for Python $PYTHON_VERSION (without isolation) ================="
-        echo "Attempting to build with isolation..."
-
-        # Attempt to build the wheel without isolation
-        if ! python${PYTHON_VERSION} -m build --wheel --outdir="$wdir/"; then
-            echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
-        fi
+# Build the wheel and copy to CURRENT_DIR
+if ! python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
+    echo "Wheel build without isolation failed — retrying with isolation..."
+    if ! python3.12 -m build --wheel --outdir="$CURRENT_DIR/"; then
+        echo "------------------$PACKAGE_NAME:Wheel_build_fails-------------------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Wheel_Build_Fails"
+        exit 1
+    fi
 fi
 
-if ! pytest -vv; then
-     echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
-     echo "$PACKAGE_URL $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
-     exit 1;
+# Run tests from CURRENT_DIR so imports resolve from the installed package
+cd "$CURRENT_DIR"
+if ! python3.12 -c "import ml_metadata; print('ml_metadata import OK')"; then
+    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
 else
-     echo "------------------$PACKAGE_NAME:Build_and_test_both_success-------------------------------------"
-     echo "$PACKAGE_URL $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Pass |  Both_Build_and_Test_Success"
-     exit 0;
-fi
+    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
