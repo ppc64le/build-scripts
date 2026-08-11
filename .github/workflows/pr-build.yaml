@@ -285,7 +285,7 @@ jobs:
               continue
             fi
 
-            major=$(echo "$raw_tested_on" | sed 's/.*UBI\([0-9][0-9]*\).*/\1/')
+            major=$(echo "$raw_tested_on" | sed 's/.*UBI[: ]*\([0-9][0-9]*\).*/\1/')
             case "$major" in ''|*[!0-9]*)
               echo "ERROR: '$script_name' has an unrecognised '# Tested on' value: '$raw_tested_on'."
               echo "       Expected format: UBI:<major>.<minor>  e.g. UBI:10.2"
