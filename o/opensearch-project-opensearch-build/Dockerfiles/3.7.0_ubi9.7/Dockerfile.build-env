@@ -32,8 +32,11 @@ RUN yum install -y --allowerasing \
 RUN curl -fsSL "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_ppc64le" \
     -o /usr/local/bin/yq && chmod +x /usr/local/bin/yq
 
-# Install JDK 25 (provided by ubi-9-appstream-rpms)
-RUN yum install -y java-25-openjdk-devel && yum clean all
+# Install JDK 25.0.4 (Red_Hat-25.0.4.0.7-1) pinned so the bundled JDK in the
+# final OpenSearch image matches the expected runtime version.
+RUN yum install -y \
+    java-25-openjdk-devel && \
+    yum clean all
 
 # Set Java environment
 ENV JAVA_HOME=/usr/lib/jvm/java-25-openjdk
