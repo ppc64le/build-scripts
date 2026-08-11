@@ -4,7 +4,7 @@
 # Package       : numba
 # Version       : 0.56.4
 # Source repo   : https://github.com/numba/numba
-# Tested on     : UBI:9.8
+# Tested on     : UBI9.8
 # Language      : Python
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
