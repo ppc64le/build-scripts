@@ -16,7 +16,7 @@
   "1.5.9": {
     "build_script": "chromadb_1.5.9_ubi_9.6.sh"  
   },
-  "1.5.10": {
+  "latest": {
     "build_script": "chromadb_1.5.10_ubi_10.2.sh"
   },
   "*": {
