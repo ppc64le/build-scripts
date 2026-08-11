@@ -32,16 +32,11 @@ RUN yum install -y --allowerasing \
 RUN curl -fsSL "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_ppc64le" \
     -o /usr/local/bin/yq && chmod +x /usr/local/bin/yq
 
-# Install Temurin JDK 25 for ppc64le (required by the 3.7.0 manifest)
-RUN curl -LfsSo /tmp/jdk25.tar.gz \
-        "https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B36/OpenJDK25U-jdk_ppc64le_linux_hotspot_25_36.tar.gz" && \
-    echo "b060bb12b3a192a0599f03ebb9495492f78c48cb61e291e336a8b00e7798ffb0 /tmp/jdk25.tar.gz" | sha256sum -c - && \
-    mkdir -p /opt/java/openjdk-25 && \
-    tar -xf /tmp/jdk25.tar.gz --strip-components=1 -C /opt/java/openjdk-25 && \
-    rm -f /tmp/jdk25.tar.gz
+# Install JDK 25 (provided by ubi-9-appstream-rpms)
+RUN yum install -y java-25-openjdk-devel && yum clean all
 
 # Set Java environment
-ENV JAVA_HOME=/opt/java/openjdk-25
+ENV JAVA_HOME=/usr/lib/jvm/java-25-openjdk
 ENV PATH=$JAVA_HOME/bin:$PATH
 ENV GRADLE_USER_HOME=/root/.gradle
 
