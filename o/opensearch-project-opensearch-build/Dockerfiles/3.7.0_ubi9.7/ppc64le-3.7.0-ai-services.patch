@@ -1,7 +1,7 @@
-From c5b12d13980cbcaae1b256ab085c554529cd5c6e Mon Sep 17 00:00:00 2001
+From 86e074a7a1409d34d6868935b18dafcf548123cb Mon Sep 17 00:00:00 2001
 From: irapandey <ira.pandey2001@gmail.com>
-Date: Fri, 17 Jul 2026 14:57:09 +0530
-Subject: [PATCH] patch for ppc64le
+Date: Tue, 11 Aug 2026 17:00:04 +0530
+Subject: [PATCH] ppc64le
 
 Signed-off-by: irapandey <ira.pandey2001@gmail.com>
 ---
@@ -25,8 +25,9 @@ Signed-off-by: irapandey <ira.pandey2001@gmail.com>
  scripts/default/bwctest.sh                    |   2 +-
  scripts/default/integtest.sh                  |   2 +-
  scripts/default/opensearch/build.sh           |   6 +-
+ security.patch                                |  17 ++
  src/build_workflow/build_args.py              |   1 +
- src/build_workflow/builder_from_source.py     |  87 +++++++-
+ src/build_workflow/builder_from_source.py     |  97 ++++++++-
  .../ci_check_gradle_dependencies.py           |   2 +-
  src/ci_workflow/ci_check_gradle_properties.py |   2 +-
  .../ci_check_gradle_publish_to_maven_local.py |   2 +-
@@ -36,7 +37,7 @@ Signed-off-by: irapandey <ira.pandey2001@gmail.com>
  .../test_ci_check_gradle_properties.py        |   6 +-
  ..._ci_check_gradle_publish_to_maven_local.py |   6 +-
  .../test_component_opensearch.py              |   6 +-
- 31 files changed, 986 insertions(+), 52 deletions(-)
+ 32 files changed, 1013 insertions(+), 52 deletions(-)
  create mode 100644 opensearch.patch
  create mode 100755 scripts/components/alerting/build.sh
  create mode 100644 scripts/components/cross-cluster-replication/build.sh
@@ -45,10 +46,11 @@ Signed-off-by: irapandey <ira.pandey2001@gmail.com>
  create mode 100755 scripts/components/opensearch-observability/build.sh
  create mode 100755 scripts/components/opensearch-remote-metadata-sdk/build.sh
  create mode 100755 scripts/components/opensearch-reports/build.sh
+ create mode 100644 security.patch
 
 diff --git a/opensearch.patch b/opensearch.patch
 new file mode 100644
-index 00000000..051173ab
+index 00000000..4729032d
 --- /dev/null
 +++ b/opensearch.patch
 @@ -0,0 +1,67 @@
@@ -119,7 +121,6 @@ index 00000000..051173ab
 + roaringbitmap     = "1.3.0"
 + 
 +-- 
-+2.51.2
 diff --git a/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh b/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh
 index bbe39bfd..108ae8cb 100755
 --- a/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh
@@ -1197,6 +1198,29 @@ index 518c722a..67094c45 100755
 +./gradlew --console=plain publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
  mkdir -p $OUTPUT/maven/org/opensearch
  cp -r ./build/local-staging-repo/org/opensearch/. $OUTPUT/maven/org/opensearch
+diff --git a/security.patch b/security.patch
+new file mode 100644
+index 00000000..e50d86c5
+--- /dev/null
++++ b/security.patch
+@@ -0,0 +1,17 @@
++diff --git a/gradle/libs.versions.toml b/gradle/libs.versions.toml
++index 70e43a15..e8ff2400 100644
++--- a/gradle/libs.versions.toml
+++++ b/gradle/libs.versions.toml
++@@ -9,6 +9,9 @@ lz4_java            = "1.11.0"
++ snappy_java         = "1.1.10.8"
++ guava               = "33.6.0-jre"
++ spring_framework    = "7.0.7"
+++jackson             = "2.22.1"
+++jackson_databind    = "2.22.1"
+++netty               = "4.2.16.Final"
++ 
++ [libraries]
++ #OneLogin saml
++-- 
++2.51.2
++
 diff --git a/src/build_workflow/build_args.py b/src/build_workflow/build_args.py
 index d67c27a7..271962ab 100644
 --- a/src/build_workflow/build_args.py
@@ -1210,7 +1234,7 @@ index d67c27a7..271962ab 100644
      SUPPORTED_DISTRIBUTIONS = ["tar", "zip", "rpm", "deb"]
  
 diff --git a/src/build_workflow/builder_from_source.py b/src/build_workflow/builder_from_source.py
-index 2c77c80d..0a21d0de 100644
+index 2c77c80d..aecd3312 100644
 --- a/src/build_workflow/builder_from_source.py
 +++ b/src/build_workflow/builder_from_source.py
 @@ -6,6 +6,7 @@
@@ -1221,15 +1245,16 @@ index 2c77c80d..0a21d0de 100644
  
  from build_workflow.build_recorder import BuildRecorder
  from build_workflow.builder import Builder
-@@ -18,6 +19,7 @@ It will notify the build recorder of build information such as repository and gi
+@@ -18,6 +19,8 @@ It will notify the build recorder of build information such as repository and gi
  Artifacts found in "<build root>/artifacts/<maven|plugins|libs|dist|core-plugins>" will be recognized and recorded.
  """
  
 +OPENSEARCH_PATCH_FILE = os.path.join(os.getcwd(), "opensearch.patch")
++SECURITY_PATCH_FILE = os.path.join(os.getcwd(), "security.patch")
  
  class BuilderFromSource(Builder):
      def checkout(self, work_dir: str) -> None:
-@@ -28,6 +30,89 @@ class BuilderFromSource(Builder):
+@@ -28,6 +31,98 @@ class BuilderFromSource(Builder):
              self.component.working_directory,
          )
  
@@ -1241,6 +1266,15 @@ index 2c77c80d..0a21d0de 100644
 +                logging.info(f"Successfully applied patch to {self.component.name}")
 +            else:
 +                logging.warning(f"Patch file not found: {OPENSEARCH_PATCH_FILE}")
++
++        # Apply security patch (security.patch) if building security plugin
++        if self.component.name == "security":
++            if os.path.isfile(SECURITY_PATCH_FILE):
++                logging.info(f"Applying patch {SECURITY_PATCH_FILE} to {self.component.name}")
++                self.git_repo.execute(f"git apply {SECURITY_PATCH_FILE}")
++                logging.info(f"Successfully applied patch to {self.component.name}")
++            else:
++                logging.warning(f"Patch file not found: {SECURITY_PATCH_FILE}")
 +
 +        self._apply_ppc64le_gradle_fix()
 +        self._apply_kotlin_version_fix()
@@ -1319,7 +1353,7 @@ index 2c77c80d..0a21d0de 100644
      def build(self, build_recorder: BuildRecorder) -> None:
  
          # List of components whose build scripts support `-d` parameter
-@@ -63,4 +148,4 @@ class BuilderFromSource(Builder):
+@@ -63,4 +158,4 @@ class BuilderFromSource(Builder):
                  for file_name in sorted(files):
                      absolute_path = os.path.join(dir, file_name)
                      relative_path = os.path.relpath(absolute_path, artifacts_path)
