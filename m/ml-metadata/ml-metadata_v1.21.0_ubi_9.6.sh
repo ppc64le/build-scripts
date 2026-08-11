@@ -32,7 +32,7 @@ SCRIPT_DIR=$(dirname $SCRIPT)
 
 #Install the dependencies
 #added gcc-toolset-13-binutils, gcc, gcc-c++ to resolve linker issues
-yum install -y autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils python${PYTHON_VERSION} python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-devel git unzip zip patch openssl-devel utf8proc tzdata diffutils libffi-devel
+yum install -y autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils python3 python3-pip python3-devel git unzip zip patch openssl-devel utf8proc tzdata diffutils libffi-devel
 source /opt/rh/gcc-toolset-13/enable
 
 ldconfig /usr/local/lib
@@ -93,7 +93,7 @@ if ! (python${PYTHON_VERSION} -m pip install .); then
      echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_fails"
-     exit 2;
+     return 2;
 fi
 
 if ! python${PYTHON_VERSION} -m build --wheel --no-isolation --outdir="$wdir/"; then
@@ -110,10 +110,10 @@ if ! pytest -vv; then
      echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
-     exit 1;
+     return 1;
 else
      echo "------------------$PACKAGE_NAME:Build_and_test_both_success-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Pass |  Both_Build_and_Test_Success"
-     exit 0;
+     return 0;
 fi
