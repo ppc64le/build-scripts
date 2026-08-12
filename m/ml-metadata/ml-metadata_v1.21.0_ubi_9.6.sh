@@ -32,7 +32,7 @@ SCRIPT_DIR=$(dirname $SCRIPT)
 
 #Install the dependencies
 #added gcc-toolset-13-binutils, gcc, gcc-c++ to resolve linker issues
-yum install -y autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils python3 python3-pip python3-devel git unzip zip patch openssl-devel utf8proc tzdata diffutils libffi-devel
+yum install -y autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils python3.11 python3.11-pip python3.11-devel git unzip zip patch openssl-devel utf8proc tzdata diffutils libffi-devel
 source /opt/rh/gcc-toolset-13/enable
 
 ldconfig /usr/local/lib
