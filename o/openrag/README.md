@@ -104,7 +104,7 @@ openrag
 
 Note: the direct wheel install skips container image pulls and `.env` setup.
 You still need to configure `~/.openrag/tui/.env` and start the stack manually
-via the TUI. See the tarball `README.md` for the full end-to-end flow.
+via the TUI.
 
 ## Exit codes
 
