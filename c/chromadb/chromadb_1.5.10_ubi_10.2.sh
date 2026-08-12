@@ -17,6 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # -----------------------------------------------------------------------------
+
 set -e
 
 PACKAGE_DIR=chroma

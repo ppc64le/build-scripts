@@ -10,6 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "required_versions": {"Releases": ["*"],"Tags": ["latest"]},
   "1.0.20": {
     "build_script": "chromadb_1.0.20_ubi_9.6.sh"  
   },
