@@ -405,31 +405,66 @@ else:
 PY
 }
 
-patch_setup_py_runai_extra() {
+patch_runai_dependencies() {
     cd "$VLLM_SRC_DIR"
 
-    local setup_file="setup.py"
-    [[ -f "$setup_file" ]] || die "Missing setup.py: $VLLM_SRC_DIR/setup.py"
-
-    echo "Patching setup.py runai extra dependency..."
+    echo "Patching all occurrences of runai-model-streamer[s3,gcs,azure] -> [s3]..."
 
     python - <<'PY'
 from pathlib import Path
 
-p = Path("setup.py")
-text = p.read_text()
+files_to_patch = [
+    "setup.py",
+    "requirements/rocm.txt",
+    "requirements/test/rocm.in",
+    "requirements/test/nightly-torch.txt",
+    "requirements/test/cuda.in",
+]
 
-old = '"runai": ["runai-model-streamer[s3,gcs,azure] >= 0.15.7"],'
-new = '"runai": ["runai-model-streamer[s3] >= 0.15.7"],'
+old_pattern_extras = '"runai": ["runai-model-streamer[s3,gcs,azure] >= 0.15.7"],'
+new_pattern_extras = '"runai": ["runai-model-streamer[s3] >= 0.15.7"],'
 
-if new in text:
-    print("setup.py runai extra already patched.")
-elif old in text:
-    text = text.replace(old, new, 1)
-    p.write_text(text)
-    print("setup.py runai extra patched successfully.")
-else:
-    raise SystemExit("Could not find expected runai extra dependency line in setup.py.")
+old_pattern_base = "runai-model-streamer[s3,gcs,azure]=="
+new_pattern_base = "runai-model-streamer[s3]=="
+
+patched_count = 0
+
+for file_path in files_to_patch:
+    p = Path(file_path)
+    if not p.exists():
+        print(f"  ⊘ {file_path} not found (skipping)")
+        continue
+    
+    text = p.read_text()
+    original_text = text
+    
+    # For setup.py, use the extras pattern
+    if file_path == "setup.py":
+        if old_pattern_extras in text:
+            text = text.replace(old_pattern_extras, new_pattern_extras, 1)
+            print(f"  ✓ {file_path}: patched extras declaration")
+            patched_count += 1
+        elif new_pattern_extras in text:
+            print(f"  ✓ {file_path}: already patched (extras)")
+        else:
+            raise SystemExit(f"Could not find expected pattern in {file_path}")
+    
+    # For requirements files, use the base pattern
+    else:
+        if old_pattern_base in text:
+            text = text.replace(old_pattern_base, new_pattern_base)
+            print(f"  ✓ {file_path}: patched base requirement")
+            patched_count += 1
+        elif new_pattern_base in text:
+            print(f"  ✓ {file_path}: already patched (base)")
+        else:
+            print(f"  ⊘ {file_path}: no runai-model-streamer found (skipping)")
+            continue
+    
+    if text != original_text:
+        p.write_text(text)
+
+print(f"\nPatched {patched_count} file(s) with runai-model-streamer updates.")
 PY
 }
 
@@ -437,7 +472,7 @@ apply_vllm_patches() {
     run_use_existing_torch_patch
     patch_rocm_build_requirements
     patch_setup_py_hip_flags
-    patch_setup_py_runai_extra
+    patch_runai_dependencies
 }
 
 install_triton_wheel() {
