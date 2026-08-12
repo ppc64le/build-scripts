@@ -34,14 +34,23 @@ echo "Upgrading Python tools..."
 python3 -m ensurepip --upgrade
 python3 -m pip install --upgrade setuptools wheel build uv
 
+# Detect the active Python version FIRST so it drives everything below
+CP=$(python3 -c "import sysconfig; print(sysconfig.get_config_var('py_version_nodot'))")
+PY_MAJOR_MINOR=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+
 git clone --recursive ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
-echo -e "\n[tool.uv]\nenvironments = [\"python_version == '3.12' or python_version == '3.13'\"]" >> pyproject.toml
-uv python pin 3.12
+
+# Allow the detected Python version in uv's environment filter
+echo -e "\n[tool.uv]\nenvironments = [\"python_version == '3.12' or python_version == '3.13' or python_version == '3.14'\"]" >> pyproject.toml
+
+# Pin uv to the same Python that is active on this system
+uv python pin ${PY_MAJOR_MINOR}
+
 sed -i "s/.version=.*/version='"$PACKAGE_VERSION"',/" third-party/faiss/faiss/python/setup.py
 export INDEX_URL_DEVPY="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple"
 sed -i '/^\[project\]/,/^$/ {s/version = "[^"]*"/version = "'"$PACKAGE_VERSION"'"/}' pyproject.toml
-CP=$(python3 -c "import sysconfig; print(sysconfig.get_config_var('py_version_nodot'))")
+
 uv build --wheel --config-setting wheel.py-api=cp$CP --extra-index-url $INDEX_URL_DEVPY
 
 if ! (python3 -m pip install dist/faiss_cpu-$PACKAGE_VERSION-cp$CP-abi3-linux_ppc64le.whl ); then
