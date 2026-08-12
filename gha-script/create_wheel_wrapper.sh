@@ -197,7 +197,7 @@ if [ -n "$TEMP_BUILD_SCRIPT_PATH" ]; then
     package_url=$(grep -oP '(?<=^PACKAGE_URL=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
     package_name=$(basename "$package_url" .git)
 
-    source "$TEMP_BUILD_SCRIPT_PATH" "$EXTRA_ARGS"
+    source "$TEMP_BUILD_SCRIPT_PATH" "$EXTRA_ARGS" "$PYTHON_VERSION"
 fi
 
 # checking if wheel is generated through script itself
