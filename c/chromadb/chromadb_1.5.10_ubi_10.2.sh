@@ -98,8 +98,12 @@ else
 fi
 
 git submodule update --init --recursive
-# Apply patch
-sed -i 's/^dynamic = \["version"\]/version = "'"$PACKAGE_VERSION"'"/' pyproject.toml
+# Apply patches
+# Only pin the version when a real semver was given; for "latest" leave
+# dynamic = ["version"] intact so setuptools_scm derives it from git.
+if [[ "$PACKAGE_VERSION" != "latest" ]]; then
+    sed -i 's/^dynamic = \["version"\]/version = "'"$PACKAGE_VERSION"'"/' pyproject.toml
+fi
 sed -i 's/, features = \["abi3-py39"\]/ /' Cargo.toml
 
 # Install the chromadb requirements.
