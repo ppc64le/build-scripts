@@ -12,9 +12,9 @@
     "wheel_build": true,
 
     "1.9.0.post1": {
-        "build_script": "chromadb_1.5.9_ubi_9.6.sh"
+        "build_script": "faiss-cpu_1.9.0.post1_ubi_10.2.sh"
      }, 
     "*": {
-        "build_script": "faiss-cpu_1.9.0.post1_ubi_9.6.sh"
+        "build_script": "faiss-cpu_1.9.0.post1_ubi_10.2.sh"
      }
 }
