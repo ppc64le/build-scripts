@@ -45,7 +45,8 @@ ldconfig
 # Python packages must appear first (wrapper script requirement).
 yum install -y python3.12 python3.12-devel python3.12-pip \
     gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ \
-    cmake autoconf unzip make git openblas-devel wget
+    cmake autoconf unzip make git openblas-devel wget \
+    sqlite sqlite-devel
 
 # Configure GCC Toolset 15
 if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
@@ -124,24 +125,12 @@ echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Suc
 
 cd "$CURRENT_DIR"
 
-# Build and install pysqlite3 with a modern SQLite amalgamation so that
-# chromadb's >= 3.35.0 sqlite version requirement is satisfied.
-SQLITE_YEAR=2025
-SQLITE_VER=3500400   # 3.50.4
-rm -rf sqlite_amalgamation sqlite_amalgamation.zip
-curl -L "https://www.sqlite.org/${SQLITE_YEAR}/sqlite-amalgamation-${SQLITE_VER}.zip" \
-    -o sqlite_amalgamation.zip
-unzip -o sqlite_amalgamation.zip
-SQLITE_SRC_DIR=$(unzip -Z1 sqlite_amalgamation.zip | head -1 | cut -d/ -f1)
-
+# Build and install pysqlite3 against the UBI 10 system sqlite (v3.46.1),
+# which already satisfies chromadb's >= 3.35.0 requirement.
+# Using the system sqlite avoids the version mismatch issues seen on UBI 9.
 rm -rf pysqlite3
 git clone https://github.com/coleifer/pysqlite3.git
-mkdir -p pysqlite3/src
-cp ${SQLITE_SRC_DIR}/sqlite3.[ch] pysqlite3/src/
 cd pysqlite3
-# Remove setup.cfg — its [build_ext] section adds -lsqlite3 (dynamic link
-# against old system sqlite) instead of bundling sqlite3.c directly.
-rm -f setup.cfg
 python3.12 -m pip install --no-build-isolation .
 
 cd "$CURRENT_DIR"
