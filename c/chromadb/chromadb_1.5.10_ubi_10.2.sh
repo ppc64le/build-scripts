@@ -100,27 +100,22 @@ else
 fi
 
 git submodule update --init --recursive
-# Apply patches
-# Pin the wheel version across all three sources that must agree:
-#   pyproject.toml  — swap dynamic=["version"] for a static field; remove [tool.setuptools_scm]
-#                     so maturin cannot delegate version resolution to it (its tag_regex only
-#                     matches bare '1.2.3' but the git tag is 'v1.5.10', falling back to 0.1.0).
-#   Cargo.toml      — maturin reads the wheel version from rust/python_bindings/Cargo.toml
-#                     (manifest-path in [tool.maturin]); it is hardcoded 0.1.0.
-#   __init__.py     — carries a separate hardcoded __version__ string.
+# Four files all hardcode the version and must be patched together.
+# Cargo.lock caches the resolved Cargo version — without patching it the wheel
+# is still named 0.1.0 even after Cargo.toml is updated.
 if [[ "$PACKAGE_VERSION" != "latest" ]]; then
     sed -i 's/^dynamic = \["version"\]/version = "'"$PACKAGE_VERSION"'"/' pyproject.toml
     python3.12 - <<'PYEOF'
 import re, pathlib
 p = pathlib.Path("pyproject.toml")
 src = p.read_text()
-# Use .*?(?=^\[) so the match consumes the full section body even when it
-# contains '[' characters (e.g. inside tag_regex / git_describe_command values).
 src = re.sub(r'\[tool\.setuptools_scm\].*?(?=^\[)', '', src, flags=re.DOTALL | re.MULTILINE)
 p.write_text(src)
 PYEOF
     sed -i 's/^version = "0\.1\.0"/version = "'"$PACKAGE_VERSION"'"/' \
         rust/python_bindings/Cargo.toml
+    sed -i '/^name = "chromadb_rust_bindings"/{n; s/^version = "0\.1\.0"/version = "'"$PACKAGE_VERSION"'"/}' \
+        Cargo.lock
     sed -i 's/^__version__ = ".*"/__version__ = "'"$PACKAGE_VERSION"'"/' \
         chromadb/__init__.py
 fi
