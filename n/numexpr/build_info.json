@@ -1,5 +1,5 @@
 {
-  "maintainer": "Varsha Kumar",
+  "maintainer": "shivansh-ibm",
   "package_name": "numexpr",
   "github_url": "https://github.com/pydata/numexpr.git",
   "version": "v2.14.1",
@@ -19,6 +19,12 @@
   "v2.8.7": {
      "build_script": "numexpr_2.8.7_ubi_9.3.sh"
    },
+  "v2.10.2": {
+     "build_script": [
+        "numexpr_2.10.2_ubi_9.3.sh",
+        "numexpr_2.10.2_ubi_10.1.sh"
+     ]
+  },
   "*": {
      "build_script": "numexpr_2.10.2_ubi_9.3.sh"
   }
