@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 set -eo pipefail
 # --------------------------------------------------------------------------------
 # Package        : next.js
@@ -135,7 +135,7 @@ if [ -z "$RSPACK_BINARY" ]; then
     echo "ERROR: rspack binary not found"
     exit 1
 fi
-echo "✓ rspack binary found: $RSPACK_BINARY"
+echo "rspack binary found: $RSPACK_BINARY"
 
 # Build Turborepo 
 echo "=========================================="
@@ -163,7 +163,7 @@ if [ ! -f "target/release/turbo" ]; then
     echo "ERROR: Turborepo binary not found at target/release/turbo"
     exit 1
 fi
-echo "✓ Turborepo built successfully"
+echo "Turborepo built successfully"
 ./target/release/turbo --version
 
 # Clone and setup Next.js
@@ -211,7 +211,7 @@ echo "Turbo version: $(node_modules/.bin/turbo --version)"
 
 # Build Next.js SWC bindings
 pnpm swc-build-native || {
-    echo "First pass failed — patching wasmer traphandlers.rs and retrying..."
+    echo "First pass failed - patching wasmer traphandlers.rs and retrying..."
     TRAP_FILE=$(find ~/.cargo/git/checkouts -name traphandlers.rs 2>/dev/null | head -1)
     if [ -n "$TRAP_FILE" ]; then
         echo "Patching $TRAP_FILE"
@@ -221,7 +221,7 @@ pnpm swc-build-native || {
         sed -i \
             's/gpr\[31\] = r31/gpr[12] = r12/' \
             "$TRAP_FILE"
-        echo "Wasmer patched — retrying build..."
+        echo "Wasmer patched - retrying build..."
         pnpm swc-build-native
     else
         echo "ERROR: traphandlers.rs not found in ~/.cargo/git/checkouts"
@@ -263,7 +263,7 @@ if [ -n "$JEST_RUN" ]; then
         "$JEST_RUN"
     echo "  jest-circus run.js patched: $JEST_RUN"
 else
-    echo "  WARNING: jest-circus run.js not found — skipping patch"
+    echo "  WARNING: jest-circus run.js not found - skipping patch"
 fi
 
 echo "---------------------integration Tests --------------------"

@@ -1,4 +1,4 @@
-﻿diff --git a/Cargo.toml b/Cargo.toml
+diff --git a/Cargo.toml b/Cargo.toml
 index 8dc34de238..f78ccc8b8a 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
