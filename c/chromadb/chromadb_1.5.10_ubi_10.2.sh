@@ -101,10 +101,13 @@ fi
 
 git submodule update --init --recursive
 # Apply patches
-# Only pin the version when a real semver was given; for "latest" leave
-# dynamic = ["version"] intact so setuptools_scm derives it from git.
+# Pin the wheel version. maturin (the build-backend) reads the version from the
+# Cargo manifest, not pyproject.toml; __init__.py also carries a hardcoded string.
 if [[ "$PACKAGE_VERSION" != "latest" ]]; then
-    sed -i 's/^dynamic = \["version"\]/version = "'"$PACKAGE_VERSION"'"/' pyproject.toml
+    sed -i 's/^version = "0\.1\.0"/version = "'"$PACKAGE_VERSION"'"/' \
+        rust/python_bindings/Cargo.toml
+    sed -i 's/^__version__ = ".*"/__version__ = "'"$PACKAGE_VERSION"'"/' \
+        chromadb/__init__.py
 fi
 sed -i 's/, features = \["abi3-py39"\]/ /' Cargo.toml
 
