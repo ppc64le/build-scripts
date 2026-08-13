@@ -29,10 +29,25 @@ RUN git clone ${PACKAGE_URL}.git && \
     git submodule update --init --recursive
 
 WORKDIR /src/${PACKAGE_NAME}
+
+# Bump the go directive so the dynamic GO_VERSION lookup below pulls a
+# CVE-fixed toolchain instead of whatever ${PACKAGE_VERSION} ships with.
+RUN sed -i 's/^go 1\.26\.0$/go 1.26.5/' go.mod
+
 RUN GO_VERSION=$(awk '/^go/ { print $2 }' go.mod) && \
     wget -q https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
     tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz && \
     rm go${GO_VERSION}.linux-ppc64le.tar.gz
+
+# CVE remediation: pull in patched versions of these deps beyond what
+# go.mod pins, then re-resolve go.sum.
+RUN go get golang.org/x/crypto@v0.52.0 && \
+    go get golang.org/x/net@v0.55.0 && \
+    go get golang.org/x/image@v0.43.0 && \
+    go get golang.org/x/text@v0.39.0 && \
+    go get github.com/buger/jsonparser@v1.1.2 && \
+    go get toolchain@go1.26.5 && \
+    go mod tidy
 
 RUN go mod download
 
