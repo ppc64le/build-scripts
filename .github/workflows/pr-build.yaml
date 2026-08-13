@@ -179,6 +179,10 @@ jobs:
 
           PACKAGE_NAME=$(jq -r '.package_name // ""' $BUILD_INFO_FILE)
           VERSION=$(jq -r '.version // ""' $BUILD_INFO_FILE)
+          # Preserve the raw .version field from build_info.json as the real package
+          # version (e.g. "v2.11.0"). VERSION may be overwritten below by the matched
+          # version block key (e.g. "v2.10.*"), which is only a pattern for resolution.
+          PACKAGE_VERSION="$VERSION"
 
           # Pick the version block whose build_script list has the MOST overlap
           # with the changed .sh files. This correctly handles the case where a
@@ -219,9 +223,25 @@ jobs:
             fi
           fi
 
+          # Validate that the resolved version block key matches the 'version' field
+          # value exactly. A mismatch (e.g. key "1.5.4" vs field "v1.5.4") means
+          # currency-build, which uses the 'version' field as user input, will fail
+          # to find the block and fall back to "*", silently skipping UBI variants.
+          # Skip this check when:
+          #   - VERSION equals PACKAGE_VERSION (no override happened, or they already match)
+          #   - VERSION contains "*" (wildcard/glob key - intentionally different from field)
+          if [ "$VERSION" != "$PACKAGE_VERSION" ] && [[ "$VERSION" != *"*"* ]]; then
+            echo "ERROR: version block key '$VERSION' does not match the 'version' field value '$PACKAGE_VERSION' in build_info.json."
+            echo "       Currency-build receives VERSION='$PACKAGE_VERSION' as user input and would"
+            echo "       fail to find key '$VERSION', falling back to '*' and skipping UBI variants."
+            echo "       Fix: rename the version block key from '$VERSION' to '$PACKAGE_VERSION'."
+            exit 1
+          fi
+
           echo "BUILD_INFO_FILE=$BUILD_INFO_FILE" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
           echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
           echo "$CHANGED_FILES" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -237,43 +257,74 @@ jobs:
         run: |
           source variable.sh
 
-          # Safety net: for every changed .sh file, if its UBI major slot is still
-          # empty (read_buildinfo.sh loaded the wrong or incomplete version block),
-          # read the script's own "# Tested on" header and fill the slot directly.
-          # This guarantees every changed script in the PR is tested regardless of
-          # how build_info.json version blocks are structured or overlap.
+          # Validation: for every changed .sh file enforce two hard rules:
+          #   1. The script MUST have a '# Tested on' header  -  it is mandatory.
+          #   2. The UBI slot for that script MUST already be populated by
+          #      read_buildinfo.sh via the version block in build_info.json.
+          #      An empty slot means the version block key does not match VERSION
+          #      (e.g. "1.5.4" vs "v1.5.4") and Currency-build would silently skip it.
+          # Both conditions cause a hard stop  -  the PR must not be merged until fixed.
           # If no .sh files changed (build_info.json only), this loop does nothing.
+          validation_failed=false
           while read -r changed_script; do
             [[ "$changed_script" != *.sh ]] && continue
             [ ! -f "$changed_script" ] && continue
+            script_name=$(basename "$changed_script")
             raw_tested_on=$(grep "^# Tested on" "$changed_script" | head -1 \
               | cut -d ':' -f2- \
               | sed 's/^[[:space:]]*//' \
               | tr '[:lower:]' '[:upper:]' \
               | sed 's/[[:space:]]*:[[:space:]]*/:/g; s/UBI[[:space:]]*/UBI/g')
-            [ -z "$raw_tested_on" ] && continue
-            major=$(echo "$raw_tested_on" | sed 's/.*UBI\([0-9][0-9]*\).*/\1/')
-            case "$major" in ''|*[!0-9]*) continue ;; esac
-            script_name=$(basename "$changed_script")
-            entry=$(jq -n --arg s "$script_name" --arg t "$raw_tested_on" '{"script":$s,"tested_on":$t}')
+
+            # Rule 1: '# Tested on' is mandatory in every build script.
+            if [ -z "$raw_tested_on" ]; then
+              echo "ERROR: '$script_name' is missing the mandatory '# Tested on' header."
+              echo "       Every build script must declare the UBI version it targets, e.g.:"
+              echo "       # Tested on     : UBI:10.2"
+              validation_failed=true
+              continue
+            fi
+
+            major=$(echo "$raw_tested_on" | sed 's/.*UBI[: ]*\([0-9][0-9]*\).*/\1/')
+            case "$major" in ''|*[!0-9]*)
+              echo "ERROR: '$script_name' has an unrecognised '# Tested on' value: '$raw_tested_on'."
+              echo "       Expected format: UBI:<major>.<minor>  e.g. UBI:10.2"
+              validation_failed=true
+              continue
+            esac
+
+            # Rule 2: the UBI slot must already be filled by read_buildinfo.sh.
             case "$major" in
               8)
                 if [ -z "$SCRIPT_UBI8" ]; then
-                  echo "Filling SCRIPT_UBI8 from changed script: $script_name"
-                  SCRIPT_UBI8="$entry"
+                  echo "ERROR: '$script_name' targets UBI8 (# Tested on: $raw_tested_on) but SCRIPT_UBI8 is empty."
+                  echo "       The version block key in build_info.json does not match VERSION='$VERSION'."
+                  echo "       Fix the version block key so it exactly matches the 'version' field value."
+                  validation_failed=true
                 fi ;;
               9)
                 if [ -z "$SCRIPT_UBI9" ]; then
-                  echo "Filling SCRIPT_UBI9 from changed script: $script_name"
-                  SCRIPT_UBI9="$entry"
+                  echo "ERROR: '$script_name' targets UBI9 (# Tested on: $raw_tested_on) but SCRIPT_UBI9 is empty."
+                  echo "       The version block key in build_info.json does not match VERSION='$VERSION'."
+                  echo "       Fix the version block key so it exactly matches the 'version' field value."
+                  validation_failed=true
                 fi ;;
               10)
                 if [ -z "$SCRIPT_UBI10" ]; then
-                  echo "Filling SCRIPT_UBI10 from changed script: $script_name"
-                  SCRIPT_UBI10="$entry"
+                  echo "ERROR: '$script_name' targets UBI10 (# Tested on: $raw_tested_on) but SCRIPT_UBI10 is empty."
+                  echo "       The version block key in build_info.json does not match VERSION='$VERSION'."
+                  echo "       Fix the version block key so it exactly matches the 'version' field value."
+                  validation_failed=true
                 fi ;;
             esac
           done <<< "$CHANGED_FILES"
+
+          if [ "$validation_failed" = "true" ]; then
+            echo ""
+            echo "PR blocked: fix the errors above in build_info.json or the build script(s) before merging."
+            echo "Currency-build has no safety net and would silently produce an incomplete build."
+            exit 1
+          fi
 
           echo "SCRIPT_UBI8=$SCRIPT_UBI8"
           echo "SCRIPT_UBI9=$SCRIPT_UBI9"
@@ -380,7 +431,7 @@ jobs:
           # CHANGED_FILES is written via a separate heredoc so its newlines are preserved.
           {
             echo "export PACKAGE_NAME=$PACKAGE_NAME"
-            echo "export VERSION=$VERSION"
+            echo "export VERSION=$PACKAGE_VERSION"
             echo "export PACKAGE_DIR=$PACKAGE_DIR"
             echo "export WHEEL_BUILD=$WHEEL_BUILD"
             echo "export BUILD_DOCKER=$DOCKER_BUILD"
@@ -532,11 +583,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          # Override VERSION with the actual package version from the script header.
-          # VERSION in variable.sh/scanner-env.sh is the build_info.json version block
-          # key (e.g. "v2.10.*"), which is a match pattern, not a real git tag.
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -580,8 +626,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -627,8 +671,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -672,8 +714,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -717,8 +757,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -763,8 +801,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -809,8 +845,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -856,8 +890,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -902,8 +934,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
@@ -948,8 +978,6 @@ jobs:
           if [ "$WHEEL_BUILD" != "true" ]; then echo "Skipping  -  WHEEL_BUILD=false"; exit 0; fi
           BUILD_SCRIPT_CHANGED=$(echo "$CHANGED_FILES" | grep -E "^$PACKAGE_DIR/.*\.sh$" || true)
           [ -z "$BUILD_SCRIPT_CHANGED" ] && echo "Skipping  -  no .sh changes" && exit 0
-          SCRIPT_VERSION=$(grep "^# Version" "$PKG_DIR_PATH$THIS_SCRIPT" | head -1 | cut -d':' -f2- | xargs)
-          [ -n "$SCRIPT_VERSION" ] && export VERSION="$SCRIPT_VERSION"
           sudo chown -R $USER:$USER .
           export ENABLE_CVE_SCAN=false
           chmod +x ./gha-script/build_wheels.sh; bash ./gha-script/build_wheels.sh
