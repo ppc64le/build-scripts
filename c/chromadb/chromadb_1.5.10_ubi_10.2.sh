@@ -100,9 +100,8 @@ else
 fi
 
 git submodule update --init --recursive
-# Four files all hardcode the version and must be patched together.
-# Cargo.lock caches the resolved Cargo version — without patching it the wheel
-# is still named 0.1.0 even after Cargo.toml is updated.
+# Patch version sources. Cargo.lock is patched AFTER cargo update (below) because
+# cargo update rewrites the entire lock file, undoing any earlier Cargo.lock patch.
 if [[ "$PACKAGE_VERSION" != "latest" ]]; then
     sed -i 's/^dynamic = \["version"\]/version = "'"$PACKAGE_VERSION"'"/' pyproject.toml
     python3.12 - <<'PYEOF'
@@ -114,8 +113,6 @@ p.write_text(src)
 PYEOF
     sed -i 's/^version = "0\.1\.0"/version = "'"$PACKAGE_VERSION"'"/' \
         rust/python_bindings/Cargo.toml
-    sed -i '/^name = "chromadb_rust_bindings"/{n; s/^version = "0\.1\.0"/version = "'"$PACKAGE_VERSION"'"/}' \
-        Cargo.lock
     sed -i 's/^__version__ = ".*"/__version__ = "'"$PACKAGE_VERSION"'"/' \
         chromadb/__init__.py
 fi
@@ -124,7 +121,14 @@ sed -i 's/, features = \["abi3-py39"\]/ /' Cargo.toml
 # Install the chromadb requirements.
 python3.12 -m pip install -r requirements.txt --prefer-binary --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux
 
+# cargo update rewrites the full Cargo.lock — patch Cargo.lock after it so the
+# chromadb_rust_bindings version entry is not reset to 0.1.0.
 cargo update generator
+if [[ "$PACKAGE_VERSION" != "latest" ]]; then
+    sed -i '/^name = "chromadb_rust_bindings"/{n; s/^version = "0\.1\.0"/version = "'"$PACKAGE_VERSION"'"/}' \
+        Cargo.lock
+fi
+
 # Build chromadb wheel and install it
 if ! python3.12 -m build --wheel --no-isolation --outdir "$CURRENT_DIR/"; then
         echo "------------------$PACKAGE_NAME:build_install_fails---------------------"
