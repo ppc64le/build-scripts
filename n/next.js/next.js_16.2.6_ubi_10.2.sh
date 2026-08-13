@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 set -eo pipefail
 # --------------------------------------------------------------------------------
 # Package        : next.js
@@ -137,7 +137,7 @@ if [ -z "$RSPACK_BINARY" ]; then
 fi
 echo "✓ rspack binary found: $RSPACK_BINARY"
 
-# Build Turborepo (separate repository)
+# Build Turborepo 
 echo "=========================================="
 echo "Building Turborepo..."
 echo "=========================================="
@@ -266,7 +266,7 @@ else
     echo "  WARNING: jest-circus run.js not found — skipping patch"
 fi
 
-echo "---------------------integration Tests ---------------------"
+echo "---------------------integration Tests --------------------"
 pnpm test-start test/e2e/app-dir/app/ \
     --testPathIgnorePatterns="standalone\.test\.ts" \
     --testPathIgnorePatterns="standalone-gsp\.test\.ts"
