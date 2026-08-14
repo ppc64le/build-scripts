@@ -2,67 +2,38 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : chromadb
-# Version       : 1.5.10
+# Version       : latest
 # Source repo   : https://github.com/chroma-core/chroma
 # Tested on     : UBI:10.2
 # Language      : Python
 # Ci-Check      : True
-# Script License: Apache License, Version 2 or later
+# Script License: Apache 2.0 license
 # Maintainer    : Varsha Kumar <varsha.kumar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
+# ========== platform using the mentioned version of the package.
+# It may not work as expected with newer versions of the
+# package and/or distribution. In such case, please
+# contact "Maintainer" of this script.
 #
-# -----------------------------------------------------------------------------
-
+# ----------------------------------------------------------------------------
 set -e
-
 PACKAGE_DIR=chroma
 PACKAGE_NAME=chromadb
-PACKAGE_VERSION=${1:-1.5.10}
+PACKAGE_VERSION=${1:-latest}
 PACKAGE_URL=https://github.com/chroma-core/chroma.git
-CURRENT_DIR=$(pwd)
+WORKDIR=$(pwd)
+SCRIPT_PATH=$(dirname $(realpath $0))
 
 PROTOC_VERSION=31.1
 
-# -----------------------------------------------------------------------
-# Restore libsqlite3.so.0 FIRST — before any yum calls.
-# yum/rpm depend on libsqlite3.so.0 via libdnf. On UBI 10 the versioned
-# library may be present but the libsqlite3.so.0 symlink missing or broken.
-# -----------------------------------------------------------------------
-for LIBDIR in /lib64 /usr/lib64; do
-    VERSIONED=$(ls ${LIBDIR}/libsqlite3.so.0.* 2>/dev/null | head -1)
-    if [ -n "$VERSIONED" ]; then
-        ln -sf "$VERSIONED" ${LIBDIR}/libsqlite3.so.0
-        ln -sf "$VERSIONED" ${LIBDIR}/libsqlite3.so
-    fi
-done
-ldconfig
+dnf update -y
 
 # Install dependencies.
-# Python packages must appear first (wrapper script requirement).
-yum install -y python3.12 python3.12-devel python3.12-pip \
-    gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ \
-    cmake autoconf unzip make git openblas-devel wget \
-    sqlite sqlite-devel
-
-# Configure GCC Toolset 15
-if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
-    source /opt/rh/gcc-toolset-15/enable
-elif [[ -d /opt/rh/gcc-toolset-15/root/usr/bin ]]; then
-    export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
-    export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:$LD_LIBRARY_PATH"
-else
-    echo "ERROR: gcc-toolset-15 not found"
-    exit 1
-fi
-
-echo "Using gcc: $(gcc --version | head -1)"
-
+dnf -y install gcc g++ cmake autoconf unzip make git python3.12 python3.12-pip python3.12-devel
 curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
+dnf clean metadata
+
 export PATH="/root/.cargo/bin:$PATH"
 
 PROTOC_ZIP=protoc-${PROTOC_VERSION}-linux-ppcle_64.zip
@@ -73,91 +44,57 @@ rm -f $PROTOC_ZIP
 chmod +x /usr/local/bin/protoc && \
 protoc --version  # Verify installed version
 
-# Install Python build tools
-pip install --upgrade pip setuptools wheel build
-pip install --upgrade maturin cffi patchelf "setuptools_scm[toml]>=6.2"
+python3.12 -m pip install --upgrade maturin cffi patchelf setuptools wheel build
 
-# Required for Python 3.14+: PyO3 0.24.x only supports up to 3.13.
-# This env var instructs PyO3 to build using the stable ABI anyway.
-export PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
-
-cd "$CURRENT_DIR"
+cd $WORKDIR
 
 # Clone the chroma source
 git clone --recursive ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
-
-# Checkout version — try v-prefixed tag, bare tag, branch, then fall back to main
-if [[ "${PACKAGE_VERSION}" == "latest" ]]; then
-    git checkout main
-elif git rev-parse "v${PACKAGE_VERSION}" &>/dev/null; then
-    git checkout "v${PACKAGE_VERSION}"
-elif git rev-parse "${PACKAGE_VERSION}" &>/dev/null; then
-    git checkout "${PACKAGE_VERSION}"
-else
-    echo "WARNING: No tag found for '${PACKAGE_VERSION}', falling back to latest"
-    git checkout latest
-fi
-
+git checkout ${PACKAGE_VERSION}
 git submodule update --init --recursive
-# Apply patches
-# Only pin the version when a real semver was given; for "latest" leave
-# setuptools_scm to derive it from git.
-if [[ "$PACKAGE_VERSION" != "latest" ]]; then
-    # 1. Replace dynamic = ["version"] with a static version field.
-    #    The sed works correctly — version = "1.5.10" is injected at line 3.
-    sed -i 's/^dynamic = \["version"\]/version = "'"$PACKAGE_VERSION"'"/' pyproject.toml
-
-    # 2. Remove the [tool.setuptools_scm] section entirely.
-    #    Even with a static version present, setuptools_scm overrides it when
-    #    its own config section exists. Its tag_regex '^[0-9]+\.[0-9]+\.[0-9]+$'
-    #    does not match the v-prefixed git tag (v1.5.10), so it falls back to 0.1.0.
-#     python3.12 - <<'PYEOF'
-# import re, pathlib
-# p = pathlib.Path("pyproject.toml")
-# src = p.read_text()
-# # Remove [tool.setuptools_scm] and everything under it until the next [section]
-# src = re.sub(r'\[tool\.setuptools_scm\][^\[]*', '', src, flags=re.DOTALL)
-# p.write_text(src)
-# print("pyproject.toml patched: [tool.setuptools_scm] section removed")
-# PYEOF
-fi
+# Apply patch
+sed -i 's/^dynamic = \["version"\]/version = "'"1.5.10"'"/' pyproject.toml
 sed -i 's/, features = \["abi3-py39"\]/ /' Cargo.toml
 
 # Install the chromadb requirements.
 python3.12 -m pip install -r requirements.txt --prefer-binary --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux
 
 cargo update generator
-# Build chromadb wheel and install it
-if ! python3.12 -m build --wheel --no-isolation --outdir "$CURRENT_DIR/"; then
+# Build and install chromadb
+if ! python3.12 -m pip install .; then
         echo "------------------$PACKAGE_NAME:build_install_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
         exit 1
+else
+        echo "------------------$PACKAGE_NAME:build_install_success-------------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
 fi
-pip install "$CURRENT_DIR"/chromadb-*.whl
-echo "------------------$PACKAGE_NAME:build_install_success-------------------------"
-echo "$PACKAGE_VERSION $PACKAGE_NAME"
-echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
 
-cd "$CURRENT_DIR"
+cd $WORKDIR
 
-# Build and install pysqlite3 against the UBI 10 system sqlite (v3.46.1),
-# which already satisfies chromadb's >= 3.35.0 requirement.
-# Using the system sqlite avoids the version mismatch issues seen on UBI 9.
-rm -rf pysqlite3
+# Test wheel after installation
+
+# Install OpenBLAS library and sqlite3 library files
+dnf install openblas-devel wget -y
+
+# Build and install the required sqlite3 library
+wget https://www.sqlite.org/src/tarball/sqlite.tar.gz?r=release -O sqlite.tar.gz
+tar xzf sqlite.tar.gz
+cd sqlite/
+./configure
+make sqlite3.c
+cd ..
 git clone https://github.com/coleifer/pysqlite3.git
+cp sqlite/sqlite3.[ch] pysqlite3/
 cd pysqlite3
-python3.12 -m pip install --no-build-isolation .
+python3.12 setup.py build
+rm -f /usr/lib64/libsqlite3.so.0
+ln -s $WORKDIR/pysqlite3/build/lib.linux-ppc64le-cpython-312/pysqlite3/_sqlite3.cpython-312-powerpc64le-linux-gnu.so /usr/lib64/libsqlite3.so.0
 
-cd "$CURRENT_DIR"
-
-python3.12 -c "
-import sys, pysqlite3
-sys.modules['sqlite3'] = pysqlite3
-sys.modules['_sqlite3'] = pysqlite3
-import chromadb; print(chromadb.__version__)
-"
+python3.12 -c "import chromadb; print(chromadb.__version__)"
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Test_Success---------------------"
      echo "$PACKAGE_VERSION $PACKAGE_NAME"
