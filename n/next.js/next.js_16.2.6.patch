@@ -2,7 +2,7 @@ diff --git a/Cargo.toml b/Cargo.toml
 index 8dc34de238..f78ccc8b8a 100644
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -509,3 +509,16 @@ virtue = { git = "https://github.com/bgw/virtue.git", branch = "bgw/fix-generic-
+@@ -509,3 +509,21 @@ virtue = { git = "https://github.com/bgw/virtue.git", branch = "bgw/fix-generic-
  mdxjs = { git = "https://github.com/vercel-labs/mdxjs-rs-turbopack.git", branch = "turbopack" }
  # Doesn't compile on recent nightly versions because of https://github.com/Michael-F-Bryan/include_dir/pull/117
  include_dir = { git = "https://github.com/vercel-labs/include_dir", branch = "turbopack" }
@@ -19,6 +19,11 @@ index 8dc34de238..f78ccc8b8a 100644
 +wasmer-wasix = { git = "https://github.com/xingxue-ibm/wasmer", branch = "powerpc64-port" }
 +
 +wasmer-wasix-types = { git = "https://github.com/xingxue-ibm/wasmer", branch = "powerpc64-port" }
++
++# Pin corosensei to the exact version that adds ppc64le support.
++# Without this, `cargo update` may pull a newer version that breaks the build.
++# See https://github.com/Amanieu/corosensei/releases/tag/v0.3.4
++corosensei = { git = "https://github.com/Amanieu/corosensei", tag = "v0.3.4" }
 
 diff --git a/apps/bundle-analyzer/package.json b/apps/bundle-analyzer/package.json
 index df05aea404..d630f9de6a 100644
