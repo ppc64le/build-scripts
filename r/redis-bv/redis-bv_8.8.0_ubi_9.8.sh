@@ -4,7 +4,7 @@
 # Package       : redis
 # Version       : 8.8.0
 # Source repo   : https://github.com/redis/redis.git
-# Tested on     : UBI:9.8
+# Tested on     : UBI 9.8
 # Language      : c,c++,rust
 # Ci-Check      : True
 # Script License: Apache License Version 2.0
