@@ -275,9 +275,28 @@ fi
 
 echo "Auditwheel exclusion arguments: ${EXCLUDE_ARGS[*]}"
 
+# map UBI major version to auditwheel platform tag
+case "$UBI_MAJOR" in
+    8)
+        AUDITWHEEL_PLAT="manylinux_2_28_ppc64le"
+        ;;
+    9)
+        AUDITWHEEL_PLAT="manylinux_2_34_ppc64le"
+        ;;
+    10)
+        AUDITWHEEL_PLAT="manylinux_2_39_ppc64le"
+        ;;
+    *)
+        echo
+        echo "===> ERROR: Unsupported UBI major version for auditwheel platform mapping: $UBI_MAJOR"
+        echo
+        exit 1
+        ;;
+esac
+
 # run auditwheel
 set +e
-audit_output=$(auditwheel repair "$wheel_file" --wheel-dir "$WHEELHOUSE" "${EXCLUDE_ARGS[@]}" 2>&1)
+audit_output=$(auditwheel repair "$wheel_file" --plat "$AUDITWHEEL_PLAT" --wheel-dir "$WHEELHOUSE" "${EXCLUDE_ARGS[@]}" 2>&1)
 audit_status=$?
 set -e
 
