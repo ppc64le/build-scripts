@@ -102,9 +102,25 @@ fi
 git submodule update --init --recursive
 # Apply patches
 # Only pin the version when a real semver was given; for "latest" leave
-# dynamic = ["version"] intact so setuptools_scm derives it from git.
+# setuptools_scm to derive it from git.
 if [[ "$PACKAGE_VERSION" != "latest" ]]; then
+    # 1. Replace dynamic = ["version"] with a static version field.
+    #    The sed works correctly — version = "1.5.10" is injected at line 3.
     sed -i 's/^dynamic = \["version"\]/version = "'"$PACKAGE_VERSION"'"/' pyproject.toml
+
+    # 2. Remove the [tool.setuptools_scm] section entirely.
+    #    Even with a static version present, setuptools_scm overrides it when
+    #    its own config section exists. Its tag_regex '^[0-9]+\.[0-9]+\.[0-9]+$'
+    #    does not match the v-prefixed git tag (v1.5.10), so it falls back to 0.1.0.
+    python3.12 - <<'PYEOF'
+import re, pathlib
+p = pathlib.Path("pyproject.toml")
+src = p.read_text()
+# Remove [tool.setuptools_scm] and everything under it until the next [section]
+src = re.sub(r'\[tool\.setuptools_scm\][^\[]*', '', src, flags=re.DOTALL)
+p.write_text(src)
+print("pyproject.toml patched: [tool.setuptools_scm] section removed")
+PYEOF
 fi
 sed -i 's/, features = \["abi3-py39"\]/ /' Cargo.toml
 
