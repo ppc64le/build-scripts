@@ -1,44 +1,45 @@
 diff --git a/build.gradle b/build.gradle
-index e9efe3f1..d88032c4 100644
+index e9efe3f1..cc3ba917 100644
 --- a/build.gradle
 +++ b/build.gradle
-@@ -16,7 +16,7 @@ import groovy.json.JsonBuilder
- 
- buildscript {
-     ext {
--        opensearch_version = System.getProperty("opensearch.version", "3.3.0-SNAPSHOT")
-+        opensearch_version = System.getProperty("opensearch.version", "3.3.0")
-         isSnapshot = "true" == System.getProperty("build.snapshot", "true")
-         buildVersionQualifier = System.getProperty("build.version_qualifier", "")
- 
-@@ -24,7 +24,7 @@ buildscript {
-         version_tokens = opensearch_version.tokenize('-')
-         opensearch_build = version_tokens[0] + '.0'
- 
--        common_utils_version = System.getProperty("common_utils.version", '3.2.0.0-SNAPSHOT')
-+        common_utils_version = System.getProperty("common_utils.version", '3.2.0.0')
- 
-         kafka_version  = '4.0.0'
-         open_saml_version = '5.1.6'
-@@ -39,7 +39,7 @@ buildscript {
-             opensearch_build += "-${buildVersionQualifier}"
-         }
-         if (isSnapshot) {
--            opensearch_build += "-SNAPSHOT"
-+            opensearch_build += ""
-         }
+@@ -47,8 +47,7 @@ buildscript {
+         mavenLocal()
+         mavenCentral()
+         maven { url "https://plugins.gradle.org/m2/" }
+-        maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
+-        maven { url "https://artifacts.opensearch.org/snapshots/lucene/" }
++        maven { url "https://ci.opensearch.org/ci/dbc/snapshots/maven/" }
+         maven { url "https://build.shibboleth.net/nexus/content/groups/public" }
      }
  
-@@ -494,6 +494,8 @@ configurations {
+@@ -422,7 +421,7 @@ publishing {
+     repositories {
+         maven {
+             name = "Snapshots" //  optional target repository name
+-            url = "https://central.sonatype.com/repository/maven-snapshots/"
++            url = "https://ci.opensearch.org/ci/dbc/snapshots/maven/"
+             credentials {
+                 username System.getenv("SONATYPE_USERNAME")
+                 password System.getenv("SONATYPE_PASSWORD")
+@@ -494,6 +493,7 @@ configurations {
  
              // For org.opensearch.plugin:transport-grpc
              force "com.google.guava:failureaccess:1.0.3"
-+
 +            exclude group: "org.lz4", module: "lz4-java"
          }
      }
  
-@@ -711,7 +713,7 @@ dependencies {
+@@ -506,8 +506,7 @@ allprojects {
+         mavenLocal()
+         mavenCentral()
+         maven { url "https://plugins.gradle.org/m2/" }
+-        maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
+-        maven { url "https://artifacts.opensearch.org/snapshots/lucene/" }
++        maven { url "https://ci.opensearch.org/ci/dbc/snapshots/maven/" }
+         maven { url "https://build.shibboleth.net/nexus/content/repositories/releases" }
+         maven { url "build.shibboleth.net/maven/releases"}
+     }
+@@ -711,7 +710,7 @@ dependencies {
      runtimeOnly "org.glassfish.jaxb:jaxb-runtime:${jaxb_version}"
      runtimeOnly 'com.google.j2objc:j2objc-annotations:3.1'
      compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
@@ -47,29 +48,3 @@ index e9efe3f1..d88032c4 100644
      runtimeOnly 'org.slf4j:slf4j-api:1.7.36'
      runtimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:${versions.log4j}"
      runtimeOnly 'org.xerial.snappy:snappy-java:1.1.10.8'
-@@ -893,7 +895,7 @@ afterEvaluate {
-     ospackage {
-         packageName = "${name}"
-         release = isSnapshot ? "0.1" : '1'
--        version = "${project.version}" - "-SNAPSHOT"
-+        version = "${project.version}"
- 
-         into '/usr/share/opensearch/plugins'
-         from(zipTree(bundlePlugin.archivePath)) {
-@@ -955,7 +957,7 @@ task updateVersion {
-     doLast {
-         ext.newVersion = System.getProperty('newVersion')
-         println "Setting version to ${newVersion}."
--        // String tokenization to support -SNAPSHOT
-+        // String tokenization to support
-         ant.replaceregexp(match: opensearch_version.tokenize('-')[0], replace: newVersion.tokenize('-')[0], flags:'g', byline:true) {
-             fileset(dir: projectDir) {
-                 // Include the required files that needs to be updated with new Version
-@@ -963,6 +965,6 @@ task updateVersion {
-                 include(name: ".github/workflows/plugin_install.yml")
-             }
-         }
--        ant.replaceregexp(file:'build.gradle', match: '"opensearch.version", "\\d.*"', replace: '"opensearch.version", "' + newVersion.tokenize('-')[0] + '-SNAPSHOT"', flags:'g', byline:true)
-+        ant.replaceregexp(file:'build.gradle', match: '"opensearch.version", "\\d.*"', replace: '"opensearch.version", "' + newVersion.tokenize('-')[0], flags:'g', byline:true)
-     }
- }
