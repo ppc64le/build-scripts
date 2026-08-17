@@ -8,13 +8,9 @@ FROM registry.access.redhat.com/ubi9/ubi:9.8 AS setupbuilder
 ARG PACKAGE_VERSION=8.8.0
 ARG BITNAMI_COMMIT=731e897
 ARG GO_VERSION=1.26.5
-ENV REDIS_PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/r/redis-bv/redis-bv_${PACKAGE_VERSION}.patch
 
 # Install build dependencies and update system packages
 RUN yum update -y && yum install -y git wget tar gcc && yum clean all
-
-# Download the ppc64le patch for Redis 8.8.0
-RUN wget $REDIS_PATCH
 
 # Install secure Go version to fix stdlib CVEs (CVE-2025-68121, CVE-2025-58183, etc.)
 RUN wget -q https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
@@ -93,8 +89,8 @@ RUN which python3 && python3 --version && \
     which python3 && which python && \
     python3 --version && python --version
 
-# Copy patch downloaded in setupbuilder stage (avoids build-context dependency)
-COPY --from=setupbuilder /redis-bv_${PACKAGE_VERSION}.patch /build/
+# Patch is in the Dockerfile directory (build context) - copy it directly
+COPY redis-bv_8.8.0.patch /build/
 
 # Clone Redis 8.8.0 and apply ppc64le patch
 RUN cd /build && \
