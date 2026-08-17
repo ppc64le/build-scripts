@@ -1,17 +1,20 @@
 # syntax=docker/dockerfile:1
-
 # Copyright Broadcom, Inc. All Rights Reserved.
 # SPDX-License-Identifier: APACHE-2.0
 
 # Stage 1: Build utilities from source using secure Go version (resolves stdlib CVEs)
 FROM registry.access.redhat.com/ubi9/ubi:9.8 AS setupbuilder
 
-ARG REDIS_VERSION=8.8.0
+ARG PACKAGE_VERSION=8.8.0
 ARG BITNAMI_COMMIT=731e897
 ARG GO_VERSION=1.26.5
+ENV REDIS_PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/r/redis-bv/redis-bv_${PACKAGE_VERSION}.patch
 
 # Install build dependencies and update system packages
 RUN yum update -y && yum install -y git wget tar gcc && yum clean all
+
+# Download the ppc64le patch for Redis 8.8.0
+RUN wget $REDIS_PATCH
 
 # Install secure Go version to fix stdlib CVEs (CVE-2025-68121, CVE-2025-58183, etc.)
 RUN wget -q https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
@@ -39,10 +42,10 @@ RUN git clone https://github.com/bitnami/containers /build/containers && \
     git checkout ${BITNAMI_COMMIT}
 
 RUN cd /build/containers/bitnami/redis/8.8/debian-12 && \
-    wget https://downloads.bitnami.com/files/stacksmith/redis-${REDIS_VERSION}-0-linux-amd64-debian-12.tar.gz && \
-    tar -xvf redis-${REDIS_VERSION}-0-linux-amd64-debian-12.tar.gz && \
+    wget https://downloads.bitnami.com/files/stacksmith/redis-${PACKAGE_VERSION}-0-linux-amd64-debian-12.tar.gz && \
+    tar -xvf redis-${PACKAGE_VERSION}-0-linux-amd64-debian-12.tar.gz && \
     mkdir -p prebuildfs/opt/bitnami/redis/etc && \
-    cp redis-${REDIS_VERSION}-linux-amd64-debian-12/files/redis/etc/redis-default.conf \
+    cp redis-${PACKAGE_VERSION}-linux-amd64-debian-12/files/redis/etc/redis-default.conf \
        prebuildfs/opt/bitnami/redis/etc/
 
 # ----------------------------------------------------------------------------
@@ -51,52 +54,57 @@ RUN cd /build/containers/bitnami/redis/8.8/debian-12 && \
 FROM registry.access.redhat.com/ubi9/ubi:9.8 AS redisbuilder
 
 WORKDIR /build
+ARG PACKAGE_VERSION=8.8.0
 
 RUN yum update -y && \
     yum install -y \
-        git \
-        gcc \
-        gcc-c++ \
-        make \
-        autoconf \
-        automake \
-        libtool \
-        diffutils \
-        tcl \
-        procps-ng \
-        libstdc++-devel \
-        patch \
-        cmake \
-        python3 \
-        python3-devel \
-        openssl-devel \
-        rust \
-        cargo \
-        clang-devel \
-        util-linux \
-        llvm-devel \
-        lld && \
+    git \
+    gcc \
+    gcc-c++ \
+    make \
+    autoconf \
+    automake \
+    libtool \
+    diffutils \
+    tcl \
+    procps-ng \
+    libstdc++-devel \
+    patch \
+    cmake \
+    python3 \
+    python3-devel \
+    openssl-devel \
+    rust \
+    cargo \
+    clang-devel \
+    util-linux \
+    llvm-devel \
+    lld && \
     yum update -y python3 python3-libs openssh openssh-clients vim-minimal libarchive libcap && \
     yum clean all && \
     rm -rf /var/cache/yum
 
 # Ensure python is available under all expected names
-RUN mkdir -p /usr/local/bin && \
+RUN which python3 && python3 --version && \
+    mkdir -p /usr/local/bin && \
     ln -sf /usr/bin/python3 /usr/local/bin/python3 && \
     ln -sf /usr/bin/python3 /usr/local/bin/python && \
     ln -sf /usr/bin/python3 /usr/bin/python && \
-    python3 --version
+    which python3 && which python && \
+    python3 --version && python --version
 
-COPY redis-bv_8.8.0.patch /build/
+# Copy patch downloaded in setupbuilder stage (avoids build-context dependency)
+COPY --from=setupbuilder /redis-bv_${PACKAGE_VERSION}.patch /build/
 
 # Clone Redis 8.8.0 and apply ppc64le patch
-RUN git clone https://github.com/redis/redis /build/redis && \
-    cd /build/redis && \
-    git checkout 8.8.0 && \
-    git apply /build/redis-bv_8.8.0.patch
+RUN cd /build && \
+    git clone https://github.com/redis/redis && \
+    cd redis && \
+    git checkout ${PACKAGE_VERSION} && \
+    patch -p1 < /build/redis-bv_${PACKAGE_VERSION}.patch
 
 # Fix modules/Makefile - add ppc64le Rust toolchain case
-RUN cd /build/redis && python3 << 'EOF'
+RUN cd /build/redis && python3 <<'EOF'
 content = open('modules/Makefile').read()
 old = "\t\t\tfi ;; \\\n\t\t*) echo"
 new = "\t\t\tfi ;; \\\n\t\t'ppc64le') \\\n\t\t\tRUST_INSTALLER=\"rust-$${RUST_VERSION}-powerpc64le-unknown-linux-gnu\"; \\\n\t\t\tRUST_SHA256=\"\"; \\\n\t\t\t;; \\\n\t\t*) echo"
@@ -106,7 +114,7 @@ print("OK")
 EOF
 
 # Fix modules/common.mk - add ppc64le arch map entry
-RUN cd /build/redis && python3 << 'EOF'
+RUN cd /build/redis && python3 <<'EOF'
 content = open('modules/common.mk').read()
 old = "ARCH_MAP_aarch64 := arm64v8\nARCH_MAP_arm64 := arm64v8"
 new = "ARCH_MAP_aarch64 := arm64v8\nARCH_MAP_arm64 := arm64v8\nARCH_MAP_ppc64le := ppc64le"
@@ -148,7 +156,7 @@ RUN find /build/redis/modules/redisbloom -name "Makefile" \
           done; true
 
 # Fix RediSearch - disable SVS (x86-only ScalableVectorSearch) via cmake flag
-RUN cd /build/redis && python3 << 'EOF'
+RUN cd /build/redis && python3 <<'EOF'
 import subprocess
 result = subprocess.run(
     ['find', 'modules/redisearch/src', '-maxdepth', '1', '-name', 'build.sh'],
@@ -170,7 +178,7 @@ for path in files:
 EOF
 
 # Fix RediSearch Rust - RS_FIELDMASK_ALL: u128::MAX -> u64::MAX in ffi/src/lib.rs
-RUN cd /build/redis && python3 << 'EOF'
+RUN cd /build/redis && python3 <<'EOF'
 import subprocess
 result = subprocess.run(
     ['find', 'modules/redisearch/src', '-path', '*/ffi/src/lib.rs'],
@@ -191,9 +199,8 @@ for path in files:
         print(f"WARN - pattern not found in {path}")
 EOF
 
-# Fix RediSearch Rust - blocklist RS_FIELDMASK_ALL in ffi/build.rs (prevents
-# bindgen emitting a conflicting i32 from the C macro "#define RS_FIELDMASK_ALL -1")
-RUN cd /build/redis && python3 << 'EOF'
+# Fix RediSearch Rust - blocklist RS_FIELDMASK_ALL in ffi/build.rs
+RUN cd /build/redis && python3 <<'EOF'
 import subprocess
 result = subprocess.run(
     ['find', 'modules/redisearch/src', '-path', '*/ffi/build.rs'],
@@ -221,7 +228,7 @@ for path in files:
 EOF
 
 # Fix RediSearch Rust - u128::read_as_varint -> u64::read_as_varint in fields_only.rs
-RUN cd /build/redis && python3 << 'EOF'
+RUN cd /build/redis && python3 <<'EOF'
 import subprocess
 result = subprocess.run(
     ['find', 'modules/redisearch/src', '-name', 'fields_only.rs'],
@@ -243,8 +250,7 @@ for path in files:
 EOF
 
 # Fix RediSearch Rust - explicit cast in index_result source files
-# (index_result is a directory/module in 8.8.0, not a single file)
-RUN cd /build/redis && python3 << 'EOF'
+RUN cd /build/redis && python3 <<'EOF'
 import subprocess
 result = subprocess.run(
     ['find', 'modules/redisearch/src', '-name', '*.rs', '-path', '*/index_result*'],
@@ -267,11 +273,8 @@ if patched == 0:
     print("WARN - pattern not found in any index_result source file")
 EOF
 
-# Fix VectorSimilarity - guard all SVS includes/code behind #if HAVE_SVS
-# - tiered_factory.h: guard svs_tiered.h include
-# - svs_factory.cpp:  wrap entire file (CMakeLists.txt compiles it unconditionally)
-# - vec_sim.cpp:      guard svs_utils.h include and stub SVS-only functions
-RUN cd /build/redis && python3 << 'EOF'
+# Fix VectorSimilarity - guard SVS includes behind #if HAVE_SVS
+RUN cd /build/redis && python3 <<'EOF'
 import subprocess
 
 # 1. tiered_factory.h
@@ -335,7 +338,7 @@ for path in [f.strip() for f in result.stdout.strip().splitlines() if f.strip()]
 EOF
 
 # Fix VectorSimilarity - add ppc64le CPU features support in spaces.h
-RUN cd /build/redis && python3 << 'EOF'
+RUN cd /build/redis && python3 <<'EOF'
 import subprocess
 result = subprocess.run(
     ['find', 'modules/redisearch/src', '-path', '*/spaces/spaces.h'],
@@ -397,10 +400,12 @@ RUN cd /build/redis && \
     export PYTHON=/usr/bin/python3 && \
     unset INSTALL_RUST_TOOLCHAIN && \
     which python3 && python3 --version && \
+    python3 -c "import sys; print(sys.executable)" && \
     make MALLOC=libc EXTRA_CFLAGS="$EXTRA_CFLAGS" -j "$(nproc)" all IGNORE_MISSING_DEPS=1
 
 # Collect Redis binaries and all 4 module .so files
-RUN mkdir -p /root/redis/bin /root/redis/modules && \
+RUN find /build/redis/modules -maxdepth 2 -name "*.so" | grep -v "deps\|src/bin\|target" && \
+    mkdir -p /root/redis/bin /root/redis/modules && \
     find /build/redis/src -maxdepth 1 -type f -executable -name "redis-*" \
         -exec cp {} /root/redis/bin/ \; && \
     cp /build/redis/modules/redisbloom/redisbloom.so           /root/redis/modules/ && \
@@ -409,20 +414,21 @@ RUN mkdir -p /root/redis/bin /root/redis/modules && \
     cp /build/redis/modules/redistimeseries/redistimeseries.so /root/redis/modules/ && \
     ls -lh /root/redis/bin/ /root/redis/modules/
 
-# Remove build-only packages to reduce layer size
+# Erase Python RPM packages after build is complete (not needed in final image)
 RUN yum clean all && \
     rm -rf /var/cache/yum && \
-    rpm -e --nodeps python3 python3-devel python3-libs 2>/dev/null || true
+    rpm -e --nodeps python3 python3-devel python3-libs
 
 # ----------------------------------------------------------------------------
 # Stage 3: Final runtime image
 # ----------------------------------------------------------------------------
 FROM registry.access.redhat.com/ubi9/ubi:9.8
 
-LABEL org.opencontainers.image.title="redis" \
-      org.opencontainers.image.version="8.8.0" \
+LABEL com.vmware.cp.artifact.flavor="sha256:c50c90cfd9d12b445b011e6ad529f1ad3daea45c26d20b00732fae3cd71f6a83" \
+      org.opencontainers.image.documentation="https://github.com/bitnami/containers/tree/main/bitnami/redis/README.md" \
       org.opencontainers.image.source="https://github.com/bitnami/containers/tree/main/bitnami/redis" \
-      org.opencontainers.image.documentation="https://github.com/bitnami/containers/tree/main/bitnami/redis/README.md"
+      org.opencontainers.image.title="redis" \
+      org.opencontainers.image.version="8.8.0"
 
 ENV HOME="/" \
     OS_ARCH="ppc64le" \
@@ -435,18 +441,7 @@ COPY --from=setupbuilder /build/containers/bitnami/redis/8.8/debian-12/rootfs /
 
 # Install runtime dependencies and apply all security updates
 RUN yum update -y && \
-    yum install -y \
-        acl \
-        ca-certificates \
-        curl-minimal \
-        gzip \
-        glibc \
-        openssl \
-        procps \
-        tar \
-        libgcc \
-        libgomp \
-        libstdc++ && \
+    yum install -y acl ca-certificates curl-minimal gzip glibc openssl procps tar libgcc libgomp libstdc++ && \
     yum upgrade -y --allowerasing && \
     yum clean all && \
     rm -rf /var/cache/yum /var/tmp/* && \
@@ -456,15 +451,14 @@ RUN chmod g+rwX /opt/bitnami
 RUN ln -s /opt/bitnami/scripts/redis/entrypoint.sh /entrypoint.sh
 RUN ln -s /opt/bitnami/scripts/redis/run.sh /run.sh
 RUN /opt/bitnami/scripts/redis/postunpack.sh
-RUN mkdir -p /opt/bitnami/common/bin && chmod g+rwX /opt/bitnami
+RUN mkdir -p /opt/bitnami/common/bin
+RUN chmod g+rwX /opt/bitnami
 
 # Copy utilities built with secure Go (fixes gosu stdlib CVEs)
 COPY --from=setupbuilder /build/wait-for-port/wait-for-port /opt/bitnami/common/bin/wait-for-port
 COPY --from=setupbuilder /build/gosu/gosu                   /opt/bitnami/common/bin/gosu
-
-# Copy Redis binaries and modules built for ppc64le
-COPY --from=redisbuilder /root/redis/bin     /opt/bitnami/redis/bin
-COPY --from=redisbuilder /root/redis/modules /opt/bitnami/redis/modules
+COPY --from=redisbuilder /root/redis/bin                    /opt/bitnami/redis/bin
+COPY --from=redisbuilder /root/redis/modules                /opt/bitnami/redis/modules
 
 # Create module path expected by Bitnami Helm chart
 # (chart uses /opt/bitnami/redis/lib/redis/modules/ in loadmodule directives)
