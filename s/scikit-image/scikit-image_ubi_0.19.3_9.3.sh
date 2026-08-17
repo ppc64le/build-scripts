@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : scikit-image
-# Version       : v0.26.0
+# Version       : v0.19.3
 # Source repo   : https://github.com/scikit-image/scikit-image
 # Tested on     : UBI:9.3
 # Language      : Python
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=scikit-image
-PACKAGE_VERSION=${1:-v0.26.0}
+PACKAGE_VERSION=${1:-v0.19.3}
 PACKAGE_URL=https://github.com/scikit-image/scikit-image
 CURRENT_DIR="${PWD}"
 
