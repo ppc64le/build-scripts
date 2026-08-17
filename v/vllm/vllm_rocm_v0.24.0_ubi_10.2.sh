@@ -36,13 +36,41 @@ if ! rpm -q epel-release &>/dev/null; then
     echo "==> Installing EPEL"
     dnf install -y "$EPEL_URL"
 fi
+
+# The UBI 10 AppStream repo only ships a subset of packages. Add the full
+# AlmaLinux 10 AppStream and BaseOS repos so packages like libdrm-devel are
+# available and their runtime dependencies can be satisfied.
+if [[ ! -f /etc/yum.repos.d/almalinux-appstream.repo ]]; then
+    echo "==> Adding AlmaLinux 10 AppStream and BaseOS repos"
+    cat > /etc/yum.repos.d/almalinux-appstream.repo <<'REPO'
+[almalinux10-appstream]
+name=AlmaLinux 10 AppStream
+baseurl=https://repo.almalinux.org/almalinux/10/AppStream/ppc64le/os/
+enabled=1
+gpgcheck=1
+gpgkey=https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux-10
+
+[almalinux10-baseos]
+name=AlmaLinux 10 BaseOS
+baseurl=https://repo.almalinux.org/almalinux/10/BaseOS/ppc64le/os/
+enabled=1
+gpgcheck=1
+gpgkey=https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux-10
+REPO
+fi
+
 echo "==> Installing system dependencies"
 dnf install -y \
     git              \
     gcc-toolset-15   \
     python3.13       \
     python3.13-libs  \
-    python3.13-devel
+    python3.13-devel \
+    zlib-devel       \
+    libjpeg-devel    \
+    openblas-devel   \
+    cmake            \
+    libdrm-devel
 
 PYTHON_BIN="/usr/bin/python3.13"
 GCC_TOOLSET_BIN="/opt/rh/gcc-toolset-15/root/usr/bin"
@@ -51,6 +79,7 @@ VLLM_SRC_DIR="$PWD/vllm"
 VLLM_VERSION="v0.24.0"
 VENV_DIR="$PWD/vllm-venv"
 ROCM_PATH="/opt/rocm"
+ROCM_REPO_URL="https://public.dhe.ibm.com/software/server/POWER/Linux/AMD/ROCm/RHEL/10/ppc64le/"
 TORCH_WHEEL_DIR="$PWD/torch-wheels"
 EXTRA_WHEEL_DIR="$PWD/extra-wheels"
 OUTPUT_DIR=""          # resolved to ${VLLM_SRC_DIR}/../vllm-wheels after arg parsing
@@ -83,7 +112,10 @@ Options:
                            Default: ./vllm-venv
 
   --rocm-path PATH         Path to the system-wide ROCm installation.
-                           Default: /opt/rocm
+                            Default: /opt/rocm
+
+  --rocm-repo-url URL      URL of the DNF repository to install ROCm from.
+                            Default: $ROCM_REPO_URL
 
   --torch-wheel-dir PATH   Directory containing torch, torchvision, and torchaudio wheels.
                            Default: ./torch-wheels
@@ -131,6 +163,11 @@ parse_args() {
             --rocm-path)
                 [[ $# -ge 2 ]] || die "Missing value for $1"
                 ROCM_PATH="$2"
+                shift 2
+                ;;
+            --rocm-repo-url)
+                [[ $# -ge 2 ]] || die "Missing value for $1"
+                ROCM_REPO_URL="$2"
                 shift 2
                 ;;
             --torch-wheel-dir)
@@ -193,6 +230,21 @@ print_python_info() {
 
     echo "Using Python executable: $PYTHON_BIN"
     echo "Using Python version:    $version"
+}
+
+install_rust() {
+    if command -v cargo &>/dev/null; then
+        echo "==> Rust already installed: $(cargo --version)"
+        return
+    fi
+
+    echo "==> Installing Rust via rustup..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > /tmp/rust-install.sh
+    sh /tmp/rust-install.sh --no-modify-path --default-toolchain stable --profile minimal -y
+    rm /tmp/rust-install.sh
+
+    export PATH="$PATH:$HOME/.cargo/bin"
+    echo "==> Rust installed: $(cargo --version)"
 }
 
 setup_gcc_toolset() {
@@ -278,6 +330,8 @@ create_and_activate_venv() {
     echo "Active pip:    $(command -v pip)"
 
     python -m pip install -U pip
+    echo "Installing cmake and ninja into venv..."
+    python -m pip install cmake ninja
 }
 
 find_single_package_file() {
@@ -557,6 +611,25 @@ install_extra_dependencies() {
     install_z3_and_tilelang_wheels
 }
 
+install_rocm_from_rpms() {
+    local repo_file="/etc/yum.repos.d/rocm-ppc64le.repo"
+
+    echo "==> Adding ROCm DNF repo: $ROCM_REPO_URL"
+    cat > "$repo_file" <<REPO
+[rocm-ppc64le]
+name=ROCm ppc64le
+baseurl=${ROCM_REPO_URL}
+enabled=1
+gpgcheck=0
+REPO
+
+    echo "==> Installing ROCm (rocm-complete)..."
+    dnf install -y rocm-complete
+
+    rm -f "$repo_file"
+    echo "==> ROCm installation complete."
+}
+
 setup_rocm_build_env() {
     [[ -d "$ROCM_PATH" ]] || die "ROCm installation not found: $ROCM_PATH"
     [[ -d "$ROCM_PATH/lib" ]] || die "ROCm lib directory not found: $ROCM_PATH/lib"
@@ -620,6 +693,13 @@ PY
     esac
 }
 
+IBM_WHEEL_INDEX="https://wheels.developerfirst.ibm.com/ppc64le/linux"
+
+install_ibm_wheel_packages() {
+    echo "Installing sentencepiece from IBM wheel index..."
+    python -m pip install sentencepiece --index-url "$IBM_WHEEL_INDEX"
+}
+
 build_vllm_wheel() {
     cd "$VLLM_SRC_DIR"
 
@@ -653,6 +733,8 @@ main() {
     resolve_python
     print_python_info
 
+    install_rocm_from_rpms
+    install_rust
     setup_gcc_toolset
     clone_or_check_vllm
     checkout_vllm_version
@@ -660,6 +742,7 @@ main() {
     install_torch_wheels
     apply_vllm_patches
     install_extra_dependencies
+    install_ibm_wheel_packages
     build_vllm_wheel
 }
 
