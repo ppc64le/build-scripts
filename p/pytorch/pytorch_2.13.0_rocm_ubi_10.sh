@@ -199,9 +199,9 @@ wget -q --spider "$PATCH_BASE_URL/pytorch_v2.13.0_rocm_cuda_guard_narrowing.patc
     git apply "$SCRIPT_DIR/pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch" || echo "pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch missing or already applied, skipped"
 
 # Fix FastGeluAsm explicit specializations rejected by AMD clang 23.0 in composable_kernel
-wget -q --spider "$PATCH_BASE_URL/pytorch_v2.13.0_rocm_fastgeluasm.patch" && \
-    wget -q -O "$SCRIPT_DIR/pytorch_v2.13.0_rocm_fastgeluasm.patch" "$PATCH_BASE_URL/pytorch_v2.13.0_rocm_fastgeluasm.patch" && \
-    git apply --directory=third_party/composable_kernel "$SCRIPT_DIR/pytorch_v2.13.0_rocm_fastgeluasm.patch" || echo "pytorch_v2.13.0_rocm_fastgeluasm.patch missing or already applied, skipped"
+# This patch is required — fail loudly if it cannot be downloaded or applied
+wget -q -O "$SCRIPT_DIR/pytorch_v2.13.0_rocm_fastgeluasm.patch" "$PATCH_BASE_URL/pytorch_v2.13.0_rocm_fastgeluasm.patch"
+git apply --directory=third_party/composable_kernel "$SCRIPT_DIR/pytorch_v2.13.0_rocm_fastgeluasm.patch"
 
 # Build
 echo "Building PyTorch (this will take a while)"
