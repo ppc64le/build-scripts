@@ -1,5 +1,4 @@
 diff --git a/include/ck_tile/ops/elementwise/unary_element_wise_operation.hpp b/include/ck_tile/ops/elementwise/unary_element_wise_operation.hpp
-index 4e971649d..000000000 100644
 --- a/include/ck_tile/ops/elementwise/unary_element_wise_operation.hpp
 +++ b/include/ck_tile/ops/elementwise/unary_element_wise_operation.hpp
 @@ -1154,94 +1154,97 @@
