@@ -194,9 +194,9 @@ echo "Applying patches"
 PATCH_BASE_URL=${PATCH_BASE_URL:-"https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch"}
 
 # Fix CUDAGuard narrowing conversion errors under GCC 14 in ROCm HIP flash-attn files
-wget -q --spider "$PATCH_BASE_URL/pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch" && \
-    wget -q -O "$SCRIPT_DIR/pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch" "$PATCH_BASE_URL/pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch" && \
-    git apply "$SCRIPT_DIR/pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch" || echo "pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch missing or already applied, skipped"
+# This patch is required — fail loudly if it cannot be downloaded or applied
+wget -q -O "$SCRIPT_DIR/pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch" "$PATCH_BASE_URL/pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch"
+git apply "$SCRIPT_DIR/pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch"
 
 # Fix FastGeluAsm explicit specializations rejected by AMD clang 23.0 in composable_kernel
 # This patch is required — fail loudly if it cannot be downloaded or applied
