@@ -1,16 +1,116 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 9aff54c..6ea6a77 100644
+index f14add1..0a7eb88 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -78,6 +78,10 @@ else()
+@@ -78,7 +78,10 @@ else()
    # - Target names -------------------------------------------------------------
    set(BACKEND_NAME "fil")
    set(BACKEND_TARGET "triton_${BACKEND_NAME}")
+-
 +  install(
 +    FILES ${CMAKE_CURRENT_BINARY_DIR}/libtriton_fil.so
 +    DESTINATION ${CMAKE_INSTALL_PREFIX}/backends/fil
 +  )
  
- 
    ##############################################################################
-
+   # - Prepare rapids-cmake -----------------------------------------------------
+@@ -274,7 +277,19 @@ else()
+     TARGETS ${BACKEND_TARGET}
+     LIBRARY DESTINATION ${BACKEND_FOLDER}/${BACKEND_NAME}
+   )
++  # nvforest++ is a CPM sub-project target; install(TARGETS) cannot reach it
++  # from the top-level project. Install the built shared library directly.
++  install(
++    FILES $<TARGET_FILE:nvforest::nvforest++>
++    DESTINATION ${BACKEND_FOLDER}/${BACKEND_NAME}
++  )
+ 
++  # rapids_logger is a header-only / shared lib that nvforest++ links publicly.
++  # It must sit next to libtriton_fil.so so the $ORIGIN RPATH resolves it.
++  install(
++    FILES $<TARGET_FILE:rapids_logger::rapids_logger>
++    DESTINATION ${BACKEND_FOLDER}/${BACKEND_NAME}
++  )
+   ##############################################################################
+   # - build test executable ----------------------------------------------------
+ 
+diff --git a/ops/Dockerfile b/ops/Dockerfile
+index e4b4115..18defa2 100644
+--- a/ops/Dockerfile
++++ b/ops/Dockerfile
+@@ -46,14 +46,21 @@ RUN gpuci_mamba_retry create -n triton_test \
+     && rm /environment.yml
+ 
+ FROM base-test-install as wheel-install-0
+-RUN apt-get update \
+-    && apt-get install --no-install-recommends -y \
+-      build-essential \
+-      ca-certificates \
+-      git \
+-    && apt-get clean \
+-    && rm -rf /var/lib/apt/lists/* \
+-    && conda run --no-capture-output -n triton_test pip install tritonclient[all]
++#RUN apt-get update \
++#    && apt-get install --no-install-recommends -y \
++#      build-essential \
++#      ca-certificates \
++#      git \
++#    && apt-get clean \
++#    && rm -rf /var/lib/apt/lists/* \
++#    && conda run --no-capture-output -n triton_test pip install tritonclient[all]
++RUN yum install -y \
++    gcc \
++    gcc-c++ \
++    make \
++    patch \
++    ca-certificates \
++    git
+ 
+ FROM ${SDK_IMAGE} as sdk-image
+ 
+@@ -80,22 +87,29 @@ ENV PATH="/root/miniconda3/bin:${PATH}"
+ 
+ # In CI, CPU base image may not have curl, but it also does not need to update
+ # the cuda keys
+-RUN  if command -v curl; \
+- then [ $(uname -m) = 'x86_64' ] \
+- && curl -L -o /tmp/cuda-keyring.deb \
+-      https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb \
+- || curl -L -o /tmp/cuda-keyring.deb \
+-      https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/sbsa/cuda-keyring_1.0-1_all.deb; \
+- dpkg -i /tmp/cuda-keyring.deb \
+- && rm /tmp/cuda-keyring.deb; fi
+-
+-RUN apt-get update \
+-    && apt-get install --no-install-recommends -y \
+-      build-essential \
+-      ca-certificates \
+-      git \
+-    && apt-get clean \
+-    && rm -rf /var/lib/apt/lists/*
++#RUN  if command -v curl; \
++# then [ $(uname -m) = 'x86_64' ] \
++# && curl -L -o /tmp/cuda-keyring.deb \
++#      https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb \
++# || curl -L -o /tmp/cuda-keyring.deb \
++#      https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/sbsa/cuda-keyring_1.0-1_all.deb; \
++# dpkg -i /tmp/cuda-keyring.deb \
++# && rm /tmp/cuda-keyring.deb; fi
++
++#RUN apt-get update \
++#    && apt-get install --no-install-recommends -y \
++#      build-essential \
++#      ca-certificates \
++#      git \
++#    && apt-get clean \
++#    && rm -rf /var/lib/apt/lists/*
++RUN yum install -y \
++    gcc \
++    gcc-c++ \
++    make \
++    patch \
++    ca-certificates \
++    git
+ 
+ # Stage immediately before building; useful for build iteration
+ FROM base as build-prep
