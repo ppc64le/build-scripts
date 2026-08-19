@@ -3,13 +3,17 @@
 image_name=$IMAGE_NAME
 build_docker=$BUILD_DOCKER
 
-if [ $build_docker == true ];then
-	 GRYPE_VERSION=$(curl -s https://api.github.com/repos/anchore/grype/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
-	 wget https://github.com/anchore/grype/releases/download/$GRYPE_VERSION/grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz
-	 tar -xzf grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz
-         chmod +x grype
-         sudo mv grype /usr/bin
-	 echo "Executing grype scanner"
-         sudo grype -q -s AllLayers -o cyclonedx-json ${image_name} > grype_image_sbom_results.json
-         sudo grype -q -s AllLayers -o json ${image_name} > grype_image_vulnerabilities_results.json
+# Use pre-installed grype from the cached artifact.
+# $GRYPE_BIN is set by the workflow (points to scan-tools-bin/grype).
+if [ -z "$GRYPE_BIN" ]; then
+  echo "Error: GRYPE_BIN environment variable not set"
+  exit 1
+fi
+
+if [ $build_docker == true ]; then
+         echo "------------- Using cached grype ---------------"
+         $GRYPE_BIN version
+         echo "Executing grype scanner"
+         sudo $GRYPE_BIN -q -s AllLayers -o cyclonedx-json ${image_name} > grype_image_sbom_results.json
+         sudo $GRYPE_BIN -q -s AllLayers -o json ${image_name} > grype_image_vulnerabilities_results.json
 fi

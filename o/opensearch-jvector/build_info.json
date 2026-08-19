@@ -10,6 +10,7 @@
   "validate_build_script": true,
   "use_non_root_user": true,
   "docker_build": false,
+  "wheel_build": true,
   "3.0.0.4": {
     "build_script": "opensearch-jvector_3.0.0.4_ubi_9.6.sh" 
   },

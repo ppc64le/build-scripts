@@ -43,6 +43,15 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
                "GHA_CURRENCY_SERVICE_ID_API_KEY": os.getenv("GHA_CURRENCY_SERVICE_ID_API_KEY"),
                "GHA_CURRENCY_SERVICE_ID": os.getenv("GHA_CURRENCY_SERVICE_ID"),
                "AUDITWHEEL_EXCLUDE": os.getenv("AUDITWHEEL_EXCLUDE", ""),
+               # Grype is installed on the host runner at scan-tools-bin/grype.
+               # The workspace is volume-mounted at /home/tester/ inside the
+               # container, so the binary is reachable at that in-container path.
+               # Passing GRYPE_BIN lets generalized_wheel_scanner.py find it via
+               # os.environ without relying on $PATH (which is host-only).
+               "GRYPE_BIN": "/home/tester/scan-tools-bin/grype",
+               # Set to "false" by pr-build.yaml to skip the CVE scan in PR builds.
+               # Defaults to "true" (scan runs) when unset (currency-build.yaml).
+               "ENABLE_CVE_SCAN": os.getenv("ENABLE_CVE_SCAN", "true"),
             }
         )
         
