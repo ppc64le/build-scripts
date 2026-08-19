@@ -53,10 +53,22 @@ sed -i '/^\[project\]/,/^$/ {s/version = "[^"]*"/version = "'"$PACKAGE_VERSION"'
 
 uv build --wheel --config-setting wheel.py-api=cp$CP --extra-index-url $INDEX_URL_DEVPY
 
-if ! (python3 -m pip install dist/faiss_cpu-$PACKAGE_VERSION-cp$CP-abi3-linux_ppc64le.whl ); then
-   echo "------------------$PACKAGE_NAME:Failed to build wheel-------------------------------------"
-   echo "$PACKAGE_URL $PACKAGE_NAME"
-   echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+WHEEL_PATH=$(find dist -maxdepth 1 -type f -name 'faiss_cpu-*.whl' | head -1)
+
+if [ -z "$WHEEL_PATH" ]; then
+    echo "------------------$PACKAGE_NAME:Wheel not found------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Wheel_Not_Found"
+    exit 1
+fi
+
+echo "Installing wheel: $WHEEL_PATH"
+
+if ! python3 -m pip install "$WHEEL_PATH"; then
+    echo "------------------$PACKAGE_NAME:Failed to install wheel------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
+    exit 1
 fi
 
 # Run tests
