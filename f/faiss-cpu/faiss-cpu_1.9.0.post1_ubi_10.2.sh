@@ -22,7 +22,20 @@ PACKAGE_NAME=faiss-cpu
 PACKAGE_DIR=faiss-wheels
 PACKAGE_VERSION=${1:-1.9.0.post1}
 PACKAGE_URL=https://github.com/faiss-wheels/faiss-wheels.git
-SOURCE_ROOT="$(pwd)"
+SOURCE_ROOT="$(cd "$(dirname "$0")" && pwd)"
+
+# Resolve app.py to an absolute path now, before any cd into subdirectories.
+# Three execution contexts:
+#   1. validate_builds_currency.py (direct): $0 is the real script path,
+#      SOURCE_ROOT already points to f/faiss-cpu/ — use it directly.
+#   2. create_wheel_wrapper.sh: script is copied to temp_build_script.sh so
+#      $0 is useless; BUILD_SCRIPT_PATH holds the original repo-relative path
+#      and CURRENT_DIR holds the runner's absolute working directory.
+if [ -n "${BUILD_SCRIPT_PATH:-}" ] && [ -n "${CURRENT_DIR:-}" ]; then
+    APP_PY="$(cd "$CURRENT_DIR" && cd "$(dirname "$BUILD_SCRIPT_PATH")" && pwd)/app.py"
+else
+    APP_PY="${SOURCE_ROOT}/app.py"
+fi
 
 echo "Installing dependencies..."
 dnf update -y
@@ -42,7 +55,7 @@ git clone --recursive ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
 
 # Allow the detected Python version in uv's environment filter
-echo -e "\n[tool.uv]\nenvironments = [\"python_version == '3.12' or python_version == '3.13' or python_version == '3.14'\"]" >> pyproject.toml
+echo -e "\n[tool.uv]\nenvironments = [\"python_version == '3.11' or python_version == '3.12' or python_version == '3.13' or python_version == '3.14'\"]" >> pyproject.toml
 
 # Pin uv to the same Python that is active on this system
 uv python pin ${PY_MAJOR_MINOR}
@@ -76,10 +89,9 @@ fi
 # Run tests
 python3 -m pip install scipy==1.17.0 sentence-transformers --extra-index-url $INDEX_URL_DEVPY
 
-# find test case called app.py
-TEST_PATH=$(find "${SOURCE_ROOT}" -name app.py | head -1)
-if [ -z "${TEST_PATH}" ]; then
-    echo "ERROR: test case not found"
+TEST_PATH="$APP_PY"
+if [ ! -f "${TEST_PATH}" ]; then
+    echo "ERROR: test case not found at ${TEST_PATH}"
     exit 1
 fi
 if ! (python3 $TEST_PATH); then
