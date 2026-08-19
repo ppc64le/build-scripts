@@ -63,11 +63,19 @@ git submodule update --init --recursive
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
 export GRPC_PYTHON_BUILD_WITH_CYTHON=1
 
-# Install Python build-time requirements
+export CC=/opt/rh/gcc-toolset-15/root/usr/bin/gcc
+export CXX=/opt/rh/gcc-toolset-15/root/usr/bin/g++
+
+# GRPC_PYTHON_CFLAGS *replaces* the default Linux compile args in setup.py, so
+# we must re-include the required flags alongside the GCC 15 warning suppression.
+# Default Linux flags: -std=c++17 -fvisibility=hidden -fno-wrapv -fno-exceptions
+# Added: -Wno-maybe-uninitialized to silence false-positive GCC 15 warnings in
+# grpc 1.78.0 C++ sources (std::variant/std::optional inlining paths).
+export GRPC_PYTHON_CFLAGS="-std=c++17 -fvisibility=hidden -fno-wrapv -fno-exceptions -Wno-maybe-uninitialized"
+
 pip install -r requirements.txt
 
-# Install the package
-if ! pip install --no-build-isolation . ; then
+if ! python3.12 -m pip install --no-build-isolation . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -75,7 +83,7 @@ if ! pip install --no-build-isolation . ; then
 fi
 
 # Produce the wheel artifact and copy it to CURRENT_DIR
-python3.12 setup.py bdist_wheel
+python3.12 setup.py bdist_wheel 2>/dev/null || python3.12 -m build --wheel --no-isolation
 cp dist/*.whl "$CURRENT_DIR/"
 
 # Run tests
