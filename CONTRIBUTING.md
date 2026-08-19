@@ -133,6 +133,8 @@ Runs only when `wheel_build_enabled=true`. Jobs are split by UBI version and Pyt
 | `wheel_build_ubi10_py313` | UBI10 | 3.13 | Yes (best-effort) |
 | `wheel_build_ubi10_py314` | UBI10 | 3.14 | Yes (best-effort) |
 
+> **UBI8 note:** Python 3.10, 3.13, and 3.14 are not supported on UBI8. Only py311 and py312 wheel jobs run.
+>
 > **UBI10 note:** Python 3.10 and 3.11 are not supported on UBI10. Only py312–py314 wheel jobs run.
 
 Each wheel job:
