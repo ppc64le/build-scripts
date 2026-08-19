@@ -27,9 +27,9 @@ PACKAGE_URL=https://github.com/fastavro/fastavro
 PACKAGE_DIR=fastavro
 
 # Determine Cython version based on Python version.
-# The pre-generated .c files in fastavro 1.9.7 were produced with old Cython
-# and are incompatible with Python 3.13+.  For Python >= 3.13 we use a modern
-# Cython (>=3.0) and delete the stale .c files so Cython regenerates them.
+# fastavro 1.9.7's _logical_writers.pyx uses the Python 2 legacy
+# cpython.int.PyInt_AS_LONG API which Cython 3.x no longer provides.
+# For Python >= 3.13 we install modern Cython (>=3.0) and patch the .pyx source.
 PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
 if [ "$PYTHON_MINOR" -ge 13 ]; then
     CYTHON_SPEC="cython>=3.0"
@@ -91,10 +91,14 @@ else
     fi
 fi
 
-# For Python >= 3.13 the pre-generated Cython .c files are stale; remove them
-# so that Cython regenerates them from the .pyx sources using the modern toolchain.
+# For Python >= 3.13, fastavro 1.9.7's _logical_writers.pyx still uses the
+# Python 2 legacy cpython.int.PyInt_AS_LONG import which Cython 3.x no longer
+# provides.  Patch the .pyx in-place to use the modern cpython.long.PyLong_AsLong.
 if [ "$REGEN_CYTHON" -eq 1 ]; then
-    find fastavro -maxdepth 1 -name "*.c" -delete
+    sed -i \
+        -e 's|from cpython\.int cimport PyInt_AS_LONG|from cpython.long cimport PyLong_AsLong|g' \
+        -e 's|PyInt_AS_LONG(|PyLong_AsLong(|g' \
+        fastavro/_logical_writers.pyx
 fi
 
 # Install the package with Cython extensions
