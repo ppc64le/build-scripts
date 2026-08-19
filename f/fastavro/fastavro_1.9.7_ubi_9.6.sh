@@ -22,13 +22,27 @@ set -ex
 # Variables
 PACKAGE_NAME=fastavro
 PACKAGE_VERSION=${1:-1.9.7}
+PYTHON_VERSION=${2:-3.12}
 PACKAGE_URL=https://github.com/fastavro/fastavro
 PACKAGE_DIR=fastavro
 
+# Determine Cython version based on Python version.
+# The pre-generated .c files in fastavro 1.9.7 were produced with old Cython
+# and are incompatible with Python 3.13+.  For Python >= 3.13 we use a modern
+# Cython (>=3.0) and delete the stale .c files so Cython regenerates them.
+PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
+if [ "$PYTHON_MINOR" -ge 13 ]; then
+    CYTHON_SPEC="cython>=3.0"
+    REGEN_CYTHON=1
+else
+    CYTHON_SPEC="cython<3.0"
+    REGEN_CYTHON=0
+fi
+
 # Install dependencies
-dnf install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo cmake llvm-toolset
-python3.12 -m pip install --upgrade pip
-python3.12 -m pip install --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/ setuptools wheel pytest tox numpy pandas zlib-ng zstandard lz4 cramjam "cython<3.0"
+dnf install -y git python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo cmake llvm-toolset
+python${PYTHON_VERSION} -m pip install --upgrade pip
+python${PYTHON_VERSION} -m pip install --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/ setuptools wheel pytest tox numpy pandas zlib-ng zstandard lz4 cramjam "${CYTHON_SPEC}"
 
 # Install Rust
 echo "Installing Rust"
@@ -76,17 +90,23 @@ else
     fi
 fi
 
+# For Python >= 3.13 the pre-generated Cython .c files are stale; remove them
+# so that Cython regenerates them from the .pyx sources using the modern toolchain.
+if [ "$REGEN_CYTHON" -eq 1 ]; then
+    find fastavro -maxdepth 1 -name "*.c" -delete
+fi
+
 # Install the package with Cython extensions
 export FASTAVRO_USE_CYTHON=1
 rm -rf build/ dist/ *.egg-info
-if ! python3.12 setup.py build_ext --inplace && python3.12 -m pip install --no-build-isolation ./; then
+if ! python${PYTHON_VERSION} setup.py build_ext --inplace && python${PYTHON_VERSION} -m pip install --no-build-isolation ./; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
     exit 1
 fi
 
-python3.12 -m pip wheel --no-build-isolation --no-deps -w dist/ ./
+python${PYTHON_VERSION} -m pip wheel --no-build-isolation --no-deps -w dist/ ./
 
 # ------------------ Unified Test Execution Block ------------------
 
@@ -95,19 +115,19 @@ test_status=1  # 0 = success, non-zero = failure
 # Run pytest if any matching test files found
 if ls */test_*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
     echo "Running pytest..."
-    (python3.12 -m pytest) && test_status=0 || { [ $? -le 1 ] && test_status=0 || test_status=$?; }
+    (python${PYTHON_VERSION} -m pytest) && test_status=0 || { [ $? -le 1 ] && test_status=0 || test_status=$?; }
 fi
 
 # Run tox if tox.ini is present and previous tests failed
 if [ -f "tox.ini" ] && [ $test_status -ne 0 ]; then
     echo "Running tox..."
-    (python3.12 -m tox -e py312 --sitepackages) && test_status=0 || test_status=$?
+    (python${PYTHON_VERSION} -m tox -e py${PYTHON_MINOR} --sitepackages) && test_status=0 || test_status=$?
 fi
 
 # Run nox if noxfile.py is present and previous tests failed
 if [ -f "noxfile.py" ] && [ $test_status -ne 0 ]; then
     echo "Running nox..."
-    (python3.12 -m nox) && test_status=0 || test_status=$?
+    (python${PYTHON_VERSION} -m nox) && test_status=0 || test_status=$?
 fi
 
 # Final test result output
