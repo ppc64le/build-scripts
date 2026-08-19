@@ -39,8 +39,9 @@ else
     REGEN_CYTHON=0
 fi
 
-# Install dependencies
-dnf install -y git python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo cmake llvm-toolset
+# Install dependencies (python3/python3-devel are always available on UBI 9;
+# the wrapper already installs the version-specific Python before invoking this script)
+dnf install -y git python3 python3-devel python3-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo cmake llvm-toolset
 python${PYTHON_VERSION} -m pip install --upgrade pip
 python${PYTHON_VERSION} -m pip install --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/ setuptools wheel pytest tox numpy pandas zlib-ng zstandard lz4 cramjam "${CYTHON_SPEC}"
 
