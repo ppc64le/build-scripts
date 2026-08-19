@@ -37,9 +37,9 @@ CMAKE_VERSION=3.29.2
 wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz
 tar -xzf cmake-${CMAKE_VERSION}.tar.gz
 cd cmake-${CMAKE_VERSION}
-./bootstrap --prefix=/usr/local --parallel=2
+./bootstrap --prefix=/usr/local
 echo "Installing cmake..."
-make -j2
+make
 echo "Installing cmake..."
 make install
 cmake --version
@@ -98,7 +98,7 @@ build_opts+=(NUM_THREADS=8)
 build_opts+=(NO_AFFINITY=1)
 
 # Build OpenBLAS
-make -j2 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
+make ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
 
 # Install OpenBLAS
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
@@ -339,8 +339,7 @@ if ! python3.12 setup.py install; then
 fi
 #build wheel
 cd $CURRENT_DIR/$PACKAGE_DIR
-python3.12 setup.py bdist_wheel --plat-name=linux_$(uname -m)
-mv dist/*.whl "$CURRENT_DIR/"
+python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR --plat-name=linux_$(uname -m) 
 
 echo "Running tests for $PACKAGE_NAME..."
 # Test the onnxconverter-common package
