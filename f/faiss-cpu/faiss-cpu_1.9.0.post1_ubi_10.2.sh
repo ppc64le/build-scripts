@@ -55,10 +55,10 @@ uv build --wheel --config-setting wheel.py-api=cp$CP --extra-index-url $INDEX_UR
 
 WHEEL_PATH=$(find dist -maxdepth 1 -type f -name 'faiss_cpu-*.whl' | head -1)
 
-if [ -z "$WHEEL_PATH" ]; then
-    echo "------------------$PACKAGE_NAME:Wheel not found------------------"
+if [ -z "$WHEEL" ]; then
+    echo "------------------$PACKAGE_NAME:Failed to build wheel (no wheel found in dist/)-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Wheel_Not_Found"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
