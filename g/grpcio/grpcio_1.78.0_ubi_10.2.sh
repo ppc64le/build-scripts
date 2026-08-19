@@ -22,7 +22,7 @@ set -e
 
 # Variables
 PACKAGE_NAME=grpcio
-PACKAGE_VERSION=${1:-v1.78.0}
+PACKAGE_VERSION=${1:-1.78.0}
 PACKAGE_URL=https://github.com/grpc/grpc
 PACKAGE_DIR=grpc
 CURRENT_DIR=$(pwd)
@@ -53,7 +53,16 @@ pip install --upgrade pip setuptools wheel build
 cd "$CURRENT_DIR"
 git clone "$PACKAGE_URL" "$PACKAGE_DIR"
 cd "$PACKAGE_DIR"
-git checkout $PACKAGE_VERSION
+
+# Checkout version — try v-prefixed tag first, then bare version string
+if git rev-parse "v${PACKAGE_VERSION}" &>/dev/null; then
+    git checkout "v${PACKAGE_VERSION}"
+elif git rev-parse "${PACKAGE_VERSION}" &>/dev/null; then
+    git checkout "${PACKAGE_VERSION}"
+else
+    echo "ERROR: No git tag found for version '${PACKAGE_VERSION}'"
+    exit 1
+fi
 
 # Initialise submodules (grpc requires them for third-party C deps)
 git submodule sync --recursive
