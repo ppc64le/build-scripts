@@ -48,11 +48,9 @@ else
     REGEN_CYTHON=0
 fi
 
-# Install dependencies (python3/python3-devel are always available on UBI 9;
-# the wrapper already installs the version-specific Python before invoking this script)
 dnf install -y git python3 python3-devel python3-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo cmake llvm-toolset
 ${PYTHON_BIN} -m pip install --upgrade pip
-${PYTHON_BIN} -m pip install --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/ setuptools wheel pytest tox numpy pandas zlib-ng zstandard lz4 cramjam "${CYTHON_SPEC}"
+${PYTHON_BIN} -m pip install --ignore-installed --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/ setuptools wheel pytest tox numpy pandas zlib-ng zstandard lz4 cramjam "${CYTHON_SPEC}"
 
 # Install Rust
 echo "Installing Rust"
