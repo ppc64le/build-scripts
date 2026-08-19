@@ -10,11 +10,14 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
     # Docker client setup
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     
-    # Modify permissions for the main script
-    st1 = os.stat(wrapper_file)
     current_dir = os.getcwd()
-    
-    os.chmod(f"{current_dir}/{wrapper_file}", st1.st_mode | stat.S_IEXEC)
+
+    # Make the wrapper script executable by owner, group, and other so that
+    # any user inside the container (e.g. test_user in non-root builds) can
+    # execute it after the workspace is bind-mounted.
+    st1 = os.stat(f"{current_dir}/{wrapper_file}")
+    os.chmod(f"{current_dir}/{wrapper_file}",
+             st1.st_mode | stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH)
  
     print(current_dir)
     print(f"Running script: {wrapper_file}")
@@ -24,11 +27,21 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
     script_name = file_name.split("/")[1]
  
     try:
+        # For non-root builds the workspace is bind-mounted as root-owned but
+        # the container runs as test_user. Prepend a chown so test_user can
+        # write to it, then run the wrapper script via sudo bash so that
+        # yum/dnf calls inside it have the required root privileges.
+        if image_name == "docker_non_root_image":
+            setup = "sudo chown -R test_user:test_user /home/tester && "
+            run_script = f"sudo bash ./{wrapper_file}"
+        else:
+            setup = ""
+            run_script = f"./{wrapper_file}"
         # Command to run only the main script (which uses the additional file internally)
         command = [
             "bash",
             "-c",
-            f"cd /home/tester/ && ./{wrapper_file} {python_version} {file_name} {version} {post_process_file}"
+            f"{setup}cd /home/tester/ && {run_script} {python_version} {file_name} {version} {post_process_file}"
         ]
         
         # Run container
