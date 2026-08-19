@@ -25,12 +25,17 @@ PACKAGE_URL=https://github.com/faiss-wheels/faiss-wheels.git
 SOURCE_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
 # Resolve app.py to an absolute path now, before any cd into subdirectories.
-# BUILD_SCRIPT_PATH (set by create_wheel_wrapper.sh) is a repo-relative path
-# like f/faiss-cpu/faiss-cpu_1.9.0.post1_ubi_10.2.sh; resolve its directory
-# against CURRENT_DIR (the runner's working dir, also set by the wrapper).
-# Fall back to SOURCE_ROOT when running the script directly (no wrapper).
-_BASE="${CURRENT_DIR:-$SOURCE_ROOT}"
-APP_PY="$(cd "$_BASE" && cd "$(dirname "${BUILD_SCRIPT_PATH:-f/faiss-cpu/faiss-cpu_1.9.0.post1_ubi_10.2.sh}")" && pwd)/app.py"
+# Three execution contexts:
+#   1. validate_builds_currency.py (direct): $0 is the real script path,
+#      SOURCE_ROOT already points to f/faiss-cpu/ — use it directly.
+#   2. create_wheel_wrapper.sh: script is copied to temp_build_script.sh so
+#      $0 is useless; BUILD_SCRIPT_PATH holds the original repo-relative path
+#      and CURRENT_DIR holds the runner's absolute working directory.
+if [ -n "${BUILD_SCRIPT_PATH:-}" ] && [ -n "${CURRENT_DIR:-}" ]; then
+    APP_PY="$(cd "$CURRENT_DIR" && cd "$(dirname "$BUILD_SCRIPT_PATH")" && pwd)/app.py"
+else
+    APP_PY="${SOURCE_ROOT}/app.py"
+fi
 
 echo "Installing dependencies..."
 dnf update -y
