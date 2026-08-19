@@ -205,7 +205,7 @@ git apply --directory=third_party/composable_kernel "$SCRIPT_DIR/pytorch_v2.13.0
 
 # Build
 echo "Building PyTorch (this will take a while)"
-export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION#v}+rocm+714
+export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION#v}+rocm714
 export PYTORCH_BUILD_NUMBER=1
 
 if ! MAX_JOBS=$(nproc) $PYTHON -m pip install --no-build-isolation -v -e .; then
