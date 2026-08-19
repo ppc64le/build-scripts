@@ -26,6 +26,15 @@ PYTHON_VERSION=${2:-3.12}
 PACKAGE_URL=https://github.com/fastavro/fastavro
 PACKAGE_DIR=fastavro
 
+# Resolve the Python binary: the wheel jobs pre-install python3.X; the plain
+# build_ubi9 job runs against the UBI 9.6 system Python (python3 / 3.9).
+if command -v python${PYTHON_VERSION} &>/dev/null; then
+    PYTHON_BIN=python${PYTHON_VERSION}
+else
+    PYTHON_BIN=python3
+    PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+fi
+
 # Determine Cython version based on Python version.
 # fastavro 1.9.7's _logical_writers.pyx uses the Python 2 legacy
 # cpython.int.PyInt_AS_LONG API which Cython 3.x no longer provides.
@@ -42,8 +51,8 @@ fi
 # Install dependencies (python3/python3-devel are always available on UBI 9;
 # the wrapper already installs the version-specific Python before invoking this script)
 dnf install -y git python3 python3-devel python3-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo cmake llvm-toolset
-python${PYTHON_VERSION} -m pip install --upgrade pip
-python${PYTHON_VERSION} -m pip install --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/ setuptools wheel pytest tox numpy pandas zlib-ng zstandard lz4 cramjam "${CYTHON_SPEC}"
+${PYTHON_BIN} -m pip install --upgrade pip
+${PYTHON_BIN} -m pip install --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/ setuptools wheel pytest tox numpy pandas zlib-ng zstandard lz4 cramjam "${CYTHON_SPEC}"
 
 # Install Rust
 echo "Installing Rust"
@@ -104,14 +113,14 @@ fi
 # Install the package with Cython extensions
 export FASTAVRO_USE_CYTHON=1
 rm -rf build/ dist/ *.egg-info
-if ! python${PYTHON_VERSION} setup.py build_ext --inplace && python${PYTHON_VERSION} -m pip install --no-build-isolation ./; then
+if ! ${PYTHON_BIN} setup.py build_ext --inplace && ${PYTHON_BIN} -m pip install --no-build-isolation ./; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
     exit 1
 fi
 
-python${PYTHON_VERSION} -m pip wheel --no-build-isolation --no-deps -w dist/ ./
+${PYTHON_BIN} -m pip wheel --no-build-isolation --no-deps -w dist/ ./
 
 # ------------------ Unified Test Execution Block ------------------
 
@@ -120,19 +129,19 @@ test_status=1  # 0 = success, non-zero = failure
 # Run pytest if any matching test files found
 if ls */test_*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
     echo "Running pytest..."
-    (python${PYTHON_VERSION} -m pytest) && test_status=0 || { [ $? -le 1 ] && test_status=0 || test_status=$?; }
+    (${PYTHON_BIN} -m pytest) && test_status=0 || { [ $? -le 1 ] && test_status=0 || test_status=$?; }
 fi
 
 # Run tox if tox.ini is present and previous tests failed
 if [ -f "tox.ini" ] && [ $test_status -ne 0 ]; then
     echo "Running tox..."
-    (python${PYTHON_VERSION} -m tox -e py${PYTHON_MINOR} --sitepackages) && test_status=0 || test_status=$?
+    (${PYTHON_BIN} -m tox -e py${PYTHON_MINOR} --sitepackages) && test_status=0 || test_status=$?
 fi
 
 # Run nox if noxfile.py is present and previous tests failed
 if [ -f "noxfile.py" ] && [ $test_status -ne 0 ]; then
     echo "Running nox..."
-    (python${PYTHON_VERSION} -m nox) && test_status=0 || test_status=$?
+    (${PYTHON_BIN} -m nox) && test_status=0 || test_status=$?
 fi
 
 # Final test result output
