@@ -21,6 +21,7 @@ set -e
 PACKAGE_NAME=faiss-cpu
 PACKAGE_DIR=faiss-wheels
 PACKAGE_VERSION=${1:-1.9.0.post1}
+PACKAGE_VERSION=${PACKAGE_VERSION#v}
 PACKAGE_URL=https://github.com/faiss-wheels/faiss-wheels.git
 SOURCE_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
