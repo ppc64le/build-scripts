@@ -66,7 +66,8 @@ sed -i '/^\[project\]/,/^$/ {s/version = "[^"]*"/version = "'"$PACKAGE_VERSION"'
 
 uv build --wheel --config-setting wheel.py-api=cp$CP --extra-index-url $INDEX_URL_DEVPY
 
-WHEEL=$(ls dist/faiss_cpu-${PACKAGE_VERSION}-*.whl 2>/dev/null | head -1)
+WHEEL=$(find dist -maxdepth 1 -type f -name 'faiss_cpu-*.whl' | head -1)
+
 if [ -z "$WHEEL" ]; then
     echo "------------------$PACKAGE_NAME:Failed to build wheel (no wheel found in dist/)-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -76,6 +77,8 @@ fi
 
 # Copy wheel to CURRENT_DIR so create_wheel_wrapper.sh can find it
 cp "$WHEEL" "${CURRENT_DIR:-$(pwd)}/"
+
+echo "Installing wheel: $WHEEL"
 
 if ! (python3 -m pip install "$WHEEL" ); then
    echo "------------------$PACKAGE_NAME:Failed to build wheel-------------------------------------"
