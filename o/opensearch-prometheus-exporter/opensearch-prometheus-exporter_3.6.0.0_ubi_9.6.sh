@@ -56,7 +56,7 @@ cd "${PACKAGE_NAME}" && git checkout "${PACKAGE_VERSION}"
 # Build
 # --------
 ret=0
-./gradlew clean build || ret=$?
+./gradlew clean build -x integTest || ret=$?
 if [ $ret -ne 0 ]; then
         set +ex
         echo "------------------ ${PACKAGE_NAME}: Build Failed ------------------"
@@ -66,10 +66,10 @@ fi
 export OPENSEARCH_PROMETHEUS_EXPORTER_ZIP=${BUILD_HOME}/${PACKAGE_NAME}/build/distributions/prometheus-exporter-${PACKAGE_VERSION}.zip
 
 # ----------------------------------
-# Run complete test suite
+# Run complete test suite (excluding integTest which requires a running cluster)
 # ----------------------------------
 ret=0
-./gradlew clean check || ret=$?
+./gradlew clean check -x integTest || ret=$?
 if [ $ret -ne 0 ]; then
         ret=0
         set +ex
