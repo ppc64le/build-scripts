@@ -35,10 +35,10 @@ index f14add1..0a7eb88 100644
    # - build test executable ----------------------------------------------------
  
 diff --git a/ops/Dockerfile b/ops/Dockerfile
-index e4b4115..18defa2 100644
+index e4b4115..91c63bf 100644
 --- a/ops/Dockerfile
 +++ b/ops/Dockerfile
-@@ -46,14 +46,21 @@ RUN gpuci_mamba_retry create -n triton_test \
+@@ -46,14 +46,20 @@ RUN gpuci_mamba_retry create -n triton_test \
      && rm /environment.yml
  
  FROM base-test-install as wheel-install-0
@@ -59,8 +59,7 @@ index e4b4115..18defa2 100644
 +#    && rm -rf /var/lib/apt/lists/* \
 +#    && conda run --no-capture-output -n triton_test pip install tritonclient[all]
 +RUN yum install -y \
-+    gcc \
-+    gcc-c++ \
++    gcc-toolset-13 \
 +    make \
 +    patch \
 +    ca-certificates \
@@ -68,7 +67,7 @@ index e4b4115..18defa2 100644
  
  FROM ${SDK_IMAGE} as sdk-image
  
-@@ -80,22 +87,29 @@ ENV PATH="/root/miniconda3/bin:${PATH}"
+@@ -80,22 +86,28 @@ ENV PATH="/root/miniconda3/bin:${PATH}"
  
  # In CI, CPU base image may not have curl, but it also does not need to update
  # the cuda keys
@@ -105,8 +104,7 @@ index e4b4115..18defa2 100644
 +#    && apt-get clean \
 +#    && rm -rf /var/lib/apt/lists/*
 +RUN yum install -y \
-+    gcc \
-+    gcc-c++ \
++    gcc-toolset-13 \
 +    make \
 +    patch \
 +    ca-certificates \
@@ -114,3 +112,21 @@ index e4b4115..18defa2 100644
  
  # Stage immediately before building; useful for build iteration
  FROM base as build-prep
+@@ -162,7 +174,7 @@ COPY --from=conda-dev /conda/dev /conda/dev
+ 
+ SHELL ["/bin/bash", "-c"]
+ 
+-RUN source /conda/dev/bin/activate \
++RUN source /opt/rh/gcc-toolset-13/enable && source /conda/dev/bin/activate \
+  && cmake \
+       --log-level=VERBOSE \
+       -GNinja \
+@@ -185,7 +197,7 @@ ENV CCACHE_DIR=/ccache
+ 
+ ARG CCACHE_REMOTE_STORAGE
+ 
+-RUN --mount=type=cache,target=/ccache/ source /conda/dev/bin/activate && \
++RUN --mount=type=cache,target=/ccache/ source /opt/rh/gcc-toolset-13/enable && source /conda/dev/bin/activate && \
+     if [ -n "${CCACHE_REMOTE_STORAGE}" ] && which ccache ; then \
+       ccache --set-config=remote_only=true ; \
+       ccache --set-config=remote_storage=${CCACHE_REMOTE_STORAGE} ; \
