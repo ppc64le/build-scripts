@@ -22,6 +22,7 @@ PACKAGE_NAME=pandas
 PACKAGE_VERSION=${1:-v2.3.3}
 PACKAGE_URL=https://github.com/pandas-dev/pandas.git
 PACKAGE_DIR=pandas
+CURRENT_DIR=${PWD}
 
 # -----------------------------------------------------------------------------
 # 1. Install system dependencies
@@ -58,16 +59,16 @@ sed -i "s/version : '${PLAIN_VERSION}'/version : '${FULL_VERSION}'/" meson.build
 python3.12 -m venv pandas-env
 source pandas-env/bin/activate
 
-pip3.12 install --upgrade pip wheel setuptools
-pip3.12 install "numpy==2.0.2"
-pip3.12 install Cython pytest hypothesis build meson meson-python ninja versioneer[toml] patchelf
+python -m pip install --upgrade pip wheel setuptools
+python -m pip install "numpy==2.0.2"
+python -m pip install Cython pytest hypothesis build meson meson-python ninja "versioneer[toml]" patchelf
 
 # -mcpu=power9 -mtune=power9 produces code that runs on Power9, Power10, Power11
 export CFLAGS="-mcpu=power9 -mtune=power9 -O2"
 export CXXFLAGS="-mcpu=power9 -mtune=power9 -O2"
 
 # Build the package and create whl file
-python3 -m build --wheel --no-isolation
+python -m build --wheel --no-isolation
 if [ $? -eq 0 ]; then
     echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | Pass | Build_Success"
@@ -79,7 +80,7 @@ fi
 
 # Run auditwheel to tag the wheel as manylinux_2_28_ppc64le.
 # This is mandatory -- it verifies that no .so dependency requires glibc > 2.28
-pip3.12 install auditwheel
+python -m pip install auditwheel
 auditwheel repair --plat manylinux_2_28_ppc64le --wheel-dir wheelhouse dist/pandas-*.whl
 
 DUAL_WHEEL=$(ls wheelhouse/pandas-*manylinux*.whl 2>/dev/null | head -1)
@@ -89,29 +90,28 @@ if [ "${DUAL_WHEEL}" != "${FINAL_WHEEL}" ] && [ -f "${DUAL_WHEEL}" ]; then
     echo "Renamed wheel: $(basename "${FINAL_WHEEL}")"
 fi
 
-python3 -m pip install --only-binary=:all: "${FINAL_WHEEL}"
+python -m pip install --only-binary=:all: "${FINAL_WHEEL}"
 if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
+     echo "------------------$PACKAGE_NAME::Install_Pass---------------------"
 else
-     echo "------------------$PACKAGE_NAME::Build_Fail---------------------"
+     echo "------------------$PACKAGE_NAME::Install_Fail---------------------"
      exit 1
 fi
 
 # Test the package
 cd ..
-python3 -m pip show pandas
-python3 -c "import pandas; print(pandas.__file__)"
+if python -m pip show pandas && \
+   python -c "import pandas; print('Version:', pandas.__version__); print('Location:', pandas.__file__)"; then
 
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
+    echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | Pass | Test_Success"
 
-     # Deactivate python environment
-     deactivate
-
-     exit 0
+    deactivate
+    exit 0
 else
-     echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
-     exit 2
+    echo "------------------$PACKAGE_NAME::Test_Fail---------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | Fail | Test_Fail"
+
+    deactivate
+    exit 2
 fi
