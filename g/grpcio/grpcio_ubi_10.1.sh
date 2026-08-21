@@ -1,0 +1,71 @@
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
+#
+# Package       : grpcio
+# Version       : v1.71.0
+# Source repo   : https://github.com/grpc/grpc.git (# For grpcio - https://github.com.mcas.ms/grpc/grpc/tree/master/src/python/grpcio)
+# Tested on     : UBI:10.1
+# Language      : C++, Python, C, Starlark, Shell, Ruby
+# Ci-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Ramnath Nayak <Ramnath.Nayak@ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
+# Install dependencies
+yum install -y python3 python3-devel python3-pip python3-setuptools openssl openssl-devel git gcc-toolset-15 gcc-toolset-15-gcc-c++
+
+# Clone the grpc package.
+PACKAGE_NAME=grpc
+PACKAGE_VERSION=${1:-v1.71.0}
+PACKAGE_URL=https://github.com/grpc/grpc.git
+PACKAGE_DIR=grpc
+
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+git submodule update --init --recursive
+
+export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
+export GRPC_PYTHON_BUILD_WITH_CYTHON=1
+export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:${PATH}"
+
+pip3 install -r requirements.txt
+
+[[ "$(printf "%s\n" "$PACKAGE_VERSION" v1.62.3 | sort -V | head -n1)" == "$PACKAGE_VERSION" ]] && pip3 install --force-reinstall Cython==0.29.37
+
+# Install the package
+pip3 install . --no-build-isolation
+
+if [ $? == 0 ]; then
+     echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
+     echo "$PACKAGE_VERSION $PACKAGE_NAME"
+     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Build_Success"
+else
+     echo "------------------$PACKAGE_NAME::Build_Fail-------------------------"
+     echo "$PACKAGE_VERSION $PACKAGE_NAME"
+     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Build_Fail"
+     exit 1
+fi
+
+# Test the package
+cd ..
+python3 -c "import grpc; import grpc._cython; import grpc._cython._cygrpc; import grpc.beta; import grpc.framework; import grpc.framework.common; import grpc.framework.foundation; import grpc.framework.interfaces; import grpc.framework.interfaces.base; import grpc.framework.interfaces.face; print('All modules imported successfully')"
+
+if [ $? == 0 ]; then
+     echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
+     echo "$PACKAGE_VERSION $PACKAGE_NAME"
+     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
+
+else
+     echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
+     echo "$PACKAGE_VERSION $PACKAGE_NAME"
+     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
+     exit 2
+fi

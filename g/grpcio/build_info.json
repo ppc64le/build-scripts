@@ -1,5 +1,5 @@
 {
-    "maintainer": "Varsha Kumar",
+    "maintainer": "ramnathnayak-ibm",
     "package_name": "grpcio",
     "github_url": "https://github.com/grpc/grpc.git",
     "version": "v1.78.0",
@@ -21,6 +21,9 @@
      },
     "v1.81.1":{
       "build_script":"grpcio_1.81.1_ubi_9.6.sh"
+     },
+    "v1.71.0":{
+      "build_script":"grpcio_ubi_10.1.sh"
      },
     "v1.*.*": {
       "build_script": "grpcio_1.81.1_ubi_9.6.sh"
