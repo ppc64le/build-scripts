@@ -55,18 +55,9 @@ git checkout "$PACKAGE_VERSION"
 # Remove leading 'v'
 PLAIN_VERSION="${PACKAGE_VERSION#v}"
 
-# IBM local version label
-# PEP 440 local version: 2.3.3+ppc64le1
+# IBM local version label (PEP 440: 2.3.3+ppc64le1)
 FULL_VERSION="${PLAIN_VERSION}+ppc64le1"
-
-echo "Package version: ${PLAIN_VERSION}"
-echo "Full version: ${FULL_VERSION}"
-
-# Update pyproject.toml
-sed -i "s/^version = \"${PLAIN_VERSION}\"/version = \"${FULL_VERSION}\"/" pyproject.toml
-
-# Update meson.build if the version is present there
-sed -i "s/version : '${PLAIN_VERSION}'/version : '${FULL_VERSION}'/" meson.build 2>/dev/null || true
+export SETUPTOOLS_SCM_PRETEND_VERSION="${FULL_VERSION}"
 
 # -----------------------------------------------------------------------------
 # 4. Create Python virtual environment
