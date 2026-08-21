@@ -1,0 +1,36 @@
+diff --git a/README.md b/README.md
+index d861bca97c..8ebb42f462 100644
+--- a/README.md
++++ b/README.md
+@@ -92,9 +92,6 @@ The pre-trained models provided in this library may have their own licenses or t
+ dataset used for training. It is your responsibility to determine whether you have permission to use the models for your
+ use case.
+ 
+-More specifically, SWAG models are released under the CC-BY-NC 4.0 license. See
+-[SWAG LICENSE](https://github.com/facebookresearch/SWAG/blob/main/LICENSE) for additional details.
+-
+ ## Citing TorchVision
+ 
+ If you find TorchVision useful in your work, please consider citing the following BibTeX entry:
+diff --git a/torchvision/models/__init__.py b/torchvision/models/__init__.py
+index 6ea0a1f717..cca06bfcaf 100644
+--- a/torchvision/models/__init__.py
++++ b/torchvision/models/__init__.py
+@@ -6,12 +6,10 @@ from .googlenet import *
+ from .inception import *
+ from .mnasnet import *
+ from .mobilenet import *
+-from .regnet import *
+ from .resnet import *
+ from .shufflenetv2 import *
+ from .squeezenet import *
+ from .vgg import *
+-from .vision_transformer import *
+ from .swin_transformer import *
+ from .maxvit import *
+ from . import detection, optical_flow, quantization, segmentation, video
+diff --git a/torchvision/models/regnet.py b/torchvision/models/regnet.py
+deleted file mode 100644
+index 915ef22bf3..0000000000
+--- a/torchvision/models/regnet.py
++++ /dev/null
