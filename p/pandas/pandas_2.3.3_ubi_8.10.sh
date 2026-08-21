@@ -26,7 +26,7 @@ CURRENT_DIR=${PWD}
 # 1. Install system dependencies
 # -----------------------------------------------------------------------------
 
-yum install -y python3.12 python3.12-devel python3.12-pip git make cmake ninja-build binutils wget patchelf gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++
+yum install -y python3.12 python3.12-devel python3.12-pip git make cmake ninja-build binutils wget gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++
 
 # UBI 8.10 ships GCC 8.5.
 # GCC Toolset 13 provides GCC 13.
