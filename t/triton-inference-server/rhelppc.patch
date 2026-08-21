@@ -1,5 +1,5 @@
 diff --git a/build.py b/build.py
-index 326b443d..11a833f5 100755
+index 326b443d..4588d025 100755
 --- a/build.py
 +++ b/build.py
 @@ -282,6 +282,13 @@ class BuildScript:
@@ -47,13 +47,13 @@ index 326b443d..11a833f5 100755
        && yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
  #   && yum install -y docker.io docker-buildx-plugin
 +RUN yum update -y && yum install -y wget && \
-+    dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-35.el9.noarch.rpm \
-+        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-35.el9.noarch.rpm \
++    dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-38.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-38.el9.noarch.rpm \
 +        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
 +        dnf config-manager --set-enabled crb &&\
 +        dnf install gperf libarchive-devel numactl-devel readline-devel -y && \
 +        dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm &&\
-+        dnf remove -y centos-gpg-keys-9.0-35.el9.noarch centos-stream-repos-9.0-35.el9.noarch
++        dnf remove -y centos-gpg-keys-9.0-38.el9.noarch centos-stream-repos-9.0-38.el9.noarch
  
  # libcurl4-openSSL-dev is needed for GCS
  # python3-dev is needed by Torchvision
@@ -73,7 +73,7 @@ index 326b443d..11a833f5 100755
              libb64-devel \\
              libcurl-devel \\
              libtool \\
-@@ -880,16 +902,103 @@ RUN yum install -y \\
+@@ -880,16 +902,105 @@ RUN yum install -y \\
              numactl-devel \\
              openssl-devel \\
              pkg-config \\
@@ -114,7 +114,9 @@ index 326b443d..11a833f5 100755
 +           /usr/local/lib64/python3.12/site-packages/torch/lib/libtorchvision.so.1 && \\
 +    cp /usr/lib64/libjpeg.so.62 \\
 +       /usr/local/lib64/python3.12/site-packages/torch/lib/libjpeg.so.62
-+
++RUN dnf install -y gcc-toolset-13
++ENV PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
++ENV LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 +# ------------------------------------------------------------------
 +# Build prerequisites for protobuf
 +# ------------------------------------------------------------------
@@ -181,7 +183,7 @@ index 326b443d..11a833f5 100755
  """
      if argmap["NVIDIA_BUILD_ID"] is not None:
          df += """
-@@ -925,11 +1034,11 @@ RUN pip3 install --upgrade pip \\
+@@ -925,11 +1036,11 @@ RUN pip3 install --upgrade pip \\
            auditwheel \\
            build \\
            wheel \\
@@ -195,7 +197,7 @@ index 326b443d..11a833f5 100755
  """
      df += f"""
  # Install boost version >= 1.78 for boost::span
-@@ -1041,7 +1150,6 @@ RUN pip3 install --upgrade \\
+@@ -1041,7 +1152,6 @@ RUN pip3 install --upgrade \\
            docker \\
            virtualenv \\
            patchelf==0.17.2 \\
@@ -203,7 +205,7 @@ index 326b443d..11a833f5 100755
            pybind11[global]
  """
  
-@@ -1144,16 +1252,11 @@ ARG TRITON_CONTAINER_VERSION={}
+@@ -1144,16 +1254,11 @@ ARG TRITON_CONTAINER_VERSION={}
      # PyTorch backends need extra CUDA and other
      # dependencies during runtime that are missing in the CPU-only base container.
      # These dependencies must be copied from the Triton Min image.
@@ -221,7 +223,7 @@ index 326b443d..11a833f5 100755
  
      df += """
  ############################################################################
-@@ -1167,10 +1270,28 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
+@@ -1167,10 +1272,28 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
      df += dockerfile_prepare_container_linux(
          argmap, backends, FLAGS.enable_gpu, target_machine()
      )
@@ -251,7 +253,7 @@ index 326b443d..11a833f5 100755
  
  WORKDIR /opt/tritonserver
  COPY NVIDIA_Deep_Learning_Container_License.pdf .
-@@ -1187,7 +1308,7 @@ RUN set -e; \\
+@@ -1187,7 +1310,7 @@ RUN set -e; \\
          echo "ERROR: ${{pkg}}-*.whl missing from /opt/tritonserver/python -- build did not stage the wheel into the image" >&2; \\
          exit 1; \\
        fi; \\
@@ -260,7 +262,7 @@ index 326b443d..11a833f5 100755
      done
  
  RUN pip3 install -r python/openai/requirements.txt
-@@ -1205,7 +1326,7 @@ COPY docker/sagemaker/serve /usr/bin/.
+@@ -1205,7 +1328,7 @@ COPY docker/sagemaker/serve /usr/bin/.
      # stage of the PyTorch backend
      if not FLAGS.enable_gpu and ("pytorch" in backends):
          df += """
@@ -269,7 +271,7 @@ index 326b443d..11a833f5 100755
  """
      if "tensorrtllm" in backends:
          df += """
-@@ -1234,6 +1355,11 @@ ENV PATH /opt/tritonserver/bin:${PATH}
+@@ -1234,6 +1357,11 @@ ENV PATH /opt/tritonserver/bin:${PATH}
  # Remove once https://github.com/openucx/ucx/pull/9148 is available
  # in the min container.
  ENV UCX_MEM_EVENTS no
@@ -281,18 +283,18 @@ index 326b443d..11a833f5 100755
  """
  
      # Necessary for libtorch.so to find correct HPCX libraries
-@@ -1279,21 +1405,44 @@ RUN userdel tensorrt-server > /dev/null 2>&1 || true \\
+@@ -1279,21 +1407,44 @@ RUN userdel tensorrt-server > /dev/null 2>&1 || true \\
  
      if target_platform() == "rhel":
          df += """
 +RUN yum update -y && yum install -y wget && \
-+   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-35.el9.noarch.rpm \
-+        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-35.el9.noarch.rpm \
++   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-38.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-38.el9.noarch.rpm \
 +        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
 +        dnf config-manager --set-enabled crb &&\
 +        dnf install gperf numactl-devel readline-devel -y && \
 +        dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm &&\
-+        dnf remove -y centos-gpg-keys-9.0-35.el9.noarch centos-stream-repos-9.0-35.el9.noarch
++        dnf remove -y centos-gpg-keys-9.0-38.el9.noarch centos-stream-repos-9.0-38.el9.noarch
 +
  # Common dependencies.
  RUN yum install -y \\
@@ -328,7 +330,7 @@ index 326b443d..11a833f5 100755
  
  """
      else:
-@@ -1363,7 +1512,6 @@ RUN ln -sf ${_CUDA_COMPAT_PATH}/lib.real ${_CUDA_COMPAT_PATH}/lib \\
+@@ -1363,7 +1514,6 @@ RUN ln -sf ${_CUDA_COMPAT_PATH}/lib.real ${_CUDA_COMPAT_PATH}/lib \\
              df += """
  # python3, python3-pip and some pip installs required for the python backend
  RUN yum install -y \\
@@ -336,7 +338,7 @@ index 326b443d..11a833f5 100755
          openssl-devel \\
          readline-devel
  """
-@@ -1373,7 +1521,7 @@ RUN yum install -y \\
+@@ -1373,7 +1523,7 @@ RUN yum install -y \\
  RUN pip3 install --upgrade pip \\
      && pip3 install --upgrade \\
          wheel \\
@@ -345,7 +347,7 @@ index 326b443d..11a833f5 100755
          \"numpy<2\" \\
          virtualenv
  """
-@@ -1412,11 +1560,7 @@ ENV PYTHONPATH=/opt/tritonserver/backends/dali/wheel/dali:$PYTHONPATH
+@@ -1412,11 +1562,7 @@ ENV PYTHONPATH=/opt/tritonserver/backends/dali/wheel/dali:$PYTHONPATH
      if target_platform() == "rhel":
          repo_arch = "sbsa" if target_machine == "aarch64" else "x86_64"
          df += """
@@ -357,7 +359,7 @@ index 326b443d..11a833f5 100755
  """.format(
              repo_arch=repo_arch
          )
-@@ -1458,38 +1602,12 @@ def add_cpu_libs_to_linux_dockerfile(backends, target_machine):
+@@ -1458,38 +1604,12 @@ def add_cpu_libs_to_linux_dockerfile(backends, target_machine):
          # we must copy these from the Triton min container ourselves.
          cuda_arch = "sbsa" if target_machine == "aarch64" else "x86_64"
          df += """
@@ -398,7 +400,7 @@ index 326b443d..11a833f5 100755
  """.format(
              cuda_arch=cuda_arch, libs_arch=libs_arch
          )
-@@ -1501,7 +1619,7 @@ ENV LD_LIBRARY_PATH /usr/local/cuda/targets/{cuda_arch}-linux/lib:/usr/local/cud
+@@ -1501,7 +1621,7 @@ ENV LD_LIBRARY_PATH /usr/local/cuda/targets/{cuda_arch}-linux/lib:/usr/local/cud
          # Since this dependency is not present in the ubuntu base image,
          # we must copy it from the Triton min container ourselves.
          df += """
@@ -407,7 +409,7 @@ index 326b443d..11a833f5 100755
  """.format(
              libs_arch=libs_arch
          )
-@@ -1515,20 +1633,7 @@ def change_default_python_version_rhel(version):
+@@ -1515,20 +1635,7 @@ def change_default_python_version_rhel(version):
  # match the version of python inside the RHEL base container. This means that python packages
  # installed within the container will not be picked up by the python backend stub process pybind
  # bindings. It must instead must be installed via pyenv.
@@ -429,7 +431,7 @@ index 326b443d..11a833f5 100755
  """
      return df
  
-@@ -1727,6 +1832,43 @@ def create_docker_build_script(script_name, container_install_dir, container_ci_
+@@ -1727,6 +1834,43 @@ def create_docker_build_script(script_name, container_install_dir, container_ci_
              ],
              check_exitcode=True,
          )
@@ -473,7 +475,7 @@ index 326b443d..11a833f5 100755
  
          #
          # Final image... tritonserver
-@@ -1938,6 +2080,18 @@ def backend_build(
+@@ -1938,6 +2082,18 @@ def backend_build(
      if be == "tensorrtllm":
          tensorrtllm_be_dir = os.path.join(build_dir, be)
          tensorrtllm_postbuild(cmake_script, repo_install_dir, tensorrtllm_be_dir)
