@@ -9,7 +9,7 @@
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": "true",
-  "wheel_build": "true",
+  "wheel_build": true,
   "*.*": {
     "dir": "ubi_9",
     "build_script": "btrees_ubi_9.3.sh"
