@@ -1,8 +1,8 @@
 {
     "maintainer": "SakshiJain0302",
     "package_name": "openmpi",
-    "github_url": "https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz",
-    "version": "5.0.6",
+    "github_url": "https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.10.tar.gz",
+    "version": "5.0.10",
     "wheel_build" : false,
     "package_dir": "o/openmpi",
     "default_branch": "main",
@@ -12,8 +12,8 @@
     "use_non_root_user": false,
     "*" : {
       "build_script": [
-        "openmpi_ubi_9.3.sh",
-        "openmpi_ubi_10.1.sh"
+          "openmpi_ubi_9.3.sh",
+          "openmpi_ubi_10.2.sh"
       ]
     }
 }

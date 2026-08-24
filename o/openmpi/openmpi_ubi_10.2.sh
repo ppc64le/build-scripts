@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : openmpi
-# Version          : 5.0.6
+# Version          : 5.0.10
 # Source repo      : https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
-# Tested on        : UBI:10.1
+# Tested on        : UBI:10.2
 # Language         : Python, C, C++
 # Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
@@ -19,14 +19,14 @@
 # ---------------------------------------------------------------------------------------------
 # Variables
 PACKAGE_NAME=openmpi
-PACKAGE_VERSION=${1:-5.0.6}
+PACKAGE_VERSION=${1:-5.0.10}
 PACKAGE_VERSION_DIR=5.0
 PACKAGE_URL=https://download.open-mpi.org/release/open-mpi/v$PACKAGE_VERSION_DIR/$PACKAGE_NAME-$PACKAGE_VERSION.tar.gz
 PACKAGE_DIR=$PACKAGE_NAME-$PACKAGE_VERSION
 CURRENT_DIR=$(pwd)
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel autoconf automake libtool krb5-devel cmake python3.12 python3.12-devel python3.12-pip
+yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel autoconf automake libtool krb5-devel cmake python3.14 python3.14-devel python3.14-pip
 
 echo "Downloading the tarball..."
 wget $PACKAGE_URL
@@ -59,7 +59,7 @@ export PATH=$PREFIX/bin:$PATH
 export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
 
 # Install Python bindings
-pip install setuptools build
+python3.14 -m pip install setuptools build
 
 #create pyproject.toml
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/openmpi/pyproject.toml
@@ -79,14 +79,14 @@ if ! $PREFIX/bin/mpirun --allow-run-as-root --oversubscribe -n 2 ./helloworld_c;
 fi
 
 #install
-if ! (pip install .) ; then
+if ! (python3.14 -m pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 #build wheel
-if ! (python3 -m build --wheel --outdir="$CURRENT_DIR") ; then
+if ! (python3.14 -m build --wheel --outdir="$CURRENT_DIR") ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
