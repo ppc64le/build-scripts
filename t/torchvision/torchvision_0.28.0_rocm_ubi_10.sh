@@ -208,10 +208,17 @@ git apply "${SCRIPT_DIR}/${LICENSE_PATCH_FILE}"
 # Patch out the git-sha injection in setup.py that breaks reproducible builds
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
+# Rename the distribution from "torchvision" to "torchvision-rocm" so the
+# wheel is a distinct package on devpi. The import name (torchvision) is
+# unchanged — only the distribution name seen by pip/uv changes.
+# This follows the same pattern as vllm-rocm: a self-contained ROCm stack
+# where all consumers are also build scripts we control.
+sed -i 's/name="torchvision"/name="torchvision-rocm"/' setup.py
+
 # ---------------------------------------------------------------------------
-# Build torchvision wheel
+# Build torchvision-rocm wheel
 # ---------------------------------------------------------------------------
-echo "Building torchvision wheel"
+echo "Building torchvision-rocm wheel"
 
 # Let torchvision's CMake find the installed torch
 export TORCH_CMAKE_PREFIX=$($PYTHON -c 'import torch; print(torch.utils.cmake_prefix_path)')
@@ -229,16 +236,9 @@ if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${SCRIPT_DIR}"; 
     exit 1
 fi
 
-# Rename wheel to match ROCm naming convention (torchvision-0.28.0+rocm-...)
-# This mirrors what torch-2.13.0+rocm does: the +rocm suffix signals the wheel
-# was built against a ROCm torch. Only the filename is renamed; METADATA inside
-# retains the plain version so strict validators see a consistent wheel.
-PLAIN_WHL=$(ls "${SCRIPT_DIR}"/torchvision-${BUILD_VERSION}-*.whl)
-ROCM_WHL="${PLAIN_WHL/torchvision-${BUILD_VERSION}-/torchvision-${BUILD_VERSION}+rocm-}"
-mv "$PLAIN_WHL" "$ROCM_WHL"
-echo "Renamed wheel to: $(basename $ROCM_WHL)"
-
 # Install the wheel we just built so the import test can run
+ROCM_WHL=$(ls "${SCRIPT_DIR}"/torchvision_rocm-${BUILD_VERSION}-*.whl)
+echo "Built wheel: $(basename $ROCM_WHL)"
 $PYTHON -m pip install "$ROCM_WHL"
 
 # ---------------------------------------------------------------------------
