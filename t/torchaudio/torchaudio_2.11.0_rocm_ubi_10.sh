@@ -164,7 +164,6 @@ if [[ "$TORCH_INSTALL_MODE" == "local" ]]; then
     $PYTHON -m pip install "${TORCH_WHL_PATH}"
 else
     echo "Installing torch from IBM devpi (${TORCH_DEVPI_VERSION})"
-    # TODO: remove --pre once the ROCm torch wheel graduates to a stable devpi release
     $PYTHON -m pip install \
         --prefer-binary \
         --trusted-host wheels.developerfirst.ibm.com \
