@@ -20,6 +20,7 @@ PACKAGE_NAME=pyarrow
 PACKAGE_DIR=arrow/python
 PACKAGE_VERSION=${1:-23.0.1}
 PACKAGE_URL=https://github.com/apache/arrow
+PACKAGE_VERSION="${PACKAGE_VERSION#apache-arrow-}"
 CURRENT_DIR="${PWD}"
 
 # Arrow C++ install prefix
