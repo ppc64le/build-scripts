@@ -233,7 +233,7 @@ export CMAKE_PREFIX_PATH="${TORCH_CMAKE_PREFIX}:${ROCM_PATH}:${CMAKE_PREFIX_PATH
 export BUILD_VERSION="${PACKAGE_VERSION#v}"
 export SETUPTOOLS_SCM_PRETEND_VERSION="${BUILD_VERSION}"
 
-$PYTHON -m pip install --upgrade setuptools wheel
+$PYTHON -m pip install --upgrade setuptools wheel pillow
 
 if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${SCRIPT_DIR}"; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------------------------"
@@ -242,10 +242,12 @@ if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${SCRIPT_DIR}"; 
     exit 1
 fi
 
-# Install the wheel we just built so the import test can run
+# Install the wheel we just built so the import test can run.
+# torch-rocm is already installed locally; pass --find-links so pip can
+# satisfy that dependency without hitting PyPI for it.
 ROCM_WHL=$(ls "${SCRIPT_DIR}"/torchvision_rocm-${BUILD_VERSION}-*.whl)
 echo "Built wheel: $(basename $ROCM_WHL)"
-$PYTHON -m pip install "$ROCM_WHL"
+$PYTHON -m pip install --find-links "${SCRIPT_DIR}" "$ROCM_WHL"
 
 # ---------------------------------------------------------------------------
 # Import test
