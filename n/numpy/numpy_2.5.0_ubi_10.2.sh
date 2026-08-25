@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : numpy
-# Version       : v2.5.2
+# Version       : v2.5.0
 # Source repo   : https://github.com/numpy/numpy
 # Tested on     : UBI:10.2
 # Language      : Python
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=numpy
-PACKAGE_VERSION=${1:-v2.5.2}
+PACKAGE_VERSION=${1:-v2.5.0}
 PACKAGE_URL=https://github.com/numpy/numpy.git
 PACKAGE_DIR=numpy
 CURRENT_DIR="${PWD}"
@@ -27,21 +27,51 @@ yum install -y wget python3.14 python3.14-devel python3.14-pip git gcc gcc-c++ g
 python3.14 -m pip install --upgrade pip
 python3.14 -m pip install tox Cython pytest hypothesis wheel meson ninja build meson-python patchelf
 
-#clone and install openblas from source
-git clone https://github.com/OpenMathLib/OpenBLAS
+echo " --------------------------------------------------- OpenBlas Installing --------------------------------------------------- "
+
+# OpenBLAS version and source
+OPENBLAS_VERSION=v0.3.33
+OPENBLAS_URL=https://github.com/OpenMathLib/OpenBLAS
+
+# Clone OpenBLAS
+
+git clone "${OPENBLAS_URL}"
 cd OpenBLAS
-git checkout v0.3.29
+git checkout "${OPENBLAS_VERSION}"
 git submodule update --init
 
-make -j$(nproc) TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=120 DYNAMIC_ARCH=1 INTERFACE64=0
-make install PREFIX=/usr/local
+export USE_OPENMP=1
+export USE_THREAD=1
+export NUM_THREADS=8
+export TARGET=POWER9
+export DYNAMIC_ARCH=1
+export INTERFACE64=0
+export BUILD_BFLOAT16=1
+export NO_AFFINITY=1
 
-export PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
-export LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib:$LD_LIBRARY_PATH
-export LIBRARY_PATH=/usr/local/lib64:/usr/local/lib:$LIBRARY_PATH
-export CPATH=/usr/local/include:$CPATH
+export CF="${CFLAGS:-} -Wno-unused-parameter -Wno-old-style-declaration"
+unset CFLAGS
 
-cd ..
+export LDFLAGS="$(echo "${LDFLAGS:-}" | sed 's/-Wl,--gc-sections//g')"
+
+if [ -n "${FFLAGS:-}" ]; then
+    export FFLAGS="${FFLAGS/-fopenmp/ }"
+    export FFLAGS="${FFLAGS} -frecursive"
+    export LAPACK_FFLAGS="${FFLAGS}"
+fi
+
+make -j"${MAX_JOBS}" TARGET="${TARGET}" BUILD_BFLOAT16="${BUILD_BFLOAT16}" BINARY=64 USE_OPENMP="${USE_OPENMP}" USE_THREAD="${USE_THREAD}" NUM_THREADS="${NUM_THREADS}" DYNAMIC_ARCH="${DYNAMIC_ARCH}" INTERFACE64="${INTERFACE64}" NO_AFFINITY="${NO_AFFINITY}" CFLAGS="${CF}" FFLAGS="${FFLAGS:-}"
+
+make install PREFIX="${OPENBLAS_PREFIX}"
+
+export LD_LIBRARY_PATH="${OPENBLAS_PREFIX}/lib:${OPENBLAS_PREFIX}/lib64:${LD_LIBRARY_PATH:-}"
+export PKG_CONFIG_PATH="${OPENBLAS_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+
+pkg-config --modversion openblas
+
+echo "-----------------------------------------------------Installed OpenBLAS-----------------------------------------------------"
+
+cd $CURRENT_DIR
 
 
 #clone package
