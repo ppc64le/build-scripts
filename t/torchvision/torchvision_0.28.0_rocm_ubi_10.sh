@@ -214,6 +214,13 @@ sed -i '/elif sha != "Unknown":/,+1d' setup.py
 # changes. Follows the same pattern as vllm-rocm.
 export TORCHVISION_PACKAGE_NAME="torchvision-rocm"
 
+# Tell torchvision's get_requirements() to list "torch-rocm" as its torch
+# dependency instead of "torch". torchvision's setup.py reads TORCH_PACKAGE_NAME
+# at install_requires time (same env var PyTorch uses for its own name).
+# Without this, pip fails to install the wheel because it looks for "torch"
+# which doesn't exist — only "torch-rocm" is installed.
+export TORCH_PACKAGE_NAME="torch-rocm"
+
 # ---------------------------------------------------------------------------
 # Build torchvision-rocm wheel
 # ---------------------------------------------------------------------------
