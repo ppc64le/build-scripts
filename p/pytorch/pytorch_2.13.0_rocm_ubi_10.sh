@@ -228,9 +228,15 @@ export PYTORCH_BUILD_NUMBER=1
 sed -i 's/^name = "torch"$/name = "torch-rocm"/' pyproject.toml
 echo "Patched pyproject.toml: name = torch-rocm"
 
-# Build wheel (pyproject.toml name is now torch-rocm)
+# Build wheel via setup.py directly.
+# pip wheel always invokes PEP 517 (even with --no-build-isolation), which
+# spawns a subprocess that does not inherit the current environment — causing
+# cmake to re-configure without PYTORCH_ROCM_ARCH and fail.
+# setup.py bdist_wheel runs in-process: all exported env vars are visible,
+# cmake skips recompilation because build/ already exists and targets are
+# up to date, and setuptools reads the patched pyproject.toml for the name.
 echo "Building distribution wheel"
-if ! MAX_JOBS=$(nproc) $PYTHON -m pip wheel --no-build-isolation -v -w "${SCRIPT_DIR}/dist" .; then
+if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${SCRIPT_DIR}/dist"; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
