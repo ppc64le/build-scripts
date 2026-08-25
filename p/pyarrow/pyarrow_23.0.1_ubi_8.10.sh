@@ -3,7 +3,7 @@
 #
 # Package       : pyarrow
 # Version       : 23.0.1
-# Source repo   : https://github.com/apache/arrow.git
+# Source repo   : https://github.com/apache/arrow
 # Tested on     : UBI 8.10
 # Language      : Python, C++, Cython
 # Ci-Check      : True
@@ -18,9 +18,8 @@
 
 PACKAGE_NAME=pyarrow
 PACKAGE_DIR=arrow/python
-PACKAGE_VERSION=${1:-apache-arrow-23.0.1}
+PACKAGE_VERSION=${1:-23.0.1}
 PACKAGE_URL=https://github.com/apache/arrow
-version="${PACKAGE_VERSION#apache-arrow-}"
 CURRENT_DIR="${PWD}"
 
 # Arrow C++ install prefix
@@ -54,14 +53,14 @@ cd "$CURRENT_DIR"
 [ -d "arrow" ] && rm -rf "arrow"
 git clone "$PACKAGE_URL" arrow
 cd arrow
-git checkout "$PACKAGE_VERSION"
+git checkout "apache-arrow-${PACKAGE_VERSION}"
 git submodule update --init --recursive
 
 # -----------------------------------------------------------------------------
 # 3. Set package version
 # -----------------------------------------------------------------------------
 
-echo "Package version : ${version}"
+echo "Package version : ${PACKAGE_VERSION}"
 
 # -----------------------------------------------------------------------------
 # 4. Create Python virtual environment
@@ -189,7 +188,7 @@ export PYARROW_WITH_ORC=0
 export PYARROW_WITH_PLASMA=0
 export PYARROW_PARALLEL="${NPROC}"
 
-export SETUPTOOLS_SCM_PRETEND_VERSION="${version}"
+export SETUPTOOLS_SCM_PRETEND_VERSION="${PACKAGE_VERSION}"
 
 export LD_LIBRARY_PATH="${ARROW_HOME}/lib64:${ARROW_HOME}/lib:${LD_LIBRARY_PATH:-}"
 export PKG_CONFIG_PATH="${ARROW_HOME}/lib64/pkgconfig:${ARROW_HOME}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
