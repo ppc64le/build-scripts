@@ -216,15 +216,21 @@ export PYTORCH_BUILD_NUMBER=1
 
 # Rename the pip distribution to "torch-rocm" for ROCm stack isolation on devpi.
 # The import name (torch) is unchanged — only the wheel distribution name changes.
-# PyTorch's setup.py reads TORCH_PACKAGE_NAME at line ~340.
-# IMPORTANT: pip wheel/pip install both invoke PEP 517 in an isolated subprocess
-# that does NOT inherit environment variables.  Call setup.py bdist_wheel directly
-# so the env var is visible in-process — same pattern used by torchaudio-rocm.
-export TORCH_PACKAGE_NAME="torch-rocm"
+#
+# WHY sed on pyproject.toml:
+#   PyTorch v2.13.0 has a pyproject.toml with [project] name = "torch".
+#   setuptools>=77 (which this build requires) reads pyproject.toml as the
+#   authoritative metadata source — it takes precedence over setup.py's
+#   setup(name=...) call.  TORCH_PACKAGE_NAME env var only affects setup.py
+#   but never reaches the wheel name because setuptools overwrites it from
+#   pyproject.toml.  The only reliable fix is to patch the name in-place
+#   before the build runs, exactly as torchaudio-rocm patches setup.py.
+sed -i 's/^name = "torch"$/name = "torch-rocm"/' pyproject.toml
+echo "Patched pyproject.toml: name = torch-rocm"
 
-# Build wheel via setup.py directly (bypasses PEP 517 isolation, sees env vars)
+# Build wheel (pyproject.toml name is now torch-rocm)
 echo "Building distribution wheel"
-if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${SCRIPT_DIR}/dist"; then
+if ! MAX_JOBS=$(nproc) $PYTHON -m pip wheel --no-build-isolation -v -w "${SCRIPT_DIR}/dist" .; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
