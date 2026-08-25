@@ -229,23 +229,18 @@ export BUILD_TORCHAUDIO_PYTHON_EXTENSION=ON
 
 $PYTHON -m pip install --upgrade pip setuptools wheel
 
-if ! $PYTHON -m pip install -v . --no-build-isolation --no-deps; then
+# Build the wheel and install it in one step. pip wheel saves the .whl to
+# $SCRIPT_DIR; pip install then installs it for the import test.
+if ! $PYTHON -m pip wheel . --no-build-isolation --no-deps -w "${SCRIPT_DIR}"; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
     exit 1
 fi
 
-# Build the wheel from the already-installed package
-if ! $PYTHON -m build --wheel --no-isolation --outdir="${SCRIPT_DIR}/"; then
-    echo "------------------$PACKAGE_NAME:wheel_build_fails---------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Wheel_Build_Fails"
-    exit 1
-fi
-
 ROCM_WHL=$(ls "${SCRIPT_DIR}"/torchaudio_rocm-${BUILD_VERSION}-*.whl)
 echo "Built wheel: $(basename $ROCM_WHL)"
+$PYTHON -m pip install "$ROCM_WHL"
 
 # ---------------------------------------------------------------------------
 # Import test
