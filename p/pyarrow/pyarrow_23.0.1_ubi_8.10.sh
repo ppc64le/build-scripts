@@ -17,10 +17,11 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=pyarrow
+PACKAGE_DIR=arrow/python
 PACKAGE_VERSION=${1:-apache-arrow-23.0.1}
-PACKAGE_URL=https://github.com/apache/arrow.git
-PACKAGE_DIR=arrow
-CURRENT_DIR=${PWD}
+PACKAGE_URL=https://github.com/apache/arrow
+version="${PACKAGE_VERSION#apache-arrow-}"
+CURRENT_DIR="${PWD}"
 
 # Arrow C++ install prefix
 ARROW_HOME="${CURRENT_DIR}/arrow-install"
@@ -40,14 +41,19 @@ source /opt/rh/gcc-toolset-13/enable
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:${LD_LIBRARY_PATH:-}
 
+echo "GCC version  : $(gcc --version | head -1)"
+echo "G++ version  : $(g++ --version | head -1)"
+echo "CMake version: $(cmake --version | head -1)"
+echo "Python version: $(python3.12 --version)"
+
 # -----------------------------------------------------------------------------
 # 2. Clone source repository
 # -----------------------------------------------------------------------------
 
 cd "$CURRENT_DIR"
-[ -d "$PACKAGE_DIR" ] && rm -rf "$PACKAGE_DIR"
-git clone "$PACKAGE_URL" "$PACKAGE_DIR"
-cd "$PACKAGE_DIR"
+[ -d "arrow" ] && rm -rf "arrow"
+git clone "$PACKAGE_URL" arrow
+cd arrow
 git checkout "$PACKAGE_VERSION"
 git submodule update --init --recursive
 
@@ -55,10 +61,7 @@ git submodule update --init --recursive
 # 3. Set package version
 # -----------------------------------------------------------------------------
 
-# Strip the 'apache-arrow-' prefix to get the bare PEP 440 version (e.g. 23.0.1)
-PLAIN_VERSION="${PACKAGE_VERSION#apache-arrow-}"
-
-echo "Package version : ${PLAIN_VERSION}"
+echo "Package version : ${version}"
 
 # -----------------------------------------------------------------------------
 # 4. Create Python virtual environment
@@ -73,11 +76,15 @@ source pyarrow-env/bin/activate
 
 PYTHON_BIN="${VIRTUAL_ENV}/bin/python"
 
+echo "Using Python    : ${PYTHON_BIN}"
+echo "Python version  : $(${PYTHON_BIN} --version)"
+
 # -----------------------------------------------------------------------------
 # 5. Install Python build dependencies
 # -----------------------------------------------------------------------------
 
 "${PYTHON_BIN}" -m pip install --upgrade pip wheel setuptools
+
 "${PYTHON_BIN}" -m pip install "numpy>=1.26,<3" "cython>=3.0,<4" "setuptools_scm[toml]>=8" pytest build auditwheel patchelf
 
 # -----------------------------------------------------------------------------
@@ -104,7 +111,7 @@ mkdir -p "${CURRENT_DIR}/arrow-build"
 cd "${CURRENT_DIR}/arrow-build"
 
 cmake \
-    "${CURRENT_DIR}/${PACKAGE_DIR}/cpp" \
+    "${CURRENT_DIR}/arrow/cpp" \
     -GNinja \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX="${ARROW_HOME}" \
@@ -170,7 +177,7 @@ echo "--- Arrow C++ install complete (prefix: ${ARROW_HOME}) ---"
 # 8. Build pyarrow wheel
 # -----------------------------------------------------------------------------
 
-cd "${CURRENT_DIR}/${PACKAGE_DIR}/python"
+cd "${CURRENT_DIR}/${PACKAGE_DIR}"
 
 export ARROW_HOME="${ARROW_HOME}"
 export PYARROW_WITH_PARQUET=1
@@ -182,7 +189,7 @@ export PYARROW_WITH_ORC=0
 export PYARROW_WITH_PLASMA=0
 export PYARROW_PARALLEL="${NPROC}"
 
-export SETUPTOOLS_SCM_PRETEND_VERSION="${PLAIN_VERSION}"
+export SETUPTOOLS_SCM_PRETEND_VERSION="${version}"
 
 export LD_LIBRARY_PATH="${ARROW_HOME}/lib64:${ARROW_HOME}/lib:${LD_LIBRARY_PATH:-}"
 export PKG_CONFIG_PATH="${ARROW_HOME}/lib64/pkgconfig:${ARROW_HOME}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
@@ -248,7 +255,7 @@ echo "Auditwheel generated wheel: ${DUAL_WHEEL}"
 # 12. Extract version, Python and ABI tags from SOURCE_WHEEL
 #
 # Example SOURCE_WHEEL:
-#   pyarrow-23.0.1+ppc64le1-cp312-cp312-linux_ppc64le.whl
+#   pyarrow-23.0.1-cp312-cp312-linux_ppc64le.whl
 # -----------------------------------------------------------------------------
 
 SOURCE_BASENAME=$(basename "${SOURCE_WHEEL}")
@@ -271,6 +278,7 @@ fi
 # -----------------------------------------------------------------------------
 
 FINAL_WHEEL="wheelhouse/pyarrow-${VERSION}-${PYTHON_TAG}-${ABI_TAG}-manylinux_2_28_ppc64le.whl"
+
 echo "Final wheel: ${FINAL_WHEEL}"
 
 # -----------------------------------------------------------------------------
@@ -302,7 +310,7 @@ echo "Final wheel ready: ${FINAL_WHEEL}"
 # 15. Install generated wheel
 # -----------------------------------------------------------------------------
 
-cd "${CURRENT_DIR}/${PACKAGE_DIR}/python"
+cd "${CURRENT_DIR}/${PACKAGE_DIR}"
 
 if "${PYTHON_BIN}" -m pip install --only-binary=:all: "${FINAL_WHEEL}"; then
     echo "------------------${PACKAGE_NAME}::Install_Pass---------------------"
