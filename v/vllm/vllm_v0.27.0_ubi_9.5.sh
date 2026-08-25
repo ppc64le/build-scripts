@@ -273,22 +273,14 @@ print('vLLM import OK')
 "
 
 # ===============================================================
-# SHM RESIZE (vLLM v1 engine requires >= 160 MiB of /dev/shm)
-# ===============================================================
-
-echo "---------------- Resizing /dev/shm ----------------"
-
-mount -t tmpfs -o size=512m tmpfs /dev/shm
-
-df -h /dev/shm
-
-# ===============================================================
 # TEST
 # ===============================================================
 
 echo "---------------- Testing installed vLLM ----------------"
 
 export VLLM_CPU_KVCACHE_SPACE=4
+# Disable V1 multiprocessing to avoid /dev/shm size requirement in CI containers
+export VLLM_ENABLE_V1_MULTIPROCESSING=0
 
 if ! python3.12 \
 ${CURRENT_DIR}/${PACKAGE_DIR}/examples/basic/offline_inference/basic.py
@@ -300,3 +292,4 @@ fi
 echo "==============================================================="
 echo "   vLLM ${PACKAGE_VERSION} BUILD AND TEST COMPLETED SUCCESSFULLY"
 echo "==============================================================="
+
