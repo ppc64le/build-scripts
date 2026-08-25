@@ -1,8 +1,8 @@
 {
-  "maintainer": "shubham-garud",
+  "maintainer": "Amitkumar282",
   "package_name": "numpy",
   "github_url": "https://github.com/numpy/numpy.git",
-  "version": "v2.2.2",
+  "version": "v1.26.4",
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "n/numpy",
@@ -14,7 +14,7 @@
     "build_script": "numpy_1.26.0_ubi_9.3.sh"
   },
   "v1.26.4": {
-    "build_script": "numpy_ubi_9.3.sh"
+    "build_script": "numpy_1.26.4_ubi_8.10.sh"
   },
   "v1.23.5":{
     "build_script": "numpy_1.23.5_ubi_9.3.sh"
@@ -29,3 +29,4 @@
     "build_script": "numpy_v2.2.5_ubi_9.3.sh"
   }
 }
+
