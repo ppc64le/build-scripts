@@ -208,12 +208,11 @@ git apply "${SCRIPT_DIR}/${LICENSE_PATCH_FILE}"
 # Patch out the git-sha injection in setup.py that breaks reproducible builds
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
-# Rename the distribution from "torchvision" to "torchvision-rocm" so the
-# wheel is a distinct package on devpi. The import name (torchvision) is
-# unchanged — only the distribution name seen by pip/uv changes.
-# This follows the same pattern as vllm-rocm: a self-contained ROCm stack
-# where all consumers are also build scripts we control.
-sed -i 's/name="torchvision"/name="torchvision-rocm"/' setup.py
+# Rename the distribution to "torchvision-rocm" via the env var that
+# torchvision's setup.py already supports (line 38: TORCHVISION_PACKAGE_NAME).
+# The import name (torchvision) is unchanged — only the pip distribution name
+# changes. Follows the same pattern as vllm-rocm.
+export TORCHVISION_PACKAGE_NAME="torchvision-rocm"
 
 # ---------------------------------------------------------------------------
 # Build torchvision-rocm wheel
