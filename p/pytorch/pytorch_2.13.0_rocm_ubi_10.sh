@@ -216,23 +216,23 @@ export PYTORCH_BUILD_NUMBER=1
 
 # Rename the pip distribution to "torch-rocm" for ROCm stack isolation on devpi.
 # The import name (torch) is unchanged — only the wheel distribution name changes.
-# PyTorch's setup.py already supports this via TORCH_PACKAGE_NAME (line ~340).
-# NOTE: must set this before the wheel build, not the editable install — editable
-# installs read the name from the pre-existing egg-info directory and ignore
-# TORCH_PACKAGE_NAME.  Build the wheel first, then install from it.
+# PyTorch's setup.py reads TORCH_PACKAGE_NAME at line ~340.
+# IMPORTANT: pip wheel/pip install both invoke PEP 517 in an isolated subprocess
+# that does NOT inherit environment variables.  Call setup.py bdist_wheel directly
+# so the env var is visible in-process — same pattern used by torchaudio-rocm.
 export TORCH_PACKAGE_NAME="torch-rocm"
 
-# Build wheel (TORCH_PACKAGE_NAME is honoured here)
+# Build wheel via setup.py directly (bypasses PEP 517 isolation, sees env vars)
 echo "Building distribution wheel"
-if ! MAX_JOBS=$(nproc) $PYTHON -m pip wheel --no-build-isolation -v -w dist .; then
+if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${SCRIPT_DIR}/dist"; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
     exit 1
 fi
 
-# Install from the wheel so pip registers it as torch-rocm
-$PYTHON -m pip install --no-build-isolation dist/torch_rocm-*.whl
+# Install from the renamed wheel so pip registers it as torch-rocm
+$PYTHON -m pip install --no-build-isolation "${SCRIPT_DIR}/dist"/torch_rocm-*.whl
 
 # Basic import test
 echo "Running basic import test"
