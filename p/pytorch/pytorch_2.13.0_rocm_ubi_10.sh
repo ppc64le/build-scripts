@@ -34,6 +34,12 @@
 #   ROCM_REPO_URL        - RPM repo baseurl
 #   PACKAGE_VERSION      - PyTorch tag to build (default: v2.13.0)
 #
+# The produced wheel distribution is named "torch-rocm" (pip install name)
+# while the import name remains "torch".  This matches the naming convention
+# used by torchvision-rocm and torchaudio-rocm in this repo, isolating the
+# ROCm wheel from the standard CPU "torch" wheel on devpi.
+# PyTorch's setup.py supports this via the TORCH_PACKAGE_NAME env var.
+#
 # ---------------------------------------------------------------------------
 
 set -e
@@ -207,6 +213,11 @@ git apply --directory=third_party/composable_kernel "$SCRIPT_DIR/pytorch_v2.13.0
 echo "Building PyTorch (this will take a while)"
 export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION#v}+rocm
 export PYTORCH_BUILD_NUMBER=1
+
+# Rename the pip distribution to "torch-rocm" for ROCm stack isolation on devpi.
+# The import name (torch) is unchanged — only the wheel distribution name changes.
+# PyTorch's setup.py already supports this via TORCH_PACKAGE_NAME (line ~340).
+export TORCH_PACKAGE_NAME="torch-rocm"
 
 if ! MAX_JOBS=$(nproc) $PYTHON -m pip install --no-build-isolation -v -e .; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------------------------"
