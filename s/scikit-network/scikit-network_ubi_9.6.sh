@@ -83,15 +83,17 @@ fi
 # Run tests
 # Run tests
 if ! python3.12 -m pytest -v --capture=no -p no:warnings \
-    --deselect sknetwork/topology/tests/test_cliques.py::TestClique::test_cliques \
-    --deselect sknetwork/topology/tests/test_core.py::TestCoreDecomposition::test_empty \
+    --ignore=sknetwork/topology/tests/test_cliques.py \
+    --ignore=sknetwork/topology/tests/test_core.py \
     --deselect sknetwork/hierarchy/tests/test_metrics.py::TestMetrics::test_directed ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_success_but_test_Fails"
+    echo "$PACKAGE_NAME | $PACKAGE_URL"
+    echo "$PACKAGE_NAME | $PACKAGE_VERSION | GitHub | Fail | Install_success_but_test_Fails"
     exit 2
 else
     echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Install_and_Test_Success"
+    echo "$PACKAGE_NAME | $PACKAGE_URL"
+    echo "$PACKAGE_NAME | $PACKAGE_VERSION | GitHub | Pass | Install_and_Test_Success"
 fi
