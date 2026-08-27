@@ -92,21 +92,16 @@ echo "=========================="
 # ---------------------------------------------------------------------------
 # Install system build dependencies
 # ---------------------------------------------------------------------------
-EPEL_URL="https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm"
-if ! rpm -q epel-release &>/dev/null; then
-    echo "Installing EPEL"
-    dnf install -y "$EPEL_URL"
-fi
 
 echo "Installing system dependencies"
 dnf install -y git make wget patch cmake ninja-build \
-    python3.13 python3.13-devel python3.13-pip \
+    python3.12 python3.12-devel python3.12-pip \
     gcc gcc-c++ \
     openblas openblas-devel
 echo "Installed required deps from RH"
 
 # Use Python 3.13 for the build so the produced wheel is cp313
-PYTHON=python3.13
+PYTHON=python3.12
 
 # ---------------------------------------------------------------------------
 # MODE: rpms — install ROCm from a provided RPM repository
