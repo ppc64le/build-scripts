@@ -59,20 +59,10 @@ echo "Using gcc: $(gcc --version | head -1)"
 python3.14 -m pip install --upgrade pip wheel
 python3.14 -m pip install --no-cache-dir "setuptools<70.0.0"
 
-# -----------------------------------------------------------------------------
-# Install pre-built dependencies from IBM DeveloperFirst wheels index
-# (openblas and numpy have no ppc64le wheel on PyPI for Python 3.14)
-# opencv-python pyproject.toml pins numpy==2.3.2 for Python 3.14 — match it exactly
-# -----------------------------------------------------------------------------
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
-NUMPY_VERSION="2.3.2"
+NUMPY_VERSION="2.5.0"
 
-python3.14 -m pip install \
-    --prefer-binary \
-    --trusted-host wheels.developerfirst.ibm.com \
-    --extra-index-url ${IBM_WHEELS} \
-    openblas==0.3.33 \
-    numpy==${NUMPY_VERSION}
+python3.14 -m pip install "numpy==2.5.0" setuptools
 
 python3.14 -m pip install cython pytest scikit-build build wheel cmake
 
@@ -95,7 +85,7 @@ python3.14 -m pip install \
     --prefer-binary \
     --trusted-host wheels.developerfirst.ibm.com \
     --extra-index-url ${IBM_WHEELS} \
-    "libprotobuf==4.25.8" \
+    "libprotobuf==28.0" \
     "abseil-cpp==20240116.2"
 
 ABSEILCPP_PREFIX=$(python3.14 -c "import sysconfig, os; print(os.path.join(sysconfig.get_path('purelib'), 'abseilcpp'))")
