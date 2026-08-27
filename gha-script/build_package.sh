@@ -84,7 +84,13 @@ resolve_docker_image() {
 }
 
 resolve_docker_image "$TESTED_ON"
-docker pull "$docker_image"
+
+# Only pull images that come from a remote registry.
+# docker_non_root_image is built locally by docker_build_non_root() and
+# does not exist in any registry, so pulling it would always fail.
+if [[ "$docker_image" != "docker_non_root_image" ]]; then
+  docker pull "$docker_image"
+fi
 
 
 python3 gha-script/validate_builds_currency.py "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "$docker_image" 2>&1 | tee build_log

@@ -23,21 +23,21 @@ index bf374cd..c53c6b9 100644
        COMMAND docker create --name onnxruntime_backend_ort ${TRITON_ONNXRUNTIME_DOCKER_IMAGE}
        COMMAND rm -fr onnxruntime
 diff --git a/tools/gen_ort_dockerfile.py b/tools/gen_ort_dockerfile.py
-index cdb4253..dde34db 100755
+index cdb4253..e429a21 100755
 --- a/tools/gen_ort_dockerfile.py
 +++ b/tools/gen_ort_dockerfile.py
-@@ -170,17 +170,27 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
+@@ -170,19 +170,29 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
      # if the changes become more substantial.
      if target_platform() == "rhel":
          df += """
 -
 +RUN yum install -y wget && \
-+   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-35.el9.noarch.rpm \
-+        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-35.el9.noarch.rpm \
++   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-38.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-38.el9.noarch.rpm \
 +        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
 +        dnf config-manager --set-enabled crb &&\
 +        dnf install gperf libarchive-devel numactl-devel readline-devel libusb patch -y && \
-+        dnf remove -y centos-gpg-keys-9.0-35.el9.noarch centos-stream-repos-9.0-35.el9.noarch
++        dnf remove -y centos-gpg-keys-9.0-38.el9.noarch centos-stream-repos-9.0-38.el9.noarch
  RUN dnf install -y \\
          ca-certificates \\
 -        curl \\
@@ -56,5 +56,17 @@ index cdb4253..dde34db 100755
 +
 +RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
  
- RUN pip3 install \\
+-RUN pip3 install \\
++RUN pip3 install --no-cache-dir \\
         cmake==4.0.3 \\
+        numpy \\
+        packaging \\
+@@ -245,7 +255,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \\
+         wget \\
+         zip
+ 
+-RUN pip3 install \\
++RUN pip3 install --no-cache-dir \\
+        cmake==4.0.3 \\
+        numpy \\
+        packaging \\
