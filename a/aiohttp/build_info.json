@@ -11,9 +11,12 @@
   "validate_build_script": true,
   "use_non_root_user": "false",
   "v3.8.6" : {
-            "build_script": "aiohttp_v3.8.6_ubi_9.3.sh"
+    "build_script": "aiohttp_v3.8.6_ubi_9.3.sh"
+  },
+  "v3.13.*" : {
+    "build_script": "aiohttp_v3.13.5_ubi_9.6.sh"
   },
   "v*.*.*": {
-            "build_script": "aiohttp_ubi_9.3.sh"
+    "build_script": "aiohttp_ubi_9.3.sh"
   }
 }
