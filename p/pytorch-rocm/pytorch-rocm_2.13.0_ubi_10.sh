@@ -1,6 +1,5 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
-#
 # Package       : pytorch-rocm
 # Version       : v2.13.0
 # Source repo   : https://github.com/pytorch/pytorch.git
