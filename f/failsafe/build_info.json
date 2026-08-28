@@ -1,0 +1,12 @@
+{
+  "maintainer": "pooja0805",
+  "package_name": "failsafe",
+  "github_url": "https://github.com/failsafe-lib/failsafe.git",
+  "version": "failsafe-parent-3.3.2",
+  "default_branch": "master",
+  "package_dir": "f/failsafe/",
+  "build_script": "failsafe_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": true,
+  "docker_cmd": false
+}
