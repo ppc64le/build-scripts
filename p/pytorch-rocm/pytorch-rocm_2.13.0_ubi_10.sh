@@ -172,10 +172,17 @@ $PYTHON tools/amd_build/build_amd.py
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/9c57d3b2c54a629d3cf6f45095b394f85374da3f/p/pytorch-rocm/pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch
 git apply pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch
 
+
 # Fix FastGeluAsm explicit specializations rejected by AMD clang 23.0 in composable_kernel
 # This patch is required — fail loudly if it cannot be applied
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/9c57d3b2c54a629d3cf6f45095b394f85374da3f/p/pytorch-rocm/pytorch_v2.13.0_rocm_fastgeluasm.patch
 git apply --directory=third_party/composable_kernel pytorch_v2.13.0_rocm_fastgeluasm.patch
+
+
+# Rename the pip distribution from "torch" to "torch-rocm" so the produced wheel
+# is named torch_rocm-<version>-*.whl. The import name (torch) is unchanged.
+# scikit-build-core reads the name from pyproject.toml [project] at build time.
+sed -i 's/^name = "torch"$/name = "torch-rocm"/' pyproject.toml
 
 # Build
 echo "Building PyTorch (this will take a while)"
