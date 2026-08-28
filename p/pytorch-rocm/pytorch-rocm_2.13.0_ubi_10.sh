@@ -220,6 +220,7 @@ $PYTHON -m pip install --no-build-isolation "${CURRENT_DIR}/dist"/torch_rocm-*.w
 echo "Running basic import test"
 cd "${CURRENT_DIR}"
 
+export ROCPROFILER_LOG_LEVEL=0
 if ! $PYTHON -c "import torch; print('torch version :', torch.__version__); print('ROCm available:', torch.cuda.is_available())"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
