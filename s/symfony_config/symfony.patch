@@ -1,0 +1,126 @@
+diff --git a/Tests/ConfigCacheTest.php b/Tests/ConfigCacheTest.php
+index 95a5881..cfb2403 100644
+--- a/Tests/ConfigCacheTest.php
++++ b/Tests/ConfigCacheTest.php
+@@ -19,12 +19,12 @@ class ConfigCacheTest extends TestCase
+ {
+     private $cacheFile = null;
+
+-    protected function setUp()
++    protected function setUp(): void
+     {
+         $this->cacheFile = tempnam(sys_get_temp_dir(), 'config_');
+     }
+
+-    protected function tearDown()
++    protected function tearDown(): void
+     {
+         $files = [$this->cacheFile, $this->cacheFile.'.meta'];
+
+diff --git a/Tests/Resource/DirectoryResourceTest.php b/Tests/Resource/DirectoryResourceTest.php
+index 700df45..d5f37dd 100644
+--- a/Tests/Resource/DirectoryResourceTest.php
++++ b/Tests/Resource/DirectoryResourceTest.php
+@@ -18,7 +18,7 @@ class DirectoryResourceTest extends TestCase
+ {
+     protected $directory;
+
+-    protected function setUp()
++    protected function setUp(): void
+     {
+         $this->directory = sys_get_temp_dir().\DIRECTORY_SEPARATOR.'symfonyDirectoryIterator';
+         if (!file_exists($this->directory)) {
+@@ -27,7 +27,7 @@ class DirectoryResourceTest extends TestCase
+         touch($this->directory.'/tmp.xml');
+     }
+
+-    protected function tearDown()
++    protected function tearDown(): void
+     {
+         if (!is_dir($this->directory)) {
+             return;
+@@ -35,7 +35,7 @@ class DirectoryResourceTest extends TestCase
+         $this->removeDirectory($this->directory);
+     }
+
+-    protected function removeDirectory($directory)
++    protected function removeDirectory(string $directory): void
+     {
+         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory), \RecursiveIteratorIterator::CHILD_FIRST);
+         foreach ($iterator as $path) {
+diff --git a/Tests/Resource/FileExistenceResourceTest.php b/Tests/Resource/FileExistenceResourceTest.php
+index ff7fc7b..c450ff1 100644
+--- a/Tests/Resource/FileExistenceResourceTest.php
++++ b/Tests/Resource/FileExistenceResourceTest.php
+@@ -20,14 +20,14 @@ class FileExistenceResourceTest extends TestCase
+     protected $file;
+     protected $time;
+
+-    protected function setUp()
++    protected function setUp(): void
+     {
+         $this->file = realpath(sys_get_temp_dir()).'/tmp.xml';
+         $this->time = time();
+         $this->resource = new FileExistenceResource($this->file);
+     }
+
+-    protected function tearDown()
++    protected function tearDown(): void
+     {
+         if (file_exists($this->file)) {
+             @unlink($this->file);
+diff --git a/Tests/Resource/FileResourceTest.php b/Tests/Resource/FileResourceTest.php
+index a84faa9..9b619a0 100644
+--- a/Tests/Resource/FileResourceTest.php
++++ b/Tests/Resource/FileResourceTest.php
+@@ -20,7 +20,7 @@ class FileResourceTest extends TestCase
+     protected $file;
+     protected $time;
+
+-    protected function setUp()
++    protected function setUp(): void
+     {
+         $this->file = sys_get_temp_dir().'/tmp.xml';
+         $this->time = time();
+@@ -28,7 +28,7 @@ class FileResourceTest extends TestCase
+         $this->resource = new FileResource($this->file);
+     }
+
+-    protected function tearDown()
++    protected function tearDown(): void
+     {
+         if (file_exists($this->file)) {
+             @unlink($this->file);
+diff --git a/Tests/Resource/GlobResourceTest.php b/Tests/Resource/GlobResourceTest.php
+index cfbfd2b..f6bb084 100644
+--- a/Tests/Resource/GlobResourceTest.php
++++ b/Tests/Resource/GlobResourceTest.php
+@@ -16,7 +16,7 @@ use Symfony\Component\Config\Resource\GlobResource;
+
+ class GlobResourceTest extends TestCase
+ {
+-    protected function tearDown()
++    protected function tearDown(): void
+     {
+         $dir = \dirname(__DIR__).'/Fixtures';
+         @rmdir($dir.'/TmpGlob');
+diff --git a/Tests/ResourceCheckerConfigCacheTest.php b/Tests/ResourceCheckerConfigCacheTest.php
+index 9be5319..8e0a2b3 100644
+--- a/Tests/ResourceCheckerConfigCacheTest.php
++++ b/Tests/ResourceCheckerConfigCacheTest.php
+@@ -20,12 +20,12 @@ class ResourceCheckerConfigCacheTest extends TestCase
+ {
+     private $cacheFile = null;
+
+-    protected function setUp()
++    protected function setUp(): void
+     {
+         $this->cacheFile = tempnam(sys_get_temp_dir(), 'config_');
+     }
+
+-    protected function tearDown()
++    protected function tearDown(): void
+     {
+         $files = [$this->cacheFile, "{$this->cacheFile}.meta"];
+
+
