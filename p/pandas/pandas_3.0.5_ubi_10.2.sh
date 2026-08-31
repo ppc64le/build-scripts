@@ -29,9 +29,115 @@ mkdir -p "$WHEEL_DIR"
 # Install system dependencies including SQLite and LZMA libraries
 yum install -y git gcc gcc-c++ python3.14 python3.14-pip python3.14-devel \
     gzip tar make wget xz cmake yum-utils openssl-devel \
-    openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf \
+    bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf \
     automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le \
     fontconfig-devel.ppc64le sqlite-devel
+
+# -----------------------------------------------------------------------------
+# OpenBLAS
+# -----------------------------------------------------------------------------
+
+echo " --------------------------------------------------- OpenBlas Installing --------------------------------------------------- "
+
+# OpenBLAS version and source
+OPENBLAS_VERSION=v0.3.33
+OPENBLAS_URL=https://github.com/OpenMathLib/OpenBLAS
+
+# Clone OpenBLAS
+git clone -b "${OPENBLAS_VERSION}" "${OPENBLAS_URL}"
+cd OpenBLAS
+git submodule update --init
+SRC_DIR=$(pwd)
+
+# Set pip config
+python3.14 -m pip config set global.index-url https://pypi.python.org/simple
+python3.14 -m pip config set global.no-index false
+
+# Install prerequisites
+python3.14 -m pip install setuptools
+
+# Remove problematic linker flag
+LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
+export LDFLAGS
+
+# Compiler flags
+export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
+unset CFLAGS
+
+export USE_OPENMP=1
+
+# Installation prefix
+export PREFIX="${SRC_DIR}/local/openblas"
+
+# Build options
+build_opts=()
+
+build_opts+=(USE_OPENMP=${USE_OPENMP})
+build_opts+=(BINARY="64")
+build_opts+=(DYNAMIC_ARCH=1)
+
+# ppc64le / POWER platform
+build_opts+=(TARGET="POWER9")
+
+# LP64 interface
+build_opts+=(INTERFACE64=0)
+build_opts+=(SYMBOLSUFFIX="")
+
+# Build LAPACK
+build_opts+=(NO_LAPACK=0)
+
+# Enable threading
+build_opts+=(USE_THREAD=1)
+build_opts+=(NUM_THREADS=8)
+
+# Disable CPU affinity
+build_opts+=(NO_AFFINITY=1)
+
+# Handle Fortran flags
+if [ -n "${FFLAGS}" ]; then
+    # Don't use GNU OpenMP, which is not fork-safe
+    export FFLAGS="${FFLAGS/-fopenmp/ }"
+    export FFLAGS="${FFLAGS} -frecursive"
+    export LAPACK_FFLAGS="${FFLAGS}"
+fi
+
+# Build OpenBLAS
+make -j8 "${build_opts[@]}" \
+    CFLAGS="${CF}" \
+    FFLAGS="${FFLAGS}"
+
+# Install OpenBLAS
+make install \
+    PREFIX="${PREFIX}" \
+    "${build_opts[@]}" \
+    CFLAGS="${CF}" \
+    FFLAGS="${FFLAGS}"
+
+# Verify installation
+[ -d "${PREFIX}" ] || {
+    echo "ERROR: make install failed — PREFIX directory was not created: ${PREFIX}"
+    exit 1
+}
+
+# Set OpenBLAS paths
+export OPENBLAS_HOME="${PREFIX}"
+export LD_LIBRARY_PATH="${OPENBLAS_HOME}/lib:${LD_LIBRARY_PATH}"
+export LIBRARY_PATH="${OPENBLAS_HOME}/lib:${LIBRARY_PATH}"
+export CPATH="${OPENBLAS_HOME}/include:${CPATH}"
+export PKG_CONFIG_PATH="${OPENBLAS_HOME}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+export CMAKE_PREFIX_PATH="${OPENBLAS_HOME}:${CMAKE_PREFIX_PATH}"
+
+# Prepare Python package structure
+wget https://raw.githubusercontent.com/i-wheels-cpd/build-scripts/refs/heads/main/o/openblas/pyproject.toml
+
+sed -i "s/{PACKAGE_VERSION}/${OPENBLAS_VERSION}/g" pyproject.toml
+
+touch "${PREFIX}/__init__.py"
+rm -rf "${PREFIX}/bin"
+
+echo " --------------------------------------------------- OpenBLAS Successfully Installed --------------------------------------------------- "
+
+cd $CURRENT_DIR
 
 # Clone the pandas repository and checkout the required version
 git clone $PACKAGE_URL
