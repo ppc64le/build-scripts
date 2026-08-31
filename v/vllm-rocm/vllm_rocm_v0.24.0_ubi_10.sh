@@ -86,12 +86,14 @@ echo "==================================================================="
 # ---------------------------------------------------------------------------
 
 # Python packages must appear first (wrapper script requirement).
+# Note: libdrm is not available in the UBI 10 repo — it is built from source below.
 yum install -y python3.12 python3.12-devel python3.12-pip \
     gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ \
     git make wget patch cmake ninja-build \
     openblas openblas-devel \
     libjpeg-devel libpng-devel \
-    zlib-devel libdrm-devel curl
+    zlib-devel curl \
+    meson pkgconf-pkg-config pciaccess-devel
 
 # Configure GCC Toolset 15
 if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
@@ -108,6 +110,48 @@ echo "Using gcc: $(gcc --version | head -1)"
 
 # Use Python 3.12 for the build so all produced wheels are cp312
 PYTHON=python3.12
+
+# ---------------------------------------------------------------------------
+# Build libdrm from source
+# libdrm is not available in the UBI 10 package repository.  We clone the
+# upstream freedesktop.org release, build it with meson, and install it into
+# /usr/local so every subsequent build step can find it via pkg-config.
+# ---------------------------------------------------------------------------
+LIBDRM_VERSION=${LIBDRM_VERSION:-"libdrm-2.4.124"}
+LIBDRM_URL="https://gitlab.freedesktop.org/mesa/drm.git"
+
+echo "Building libdrm ${LIBDRM_VERSION} from source"
+if [ -d "${CURRENT_DIR}/drm" ]; then
+    echo "drm directory already exists, reusing."
+    cd "${CURRENT_DIR}/drm"
+    git checkout "$LIBDRM_VERSION"
+else
+    if ! git clone --branch "$LIBDRM_VERSION" --depth 1 "$LIBDRM_URL" "${CURRENT_DIR}/drm"; then
+        echo "ERROR: Failed to clone libdrm ${LIBDRM_VERSION}"
+        exit 1
+    fi
+    cd "${CURRENT_DIR}/drm"
+fi
+
+meson setup build \
+    --prefix=/usr/local \
+    --buildtype=release \
+    -Damdgpu=enabled \
+    -Dradeon=enabled \
+    -Dintel=disabled \
+    -Dnouveau=disabled \
+    -Dvmwgfx=disabled \
+    -Dtests=false
+
+ninja -C build
+ninja -C build install
+
+# Make the freshly installed libdrm visible to pkg-config and the linker
+export PKG_CONFIG_PATH="/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+export LD_LIBRARY_PATH="/usr/local/lib64:/usr/local/lib:${LD_LIBRARY_PATH:-}"
+echo "libdrm installed: $(pkg-config --modversion libdrm)"
+
+cd "${CURRENT_DIR}"
 
 # ---------------------------------------------------------------------------
 # Install Rust (required by vLLM build)
