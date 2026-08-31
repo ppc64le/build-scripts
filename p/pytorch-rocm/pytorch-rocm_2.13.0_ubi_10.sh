@@ -181,7 +181,7 @@ git apply --directory=third_party/composable_kernel pytorch_v2.13.0_rocm_fastgel
 
 # Build
 echo "Building PyTorch (this will take a while)"
-export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION#v}+rocm714
+export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION#v}+rocm7.14
 export PYTORCH_BUILD_NUMBER=1
 
 # Rename the pip distribution to "torch-rocm" for ROCm stack isolation on devpi.
@@ -219,6 +219,9 @@ $PYTHON -m pip install --no-build-isolation "${CURRENT_DIR}/dist"/torch_rocm-*.w
 # Basic import test
 echo "Running basic import test"
 cd "${CURRENT_DIR}"
+
+# Need to export so that export works on other than amd also.
+export ROCPROFILER_LOG_LEVEL=0
 
 if ! $PYTHON -c "import torch; print('torch version :', torch.__version__); print('ROCm available:', torch.cuda.is_available())"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
