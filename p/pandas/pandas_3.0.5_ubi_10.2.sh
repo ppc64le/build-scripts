@@ -43,99 +43,41 @@ echo " --------------------------------------------------- OpenBlas Installing -
 OPENBLAS_VERSION=v0.3.33
 OPENBLAS_URL=https://github.com/OpenMathLib/OpenBLAS
 
-# Clone OpenBLAS
-git clone -b "${OPENBLAS_VERSION}" "${OPENBLAS_URL}"
+git clone "${OPENBLAS_URL}"
 cd OpenBLAS
+git checkout "${OPENBLAS_VERSION}"
 git submodule update --init
-SRC_DIR=$(pwd)
-
-# Set pip config
-python3.14 -m pip config set global.index-url https://pypi.python.org/simple
-python3.14 -m pip config set global.no-index false
-
-# Install prerequisites
-python3.14 -m pip install setuptools
-
-# Remove problematic linker flag
-LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
-export LDFLAGS
-
-# Compiler flags
-export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
-unset CFLAGS
 
 export USE_OPENMP=1
+export USE_THREAD=1
+export NUM_THREADS=8
+export TARGET=POWER9
+export DYNAMIC_ARCH=1
+export INTERFACE64=0
+export BUILD_BFLOAT16=1
+export NO_AFFINITY=1
 
-# Installation prefix
-export PREFIX="${SRC_DIR}/local/openblas"
+export CF="${CFLAGS:-} -Wno-unused-parameter -Wno-old-style-declaration"
+unset CFLAGS
 
-# Build options
-build_opts=()
+export LDFLAGS="$(echo "${LDFLAGS:-}" | sed 's/-Wl,--gc-sections//g')"
 
-build_opts+=(USE_OPENMP=${USE_OPENMP})
-build_opts+=(BINARY="64")
-build_opts+=(DYNAMIC_ARCH=1)
-
-# ppc64le / POWER platform
-build_opts+=(TARGET="POWER9")
-
-# LP64 interface
-build_opts+=(INTERFACE64=0)
-build_opts+=(SYMBOLSUFFIX="")
-
-# Build LAPACK
-build_opts+=(NO_LAPACK=0)
-
-# Enable threading
-build_opts+=(USE_THREAD=1)
-build_opts+=(NUM_THREADS=8)
-
-# Disable CPU affinity
-build_opts+=(NO_AFFINITY=1)
-
-# Handle Fortran flags
-if [ -n "${FFLAGS}" ]; then
-    # Don't use GNU OpenMP, which is not fork-safe
+if [ -n "${FFLAGS:-}" ]; then
     export FFLAGS="${FFLAGS/-fopenmp/ }"
     export FFLAGS="${FFLAGS} -frecursive"
     export LAPACK_FFLAGS="${FFLAGS}"
 fi
 
-# Build OpenBLAS
-make -j8 "${build_opts[@]}" \
-    CFLAGS="${CF}" \
-    FFLAGS="${FFLAGS}"
+make -j"${MAX_JOBS}" TARGET="${TARGET}" BUILD_BFLOAT16="${BUILD_BFLOAT16}" BINARY=64 USE_OPENMP="${USE_OPENMP}" USE_THREAD="${USE_THREAD}" NUM_THREADS="${NUM_THREADS}" DYNAMIC_ARCH="${DYNAMIC_ARCH}" INTERFACE64="${INTERFACE64}" NO_AFFINITY="${NO_AFFINITY}" CFLAGS="${CF}" FFLAGS="${FFLAGS:-}"
 
-# Install OpenBLAS
-make install \
-    PREFIX="${PREFIX}" \
-    "${build_opts[@]}" \
-    CFLAGS="${CF}" \
-    FFLAGS="${FFLAGS}"
+make install PREFIX="${OPENBLAS_PREFIX}"
 
-# Verify installation
-[ -d "${PREFIX}" ] || {
-    echo "ERROR: make install failed — PREFIX directory was not created: ${PREFIX}"
-    exit 1
-}
+export LD_LIBRARY_PATH="${OPENBLAS_PREFIX}/lib:${OPENBLAS_PREFIX}/lib64:${LD_LIBRARY_PATH:-}"
+export PKG_CONFIG_PATH="${OPENBLAS_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
 
-# Set OpenBLAS paths
-export OPENBLAS_HOME="${PREFIX}"
-export LD_LIBRARY_PATH="${OPENBLAS_HOME}/lib:${LD_LIBRARY_PATH}"
-export LIBRARY_PATH="${OPENBLAS_HOME}/lib:${LIBRARY_PATH}"
-export CPATH="${OPENBLAS_HOME}/include:${CPATH}"
-export PKG_CONFIG_PATH="${OPENBLAS_HOME}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-export CMAKE_PREFIX_PATH="${OPENBLAS_HOME}:${CMAKE_PREFIX_PATH}"
+pkg-config --modversion openblas
 
-# Prepare Python package structure
-wget https://raw.githubusercontent.com/i-wheels-cpd/build-scripts/refs/heads/main/o/openblas/pyproject.toml
-
-sed -i "s/{PACKAGE_VERSION}/${OPENBLAS_VERSION}/g" pyproject.toml
-
-touch "${PREFIX}/__init__.py"
-rm -rf "${PREFIX}/bin"
-
-echo " --------------------------------------------------- OpenBLAS Successfully Installed --------------------------------------------------- "
+echo "-----------------------------------------------------Installed OpenBLAS-----------------------------------------------------"
 
 cd $CURRENT_DIR
 
@@ -159,7 +101,7 @@ python3.14 -m pip install meson==1.2.1
 python3.14 -m pip install oldest-supported-numpy==2022.8.16
 python3.14 -m pip install ninja
 python3.14 -m pip install versioneer[toml]
-python3.14 -m pip install numpy==2.5.2
+python3.14 -m pip install numpy==2.5.0
 
 # Install pandas package
 if ! (python3.14 -m pip install .); then

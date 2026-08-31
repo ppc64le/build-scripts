@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : tiktoken
-# Version       : v0.13.0
+# Version       : 0.13.0
 # Source repo   : https://github.com/openai/tiktoken
 # Tested on     : UBI:9.6
 # Language      : Python

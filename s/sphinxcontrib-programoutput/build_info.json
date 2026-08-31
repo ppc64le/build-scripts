@@ -4,7 +4,7 @@
   "github_url": "https://github.com/NextThought/sphinxcontrib-programoutput.git",
   "version": "0.18",
   "package_dir": "s/sphinxcontrib-programoutput",
-  "wheel_build" : "true",
+  "wheel_build" : true,
   "default_branch": "master",
   "build_script": "sphinxcontrib-programoutput_ubi_9.6.sh",
   "docker_build": false,
