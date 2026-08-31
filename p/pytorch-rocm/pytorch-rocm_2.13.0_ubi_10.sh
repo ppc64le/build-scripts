@@ -180,7 +180,7 @@ git apply --directory=third_party/composable_kernel pytorch_v2.13.0_rocm_fastgel
 
 # Build
 echo "Building PyTorch (this will take a while)"
-export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION#v}+rocm714
+export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION#v}+rocm7.14
 export PYTORCH_BUILD_NUMBER=1
 
 # Rename the pip distribution to "torch-rocm" for ROCm stack isolation on devpi.
