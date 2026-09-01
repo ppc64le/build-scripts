@@ -1,8 +1,8 @@
 {
-  "maintainer": "Harithanagothu2",
+  "maintainer": "SakshiJain0302",
   "package_name": "opus",
   "github_url": "https://github.com/xiph/opus",
-  "version": "v1.3.1",
+  "version": "1.5.2",
   "required_versions":{"Releases": ["*"], "Tags": ["v1.3.1"]},
   "wheel_build" : true,
   "package_dir": "o/opus",
@@ -12,6 +12,9 @@
   "validate_build_script": true,
   "use_non_root_user": "false",
   "*":{
-    "build_script":"opus_ubi_9.3.sh"
+    "build_script": [
+        "opus_ubi_9.3.sh",
+        "opus_ubi_10.2.sh"
+        ]
   }
 }
