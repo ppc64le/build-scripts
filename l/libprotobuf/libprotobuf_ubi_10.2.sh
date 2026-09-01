@@ -105,6 +105,6 @@ cd ..
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/l/libprotobuf/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
 
-python3.12 -m pip wheel -w $WORK_DIR -vv --no-build-isolation --no-deps .
+python3.14 -m pip wheel -w $WORK_DIR -vv --no-build-isolation --no-deps .
 
 exit 0
