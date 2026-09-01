@@ -4,7 +4,7 @@
 # Package       : hdf5
 # Version       : hdf5-1_12_1
 # Source repo   : https://github.com/HDFGroup/hdf5
-# Tested on     : UBI:10.1
+# Tested on     : UBI:10.2
 # Language      : Python, C
 # Ci-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -23,10 +23,30 @@ PACKAGE_VERSION=${1:-hdf5-1_12_1}
 PACKAGE_URL=https://github.com/HDFGroup/hdf5
 
 # install core dependencies
-yum install -y python3.12 python3.12-pip python3.12-devel git wget  gcc gcc-c++ gcc-fortran diffutils
-export CC=$(which gcc)
+yum install -y python3.14 python3.14-pip python3.14-devel git wget diffutils
+yum install gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ gcc-toolset-15-gcc-gfortran -y
+
+# ---------------------------------------------------------------------------
+# Activate GCC Toolset 15 (SCL removed in UBI 10 — use PATH export)
+# ---------------------------------------------------------------------------
+if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
+    source /opt/rh/gcc-toolset-15/enable
+elif [[ -d /opt/rh/gcc-toolset-15/root/usr/bin ]]; then
+    export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
+    export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:$LD_LIBRARY_PATH"
+else
+    echo "ERROR: gcc-toolset-15 not found"
+    exit 1
+fi
+
+export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
+export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:${LD_LIBRARY_PATH:-}"
+
+export CC="/opt/rh/gcc-toolset-15/root/usr/bin/gcc"
+export CXX="/opt/rh/gcc-toolset-15/root/usr/bin/g++"
+
 LOCAL_DIR=local
-CPU_COUNT=`python3.12 -c 'import multiprocessing ; print (multiprocessing.cpu_count())'`
+CPU_COUNT=`python3.14 -c 'import multiprocessing ; print (multiprocessing.cpu_count())'`
 
 # clone source repository
 git clone $PACKAGE_URL
@@ -58,7 +78,7 @@ sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 sed -i 's/version = "hdf5[._-]\([0-9]*\)[._-]\([0-9]*\)[._-]\([0-9]*\)\([._-]*[0-9]*\)"/version = "\1.\2.\3\4"/' pyproject.toml
 
 #install
-if ! (python3.12 -m pip install .) ; then
+if ! (python3.14 -m pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
