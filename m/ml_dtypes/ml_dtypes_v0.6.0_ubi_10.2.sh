@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : ml-dtypes
-# Version          : 0.6.0
+# Version          : v0.6.0
 # Source repo      : https://github.com/jax-ml/ml_dtypes
 # Tested on        : UBI:10.2
 # Language         : Python
