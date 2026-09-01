@@ -21,7 +21,7 @@
 set -e
 
 PACKAGE_NAME=ml-dtypes
-PACKAGE_VERSION=${1:-0.6.0}
+PACKAGE_VERSION=${1:-v0.6.0}
 PACKAGE_URL=https://github.com/jax-ml/ml_dtypes
 PACKAGE_DIR=ml_dtypes
 CURRENT_DIR=$(pwd)
