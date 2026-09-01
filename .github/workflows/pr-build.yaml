@@ -164,7 +164,7 @@ jobs:
               echo "No build_info.json modified, trying to detect from changed files..."
 
               PACKAGE_DIR=$(echo "$CHANGED_FILES" \
-                | grep -vE '^(gha-script|process_bom|script|templates|travis-currency-ymls|travis-ymls)/' \
+                | grep -vE '^(\.github|gha-script|process_bom|script|templates|travis-currency-ymls|travis-ymls)/' \
                 | head -n 1 \
                 | cut -d'/' -f1-2)
 
