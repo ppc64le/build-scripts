@@ -13,7 +13,7 @@
   "*": {
     "build_script": [ 
       "libclang_ubi_9.3.sh",
-      "libclang_ubi_10.1.sh"
+      "libclang_ubi_10.2.sh"
     ]
   }
 }
