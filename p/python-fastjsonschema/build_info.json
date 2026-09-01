@@ -2,7 +2,7 @@
   "maintainer": "SakshiJain0302",
   "package_name": "python-fastjsonschema",
   "github_url": "https://github.com/horejsek/python-fastjsonschema",
-  "version": "v2.16.2",
+  "version": "v2.22.2",
   "wheel_build" : true,
   "package_dir": "p/python-fastjsonschema",
   "default_branch": "master",
