@@ -1,0 +1,55 @@
+diff --git a/build.gradle b/build.gradle
+index a41412bce..1e0812575 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -466,6 +466,22 @@ tasks.register("artifactDockerObservabilitySRE") {
+     }
+ }
+ 
++tasks.register("assembleTarDistributionOssWithoutJdk") {
++  dependsOn bootstrap
++  inputs.files fileTree("${projectDir}/rakelib")
++  inputs.files fileTree("${projectDir}/bin")
++  inputs.files fileTree("${projectDir}/config")
++  inputs.files fileTree("${projectDir}/lib")
++  inputs.files fileTree("${projectDir}/modules")
++  inputs.files fileTree("${projectDir}/logstash-core-plugin-api")
++  inputs.files fileTree("${projectDir}/logstash-core/lib")
++  inputs.files fileTree("${projectDir}/logstash-core/src")
++  outputs.files file("${buildDir}/logstash-oss-${project.version}-SNAPSHOT.tar.gz")
++  doLast {
++      rake(projectDir, buildDir, 'artifact:oss_no_bundle_jdk_tar')
++  }
++}
++
+ tasks.register("assembleTarDistribution") {
+   dependsOn bootstrap
+   dependsOn "copyAllJdks"
+diff --git a/rakelib/artifacts.rake b/rakelib/artifacts.rake
+index 75dea5878..290d5a59d 100644
+--- a/rakelib/artifacts.rake
++++ b/rakelib/artifacts.rake
+@@ -223,9 +223,9 @@ namespace "artifact" do
+   end
+ 
+   # Create an archive pack using settings appropriate for the running machine
+-  def create_local_archive_pack(bundle_jdk)
++  def create_local_archive_pack(bundle_jdk, license = 'ELASTIC-LICENSE', tar_suffix = nil, exclude_paths = default_exclude_paths)
+     @bundles_jdk = bundle_jdk
+-    build_tar('ELASTIC-LICENSE')
++    build_tar(license, tar_suffix, exclude_paths)
+   end
+ 
+   desc "Build a not JDK bundled tar.gz of default logstash plugins with all dependencies"
+@@ -233,6 +233,11 @@ namespace "artifact" do
+     create_local_archive_pack(false)
+   end
+ 
++  desc "Build a not JDK bundled OSS tar.gz of default logstash plugins with all dependencies"
++  task "oss_no_bundle_jdk_tar" => ["prepare-oss", "generate_build_metadata"] do
++    create_local_archive_pack(false, 'APACHE-LICENSE-2.0', "-oss", oss_exclude_paths)
++  end
++
+   desc "Build a JDK bundled tar.gz of default logstash plugins with all dependencies"
+   task "bundle_jdk_tar" => ["prepare", "generate_build_metadata"] do
+     create_local_archive_pack(true)

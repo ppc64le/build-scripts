@@ -1,0 +1,188 @@
+diff --git a/build.gradle b/build.gradle
+index a41412bce..071935672 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -159,7 +159,10 @@ tasks.register("configureArchitecture") {
+     } else if (arch == "amd64") {
+         beatsArch="x86_64"
+         esArch="x86_64"
+-    }
++    } else if (arch == "ppc64le" || arch == "ppc64") {
++        beatsArch="ppc64le"
++        esArch="ppc64le"
++    }
+ 
+     project.ext.set("beatsArchitecture", "${osName}-${beatsArch}")
+     project.ext.set("esArchitecture", "${osName}-${esArch}")
+@@ -842,7 +845,9 @@ def selectArch() {
+     // Matches rake pattern: x86_64 → x86_64, anything else (aarch64, arm64, etc.) → arm64
+     String envArch = System.getenv("ARCH")
+     if (envArch) {
+-        return (envArch == "x86_64") ? "x86_64" : "arm64"
++        if (envArch == "x86_64") return "x86_64"
++        if (envArch == "ppc64le" || envArch == "ppc64") return "ppc64le"
++        return "arm64"
+     }
+     // 3. Fall back to host architecture
+     String cpu_arch = System.properties["os.arch"]
+@@ -853,6 +858,9 @@ def selectArch() {
+         case "aarch64":
+         case "arm64":
+             return "arm64"
++        case "ppc64le":
++        case "ppc64":
++            return "ppc64le"
+         default:
+             throw new IllegalArgumentException("Can't handle os.arch of type $cpu_arch")
+     }
+@@ -889,6 +897,16 @@ class JDKDetails {
+     }
+ 
+     String createDownloadUrl() {
++        // ppc64le is not listed in the Elastic JVM catalog; fetch directly from Adoptium GitHub releases.
++        // URL pattern: https://github.com/adoptium/temurin<major>-binaries/releases/download/
++        //              jdk-<revision>%2B<build>/OpenJDK<major>U-jdk_ppc64le_linux_hotspot_<revision>_<build>.tar.gz
++        // e.g. for 21.0.12+8 → jdk-21.0.12%2B8/OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.12_8.tar.gz
++        if (arch == "ppc64le") {
++            def ver = "${revision}_${build}"
++            return "https://github.com/adoptium/temurin${major}-binaries/releases/download/" +
++                   "jdk-${revision}%2B${build}/" +
++                   "OpenJDK${major}U-jdk_ppc64le_linux_hotspot_${ver}.tar.gz"
++        }
+         return createElasticCatalogDownloadUrl()
+     }
+ 
+@@ -969,7 +987,7 @@ class JDKDetails {
+             }
+         }
+ 
+-        def requestedArtifact = "adoptiumjdk-${revision}+${build}-${osName}${arch == "aarch64" ? "-${arch}" : ""}"
++        def requestedArtifact = "adoptiumjdk-${revision}+${build}-${osName}${(arch != 'x64') ? "-${arch}" : ""}"
+         if (lastResponseCode == 404) {
+             throw new GradleException("Elastic JVM catalog returned 404 for ${requestedArtifact}. Verify the artifact exists.", lastException)
+         }
+@@ -1008,6 +1026,10 @@ class JDKDetails {
+             case "x86_64":
+                 return "x64"
+                 break
++            case "ppc64le":
++            case "ppc64":
++                return "ppc64le"
++                break
+             case "arm64":
+                 return "aarch64"
+                 break
+@@ -1035,15 +1057,18 @@ def getTargetPlatforms() {
+     String arch = selectArch()
+     if (arch == "x86_64") {
+         return [[os: "linux", arch: "x86_64"], [os: "windows", arch: "x86_64"], [os: "darwin", arch: "x86_64"]]
++    } else if (arch == "ppc64le") {
++        return [[os: "linux", arch: "ppc64le"]]
+     } else {
+         return [[os: "linux", arch: "arm64"], [os: "darwin", arch: "arm64"]]
+     }
+ }
+ 
+ ["linux", "windows", "darwin"].each { osName ->
+-    ["x86_64", "arm64"].each { archName ->
++    ["x86_64", "arm64", "ppc64le"].each { archName ->
+         if (osName == "windows" && archName == "arm64") { return }
+-        String taskSuffix = "${osName.capitalize()}${archName == 'x86_64' ? 'X64' : 'Arm64'}"
++        if ((osName == "darwin" || osName == "windows") && archName == "ppc64le") { return }
++        String taskSuffix = "${osName.capitalize()}${archName == 'x86_64' ? 'X64' : archName == 'ppc64le' ? 'Ppc64le' : 'Arm64'}"
+         String jdkFolderName = ToolingUtils.jdkFolderName(osName, archName)
+ 
+         tasks.register("downloadJdk${taskSuffix}", Download) {
+@@ -1087,7 +1112,7 @@ def getTargetPlatforms() {
+ tasks.register("copyAllJdks") {
+     dependsOn bootstrap
+     getTargetPlatforms().each { platform ->
+-        String taskSuffix = "${platform.os.capitalize()}${platform.arch == 'x86_64' ? 'X64' : 'Arm64'}"
++        String taskSuffix = "${platform.os.capitalize()}${platform.arch == 'x86_64' ? 'X64' : platform.arch == 'ppc64le' ? 'Ppc64le' : 'Arm64'}"
+         dependsOn "unpackJdk${taskSuffix}"
+     }
+     doLast {
+diff --git a/buildSrc/src/main/groovy/org/logstash/gradle/tooling/ToolingUtils.groovy b/buildSrc/src/main/groovy/org/logstash/gradle/tooling/ToolingUtils.groovy
+index 07bda35ec..bcea7babb 100644
+--- a/buildSrc/src/main/groovy/org/logstash/gradle/tooling/ToolingUtils.groovy
++++ b/buildSrc/src/main/groovy/org/logstash/gradle/tooling/ToolingUtils.groovy
+@@ -2,7 +2,7 @@ package org.logstash.gradle.tooling
+ 
+ class ToolingUtils {
+     static String jdkFolderName(String osName, String arch) {
+-        String normalizedArch = (arch == "x86_64" || arch == "amd64") ? "x64" : "arm64"
++        String normalizedArch = (arch == "x86_64" || arch == "amd64") ? "x64" : (arch == "ppc64le" || arch == "ppc64") ? "ppc64le" : "arm64"
+         return "jdk-${osName}-${normalizedArch}"
+     }
+ }
+diff --git a/logstash-core/lib/logstash/agent.rb b/logstash-core/lib/logstash/agent.rb
+index c16b47ec9..901d7f945 100644
+--- a/logstash-core/lib/logstash/agent.rb
++++ b/logstash-core/lib/logstash/agent.rb
+@@ -685,7 +685,7 @@ class LogStash::Agent
+       database_metric = LogStash::GeoipDatabaseManagement::Metric.new(geoip_metric)
+       database_manager = LogStash::GeoipDatabaseManagement::Manager.instance
+       database_manager.database_metric = database_metric
+-    rescue LoadError => e
++    rescue LoadError, ArgumentError => e
+       @logger.trace("DatabaseManager is not in classpath", exception: e.message, backtrace: e.backtrace)
+     end
+   end
+diff --git a/logstash-core/spec/logstash/api/commands/default_metadata_spec.rb b/logstash-core/spec/logstash/api/commands/default_metadata_spec.rb
+index 9fe73b1e9..57caaa607 100644
+--- a/logstash-core/spec/logstash/api/commands/default_metadata_spec.rb
++++ b/logstash-core/spec/logstash/api/commands/default_metadata_spec.rb
+@@ -55,6 +55,7 @@ describe LogStash::Api::Commands::DefaultMetadata do
+     end
+ 
+     it "check monitoring section exist when legacy monitoring is enabled and allowed" do
++      skip "xpack.monitoring settings not registered in OSS mode" unless LogStash::SETTINGS.registered?("xpack.monitoring.allow_legacy_collection")
+       LogStash::SETTINGS.set_value("xpack.monitoring.allow_legacy_collection", true)
+       LogStash::SETTINGS.set_value("xpack.monitoring.enabled", true)
+       expect(report.keys).to include(
+@@ -63,6 +64,7 @@ describe LogStash::Api::Commands::DefaultMetadata do
+     end
+ 
+     it "check monitoring section does not appear when legacy monitoring is not allowed but enabled" do
++      skip "xpack.monitoring settings not registered in OSS mode" unless LogStash::SETTINGS.registered?("xpack.monitoring.allow_legacy_collection")
+       LogStash::SETTINGS.set_value("xpack.monitoring.allow_legacy_collection", false)
+       LogStash::SETTINGS.set_value("xpack.monitoring.enabled", true)
+       expect(report.keys).not_to include(
+diff --git a/rakelib/artifacts.rake b/rakelib/artifacts.rake
+index 75dea5878..2efdd1381 100644
+--- a/rakelib/artifacts.rake
++++ b/rakelib/artifacts.rake
+@@ -26,12 +26,14 @@ namespace "artifact" do
+   ARCH = case ENV["ARCH"]
+          when "x86_64"
+            "x86_64"
++         when "ppc64le", "ppc64"
++           "ppc64le"
+          else
+            "arm64" # default for aarch64, arm64, or any other value (including nil)
+          end
+ 
+   def jdk_folder_for_platform(os_name, arch)
+-    normalized_arch = (arch == "x86_64" || arch == "amd64") ? "x64" : "arm64"
++    normalized_arch = (arch == "x86_64" || arch == "amd64") ? "x64" : (arch == "ppc64le" || arch == "ppc64") ? "ppc64le" : "arm64"
+     "jdk-#{os_name}-#{normalized_arch}"
+   end
+ 
+@@ -184,6 +186,8 @@ namespace "artifact" do
+     @bundles_jdk = true
+     if ARCH == "x86_64"
+       create_archive_pack(license_details, "x86_64", "linux", "windows", "darwin")
++    elsif ARCH == "ppc64le"
++      create_archive_pack(license_details, "ppc64le", "linux")
+     else
+       create_archive_pack(license_details, "arm64", "linux", "darwin")
+     end
+@@ -245,6 +249,8 @@ namespace "artifact" do
+     license_details = ['APACHE-LICENSE-2.0', "-oss", oss_exclude_paths]
+     if ARCH == "x86_64"
+       create_archive_pack(license_details, "x86_64", "linux", "windows", "darwin")
++    elsif ARCH == "ppc64le"
++      create_archive_pack(license_details, "ppc64le", "linux")
+     else
+       create_archive_pack(license_details, "arm64", "linux", "darwin")
+     end
