@@ -94,6 +94,7 @@ WORKDIR $OPENSEARCH_HOME
 
 RUN yum install -y \
     java-25-openjdk-devel && \
+    yum remove -y vim-minimal && \
     yum clean all
 
 ENV JAVA_HOME=/usr/lib/jvm/java-25-openjdk
