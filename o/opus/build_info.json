@@ -2,7 +2,7 @@
   "maintainer": "SakshiJain0302",
   "package_name": "opus",
   "github_url": "https://github.com/xiph/opus",
-  "version": "v1.3.1",
+  "version": "1.5.2",
   "required_versions":{"Releases": ["*"], "Tags": ["v1.3.1"]},
   "wheel_build" : true,
   "package_dir": "o/opus",
