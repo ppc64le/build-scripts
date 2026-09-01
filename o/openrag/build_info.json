@@ -1,0 +1,12 @@
+{
+    "package_name": "openrag",
+    "github_url": "https://github.com/afsanjar/openrag",
+    "version": "0.5.1",
+    "default_branch": "ppc64le-0.5.1",
+    "build_script": "openrag_v0.5.1_ubi_10.0.sh",
+    "package_dir": "o/openrag",
+    "maintainer": "Kamryn Schock <kamrynschock@ibm.com>",
+    "use_non_root_user": false,
+    "tested_on": "UBI:10.0",
+    "language": "Python"
+}
