@@ -2,7 +2,7 @@
     "maintainer": "SakshiJain0302",
     "package_name": "pyodbc",
     "github_url": "https://github.com/mkleehammer/pyodbc",
-    "version": "5.2.0",
+    "version": "5.3.0",
     "wheel_build" : true,
     "default_branch": "master",
     "build_script": "pyodbc_ubi_9.3.sh",
