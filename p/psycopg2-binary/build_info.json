@@ -2,7 +2,7 @@
 	"maintainer": "SakshiJain0302",
 	"package_name": "psycopg2-binary",
 	"github_url": "https://github.com/psycopg/psycopg2",
-	"version": "2.9.10",
+	"version": "2.9.12",
 	"default_branch": "master",
 	"build_script": "psycopg2_ubi_9.3.sh",
 	"package_dir": "p/psycopg2-binary",
