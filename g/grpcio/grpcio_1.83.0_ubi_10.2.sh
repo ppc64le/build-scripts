@@ -41,8 +41,19 @@ python3.14 -m pip install -r requirements.txt
 
 [[ "$(printf "%s\n" "$PACKAGE_VERSION" v1.62.3 | sort -V | head -n1)" == "$PACKAGE_VERSION" ]] && python3.14 -m pip install --force-reinstall Cython==0.29.37
 
-# Install the package
-python3.14 -m pip install . --no-build-isolation
+# Build the wheel
+if ! python3.14 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
+        echo "============ Wheel Creation Failed for Python $PYTHON_VERSION (without isolation) ================="
+        echo "Attempting to build with isolation..."
+
+        if ! python3.14 -m build --wheel --outdir="$CURRENT_DIR/"; then
+            echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
+            exit 1
+        fi
+fi
+
+# Install the generated wheel for testing
+python3.14 -m pip install "$CURRENT_DIR"/grpcio-*.whl --force-reinstall
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
@@ -53,15 +64,6 @@ else
      echo "$PACKAGE_VERSION $PACKAGE_NAME"
      echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Build_Fail"
      exit 1
-fi
-
-if ! python3.14 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
-        echo "============ Wheel Creation Failed for Python $PYTHON_VERSION (without isolation) ================="
-        echo "Attempting to build with isolation..."
-
-        if ! python3.14 -m build --wheel --outdir="$CURRENT_DIR/"; then
-            echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
-        fi
 fi
 
 # Test the package
