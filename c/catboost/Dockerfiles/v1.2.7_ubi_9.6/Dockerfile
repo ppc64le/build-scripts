@@ -181,9 +181,9 @@ RUN set -ex \
 && rm -rf /var/cache/dnf /var/cache/yum
 
 COPY --from=builder /usr/local/ /usr/local/
-COPY --from=builder /out/ /tmp/wheels/
 
-RUN set -ex \
+RUN --mount=type=bind,from=builder,source=/out,target=/tmp/wheels \
+    set -ex \
 && PY_MINOR="${PYTHON_VERSION%.*}" \
 && ln -sf "/usr/local/bin/python${PY_MINOR}" /usr/bin/python3 \
 && ln -sf "/usr/local/bin/python${PY_MINOR}" /usr/bin/pip3 \
@@ -191,7 +191,6 @@ RUN set -ex \
 && python3 -m pip install -U pip \
 && python3 -m pip install /tmp/wheels/*.whl \
 && python3 -m pip install -U "urllib3>=2.6.3" \
-&& rpm -q gnupg2 >/dev/null 2>&1 && rpm -e --nodeps gnupg2 || true \
-&& rm -rf /tmp/wheels
+&& rpm -q gnupg2 >/dev/null 2>&1 && rpm -e --nodeps gnupg2 || true
 
 CMD ["python3"]
