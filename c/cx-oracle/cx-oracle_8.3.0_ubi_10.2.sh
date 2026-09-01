@@ -1,14 +1,14 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : cx-Oracle
-# Version       : 8.3.0
-# Source repo   : https://github.com/oracle/python-cx_Oracle.git
-# Tested on     : UBI 10.1
-# Language      : C
-# Ci-Check      : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : Rashmi Sakhalkar<srashmi@us.ibm.com>
+# Package          : cx-Oracle
+# Version          : 8.3.0
+# Source repo      : https://github.com/oracle/python-cx_Oracle.git
+# Tested on        : UBI:10.2
+# Language         : C
+# Ci-Check         : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : 
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,6 +16,16 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
+# Changes from UBI 10.1 (8.3.0) → UBI 10.2 (8.3.0):
+#   - Base OS updated from UBI 10.1 to UBI 10.2
+#   - Python updated to python3.14 / python3.14-pip / python3.14-devel
+#     (using Red Hat AppStream module; cx_Oracle 8.3.x supports Python >=3.6)
+#   - GCC Toolset remains at gcc-toolset-15 (UBI 10 standard)
+#   - Oracle Instant Client version kept at 19.3 (latest ppc64le zip available)
+#   - Architecture flags kept as ppc64le (Power architecture target)
+# -----------------------------------------------------------------------------
+
+set -e
 
 # Variables
 PACKAGE_NAME=python-cx_Oracle
@@ -26,16 +36,29 @@ CURRENT_DIR=$(pwd)
 export ORACLE_HOME=$(pwd)/opt/oracle
 
 # Install dependencies
-dnf install -y python3.12 python3.12-pip python3.12-devel \
-    git gcc gcc-c++ make cmake wget \
+dnf install -y python3.14 python3.14-pip python3.14-devel \
+    git gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ make cmake wget \
     openssl-devel bzip2-devel libffi-devel zlib-devel \
     libjpeg-devel freetype-devel procps-ng openblas-devel \
     meson ninja-build gcc-gfortran \
     zip unzip sqlite-devel sqlite
 
-# Install Rust (required for some pip-compiled C extensions)
-curl https://sh.rustup.rs -sSf | sh -s -- -y
-source "$HOME/.cargo/env"
+# Setup GCC Toolset 15 for UBI 10
+if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
+    source /opt/rh/gcc-toolset-15/enable
+elif [[ -d /opt/rh/gcc-toolset-15/root/usr/bin ]]; then
+    export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
+    export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:$LD_LIBRARY_PATH"
+else
+    echo "ERROR: gcc-toolset-15 not found"
+    exit 1
+fi
+
+echo "Using gcc: $(gcc --version | head -1)"
+
+# Upgrade pip and install build tools early so build subprocesses find pkg_resources
+# pkg_resources was split from setuptools in setuptools>=72; install it explicitly
+python3.14 -m pip install --upgrade pip "setuptools<72" wheel
 
 # Install Oracle Instant Client needed for tests
 mkdir -p $ORACLE_HOME && cd $ORACLE_HOME
@@ -65,12 +88,8 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
-# Upgrade pip and install setuptools (not bundled with python3.12 on UBI 10;
-# required by cx_Oracle's setup.py for pkg_resources)
-python3.12 -m pip install --upgrade pip setuptools wheel
-
 # Install
-if ! (python3.12 -m pip install . --no-build-isolation); then
+if ! (python3.14 -m pip install . --no-build-isolation); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -96,4 +115,3 @@ fi
 #    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
 #    exit 0
 #fi
-
