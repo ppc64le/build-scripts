@@ -80,7 +80,7 @@ else
     exit 1
 fi
 
-python3.12 setup.py build_ext --inplace
+python3.14 setup.py build_ext --inplace
 
 # ---------------------------------------------------------------------------
 # Build wheel
@@ -96,7 +96,7 @@ cp dist/*.whl "$CURRENT_DIR/"
 # ---------------------------------------------------------------------------
 # Install runtime/test dependencies and the built wheel
 # ---------------------------------------------------------------------------
-python3.14 -m pip install 'smart_open<8' nbformat testfixtures nbconvert
+python3.14 -m pip install 'smart_open<8' nbformat testfixtures nbconvert pytest
 python3.14 -m pip install "$CURRENT_DIR"/gensim-*.whl
 
 # Run test cases
