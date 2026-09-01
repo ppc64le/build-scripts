@@ -60,10 +60,8 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/l/libprotobuf/libprotobuf-ubi10.2-6.31.1.patch
-git apply libprotobuf-ubi10.2-6.31.1.patch
+patch -p1 < libprotobuf-ubi10.2-6.31.1.patch
 
 LIBPROTO_DIR=$(pwd)
 mkdir -p $LIBPROTO_DIR/local/libprotobuf
