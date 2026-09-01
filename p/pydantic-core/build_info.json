@@ -1,15 +1,21 @@
 {
    "maintainer": "kiranNukal",
    "package_name": "pydantic-core",
-   "github_url": "https://github.com/pydantic/pydantic-core",
-   "version": "v2.27.1",
+   "github_url": "https://github.com/pydantic/pydantic",
+   "version": "core-v2.46.4",
    "default_branch": "main",
-   "build_script": "pydantic-core_ubi_9.6.sh",
+   "build_script": "pydantic-core_core-v2.46.4_ubi9.6.sh",
    "package_dir": "p/pydantic-core",
    "docker_build": false,
    "wheel_build": true,
    "validate_build_script": true,
    "use_non_root_user": false,
+   "v*.*.*": {
+     "build_script":"pydantic-core_ubi_9.6.sh"
+   },
+   "core-v*.*.*": {
+     "build_script":"pydantic-core_core-v2.46.4_ubi9.6.sh"
+   },
    "*": {
      "build_script":"pydantic-core_ubi_9.6.sh"
   }
