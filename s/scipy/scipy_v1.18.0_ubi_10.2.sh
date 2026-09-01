@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : scipy
-# Version       : 1.18.0
+# Version       : v1.18.0
 # Source repo   : https://github.com/scipy/scipy
 # Tested on     : UBI:10.2
 # Language      : Python, C, C++, Fortran
