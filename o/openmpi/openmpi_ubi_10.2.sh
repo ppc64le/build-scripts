@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : openmpi
-# Version          : 5.0.10
+# Version          : 5.0.6
 # Source repo      : https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
 # Tested on        : UBI:10.2
 # Language         : Python, C, C++
@@ -19,7 +19,7 @@
 # ---------------------------------------------------------------------------------------------
 # Variables
 PACKAGE_NAME=openmpi
-PACKAGE_VERSION=${1:-5.0.10}
+PACKAGE_VERSION=${1:-5.0.6}
 PACKAGE_VERSION_DIR=5.0
 PACKAGE_URL=https://download.open-mpi.org/release/open-mpi/v$PACKAGE_VERSION_DIR/$PACKAGE_NAME-$PACKAGE_VERSION.tar.gz
 PACKAGE_DIR=$PACKAGE_NAME-$PACKAGE_VERSION
