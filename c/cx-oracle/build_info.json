@@ -12,7 +12,7 @@
   "use_non_root_user": "false",
   "8.3.0": {
     "build_script": [
-    	"cx-oracle_8.3.0_ubi_10.1.sh",
+    	"cx-oracle_8.3.0_ubi_10.2.sh",
 	"cx-oracle_ubi_9.3.sh"  
     ]
   },
