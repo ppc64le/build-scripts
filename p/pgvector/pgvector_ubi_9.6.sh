@@ -27,7 +27,7 @@ PACKAGE_URL=https://github.com/pgvector/pgvector-python.git
 PACKAGE_DIR=pgvector-python
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make python3 python3-devel python3-pip openblas-devel
+yum install -y git gcc gcc-c++ gcc-gfortran make python3 python3-devel python3-pip openblas-devel
 
 # Upgrade pip and install required tools
 python3 -m pip install --upgrade pip setuptools wheel build
