@@ -81,7 +81,7 @@ echo "Wheel: $WHEEL"
 # -- Install ------------------------------------------------------------------
 cd "$CURRENT_DIR"
 # Pre-install numpy so pip does not build it from source as a dependency
-python3.14 -m pip install numpy
+python3.14 -m pip install numpy==2.5.0
 # Force-reinstall to ensure any previously installed matplotlib is replaced
 python3.14 -m pip install --force-reinstall "$WHEEL"
 
