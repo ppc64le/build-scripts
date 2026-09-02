@@ -7,7 +7,7 @@
   "wheel_build" : true,
   "package_dir": "p/pyzmq",
   "default_branch": "main",
-  "build_script": "pyzmq_vv27.2.0_ubi_10.2.sh",
+  "build_script": "pyzmq_v27.2.0_ubi_10.2.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
@@ -15,12 +15,12 @@
    "build_script": "pyzmq_v25.1.2_ubi_9.3.sh"
   },
   "v27.2.0": {
-    "build_script": "pyzmq_vv27.2.0_ubi_10.2.sh"
+    "build_script": "pyzmq_v27.2.0_ubi_10.2.sh"
   },
   "*": {
     "build_script": [ 
       "pyzmq_v25.1.2_ubi_9.3.sh",
-      "pyzmq_vv27.2.0_ubi_10.2.sh"
+      "pyzmq_v27.2.0_ubi_10.2.sh"
     ]
   }
 }
