@@ -4,7 +4,7 @@
 # Package          : libclang
 # Version          : llvm-18.1.1
 # Source repo      : https://github.com/sighingnow/libclang.git
-# Tested on        : UBI:10.1
+# Tested on        : UBI:10.2
 # Language         : Python
 # Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
@@ -26,11 +26,21 @@ PACKAGE_DIR=libclang
 CURRENT_DIR="${PWD}"
 
 # Install necessary system dependencies
-yum install -y git gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ gcc-toolset-15-gcc-gfortran make wget llvm-devel clang-devel openssl-devel bzip2-devel libffi-devel zlib-devel python3.12-devel python3.12-pip cmake clang
+yum install -y git gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ gcc-toolset-15 make wget llvm-devel clang-devel openssl-devel bzip2-devel libffi-devel zlib-devel python3.14-devel python3.14-pip cmake clang
 
-source /opt/rh/gcc-toolset-15/enable
-export PATH=/opt/rh/gcc-toolset-15/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-15/root/usr/lib64:$LD_LIBRARY_PATH
+# Setup GCC Toolset 15 for UBI 10
+if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
+    source /opt/rh/gcc-toolset-15/enable
+elif [[ -d /opt/rh/gcc-toolset-15/root/usr/bin ]]; then
+    export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
+    export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:$LD_LIBRARY_PATH"
+else
+    echo "ERROR: gcc-toolset-15 not found"
+    exit 1
+fi
+
+echo "Using gcc: $(gcc --version | head -1)"
+
 
 # Clone the repository
 git clone $PACKAGE_URL
@@ -47,10 +57,10 @@ else
 fi
 
 # Install additional Python dependencies
-python3.12 -m pip install pytest setuptools tox wheel
+python3.14 -m pip install pytest setuptools tox wheel
 
 # Install the package
-if ! python3.12 -m pip install . ; then
+if ! python3.14 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -58,7 +68,7 @@ if ! python3.12 -m pip install . ; then
 fi
 
 # Building wheel with script itself as the wheel need to create with ppc64le arch.
-if ! python3.12  setup.py bdist_wheel --plat-name manylinux2014_ppc64le --dist-dir="$CURRENT_DIR"; then
+if ! python3.14  setup.py bdist_wheel --plat-name manylinux2014_ppc64le --dist-dir="$CURRENT_DIR"; then
     echo "------------------$PACKAGE_NAME: Wheel Build Failed ---------------------"
     exit 2
 else
