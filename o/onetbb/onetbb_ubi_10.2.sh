@@ -21,7 +21,6 @@
 
 set -ex
 
-SCRIPT_PATH=$(dirname "$(realpath "$0")")
 PACKAGE_NAME=tbb
 PACKAGE_VERSION=${1:-2023.1.0}
 PACKAGE_URL=https://github.com/uxlfoundation/oneTBB
@@ -116,33 +115,8 @@ git checkout -- .
 # Patch python/setup.py — add lib64 to library_dirs and fix version string
 # ---------------------------------------------------------------------------
 echo "------------Applying Patch------------"
-python3.14 - <<'PYEOF'
-from pathlib import Path
-
-p = Path("python/setup.py")
-src = p.read_text()
-
-# 1. Add lib64 to library_dirs (after the vc_mt line)
-OLD = "os.path.join(tbb_root, 'lib', 'intel64', 'vc_mt'),   # for Windows\n                     ] if not use_compiler_tbb else [],"
-NEW = "os.path.join(tbb_root, 'lib', 'intel64', 'vc_mt'),   # for Windows\n                       os.path.join(tbb_root, 'lib64'),\n                     ] if not use_compiler_tbb else [],"
-if OLD in src:
-    src = src.replace(OLD, NEW, 1)
-    print("  patched: library_dirs += lib64")
-elif "lib64" in src:
-    print("  already patched: lib64 present")
-else:
-    raise RuntimeError("Could not find library_dirs block to patch")
-
-# 2. Fix version string
-if '        version     ="0.2",' in src:
-    src = src.replace('        version     ="0.2",', '        version     ="2023.1.0",', 1)
-    print("  patched: version -> 2023.1.0")
-elif '2023.1.0' in src:
-    print("  already patched: version is 2023.1.0")
-
-p.write_text(src)
-print("Patch applied successfully.")
-PYEOF
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/onetbb/tbb_ubi_10.2.patch
+git apply tbb_ubi_10.2.patch
 echo "------------Applied patch successfully---------------------"
 
 # ---------------------------------------------------------------------------
