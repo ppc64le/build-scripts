@@ -1,0 +1,19 @@
+{
+    "maintainer": "Siddesh-Sangodkar1",
+    "package_name": "torch",
+    "github_url": "https://github.com/pytorch/pytorch",
+    "version": "2.13.0",
+    "default_branch": "main",
+    "package_dir": "t/torch",
+    "build_script": "torch_2.13.0_ubi_10.2.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "wheel_build": true,
+    "2.13.0": {
+        "build_script": "torch_2.13.0_ubi_10.2.sh"
+    },
+    "*": {
+        "build_script": "torch_2.13.0_ubi_10.2.sh"
+    }
+}
