@@ -33,54 +33,6 @@ yum install -y git gcc gcc-c++ python3.14 python3.14-pip python3.14-devel \
     automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le \
     fontconfig-devel.ppc64le sqlite-devel
 
-# -----------------------------------------------------------------------------
-# OpenBLAS
-# -----------------------------------------------------------------------------
-
-echo " --------------------------------------------------- OpenBlas Installing --------------------------------------------------- "
-
-# OpenBLAS version and source
-OPENBLAS_VERSION=v0.3.33
-OPENBLAS_URL=https://github.com/OpenMathLib/OpenBLAS
-
-git clone "${OPENBLAS_URL}"
-cd OpenBLAS
-git checkout "${OPENBLAS_VERSION}"
-git submodule update --init
-
-export USE_OPENMP=1
-export USE_THREAD=1
-export NUM_THREADS=8
-export TARGET=POWER9
-export DYNAMIC_ARCH=1
-export INTERFACE64=0
-export BUILD_BFLOAT16=1
-export NO_AFFINITY=1
-
-export CF="${CFLAGS:-} -Wno-unused-parameter -Wno-old-style-declaration"
-unset CFLAGS
-
-export LDFLAGS="$(echo "${LDFLAGS:-}" | sed 's/-Wl,--gc-sections//g')"
-
-if [ -n "${FFLAGS:-}" ]; then
-    export FFLAGS="${FFLAGS/-fopenmp/ }"
-    export FFLAGS="${FFLAGS} -frecursive"
-    export LAPACK_FFLAGS="${FFLAGS}"
-fi
-
-make -j"${MAX_JOBS}" TARGET="${TARGET}" BUILD_BFLOAT16="${BUILD_BFLOAT16}" BINARY=64 USE_OPENMP="${USE_OPENMP}" USE_THREAD="${USE_THREAD}" NUM_THREADS="${NUM_THREADS}" DYNAMIC_ARCH="${DYNAMIC_ARCH}" INTERFACE64="${INTERFACE64}" NO_AFFINITY="${NO_AFFINITY}" CFLAGS="${CF}" FFLAGS="${FFLAGS:-}"
-
-make install PREFIX="${OPENBLAS_PREFIX}"
-
-export LD_LIBRARY_PATH="${OPENBLAS_PREFIX}/lib:${OPENBLAS_PREFIX}/lib64:${LD_LIBRARY_PATH:-}"
-export PKG_CONFIG_PATH="${OPENBLAS_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
-
-pkg-config --modversion openblas
-
-echo "-----------------------------------------------------Installed OpenBLAS-----------------------------------------------------"
-
-cd $CURRENT_DIR
-
 # Clone the pandas repository and checkout the required version
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR/
@@ -96,7 +48,7 @@ python3.14 -m pip install cython
 python3.14 -m pip install --upgrade --force-reinstall setuptools
 python3.14 -m pip install --upgrade six
 python3.14 -m pip install meson-python==0.13.1
-python3.14 -m pip install patchelf==0.11.0
+python3.14 -m pip install patchelf==0.14.5
 python3.14 -m pip install meson==1.2.1
 python3.14 -m pip install oldest-supported-numpy==2022.8.16
 python3.14 -m pip install ninja
