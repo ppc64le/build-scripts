@@ -1,0 +1,30 @@
+{
+  "maintainer": "Ameil Kumar <ameil.kumar@ibm.com>",
+  "package_name": "torchaudio-rocm",
+  "github_url": "https://github.com/pytorch/audio.git",
+  "version": "v2.11.0",
+  "wheel_build": true,
+  "default_branch": "main",
+  "package_dir": "t/torchaudio-rocm",
+  "build_script": "torchaudio_2.11.0_rocm_ubi_10.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "wheel_name": "torchaudio-rocm",
+  "skip_python_versions": ["3.12", "3.14"],
+  "auditwheel_exclude": [
+    "libtorchaudio.so",
+    "libc10.so",
+    "libc10_hip.so",
+    "libtorch.so",
+    "libtorch_cpu.so",
+    "libtorch_hip.so",
+    "libtorch_python.so"
+  ],
+  "v2.11.0": {
+    "build_script": "torchaudio_2.11.0_rocm_ubi_10.sh"
+  },
+  "*": {
+    "build_script": "torchaudio_2.11.0_rocm_ubi_10.sh"
+  }
+}
