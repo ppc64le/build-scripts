@@ -8,7 +8,7 @@
 # Language      : Python
 # Ci-Check      : True
 # Script License: GNU General Public License (GPLv2)
-# Maintainer    : Vrusha.Naik <ich@us.ibm.com>
+# Maintainer    : Vrusha Naik <Vrusha.Naik@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.

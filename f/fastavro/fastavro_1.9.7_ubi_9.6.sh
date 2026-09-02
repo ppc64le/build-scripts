@@ -22,13 +22,35 @@ set -ex
 # Variables
 PACKAGE_NAME=fastavro
 PACKAGE_VERSION=${1:-1.9.7}
+PYTHON_VERSION=${2:-3.12}
 PACKAGE_URL=https://github.com/fastavro/fastavro
 PACKAGE_DIR=fastavro
 
-# Install dependencies
-dnf install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo cmake llvm-toolset
-python3.12 -m pip install --upgrade pip
-python3.12 -m pip install --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/ setuptools wheel pytest tox numpy pandas zlib-ng zstandard lz4 cramjam "cython<3.0"
+# Resolve the Python binary: the wheel jobs pre-install python3.X; the plain
+# build_ubi9 job runs against the UBI 9.6 system Python (python3 / 3.9).
+if command -v python${PYTHON_VERSION} &>/dev/null; then
+    PYTHON_BIN=python${PYTHON_VERSION}
+else
+    PYTHON_BIN=python3
+    PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+fi
+
+# Determine Cython version based on Python version.
+# fastavro 1.9.7's _logical_writers.pyx uses the Python 2 legacy
+# cpython.int.PyInt_AS_LONG API which Cython 3.x no longer provides.
+# For Python >= 3.13 we install modern Cython (>=3.0) and patch the .pyx source.
+PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
+if [ "$PYTHON_MINOR" -ge 13 ]; then
+    CYTHON_SPEC="cython>=3.0"
+    REGEN_CYTHON=1
+else
+    CYTHON_SPEC="cython<3.0"
+    REGEN_CYTHON=0
+fi
+
+dnf install -y git python3 python3-devel python3-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo cmake llvm-toolset
+${PYTHON_BIN} -m pip install --upgrade pip
+${PYTHON_BIN} -m pip install --ignore-installed --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/ setuptools wheel pytest tox numpy pandas zlib-ng zstandard lz4 cramjam "${CYTHON_SPEC}"
 
 # Install Rust
 echo "Installing Rust"
@@ -76,17 +98,27 @@ else
     fi
 fi
 
+# For Python >= 3.13, fastavro 1.9.7's _logical_writers.pyx still uses the
+# Python 2 legacy cpython.int.PyInt_AS_LONG import which Cython 3.x no longer
+# provides.  Patch the .pyx in-place to use the modern cpython.long.PyLong_AsLong.
+if [ "$REGEN_CYTHON" -eq 1 ]; then
+    sed -i \
+        -e 's|from cpython\.int cimport PyInt_AS_LONG|from cpython.long cimport PyLong_AsLong|g' \
+        -e 's|PyInt_AS_LONG(|PyLong_AsLong(|g' \
+        fastavro/_logical_writers.pyx
+fi
+
 # Install the package with Cython extensions
 export FASTAVRO_USE_CYTHON=1
 rm -rf build/ dist/ *.egg-info
-if ! python3.12 setup.py build_ext --inplace && python3.12 -m pip install --no-build-isolation ./; then
+if ! ${PYTHON_BIN} setup.py build_ext --inplace && ${PYTHON_BIN} -m pip install --no-build-isolation ./; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
     exit 1
 fi
 
-python3.12 -m pip wheel --no-build-isolation --no-deps -w dist/ ./
+${PYTHON_BIN} -m pip wheel --no-build-isolation --no-deps -w dist/ ./
 
 # ------------------ Unified Test Execution Block ------------------
 
@@ -95,19 +127,19 @@ test_status=1  # 0 = success, non-zero = failure
 # Run pytest if any matching test files found
 if ls */test_*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
     echo "Running pytest..."
-    (python3.12 -m pytest) && test_status=0 || { [ $? -le 1 ] && test_status=0 || test_status=$?; }
+    (${PYTHON_BIN} -m pytest) && test_status=0 || { [ $? -le 1 ] && test_status=0 || test_status=$?; }
 fi
 
 # Run tox if tox.ini is present and previous tests failed
 if [ -f "tox.ini" ] && [ $test_status -ne 0 ]; then
     echo "Running tox..."
-    (python3.12 -m tox -e py312 --sitepackages) && test_status=0 || test_status=$?
+    (${PYTHON_BIN} -m tox -e py${PYTHON_MINOR} --sitepackages) && test_status=0 || test_status=$?
 fi
 
 # Run nox if noxfile.py is present and previous tests failed
 if [ -f "noxfile.py" ] && [ $test_status -ne 0 ]; then
     echo "Running nox..."
-    (python3.12 -m nox) && test_status=0 || test_status=$?
+    (${PYTHON_BIN} -m nox) && test_status=0 || test_status=$?
 fi
 
 # Final test result output

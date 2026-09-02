@@ -30,11 +30,13 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
 
 # Install system dependencies
-yum install -y git python3 python3-devel gcc-toolset-13 gcc-toolset-13-gcc-gfortran make wget sudo openblas-devel
+yum install -y --disablerepo=rpmfusion* git python3 python3-devel \
+    gcc-toolset-13 gcc-toolset-13-gcc-gfortran \
+    make wget sudo openblas-devel
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:/opt/rh/gcc-toolset-13/root/usr/lib:${LD_LIBRARY_PATH}
 
 # Install Python build and test dependencies.
 # scipy and scikit-learn are built from source on ppc64le; openblas-devel
@@ -61,6 +63,16 @@ fi
 # NumPy 2.5 deprecated in-place shape assignment (array.shape = new_shape);
 # replace it with np.reshape() which works on all supported NumPy versions.
 sed -i 's/a_sum\.shape = shape/a_sum = a_sum.reshape(shape)/g' src/hmmlearn/utils.py
+
+# Patch setup.py: add -U_GLIBCXX_ASSERTIONS to suppress the _ZSt21__glibcxx_assert_fail
+# symbol. The system Python on RHEL 9 is built with -D_GLIBCXX_ASSERTIONS which
+# propagates to all C extensions; this symbol is absent from the system libstdc++ (GCC 11).
+sed -i 's/Pybind11Extension("hmmlearn._hmmc", \["ext\/_hmmc.cpp"\], cxx_std=11)/Pybind11Extension("hmmlearn._hmmc", ["ext\/_hmmc.cpp"], cxx_std=11, extra_compile_args=["-U_GLIBCXX_ASSERTIONS"])/' setup.py
+
+# Pin the version string so setuptools_scm does not append git-dirty metadata
+# (the sed patch above makes the working tree dirty, which would otherwise
+# produce a wheel name like hmmlearn-0.3.3.post0+g<hash>.d<date>...).
+export SETUPTOOLS_SCM_PRETEND_VERSION="$PACKAGE_VERSION"
 
 # Install the package (builds pybind11 C++ extension _hmmc)
 if ! python3 -m pip install ./; then
