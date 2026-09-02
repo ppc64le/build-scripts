@@ -3,7 +3,7 @@
   "package_name": "llvmlite",
   "github_url": "https://github.com/numba/llvmlite",
   "required_versions":{"Releases": ["*"], "Tags": ["v0.44.0rc1","v0.45.0"]},
-  "version": "v0.49.0",
+  "version": "0.49.0",
   "default_branch": "main",
   "build_script": "llvmlite_0.49.0_ubi_10.2.sh",
   "wheel_build" : true,
@@ -29,7 +29,7 @@
    "v0.45.*": {
        "build_script": "llvmlite_v0.45.0_ubi_9_3.sh"
    },
-  "v0.49.0": {
+  "0.49.0": {
     "build_script": "llvmlite_0.49.0_ubi_10.2.sh"
   }
 }
