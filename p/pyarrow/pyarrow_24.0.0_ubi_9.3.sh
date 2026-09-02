@@ -635,6 +635,33 @@ export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 cd $SCRIPT_DIR
 echo "------------openblas installed--------------------"
 
+echo "-----------------installing AWS SDK for C++ ---------------------"
+
+git clone https://github.com/aws/aws-sdk-cpp.git
+cd aws-sdk-cpp
+git checkout v1.11.357  # Use a stable version compatible with Arrow 24.0.0
+
+mkdir aws-sdk-prefix
+export AWS_SDK_PREFIX=$(pwd)/../aws-sdk-prefix
+
+mkdir build
+cd build
+
+cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=${AWS_SDK_PREFIX} \
+    -DBUILD_SHARED_LIBS=ON \
+    -DENABLE_TESTING=OFF \
+    -DBUILD_ONLY="s3" \
+    -GNinja \
+    ..
+
+ninja
+ninja install
+
+cd $SCRIPT_DIR
+echo "------------AWS SDK for C++ installed--------------------"
+
 
 echo "-----------------installing pyarrow----------------------"
 
@@ -653,8 +680,8 @@ export PYARROW_PREFIX=$(pwd)/pyarrow_prefix
 export ARROW_HOME=$PYARROW_PREFIX
 export target_platform=$(uname)-$(uname -m)
 export CXX=$(which g++)
-export CMAKE_PREFIX_PATH=$C_ARES_PREFIX:$LIBPROTO_INSTALL:$RE2_PREFIX:$GRPC_PREFIX:$ORC_PREFIX:$BOOST_PREFIX:${UTF8PROC_PREFIX}:$THRIFT_PREFIX:$SNAPPY_PREFIX:/usr
-export LD_LIBRARY_PATH=$GRPC_PREFIX/lib:$LIBPROTO_INSTALL/lib64
+export CMAKE_PREFIX_PATH=$C_ARES_PREFIX:$LIBPROTO_INSTALL:$RE2_PREFIX:$GRPC_PREFIX:$ORC_PREFIX:$BOOST_PREFIX:${UTF8PROC_PREFIX}:$THRIFT_PREFIX:$SNAPPY_PREFIX:${AWS_SDK_PREFIX}:/usr
+export LD_LIBRARY_PATH=$GRPC_PREFIX/lib:$LIBPROTO_INSTALL/lib64:${AWS_SDK_PREFIX}/lib:${LD_LIBRARY_PATH}
 
 mkdir cpp/build
 pushd cpp/build
