@@ -83,6 +83,7 @@ jobs:
       has_dockerfile_changes: ${{ steps.set_flags.outputs.has_dockerfile_changes }}
       docker_build_enabled:   ${{ steps.set_flags.outputs.docker_build_enabled }}
       build_package_enabled:  ${{ steps.set_flags.outputs.build_package_enabled }}
+      package_name:           ${{ steps.set_flags.outputs.package_name }}
       # Per-UBI-major named outputs  -  each is a {script,tested_on} JSON object or ""
       script_ubi8:  ${{ steps.emit.outputs.script_ubi8 }}
       script_ubi9:  ${{ steps.emit.outputs.script_ubi9 }}
@@ -163,7 +164,7 @@ jobs:
               echo "No build_info.json modified, trying to detect from changed files..."
 
               PACKAGE_DIR=$(echo "$CHANGED_FILES" \
-                | grep -vE '^(gha-script|process_bom|script|templates|travis-currency-ymls|travis-ymls)/' \
+                | grep -vE '^(\.github|gha-script|process_bom|script|templates|travis-currency-ymls|travis-ymls)/' \
                 | head -n 1 \
                 | cut -d'/' -f1-2)
 
@@ -412,6 +413,8 @@ jobs:
             echo "build_package_enabled=false" >> $GITHUB_OUTPUT
             echo "Build package job will be skipped (no build_info.json or .sh script changes)"
           fi
+
+          echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
 
       - name: Create scanner-env.sh
         run: |
@@ -861,7 +864,7 @@ jobs:
 
   wheel_build_ubi10_py312:
     needs: build_info
-    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi10 != '' }}
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi10 != '' && !contains(needs.build_info.outputs.package_name, '-rocm') }}
     runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
     env:
       PYTHON_VERSION: "3.12"
@@ -948,7 +951,7 @@ jobs:
 
   wheel_build_ubi10_py314:
     needs: build_info
-    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi10 != '' }}
+    if: ${{ needs.build_info.outputs.wheel_build_enabled == 'true' && needs.build_info.outputs.script_ubi10 != '' && !contains(needs.build_info.outputs.package_name, '-rocm') }}
     runs-on: ${{ github.event_name == 'workflow_dispatch' && inputs.large-runner || 'ubuntu-24.04-ppc64le-p10' }}
     continue-on-error: true
     env:
