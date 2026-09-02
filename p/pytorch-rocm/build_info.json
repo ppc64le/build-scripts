@@ -11,6 +11,7 @@
   "validate_build_script": true,
   "use_non_root_user": false,
   "wheel_name": "torch-rocm",
+  "skip_python_versions": ["3.12", "3.14"],
   "auditwheel_exclude": [
     "libc10.so",
     "libc10_hip.so",
