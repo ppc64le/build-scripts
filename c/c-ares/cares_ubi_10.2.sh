@@ -65,13 +65,10 @@ export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:${LD_LIBRARY_PATH:
 export CC="/opt/rh/gcc-toolset-15/root/usr/bin/gcc"
 export CXX="/opt/rh/gcc-toolset-15/root/usr/bin/g++"
 
-
-
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 target_platform=$(uname)-$(uname -m)
 AR=$(which ar)
-
 
 # install dependency
 python3.14 -m pip install --upgrade pip
