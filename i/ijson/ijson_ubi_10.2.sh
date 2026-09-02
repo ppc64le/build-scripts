@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : ijson
-# Version          : 3.5.1
+# Version          : v3.5.1
 # Source repo      : https://github.com/ICRAR/ijson.git
 # Tested on        : UBI:10.2
 # Language         : Python
