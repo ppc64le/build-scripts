@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: pgvector
-# Version	: v0.7.4
+# Version	: v0.4.2
 # Source repo	: https://github.com/pgvector/pgvector-python
 # Tested on	: UBI 9.6
 # Language      : python
 # Ci-Check  : true
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Onkar Kubal <onkar.kubal@ibm.com>
+# Maintainer	:  Bhagyashri Gaikwad <Bhagyashri.Gaikwad2@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -22,7 +22,7 @@ set -ex
 
 # Variables
 PACKAGE_NAME=pgvector
-PACKAGE_VERSION=${1:-"v0.7.4"}
+PACKAGE_VERSION=${1:-"v0.4.2"}
 PACKAGE_URL=https://github.com/pgvector/pgvector-python.git
 PACKAGE_DIR=pgvector-python
 
