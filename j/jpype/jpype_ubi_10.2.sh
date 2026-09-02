@@ -74,7 +74,7 @@ if [[ "$(printf '%s\n' "1.7.0" "${PACKAGE_VERSION#v}" | sort -V | head -n1)" == 
     python3.14 -m pip install scikit-build-core
 fi
 
-# Install the package
+# Install the package 
 if ! python3.14 -m pip install --no-build-isolation .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
