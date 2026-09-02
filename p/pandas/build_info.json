@@ -1,8 +1,8 @@
 {
-  "maintainer": "shivansh-ibm",
+  "maintainer": "Amit-Kumar282",
   "package_name": "pandas",
   "github_url": "https://github.com/pandas-dev/pandas.git",
-  "version": "v2.2.3",
+  "version": "v2.3.3",
   "default_branch": "main",
   "package_dir": "p/pandas",
   "build_script": "pandas_ubi_9.3.sh",
@@ -19,6 +19,9 @@
   "v1.5.3": {
     "build_script": "pandas_1.5.3_ubi_9.3.sh"
         },
+  "v2.3.3": {
+    "build_script": "pandas_2.3.3_ubi_8.10.sh"
+    },
   "*": {
     "build_script": "pandas_ubi_9.3.sh"
   } 

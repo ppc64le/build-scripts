@@ -1,0 +1,177 @@
+diff --git a/agents/chat/pyproject.toml b/agents/chat/pyproject.toml
+index 83cfeaf2..3f0c5761 100644
+--- a/agents/chat/pyproject.toml
++++ b/agents/chat/pyproject.toml
+@@ -5,7 +5,7 @@ description = "AI-powered conversational system with memory and tools."
+ authors = [
+     { name = "IBM Corp." },
+ ]
+-requires-python = ">=3.13,<3.14"
++requires-python = ">=3.12,<3.14"
+ dependencies = [
+     "beeai-framework[duckduckgo,wikipedia,a2a]>=0.1.70",
+     "tiktoken>=0.12.0",  # constraint for beeai-framework dependency (first version with musl arm64 wheel)
+@@ -15,13 +15,26 @@ dependencies = [
+     "openinference-instrumentation-beeai>=0.1.12",
+     "pydantic-settings>=2.9.0",
+     "uvicorn>=0.35.0",
++    "grpcio==1.80.0",
++    "grpcio-tools==1.80.0",
+ ]
+ 
+ [tool.ruff]
+ line-length = 120
+ 
++[[tool.uv.index]]
++name = "pypi"
++url = "https://pypi.org/simple"
++
++[[tool.uv.index]]
++name = "ibm"
++url = "https://wheels.developerfirst.ibm.com/ppc64le/linux"
++
+ [tool.uv.sources]
+ agentstack-sdk = { path = "../../apps/agentstack-sdk-py", editable = true }
++primp = { index = "ibm" }
++grpcio = { index = "ibm" }
++grpcio-tools = { index = "ibm" }
+ 
+ [project.scripts]
+ server = "chat.agent:serve"
+diff --git a/agents/form/pyproject.toml b/agents/form/pyproject.toml
+index b97e2d8a..efa4dc75 100644
+--- a/agents/form/pyproject.toml
++++ b/agents/form/pyproject.toml
+@@ -5,7 +5,7 @@ description = "Agent with structured input."
+ authors = [
+     { name = "IBM Corp." },
+ ]
+-requires-python = ">=3.13,<3.14"
++requires-python = ">=3.12,<3.14"
+ dependencies = [
+     "agentstack-sdk",
+     "openinference-instrumentation-beeai>=0.1.13",
+diff --git a/agents/rag/pyproject.toml b/agents/rag/pyproject.toml
+index 8b8c3867..f4cfbb5f 100644
+--- a/agents/rag/pyproject.toml
++++ b/agents/rag/pyproject.toml
+@@ -5,7 +5,7 @@ description = "TBD"
+ authors = [
+     { name = "IBM Corp." },
+ ]
+-requires-python = ">=3.13,<3.14"
++requires-python = ">=3.12,<3.14"
+ dependencies = [
+     "beeai-framework[duckduckgo,wikipedia,a2a]>=0.1.70",
+     "tiktoken>=0.12.0",  # constraint for beeai-framework dependency (first version with musl arm64 wheel)
+@@ -17,13 +17,26 @@ dependencies = [
+     "tenacity>=9.1.2",
+     "langchain-text-splitters>=0.3.0",
+     "uvicorn>=0.35.0",
++    "grpcio==1.80.0",
++    "grpcio-tools==1.80.0",
+ ]
+ 
+ [tool.ruff]
+ line-length = 120
+ 
++[[tool.uv.index]]
++name = "pypi"
++url = "https://pypi.org/simple"
++
++[[tool.uv.index]]
++name = "ibm"
++url = "https://wheels.developerfirst.ibm.com/ppc64le/linux"
++
+ [tool.uv.sources]
+ agentstack-sdk = { path = "../../apps/agentstack-sdk-py", editable = true }
++primp = { index = "ibm" }
++grpcio = { index = "ibm" }
++grpcio-tools = { index = "ibm" }
+ 
+ [project.scripts]
+ server = "rag.agent:serve"
+diff --git a/apps/agentstack-cli/pyproject.toml b/apps/agentstack-cli/pyproject.toml
+index 3d152a7c..4053b86d 100644
+--- a/apps/agentstack-cli/pyproject.toml
++++ b/apps/agentstack-cli/pyproject.toml
+@@ -4,7 +4,7 @@ version = "0.4.3"
+ description = "Agent Stack CLI"
+ readme = "README.md"
+ authors = [{ name = "IBM Corp." }]
+-requires-python = ">=3.13,<3.14"
++requires-python = ">=3.12,<3.14"
+ dependencies = [
+     "anyio~=4.10.0",
+     "pydantic~=2.11.7",
+@@ -33,8 +33,17 @@ dev = [
+     "wheel>=0.45.1",
+ ]
+ 
++[[tool.uv.index]]
++name = "pypi"
++url = "https://pypi.org/simple"
++
++[[tool.uv.index]]
++name = "ibm"
++url = "https://wheels.developerfirst.ibm.com/ppc64le/linux"
++
+ [tool.uv.sources]
+ agentstack-sdk = { path = "../agentstack-sdk-py", editable = true }
++primp = { index = "ibm" }
+ 
+ [project.scripts]
+ agentstack = "agentstack_cli:app"
+diff --git a/apps/agentstack-sdk-py/pyproject.toml b/apps/agentstack-sdk-py/pyproject.toml
+index 36544359..68cd62cd 100644
+--- a/apps/agentstack-sdk-py/pyproject.toml
++++ b/apps/agentstack-sdk-py/pyproject.toml
+@@ -38,6 +38,17 @@ dev = [
+ requires = ["uv_build>=0.9.0,<0.10.0"]
+ build-backend = "uv_build"
+ 
++[[tool.uv.index]]
++name = "pypi"
++url = "https://pypi.org/simple"
++
++[[tool.uv.index]]
++name = "ibm"
++url = "https://wheels.developerfirst.ibm.com/ppc64le/linux"
++
++[tool.uv.sources]
++primp = { index = "ibm" }
++
+ [tool.ruff]
+ line-length = 120
+ target-version = "py311"
+diff --git a/apps/agentstack-server/pyproject.toml b/apps/agentstack-server/pyproject.toml
+index 4e294d97..5d613ac2 100644
+--- a/apps/agentstack-server/pyproject.toml
++++ b/apps/agentstack-server/pyproject.toml
+@@ -4,7 +4,7 @@ version = "0.4.3"
+ description = "Agent Stack server"
+ readme = "README.md"
+ authors = [{ name = "IBM Corp." }]
+-requires-python = "==3.13.*"
++requires-python = "==3.12.*"
+ dependencies = [
+     "a2a-sdk~=0.3.9",
+     "aiohttp>=3.11.11",
+@@ -62,8 +62,17 @@ dev = [
+     "agentstack-sdk",
+ ]
+ 
++[[tool.uv.index]]
++name = "pypi"
++url = "https://pypi.org/simple"
++
++[[tool.uv.index]]
++name = "ibm"
++url = "https://wheels.developerfirst.ibm.com/ppc64le/linux"
++
+ [tool.uv.sources]
+ agentstack-sdk = { path = "../agentstack-sdk-py", editable = true }
++primp = { index = "ibm" }
+ 
+ [project.scripts]
+ agentstack-server = "agentstack_server:serve"

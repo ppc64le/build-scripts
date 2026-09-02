@@ -1,0 +1,19 @@
+{
+  "maintainer": "Ryder Salinas <rbsalinas@ibm.com>",
+  "package_name": "fastparquet",
+  "github_url": "https://github.com/dask/fastparquet.git",
+  "version": "2024.11.0",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "package_dir": "f/fastparquet",
+  "build_script": "fastparquet_2024.11.0_ubi_9.6.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "2024.11.0":{
+    "build_script":"fastparquet_2024.11.0_ubi_9.6.sh"
+  },
+  "*": {
+    "build_script":"fastparquet_2024.11.0_ubi_9.6.sh"
+  }
+}

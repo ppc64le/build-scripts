@@ -2,15 +2,21 @@
    "maintainer": "Harithanagothu2",
    "package_name": "msgspec",
    "github_url": "https://github.com/jcrist/msgspec",
-   "version": "0.19.0",
+   "version": "0.21.1",
    "default_branch": "main",
-   "build_script": "msgspec_ubi_9.3.sh",
+   "build_script": "msgspec_0.21.1_ubi_9.6.sh",
    "package_dir": "m/msgspec",
    "docker_build": false,
    "wheel_build": true,
    "validate_build_script": true,
    "use_non_root_user": false,
-   "*":{
+   "0.19.0":{
     "build_script":"msgspec_ubi_9.3.sh"
+   },
+   "0.21.1":{
+    "build_script":"msgspec_0.21.1_ubi_9.6.sh"
+   },
+   "*":{
+    "build_script":"msgspec_0.21.1_ubi_9.6.sh"
    }
 }
