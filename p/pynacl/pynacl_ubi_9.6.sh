@@ -30,7 +30,8 @@ pip3 install pytest
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+export CFLAGS="-Wno-error=address-of-packed-member -fno-strict-aliasing"
+export LDFLAGS="-Wno-error=address-of-packed-member"
 
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"
