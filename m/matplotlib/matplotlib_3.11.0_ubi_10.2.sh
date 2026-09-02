@@ -1,4 +1,4 @@
-﻿#!/bin/bash -e
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package       : matplotlib
@@ -52,7 +52,7 @@ else
 fi
 gcc --version
 
-# Compiler hints â€” help Pillow's setup.py locate system image headers
+# Compiler hints - help Pillow's setup.py locate system image headers
 export CFLAGS="-I/usr/include"
 export LDFLAGS="-L/usr/lib64"
 
@@ -99,7 +99,7 @@ print(f"PASS  import matplotlib {matplotlib.__version__}")
 import matplotlib._c_internal_utils
 print("PASS  C extension loaded")
 
-# 3. Headless render â€” no display required
+# 3. Headless render - no display required
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
