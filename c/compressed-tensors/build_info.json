@@ -1,0 +1,16 @@
+{
+   "maintainer": "bhagyashrigai",
+   "package_name": "compressed-tensors",
+   "github_url": "https://github.com/vllm-project/compressed-tensors.git",
+   "version": "v0.17.0",
+   "default_branch": "main",
+   "build_script": "compressed-tensors_ubi_9.6.sh",
+   "package_dir": "c/compressed-tensors",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"compressed-tensors_ubi_9.6.sh"
+  }
+}
