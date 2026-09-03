@@ -30,7 +30,7 @@ pip3 install pytest
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export CFLAGS="-O2 -Wno-error=address-of-packed-member -Wno-error=array-bounds -fno-strict-aliasing -Wno-error=stringop-overflow -Wno-error=stringop-overread"
+export CFLAGS="-O2 -Wno-error=address-of-packed-member -Wno-error=array-bounds -fno-strict-aliasing -Wno-error=stringop-overflow -Wno-error=stringop-overread -fno-tree-slp-vectorize"
 export LDFLAGS="-O2 -Wno-error=address-of-packed-member"
 
 curl https://sh.rustup.rs -sSf | sh -s -- -y
