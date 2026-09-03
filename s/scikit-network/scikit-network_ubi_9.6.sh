@@ -30,12 +30,15 @@ CURRENT_DIR="${PWD}"
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 
 # Install dependencies
-yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget openssl-devel bzip2-devel glibc-static libstdc++-static libffi-devel zlib-devel python3.12 python3.12-devel python3.12-pip pkg-config cmake
+yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget openssl-devel bzip2-devel glibc-static libstdc++-static libffi-devel zlib-devel python3.12 python3.12-devel python3.12-pip pkg-config cmake openblas-devel
 
 source /opt/rh/gcc-toolset-13/enable
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH
+export LD_LIBRARY_PATH=/usr/lib64:/usr/local/lib64:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/usr/lib64:/usr/local/lib64:$LIBRARY_PATH
 
 # Verify Python and pip
 python3.12 --version
