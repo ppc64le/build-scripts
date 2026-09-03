@@ -37,7 +37,7 @@ if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
     source /opt/rh/gcc-toolset-15/enable
 elif [[ -d /opt/rh/gcc-toolset-15/root/usr/bin ]]; then
     export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
-    export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:$LD_LIBRARY_PATH"
+    export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:${LD_LIBRARY_PATH:-}"
 else
     echo "ERROR: gcc-toolset-15 not found"
     exit 1
@@ -45,13 +45,19 @@ fi
 
 echo "Using gcc: $(gcc --version | head -1)"
 
-# Export CC/CXX so FreeTDS ./configure finds the toolset compiler.
+# Export CC/CXX so FreeTDS ./configure and Cython compilation both use the toolset compiler.
 export CC=$(which gcc)
 export CXX=$(which g++)
 
 # Upgrade pip and install build tools.
 python3.14 -m pip install --upgrade pip setuptools wheel build
-python3.14 -m pip install cython "setuptools_scm>=5.0"
+python3.14 -m pip install \
+    "cython>=3.1.0" \
+    "setuptools>=80.0" \
+    "setuptools_scm[toml]>=5.0,<10.0" \
+    "wheel>=0.36.2" \
+    "packaging>=24.2" \
+    "standard-distutils"
 
 # Clone and checkout.
 cd "$CURRENT_DIR"
@@ -94,31 +100,32 @@ sed -i "s/{TDS_ENCRYPTION_LEVEL.keys())}/{list(TDS_ENCRYPTION_LEVEL.keys())}/" s
 
 export SETUPTOOLS_SCM_PRETEND_VERSION="${PACKAGE_VERSION#v}"
 
-# Step 1: Build FreeTDS statically via dev/build.py (no --wheel).
-# We intentionally omit --wheel here so dev/build.py does NOT invoke its own
-# venv Python to compile the C extension — that would produce a wheel linked
-# against a different interpreter and cause "No module named '_mssql'" at import.
-if ! python3.14 dev/build.py \
-        --ws-dir=./freetds \
-        --dist-dir=./dist \
-        --with-openssl=yes \
-        --enable-krb5 \
-        --static-freetds; then
-    echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+# Point dev/build.py at the system python3.14 so it builds the wheel using the
+# same interpreter we will install into -- this avoids "No module named '_mssql'"
+# caused by _mssql.so being compiled against a different Python ABI.
+export PYTHON=$(which python3.14)
+
+# Build FreeTDS statically and produce the wheel in one step.
+# dev/build.py manages the FreeTDS configure/make and then compiles the Cython
+# extension with the headers from its own install prefix, so we do NOT attempt
+# a separate `pip wheel .` which would not know where sqlfront.h lives.
+python3.14 dev/build.py \
+    --ws-dir=./freetds \
+    --dist-dir=./dist \
+    --with-openssl=yes \
+    --enable-krb5 \
+    --static-freetds \
+    --wheel
+
+# Install from the wheel dev/build.py produced.
+# Use explicit wheel path -- NOT "--no-index -f dist" which may resolve to
+# the sdist and rebuild from source without FreeTDS headers.
+WHEEL=$(find dist -name "pymssql-*.whl" | head -1)
+if [ -z "$WHEEL" ]; then
+    echo "ERROR: wheel not found in dist/"
     exit 1
 fi
-
-# Step 2: Build the wheel with the *current* python3.14 so the C extension
-# (_mssql.so) is compiled and linked against the correct interpreter.
-mkdir -p dist
-python3.14 -m pip wheel . \
-    --no-build-isolation \
-    --wheel-dir=dist
-
-# Step 3: Install the wheel we just built.
-WHEEL=$(find dist -name "${PACKAGE_NAME}-*.whl" | head -1)
+echo "Installing wheel: $WHEEL"
 python3.14 -m pip install "$WHEEL"
 
 # Copy wheel to CURRENT_DIR for the CI wrapper / auditwheel.
@@ -134,9 +141,10 @@ fi
 
 # pymssql's test suite requires a live SQL Server — not available in CI.
 # Validate with an import + version smoke test instead.
+# Note: _mssql is a submodule of pymssql (pymssql._mssql), not a top-level module.
 if ! python3.14 -c "
 import pymssql
-import _mssql
+from pymssql import _mssql
 info = pymssql.__version__
 assert info == '2.3.13', f'Unexpected version: {info}'
 print('pymssql version  :', pymssql.__version__)
