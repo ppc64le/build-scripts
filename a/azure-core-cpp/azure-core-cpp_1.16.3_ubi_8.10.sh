@@ -22,6 +22,7 @@ PACKAGE_NAME=azure-core-cpp
 PACKAGE_VERSION=${1:-"1.16.3"}
 PACKAGE_URL=https://github.com/Azure/azure-sdk-for-cpp
 WORKING_DIR=$(pwd)
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Detect CPU generation and set optimization flags accordingly
 if grep -q "POWER10" /proc/cpuinfo 2>/dev/null; then
@@ -161,8 +162,7 @@ fi
 cd "$SOURCE_DIR"
 python3.9 -m pip install --upgrade pip setuptools wheel build
 
-cp "$WORKING_DIR/pyproject.toml" . 2>/dev/null || \
-    wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/azure-core-cpp/pyproject.toml
+cp "$SCRIPT_DIR/pyproject.toml" .
 
 sed -i "s/{PACKAGE_VERSION}/${PACKAGE_VERSION}/g" pyproject.toml
 
