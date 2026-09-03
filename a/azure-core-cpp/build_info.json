@@ -1,0 +1,22 @@
+{
+    "maintainer": "Veenious-Geevarghese",
+    "package_name": "azure-core-cpp",
+    "github_url": "https://github.com/Azure/azure-sdk-for-cpp",
+    "version": "1.16.3",
+    "default_branch": "main",
+    "build_script": "azure-core-cpp_ubi_9.8.sh",
+    "package_dir": "a/azure-core-cpp",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "wheel_build": true,
+    "1.16.3": {
+        "build_script": [
+            "azure-core-cpp_ubi_8.10.sh",
+            "azure-core-cpp_ubi_9.8.sh"
+        ]
+    },
+    "*": {
+        "build_script": "azure-core-cpp_ubi_9.8.sh"
+    }
+}
