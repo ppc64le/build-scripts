@@ -44,6 +44,15 @@ export LIBRARY_PATH=/usr/lib64:/usr/local/lib64:$LIBRARY_PATH
 python3.12 --version
 python3.12 -m pip --version
 
+# Select SciPy version based on Python version
+PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+
+if [ "$PYTHON_VERSION" = "3.10" ]; then
+    SCIPY_VERSION="1.15.2"
+else
+    SCIPY_VERSION="1.17.0"
+fi
+
 # Clone repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -69,7 +78,7 @@ python3.12 -m pip install \
     --trusted-host wheels.developerfirst.ibm.com \
     --extra-index-url "${IBM_WHEELS}" \
     --only-binary=scipy \
-    scipy==1.17.0
+    "scipy==${SCIPY_VERSION}"
 
 # Verify NumPy and SciPy
 python3.12 -c "import numpy; print('NumPy:', numpy.__version__)"
