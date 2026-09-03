@@ -66,27 +66,31 @@ export CLASSPATH=$CLASSPATH:$(pwd)/sqlite-jdbc.jar:$(pwd)/hsqldb.jar:$(pwd)/h2.j
 # Install test dependencies
 python3.14 -m pip install -U pip setuptools wheel
 python3.14 -m pip install pytest pytest-cov numpy==2.5.0
-# These block is just for testing purpore -----------------------------------------------------
-echo "===== OS ====="
-cat /etc/os-release
 
-echo "===== REPOSITORIES ====="
-yum repolist all
-
-echo "===== APPSTREAM ====="
-yum repolist all | grep -i appstream || true
-
-echo "===== ANT ====="
-dnf repoquery --available ant || true
-
-echo "===== REPO FILES ====="
-ls -l /etc/yum.repos.d/
-
-echo "======================"
 # ------------------------------------------------------------------------------------------
 if [[ "$(printf '%s\n' "1.7.0" "${PACKAGE_VERSION#v}" | sort -V | head -n1)" == "1.7.0" ]]; then
     echo "Version >= 1.7.0"
-    yum install -y ant
+    # yum install -y ant
+    ANT_VERSION=1.10.15
+    cd /tmp
+
+    wget -q "https://archive.apache.org/dist/ant/source/apache-ant-${ANT_VERSION}-src.tar.gz"
+    tar -xf "apache-ant-${ANT_VERSION}-src.tar.gz"
+
+    cd "apache-ant-${ANT_VERSION}"
+    ./build.sh
+
+    mkdir -p "/opt/ant-${ANT_VERSION}"
+    cp -a dist/bin dist/lib "/opt/ant-${ANT_VERSION}/"
+
+    ln -sfn "/opt/ant-${ANT_VERSION}" /opt/ant
+
+    export ANT_HOME=/opt/ant
+    export PATH="$ANT_HOME/bin:$PATH"
+
+    echo "Ant installation:"
+    ant -version
+    
     python3.14 -m pip install scikit-build-core
 fi
 
