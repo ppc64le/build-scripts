@@ -4,12 +4,11 @@
 # Package          : ogx
 # Version          : v1.1.3
 # Source repo      : https://github.com/ogx-ai/ogx.git
-# Tested on        : UBI 9.6
+# Tested on        : UBI:9.6
 # Language         : Python
 # Ci-Check         : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Bhagyashri Gaikwad <Bhagyashri.Gaikwad2@ibm.com> 
-#
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -17,13 +16,12 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 #!/bin/bash
 set -e
 
 # Variables
 PACKAGE_NAME=ogx
-PACKAGE_VERSION=${1:-1.1.3}
+PACKAGE_VERSION=${1:-v1.1.3}
 PACKAGE_URL=https://github.com/ogx-ai/ogx.git
 PACKAGE_DIR=ogx
 CURRENT_DIR="${PWD}"
