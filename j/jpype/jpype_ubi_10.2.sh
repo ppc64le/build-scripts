@@ -22,6 +22,7 @@ PACKAGE_NAME=jpype
 PACKAGE_VERSION=${1:-v1.7.1}
 PACKAGE_DIR=jpype
 PACKAGE_URL=https://github.com/jpype-project/jpype.git
+CURRENT_DIR="${PWD}"
 
 # Install necessary system packages
 yum install -y git python3.14 python3.14-pip python3.14-devel java-21-openjdk java-21-openjdk-devel gzip tar make wget xz cmake yum-utils openssl-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel
@@ -70,9 +71,10 @@ python3.14 -m pip install pytest pytest-cov numpy==2.5.0
 # ------------------------------------------------------------------------------------------
 if [[ "$(printf '%s\n' "1.7.0" "${PACKAGE_VERSION#v}" | sort -V | head -n1)" == "1.7.0" ]]; then
     echo "Version >= 1.7.0"
-    # yum install -y ant
+
+    # installing from source as ant rpm is failing to install from CI
     ANT_VERSION=1.10.15
-    cd /tmp
+    cd $CURRENT_DIR
 
     wget -q "https://archive.apache.org/dist/ant/source/apache-ant-${ANT_VERSION}-src.tar.gz"
     tar -xf "apache-ant-${ANT_VERSION}-src.tar.gz"
@@ -94,7 +96,9 @@ if [[ "$(printf '%s\n' "1.7.0" "${PACKAGE_VERSION#v}" | sort -V | head -n1)" == 
     python3.14 -m pip install scikit-build-core
 fi
 
-cd /$PACKAGE_DIR
+cd $CURRENT_DIR
+cd $PACKAGE_DIR
+
 # Install the package 
 if ! python3.14 -m pip install --no-build-isolation .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
