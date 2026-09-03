@@ -67,16 +67,24 @@ export CXX="/opt/rh/gcc-toolset-15/root/usr/bin/g++"
 # Build and install GNU binutils from source
 # ---------------------------------------------------------------------------
 BINUTILS_VERSION=2.45
-BINUTILS_SRC_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}"
+
+BINUTILS_SRC_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}-src"
 BINUTILS_BUILD_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}-build"
 BINUTILS_INSTALL_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}"
 
 cd "${CURRENT_DIR}"
 
+rm -rf \
+    "${BINUTILS_SRC_DIR}" \
+    "${BINUTILS_BUILD_DIR}" \
+    "${BINUTILS_INSTALL_DIR}"
+
 wget -q "https://ftp.gnu.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.xz"
+
 tar -xf "binutils-${BINUTILS_VERSION}.tar.xz"
 
-rm -rf "${BINUTILS_BUILD_DIR}"
+mv "binutils-${BINUTILS_VERSION}" "${BINUTILS_SRC_DIR}"
+
 mkdir -p "${BINUTILS_BUILD_DIR}"
 cd "${BINUTILS_BUILD_DIR}"
 
@@ -98,8 +106,11 @@ export CPPFLAGS="-I${BINUTILS_ROOT}/include ${CPPFLAGS:-}"
 export LDFLAGS="-L${BINUTILS_ROOT}/lib ${LDFLAGS:-}"
 export PKG_CONFIG_PATH="${BINUTILS_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
 
+# ---------------------------------------------------------------------------
 # Verify
-echo "Using binutils:"
+# ---------------------------------------------------------------------------
+echo "------------------------Using source-built binutils-------------------"
+
 which ar
 which ld
 which as
@@ -108,7 +119,6 @@ ar --version
 ld --version
 as --version
 
-# Verify development files
 test -f "${BINUTILS_ROOT}/include/bfd.h"
 test -f "${BINUTILS_ROOT}/lib/libbfd.a"
 
