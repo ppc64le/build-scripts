@@ -1,5 +1,5 @@
 {
-    "maintainer": "onkar-kubal",
+    "maintainer": "bhagyashrigais",
     "package_name": "pgvector",
     "github_url": "https://github.com/pgvector/pgvector-python",
     "version": "v0.4.2",
