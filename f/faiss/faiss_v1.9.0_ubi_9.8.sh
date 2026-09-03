@@ -20,20 +20,22 @@ PACKAGE_ORG="facebookresearch"
 PACKAGE_VERSION="v1.9.0"
 PACKAGE_URL="https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}.git"
 BUILD_HOME=$(pwd)
-PACKAGE_DIR=faiss/python
 
 # ----------------------------------------------------------------------------
 # Install repositories and dependencies
 # ----------------------------------------------------------------------------
 
-# Remove stale CentOS Linux 8 / vault.centos.org repo files if present.
+# Remove any stale CentOS Linux 8 / vault.centos.org repo files that may be
+# baked into the base image and cause timeout failures at metadata fetch time.
 find /etc/yum.repos.d/ -maxdepth 1 -name "*.repo" \
     ! -name "ubi.repo" \
     ! -name "redhat.repo" \
     ! -name "almalinux9.repo" \
     -delete 2>/dev/null || true
 
+# Add AlmaLinux 9 repos for packages not in UBI (lapack-devel, python3.11-*, swig).
 # AlmaLinux 9 is ABI-compatible with RHEL 9 and fully supports ppc64le.
+# CentOS Stream 9 mirrors dropped ppc64le support (404 on mirror.stream.centos.org).
 cat > /etc/yum.repos.d/almalinux9.repo << 'EOF'
 [al9-baseos]
 name=AlmaLinux 9 - BaseOS
@@ -55,25 +57,34 @@ enabled=1
 EOF
 
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-dnf install -y git gcc gcc-c++ cmake file lapack-devel-3.9.0-8.el9.ppc64le swig python3.11-devel python3.11-pip python3.11-pytest python3.11-wheel
 
-pip3.11 install --prefer-binary scipy numpy==1.26.4 auditwheel patchelf --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
-
-mkdir -p ~/.local/bin
-ln -sf /usr/bin/python3.11 ~/.local/bin/python
-ln -sf /usr/bin/python3.11 ~/.local/bin/python3
-export PATH="$HOME/.local/bin:$PATH"
+dnf install -y \
+    git \
+    gcc \
+    gcc-c++ \
+    cmake \
+    file \
+    lapack-devel \
+    python3.11-devel \
+    python3.11-pip \
+    pkg-config \
+    swig
 
 # ----------------------------------------------------------------------------
 # Build and install OpenBLAS
 # ----------------------------------------------------------------------------
 
 cd "$BUILD_HOME"
+
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
-
-make -j"$(nproc)" TARGET=POWER8 DYNAMIC_ARCH=1 DYNAMIC_OLDER=1 USE_OPENMP=0 NUM_THREADS=20 NO_AFFINITY=1
+ret=0
+make -j"$(nproc)" TARGET=POWER8 DYNAMIC_ARCH=1 DYNAMIC_OLDER=1 USE_OPENMP=0 NUM_THREADS=20 NO_AFFINITY=1 || ret=$?
+if [ "$ret" -ne 0 ]; then
+    echo "FAIL: OpenBLAS build failed."
+    exit 1
+fi
 make install
 
 # ----------------------------------------------------------------------------
@@ -81,7 +92,12 @@ make install
 # ----------------------------------------------------------------------------
 
 cd "$BUILD_HOME"
-git clone --branch v2.3.0 --depth 1 https://github.com/gflags/gflags.git
+
+git clone \
+    --branch v2.3.0 \
+    --depth 1 \
+    https://github.com/gflags/gflags.git
+
 cd gflags
 mkdir build
 cd build
@@ -93,16 +109,47 @@ cmake .. \
     -DBUILD_STATIC_LIBS=OFF \
     -DBUILD_TESTING=OFF
 
-make -j"$(nproc)"
+ret=0
+make -j"$(nproc)" || ret=$?
+if [ "$ret" -ne 0 ]; then
+    echo "FAIL: gflags build failed."
+    exit 1
+fi
 make install
+
+# ----------------------------------------------------------------------------
+# Install Python dependencies
+# ----------------------------------------------------------------------------
+
+pip3.11 install \
+    --prefer-binary \
+    pytest \
+    wheel \
+    scipy \
+    numpy==1.26.4 \
+    auditwheel \
+    patchelf \
+    --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+
+mkdir -p ~/.local/bin
+
+ln -sf /usr/bin/python3.11 ~/.local/bin/python
+ln -sf /usr/bin/python3.11 ~/.local/bin/python3
+
+export PATH="$HOME/.local/bin:$PATH"
 
 # ----------------------------------------------------------------------------
 # Clone FAISS
 # ----------------------------------------------------------------------------
 
 cd "$BUILD_HOME"
-rm -rf "$PACKAGE_NAME"
-git clone "$PACKAGE_URL" -b "$PACKAGE_VERSION"
+
+if [ -d "$PACKAGE_NAME" ]; then
+    echo "Directory '$PACKAGE_NAME' already exists, skipping clone."
+else
+    git clone "$PACKAGE_URL" -b "$PACKAGE_VERSION"
+fi
+
 cd "$PACKAGE_NAME"
 
 # ----------------------------------------------------------------------------
@@ -125,20 +172,25 @@ ret=0
 make -j"$(nproc)" || ret=$?
 
 if [ "$ret" -ne 0 ]; then
-    echo "FAIL: ${PACKAGE_NAME} Build failed."
+    echo "FAIL: Build failed."
     exit 1
 fi
 
+# ----------------------------------------------------------------------------
 # Verify native libraries
+# ----------------------------------------------------------------------------
+
 file faiss/libfaiss.so
 file faiss/python/_swigfaiss.so
 
+# ----------------------------------------------------------------------------
 # Run FAISS C++ tests
+# ----------------------------------------------------------------------------
+
 ret=0
 make test || ret=$?
-
 if [ "$ret" -ne 0 ]; then
-    echo "FAIL: ${PACKAGE_NAME} C++ tests failed."
+    echo "FAIL: C++ tests failed."
     exit 2
 fi
 
@@ -146,33 +198,99 @@ fi
 # Build Python wheel
 # ----------------------------------------------------------------------------
 
-cd "$PACKAGE_DIR"
-rm -rf dist wheelhouse
-mkdir -p dist wheelhouse
+cd faiss/python
 
-python3.11 -m pip wheel . -w dist
+rm -rf wheelhouse
+mkdir -p wheelhouse/raw
 
-WHEEL_VERSION="${PACKAGE_VERSION#v}"
-RAW_WHEEL=$(find dist -maxdepth 1 -name "faiss-${WHEEL_VERSION}-*.whl" -print -quit)
+ret=0
+python3.11 -m pip wheel . -w wheelhouse/raw || ret=$?
+if [ "$ret" -ne 0 ]; then
+    echo "FAIL: Python wheel build failed."
+    exit 1
+fi
+
+RAW_WHEEL=$(find wheelhouse/raw -maxdepth 1 \
+    -name "faiss-1.9.0-*.whl" -print -quit)
 
 if [ -z "$RAW_WHEEL" ]; then
     echo "FAIL: Python wheel was not generated."
     exit 1
 fi
 
-# Repair wheel
-# Bundle required shared libraries and generate a ppc64le wheel.
-auditwheel repair "$RAW_WHEEL" -w wheelhouse
+echo "Raw wheel:"
+echo "$RAW_WHEEL"
 
-REPAIRED_WHEEL=$(find wheelhouse -maxdepth 1 -name "faiss-${WHEEL_VERSION}-*.whl" -print -quit)
+# ----------------------------------------------------------------------------
+# Repair wheel
+#
+# Bundle libfaiss.so and other required shared libraries and generate a
+# platform-specific ppc64le wheel.
+# ----------------------------------------------------------------------------
+
+auditwheel repair \
+    "$RAW_WHEEL" \
+    -w wheelhouse
+
+# Remove the unrepaired wheel so wheelhouse contains only the publishable
+# repaired wheel.
+rm -f "$RAW_WHEEL"
+
+REPAIRED_WHEEL=$(find wheelhouse -maxdepth 1 \
+    -name "faiss-1.9.0-*.whl" -print -quit)
 
 if [ -z "$REPAIRED_WHEEL" ]; then
-    echo "FAIL: Repaired Python wheel was not generated."
+    echo "FAIL: Repaired wheel was not generated."
     exit 1
 fi
 
+echo "Repaired wheel:"
+echo "$REPAIRED_WHEEL"
+
+# ----------------------------------------------------------------------------
+# Verify repaired wheel contents
+# ----------------------------------------------------------------------------
+
+echo "=== Repaired wheel contents ==="
+
+unzip -l "$REPAIRED_WHEEL" \
+    | grep -E 'libfaiss|_swigfaiss|\.libs'
+
+if ! unzip -l "$REPAIRED_WHEEL" | grep -q 'libfaiss'; then
+    echo "FAIL: Repaired wheel does not contain libfaiss."
+    exit 1
+fi
+
+echo "=== Auditwheel information ==="
+
+auditwheel show "$REPAIRED_WHEEL"
+
+# ----------------------------------------------------------------------------
 # Install repaired wheel
-python3.11 -m pip install --force-reinstall "$REPAIRED_WHEEL"
+# ----------------------------------------------------------------------------
+
+python3.11 -m pip install \
+    --force-reinstall \
+    "$REPAIRED_WHEEL"
+
+# FAISS 1.9.0 was built against NumPy 1.x.
+# Prevent pip from leaving NumPy 2.x installed.
+python3.11 -m pip install \
+    --force-reinstall \
+    --no-deps \
+    --only-binary=:all: \
+    --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux \
+    "numpy==1.26.4"
+
+# ----------------------------------------------------------------------------
+# Verify Python imports
+# ----------------------------------------------------------------------------
+
+python3.11 -c \
+    "import numpy; print('NumPy:', numpy.__version__)"
+
+python3.11 -c \
+    "import faiss; print('FAISS:', faiss.__version__)"
 
 # ----------------------------------------------------------------------------
 # Python tests
@@ -182,12 +300,18 @@ cd "$BUILD_HOME/$PACKAGE_NAME"
 
 ret=0
 python3.11 -m pytest ./tests/test_*.py -v || ret=$?
-
 if [ "$ret" -ne 0 ]; then
-    echo "FAIL: ${PACKAGE_NAME} Python tests failed."
+    echo "FAIL: Python tests failed."
     exit 2
 fi
 
+# ----------------------------------------------------------------------------
 # Conclude
+# ----------------------------------------------------------------------------
+
 set +ex
+
 echo "Build and tests complete!"
+echo "Publishable wheel:"
+echo "$BUILD_HOME/$PACKAGE_NAME/build/faiss/python/$REPAIRED_WHEEL"
+echo "Libraries available at [$BUILD_HOME/$PACKAGE_NAME/build/faiss/]"
