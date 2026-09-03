@@ -69,7 +69,7 @@ python3.12 -m pip install \
     --trusted-host wheels.developerfirst.ibm.com \
     --extra-index-url "${IBM_WHEELS}" \
     --only-binary=scipy \
-    scipy==1.15.2
+    scipy==1.17.0
 
 # Verify NumPy and SciPy
 python3.12 -c "import numpy; print('NumPy:', numpy.__version__)"
