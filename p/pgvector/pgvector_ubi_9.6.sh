@@ -76,6 +76,7 @@ fi
 # Run tests
 # Run tests - skip database-dependent tests
 if ! python3 -m pytest tests/ \
+    --ignore=tests/test_asyncpg.py \
     --ignore=tests/test_django.py \
     --ignore=tests/test_peewee.py \
     --ignore=tests/test_pg8000.py \
