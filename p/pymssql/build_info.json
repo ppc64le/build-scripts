@@ -19,14 +19,7 @@
   "v2.3.4":{
     "build_script":"pymssql_2.3.2_ubi_9.3.sh"
   },
-<<<<<<< HEAD
   "v2.3.11":{
-=======
-  "2.3.13":{
-    "build_script":"pymssql_2.3.13_ubi_10.2.sh"
-  },
-  "*":{
->>>>>>> bf107b957 ( changed to build failure for pymssql)
     "build_script":"pymssql_2.3.11_ubi_9.6.sh"
   },
   "2.3.13":{
