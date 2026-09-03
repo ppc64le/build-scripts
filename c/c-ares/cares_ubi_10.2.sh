@@ -37,8 +37,6 @@ yum install -y \
     git \
     make \
     cmake \
-    binutils \
-    binutils-devel \
     glibc-devel \
     findutils \
     diffutils
