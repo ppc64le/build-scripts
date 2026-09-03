@@ -135,7 +135,7 @@ if [ -n "$JPYPE_JAR" ]; then
     cp "$JPYPE_JAR" ./org.jpype.jar
 fi
 
-ln -s /jpype/native/build/lib/org.jpype.jar /jpype/org.jpype.jar
+# ln -s /jpype/native/build/lib/org.jpype.jar /jpype/org.jpype.jar
 
 # Run tests
 if ! python3.14 -m pytest -v --junit-xml=build/test/test.xml test/jpypetest --checkjni --fast; then
