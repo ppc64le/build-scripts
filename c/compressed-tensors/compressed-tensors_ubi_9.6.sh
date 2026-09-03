@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : compressed-tensors
-# Version          : v0.17.0
+# Version          : 0.17.0
 # Source repo      : https://github.com/vllm-project/compressed-tensors.git
 # Tested on     : UBI:9.6
 # Language      : Python
@@ -23,7 +23,7 @@ set -ex
 
 # Variables
 PACKAGE_NAME=compressed-tensors
-PACKAGE_VERSION=${1:-v0.17.0}
+PACKAGE_VERSION=${1:-0.17.0}
 PACKAGE_URL=https://github.com/vllm-project/compressed-tensors.git
 PACKAGE_DIR=compressed-tensors
 CURRENT_DIR="${PWD}"
