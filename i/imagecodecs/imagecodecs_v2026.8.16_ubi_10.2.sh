@@ -69,11 +69,15 @@ cd libpng-1.6.53
 
 make -j$(nproc)
 make install
+
 export PNG_ROOT=/usr/local/libpng-1.6.53
 
 export CPPFLAGS="-I${PNG_ROOT}/include ${CPPFLAGS}"
-export LDFLAGS="-L${PNG_ROOT}/lib64 -L${PNG_ROOT}/lib ${LDFLAGS}"
-export PKG_CONFIG_PATH="${PNG_ROOT}/lib64/pkgconfig:${PNG_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+export CFLAGS="-I${PNG_ROOT}/include ${CFLAGS}"
+export LDFLAGS="-L${PNG_ROOT}/lib -L${PNG_ROOT}/lib64 ${LDFLAGS}"
+export LIBRARY_PATH="${PNG_ROOT}/lib:${PNG_ROOT}/lib64:${LIBRARY_PATH}"
+export LD_LIBRARY_PATH="${PNG_ROOT}/lib:${PNG_ROOT}/lib64:${LD_LIBRARY_PATH}"
+export PKG_CONFIG_PATH="${PNG_ROOT}/lib/pkgconfig:${PNG_ROOT}/lib64/pkgconfig:${PKG_CONFIG_PATH}"
 
 # libtiff 4.7.2
 wget https://download.osgeo.org/libtiff/tiff-4.7.2.tar.gz
