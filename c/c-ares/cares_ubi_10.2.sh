@@ -26,7 +26,6 @@ PACKAGE_URL=https://github.com/c-ares/c-ares.git
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=c-ares
 
-
 echo "------------------------Installing dependencies-------------------"
 yum install -y wget
 
