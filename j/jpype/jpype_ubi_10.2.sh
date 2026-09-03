@@ -43,7 +43,6 @@ fi
 
 export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
 export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:${LD_LIBRARY_PATH:-}"
-
 export CC="/opt/rh/gcc-toolset-15/root/usr/bin/gcc"
 export CXX="/opt/rh/gcc-toolset-15/root/usr/bin/g++"
 
