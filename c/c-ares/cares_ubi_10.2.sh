@@ -39,7 +39,8 @@ yum install -y \
     cmake \
     glibc-devel \
     findutils \
-    diffutils
+    diffutils \
+    xz
 
 yum install gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ -y
 
@@ -65,7 +66,7 @@ export CXX="/opt/rh/gcc-toolset-15/root/usr/bin/g++"
 # ---------------------------------------------------------------------------
 # Build and install GNU binutils from source
 # ---------------------------------------------------------------------------
-BINUTILS_VERSION=2.45
+BINUTILS_VERSION=2.47
 BINUTILS_SRC_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}"
 BINUTILS_BUILD_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}-build"
 BINUTILS_INSTALL_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}"
