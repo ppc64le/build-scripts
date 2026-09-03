@@ -94,24 +94,32 @@ sed -i "s/{TDS_ENCRYPTION_LEVEL.keys())}/{list(TDS_ENCRYPTION_LEVEL.keys())}/" s
 
 export SETUPTOOLS_SCM_PRETEND_VERSION="${PACKAGE_VERSION#v}"
 
-# Build FreeTDS from source and produce the pymssql wheel.
-# dev/build.py --wheel builds FreeTDS statically and then builds the wheel.
+# Step 1: Build FreeTDS statically via dev/build.py (no --wheel).
+# We intentionally omit --wheel here so dev/build.py does NOT invoke its own
+# venv Python to compile the C extension — that would produce a wheel linked
+# against a different interpreter and cause "No module named '_mssql'" at import.
 if ! python3.14 dev/build.py \
         --ws-dir=./freetds \
         --dist-dir=./dist \
         --with-openssl=yes \
         --enable-krb5 \
-        --sdist \
-        --static-freetds \
-        --wheel; then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+        --static-freetds; then
+    echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
     exit 1
 fi
 
-# Install from the wheel produced by dev/build.py (not from source rebuild).
-python3.14 -m pip install pymssql --no-index -f dist
+# Step 2: Build the wheel with the *current* python3.14 so the C extension
+# (_mssql.so) is compiled and linked against the correct interpreter.
+mkdir -p dist
+python3.14 -m pip wheel . \
+    --no-build-isolation \
+    --wheel-dir=dist
+
+# Step 3: Install the wheel we just built.
+WHEEL=$(find dist -name "${PACKAGE_NAME}-*.whl" | head -1)
+python3.14 -m pip install "$WHEEL"
 
 # Copy wheel to CURRENT_DIR for the CI wrapper / auditwheel.
 cp dist/*.whl "$CURRENT_DIR/"
