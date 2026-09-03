@@ -64,6 +64,59 @@ export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:${LD_LIBRARY_PATH:
 export CC="/opt/rh/gcc-toolset-15/root/usr/bin/gcc"
 export CXX="/opt/rh/gcc-toolset-15/root/usr/bin/g++"
 
+# ---------------------------------------------------------------------------
+# Build and install GNU binutils from source
+# ---------------------------------------------------------------------------
+BINUTILS_VERSION=2.45
+BINUTILS_SRC_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}"
+BINUTILS_BUILD_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}-build"
+BINUTILS_INSTALL_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}"
+
+cd "${CURRENT_DIR}"
+
+wget -q "https://ftp.gnu.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.xz"
+tar -xf "binutils-${BINUTILS_VERSION}.tar.xz"
+
+rm -rf "${BINUTILS_BUILD_DIR}"
+mkdir -p "${BINUTILS_BUILD_DIR}"
+cd "${BINUTILS_BUILD_DIR}"
+
+"${BINUTILS_SRC_DIR}/configure" \
+    --prefix="${BINUTILS_INSTALL_DIR}" \
+    --disable-nls \
+    --disable-werror
+
+make -j"$(nproc)"
+make install
+
+# ---------------------------------------------------------------------------
+# Use source-built binutils
+# ---------------------------------------------------------------------------
+export BINUTILS_ROOT="${BINUTILS_INSTALL_DIR}"
+export PATH="${BINUTILS_ROOT}/bin:${PATH}"
+export LD_LIBRARY_PATH="${BINUTILS_ROOT}/lib:${LD_LIBRARY_PATH:-}"
+export CPPFLAGS="-I${BINUTILS_ROOT}/include ${CPPFLAGS:-}"
+export LDFLAGS="-L${BINUTILS_ROOT}/lib ${LDFLAGS:-}"
+export PKG_CONFIG_PATH="${BINUTILS_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+
+# Verify
+echo "Using binutils:"
+which ar
+which ld
+which as
+
+ar --version
+ld --version
+as --version
+
+# Verify development files
+test -f "${BINUTILS_ROOT}/include/bfd.h"
+test -f "${BINUTILS_ROOT}/lib/libbfd.a"
+
+echo "binutils ${BINUTILS_VERSION} installed successfully"
+
+# ------------------------------------------------------------------------------------
+
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 target_platform=$(uname)-$(uname -m)
