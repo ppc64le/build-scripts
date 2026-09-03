@@ -78,7 +78,6 @@ if [[ "$(printf '%s\n' "1.7.0" "${PACKAGE_VERSION#v}" | sort -V | head -n1)" == 
 
     wget -q "https://archive.apache.org/dist/ant/source/apache-ant-${ANT_VERSION}-src.tar.gz"
     tar -xf "apache-ant-${ANT_VERSION}-src.tar.gz"
-
     cd "apache-ant-${ANT_VERSION}"
     ./build.sh
 
