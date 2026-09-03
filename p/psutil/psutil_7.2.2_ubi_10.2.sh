@@ -4,7 +4,7 @@
 # Package          : psutil
 # Version          : release-7.2.2
 # Source repo      : https://github.com/giampaolo/psutil.git
-# Tested on        : UBI:10.2
+# Tested on        : ubi:10.2
 # Language         : Python
 # Ci-Check         : True
 # Script License   : Apache License, Version 2 or later
