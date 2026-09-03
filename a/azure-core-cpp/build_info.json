@@ -4,7 +4,7 @@
     "github_url": "https://github.com/Azure/azure-sdk-for-cpp",
     "version": "1.16.3",
     "default_branch": "main",
-    "build_script": "azure-core-cpp_ubi_9.8.sh",
+    "build_script": "azure-core-cpp_1.16.3_ubi_9.8.sh",
     "package_dir": "a/azure-core-cpp",
     "docker_build": false,
     "validate_build_script": true,
@@ -12,11 +12,11 @@
     "wheel_build": true,
     "1.16.3": {
         "build_script": [
-            "azure-core-cpp_ubi_8.10.sh",
-            "azure-core-cpp_ubi_9.8.sh"
+            "azure-core-cpp_1.16.3_ubi_8.10.sh",
+            "azure-core-cpp_1.16.3_ubi_9.8.sh"
         ]
     },
     "*": {
-        "build_script": "azure-core-cpp_ubi_9.8.sh"
+        "build_script": "azure-core-cpp_1.16.3_ubi_9.8.sh"
     }
 }
