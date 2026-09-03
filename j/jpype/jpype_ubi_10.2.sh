@@ -66,7 +66,24 @@ export CLASSPATH=$CLASSPATH:$(pwd)/sqlite-jdbc.jar:$(pwd)/hsqldb.jar:$(pwd)/h2.j
 # Install test dependencies
 python3.14 -m pip install -U pip setuptools wheel
 python3.14 -m pip install pytest pytest-cov numpy==2.5.0
+# These block is just for testing purpore -----------------------------------------------------
+echo "===== OS ====="
+cat /etc/os-release
 
+echo "===== REPOSITORIES ====="
+yum repolist all
+
+echo "===== APPSTREAM ====="
+yum repolist all | grep -i appstream || true
+
+echo "===== ANT ====="
+dnf repoquery --available ant || true
+
+echo "===== REPO FILES ====="
+ls -l /etc/yum.repos.d/
+
+echo "======================"
+# ------------------------------------------------------------------------------------------
 if [[ "$(printf '%s\n' "1.7.0" "${PACKAGE_VERSION#v}" | sort -V | head -n1)" == "1.7.0" ]]; then
     echo "Version >= 1.7.0"
     yum install -y ant
