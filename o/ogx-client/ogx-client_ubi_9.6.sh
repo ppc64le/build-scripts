@@ -4,11 +4,11 @@
 # Package          : ogx
 # Version          : v1.1.3
 # Source repo      : https://github.com/ogx-ai/ogx.git
-# Tested on     : UBI:9.6
-# Language      : Python
-# Ci-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : Bhagyashri Gaikwad <Bhagyashri.Gaikwad2@ibm.com> 
+# Tested on        : UBI 9.6
+# Language         : Python
+# Ci-Check         : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Bhagyashri Gaikwad <Bhagyashri.Gaikwad2@ibm.com> 
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
