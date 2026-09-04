@@ -4,7 +4,7 @@
 # Package       : torchaudio
 # Version       : v2.11.0
 # Source repo   : https://github.com/pytorch/audio.git
-# Tested on     : UBI:10 (ppc64le)
+# Tested on     : UBI:10 
 # Language      : Python
 # Ci-Check      : True
 # Script License: Apache License, Version 2.0
@@ -70,6 +70,18 @@ while [[ $# -gt 0 ]]; do
         --version)
             PACKAGE_VERSION="$2"
             shift 2
+            ;;
+        v*)
+            # Accept bare positional version argument (e.g. v2.11.0) as passed
+            # by the CI infrastructure (validate_builds_currency.py and
+            # create_wheel_wrapper.sh both invoke the script as: script.sh v2.11.0)
+            PACKAGE_VERSION="$1"
+            shift
+            ;;
+        [0-9]*)
+            # Ignore extra positional args passed by create_wheel_wrapper.sh
+            # (e.g. the Python version "3.12" appended after the package version)
+            shift
             ;;
         *)
             echo "Unknown argument: $1"
