@@ -1,12 +1,12 @@
 
 {
-  "maintainer": "vinodk99",
+  "maintainer": "Siddesh-Sangodkar1",
   "package_name": "torchdata",
   "github_url": "https://github.com/pytorch/data",
-  "version": "v0.7.1",
+  "version": "0.11.0",
   "wheel_build" : true,
   "default_branch": "main",
-  "build_script": "torchdata_ubi_9.3.sh",
+  "build_script": "torchdata_0.11.0_ubi_10.2.sh",
   "package_dir": "t/torchdata",
   "docker_build": false,
   "validate_build_script": true,
@@ -18,7 +18,13 @@
     "libtorch_python.so",
     "libshm.so"
   ],
-  "*": {
+  "v0.7.1": {
    "build_script": "torchdata_ubi_9.3.sh"
- }
+  },
+ "0.11.0": {
+        "build_script": "torchdata_0.11.0_ubi_10.2.sh"
+  },
+ "*": {
+        "build_script": "torchdata_0.11.0_ubi_10.2.sh"
+  }
 }
