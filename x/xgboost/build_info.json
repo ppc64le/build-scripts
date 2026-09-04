@@ -14,10 +14,10 @@
   "v1.6.2": {
     "build_script": "xgboost_ubi_9.3.sh"
   },
+  "v3.0.1": {
+    "build_script": "xgboost_3.0.1_ubi_9.3.sh"
+  },
   "3.4.1": {
         "build_script": "xgboost-cpu_3.4.1_ubi_10.2.sh"
-    },
-  "*": {
-    "build_script": "xgboost_3.0.1_ubi_9.3.sh"
-    }
+  },
 }
