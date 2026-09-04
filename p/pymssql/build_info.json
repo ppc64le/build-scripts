@@ -2,7 +2,7 @@
   "maintainer": "Yogita Kulkarni",
   "package_name": "pymssql",
   "github_url": "https://github.com/pymssql/pymssql.git",
-  "version": "2.3.13",
+  "version": "v2.3.13",
   "wheel_build" : true,
   "package_dir": "p/pymssql",
   "default_branch": "master",
@@ -22,7 +22,7 @@
   "v2.3.11":{
     "build_script":"pymssql_2.3.11_ubi_9.6.sh"
   },
-  "2.3.13":{
+  "v2.3.13":{
     "build_script":"pymssql_2.3.13_ubi_10.2.sh"
   },
   "*":{

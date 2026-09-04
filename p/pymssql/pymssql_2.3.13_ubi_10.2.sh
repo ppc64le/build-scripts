@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : pymssql
-# Version          : 2.3.13
+# Version          : v2.3.13
 # Source repo      : https://github.com/pymssql/pymssql.git
 # Tested on        : UBI:10.2
 # Language         : Python
@@ -21,7 +21,7 @@
 set -e
 
 PACKAGE_NAME=pymssql
-PACKAGE_VERSION=${1:-2.3.13}
+PACKAGE_VERSION=${1:-v2.3.13}
 PACKAGE_URL=https://github.com/pymssql/pymssql.git
 PACKAGE_DIR=pymssql
 CURRENT_DIR=$(pwd)
@@ -65,14 +65,12 @@ rm -rf "$PACKAGE_DIR"
 git clone "$PACKAGE_URL" "$PACKAGE_DIR"
 cd "$PACKAGE_DIR"
 
-if git rev-parse "v${PACKAGE_VERSION}" &>/dev/null; then
-    git checkout "v${PACKAGE_VERSION}"
-elif git rev-parse "${PACKAGE_VERSION}" &>/dev/null; then
-    git checkout "${PACKAGE_VERSION}"
+git checkout ${PACKAGE_VERSION}
 else
     echo "ERROR: No git tag found for version '${PACKAGE_VERSION}'"
     exit 1
 fi
+
 
 # Apply version-specific source fixes.
 # pymssql <= 2.3.4 still references the Python 2 `long` type.
