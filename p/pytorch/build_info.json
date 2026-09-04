@@ -1,12 +1,12 @@
 {
-  "maintainer": "saisrivatsa",
+  "maintainer": "Siddesh-Sangodkar1",
   "package_name": "pytorch",
   "github_url": "https://github.com/pytorch/pytorch.git",
-  "version": "v2.6.0",
+  "version": "2.13.0",
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/pytorch",
-  "build_script": "pytorch_2.7.1_ubi_9.3.sh",
+  "build_script": "pytorch_2.13.0_ubi_10.2.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
@@ -50,5 +50,8 @@
   },
   "v2.1.2":{
     "build_script":"pytorch_2.1.0_ubi_9.3.sh"
-  }
+  },
+  "2.13.0": {
+    "build_script": "pytorch_2.13.0_ubi_10.2.sh"
+    }
 }
