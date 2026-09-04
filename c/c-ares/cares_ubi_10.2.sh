@@ -28,6 +28,7 @@ yum install -y wget python3.14 python3.14-pip python3.14-devel git make cmake gl
 yum install -y gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++
 
 export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+export PATH="/usr/local/bin:/usr/bin:$PATH"
 export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64"
 
 export CC="/opt/rh/gcc-toolset-15/root/usr/bin/gcc"
@@ -97,6 +98,7 @@ export AR="${BINUTILS_INSTALL_DIR}/bin/ar"
 export RANLIB="${BINUTILS_INSTALL_DIR}/bin/ranlib"
 
 # install dependency
+python3.14 -m pip install --upgrade pip
 python3.14 -m pip install setuptools ninja build wheel
 
 # clone source repository
