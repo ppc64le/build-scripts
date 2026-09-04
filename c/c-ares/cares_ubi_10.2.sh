@@ -23,7 +23,8 @@ PACKAGE_VERSION="${1:-cares-1_19_1}"
 PACKAGE_URL="https://github.com/c-ares/c-ares.git"
 CURRENT_DIR="$(pwd -P)"
 
-yum install -y wget python3.14 python3.14-pip python3.14-devel git make cmake glibc-devel findutils diffutils xz 
+yum install -y wget 
+yum install -y python3.14 python3.14-pip python3.14-devel git make cmake glibc-devel findutils diffutils xz 
 
 yum install -y gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++
 
