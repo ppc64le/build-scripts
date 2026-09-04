@@ -131,10 +131,13 @@ export JPYPE_JVM_ARGS="-Djava.class.path=$CLASSPATH"
 JPYPE_JAR=$(find build -name org.jpype.jar | head -1)
 
 if [ -n "$JPYPE_JAR" ]; then
-    cp "$JPYPE_JAR" ./org.jpype.jar
+    echo "Found JPype support library: $JPYPE_JAR"
+    ln -sf "$(realpath "$JPYPE_JAR")" "$(pwd)/org.jpype.jar"
+    ls -l "$(pwd)/org.jpype.jar"
+else
+    echo "ERROR: org.jpype.jar was not generated"
+    exit 1
 fi
-
-# ln -s /jpype/native/build/lib/org.jpype.jar /jpype/org.jpype.jar
 
 # Run tests
 if ! python3.14 -m pytest -v --junit-xml=build/test/test.xml test/jpypetest --checkjni --fast; then
