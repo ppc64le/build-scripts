@@ -2,7 +2,7 @@
    "maintainer": "kiranNukal",
    "package_name": "pynacl",
    "github_url": "https://github.com/pyca/pynacl",
-   "version": "v1.3.1",
+   "version": "v0.3.0",
    "default_branch": "main",
    "build_script": "pynacl_ubi_9.6.sh",
    "package_dir": "p/pynacl",

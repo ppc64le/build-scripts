@@ -20,7 +20,7 @@
 set -ex
 # Variables
 PACKAGE_NAME=pynacl
-PACKAGE_VERSION=${1:-1.5.0}
+PACKAGE_VERSION=${1:-0.3.0}
 PACKAGE_URL=https://github.com/pyca/pynacl
 PACKAGE_DIR=pynacl
 
@@ -30,7 +30,8 @@ pip3 install pytest
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+export CFLAGS="-O2 -Wno-error=address-of-packed-member -Wno-error=array-bounds -fno-strict-aliasing -Wno-error=stringop-overflow -Wno-error=stringop-overread -fno-tree-slp-vectorize"
+export LDFLAGS="-O2 -Wno-error=address-of-packed-member"
 
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"
