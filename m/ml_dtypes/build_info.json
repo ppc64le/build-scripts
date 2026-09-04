@@ -1,12 +1,12 @@
 {
-  "maintainer": "Harithanagothu2",
+  "maintainer": "shivansh-ibm",
   "package_name": "ml_dtypes",
   "github_url": "https://github.com/jax-ml/ml_dtypes.git",
-  "version": "v0.4.1",
+  "version": "v0.6.0",
   "wheel_build" : true,
   "package_dir": "m/ml_dtypes",
   "default_branch": "main",
-  "build_script": "ml_dtypes_v0.4.1_ubi_9.3.sh",
+  "build_script": "ml_dtypes_v0.6.0_ubi_10.2.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
@@ -15,6 +15,12 @@
   },
   "v0.5.4": {
     "build_script": "ml_dtypes_v0.5.4_ubi_9.6.sh"
+  },
+  "v0.6.0": {
+    "build_script": [
+      "ml_dtypes_v0.4.1_ubi_9.3.sh",
+      "ml_dtypes_v0.6.0_ubi_10.2.sh"
+    ]
   },
   "*":{
     "build_script": "ml_dtypes_v0.4.1_ubi_9.3.sh"

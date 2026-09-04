@@ -61,11 +61,12 @@ python3.12 -m pip install "$WHEEL"
 # -- Tests --------------------------------------------------------------------
 cd "${SOURCE_ROOT}"   # <-- leave the source tree before importing scipy
 
-python3.12 - << 'PYEOF'
+python3.12 - << PYEOF
 import sys
 
 import scipy
-assert scipy.__version__ == "1.18.0", f"Unexpected version: {scipy.__version__}"
+expected = "${PACKAGE_VERSION#v}"
+assert scipy.__version__ == expected, f"Unexpected version: {scipy.__version__} (expected {expected})"
 print(f"PASS  import scipy {scipy.__version__}")
 
 import scipy.linalg, scipy.fft, scipy.optimize, scipy.stats, scipy.signal, scipy.sparse

@@ -21,5 +21,8 @@
   },
   "v1.18.0": {
     "build_script": "scipy_v1.18.0_ubi_9.6.sh"
+  },
+  "*": {
+    "build_script": "scipy_v1.18.0_ubi_9.6.sh"
   }
 }
