@@ -128,14 +128,16 @@ export CLASSPATH="$(pwd)/test/classes:$(pwd)/h2.jar:$(pwd)/hsqldb.jar:$(pwd)/sql
 # Force JVM to use it
 export JPYPE_JVM_ARGS="-Djava.class.path=$CLASSPATH"
 
-JPYPE_JAR=$(find build -name org.jpype.jar | head -1)
+# Locate JPype support JAR
+JPYPE_JAR=$(find /usr/local /usr/lib /opt -name org.jpype.jar -type f 2>/dev/null | head -1)
 
 if [ -n "$JPYPE_JAR" ]; then
     echo "Found JPype support library: $JPYPE_JAR"
-    ln -sf "$(realpath "$JPYPE_JAR")" "$(pwd)/org.jpype.jar"
-    ls -l "$(pwd)/org.jpype.jar"
+    cp "$JPYPE_JAR" "$(pwd)/org.jpype.jar"
+    echo "JPype support library copied to:"
+    ls -lh "$(pwd)/org.jpype.jar"
 else
-    echo "ERROR: org.jpype.jar was not generated"
+    echo "ERROR: org.jpype.jar was not found after installation"
     exit 1
 fi
 
