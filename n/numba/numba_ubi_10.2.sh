@@ -113,21 +113,7 @@ if [ -n "$FFLAGS" ]; then
     export LAPACK_FFLAGS="${FFLAGS}"
 fi
 
-build_opts+=(BINARY=64 DYNAMIC_ARCH=1)
-
-export PLATFORM=$(uname -m)
-case "${PLATFORM}" in
-    ppc64le)
-        build_opts+=(TARGET="POWER9" BUILD_BFLOAT16=1)
-        ;;
-    s390x)
-        build_opts+=(TARGET="Z14")
-        ;;
-    x86_64)
-        build_opts+=(TARGET="PRESCOTT")
-        ;;
-esac
-
+build_opts+=(BINARY=64 DYNAMIC_ARCH=1 TARGET="POWER9" BUILD_BFLOAT16=1)
 build_opts+=(INTERFACE64=0 SYMBOLSUFFIX="" NO_LAPACK=0)
 build_opts+=(USE_THREAD=1 NUM_THREADS=120 NO_AFFINITY=1)
 
