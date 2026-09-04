@@ -1,5 +1,5 @@
 {
-  "maintainer": "aastha-sharma2",
+  "maintainer": "SakshiJain0302",
   "package_name": "orc",
   "github_url": "https://github.com/apache/orc",
   "version": "v2.0.3",
@@ -14,6 +14,9 @@
     "liborc*"
   ],
   "*": {
-    "build_script": "orc_ubi_9.3.sh"
+    "build_script": [
+        "orc_ubi_9.3.sh",
+        "orc_ubi_10.2.sh"
+        ]
   }
 }
