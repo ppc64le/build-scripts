@@ -23,24 +23,9 @@ PACKAGE_VERSION="${1:-cares-1_19_1}"
 PACKAGE_URL="https://github.com/c-ares/c-ares.git"
 CURRENT_DIR="$(pwd -P)"
 
-yum install -y \
-    wget \
-    python3.14 \
-    python3.14-pip \
-    python3.14-devel \
-    git \
-    make \
-    cmake \
-    glibc-devel \
-    findutils \
-    diffutils \
-    xz \
-    autoconf \
-    automake \
-    libtool \
-    gcc-toolset-15 \
-    gcc-toolset-15-gcc \
-    gcc-toolset-15-gcc-c++
+yum install -y yum install -y wget python3.14 python3.14-pip python3.14-devel git make cmake glibc-devel findutils diffutils xz 
+
+yum install gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ -y
 
 export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64"
@@ -48,46 +33,34 @@ export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64"
 export CC="/opt/rh/gcc-toolset-15/root/usr/bin/gcc"
 export CXX="/opt/rh/gcc-toolset-15/root/usr/bin/g++"
 
-unset LIBRARY_PATH
-unset GCC_EXEC_PREFIX
-unset COMPILER_PATH
-unset LDFLAGS
-unset CFLAGS
-unset CXXFLAGS
-unset CPPFLAGS
-unset CMAKE_ARGS
-unset PKG_CONFIG_PATH
-unset BINUTILS_ROOT
-unset LD
-
 # Build PATCHELF from source
-PATCHELF_VERSION="0.18.0"
-PATCHELF_SRC_DIR="${CURRENT_DIR}/patchelf-${PATCHELF_VERSION}-src"
+# PATCHELF_VERSION="0.18.0"
+# PATCHELF_SRC_DIR="${CURRENT_DIR}/patchelf-${PATCHELF_VERSION}-src"
 
-cd "${CURRENT_DIR}"
+# cd "${CURRENT_DIR}"
 
-rm -rf "${PATCHELF_SRC_DIR}"
-rm -f "patchelf-${PATCHELF_VERSION}.tar.gz"
+# rm -rf "${PATCHELF_SRC_DIR}"
+# rm -f "patchelf-${PATCHELF_VERSION}.tar.gz"
 
-wget -q \
-    "https://github.com/NixOS/patchelf/archive/refs/tags/${PATCHELF_VERSION}.tar.gz" \
-    -O "patchelf-${PATCHELF_VERSION}.tar.gz"
+# wget -q \
+#     "https://github.com/NixOS/patchelf/archive/refs/tags/${PATCHELF_VERSION}.tar.gz" \
+#     -O "patchelf-${PATCHELF_VERSION}.tar.gz"
 
-tar -xf "patchelf-${PATCHELF_VERSION}.tar.gz"
+# tar -xf "patchelf-${PATCHELF_VERSION}.tar.gz"
 
-mv \
-    "patchelf-${PATCHELF_VERSION}" \
-    "${PATCHELF_SRC_DIR}"
+# mv \
+#     "patchelf-${PATCHELF_VERSION}" \
+#     "${PATCHELF_SRC_DIR}"
 
-cd "${PATCHELF_SRC_DIR}"
+# cd "${PATCHELF_SRC_DIR}"
 
-./bootstrap.sh
-./configure --prefix=/usr/local
-make -j"$(nproc)"
-make install
+# ./bootstrap.sh
+# ./configure --prefix=/usr/local
+# make -j"$(nproc)"
+# make install
 
-which patchelf
-patchelf --version
+# which patchelf
+# patchelf --version
 
 # ---------------------------------------------------------------------------
 # Build and install GNU binutils from source
@@ -98,13 +71,6 @@ BINUTILS_BUILD_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}-build"
 BINUTILS_INSTALL_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}"
 
 cd "${CURRENT_DIR}"
-
-rm -rf \
-    "${BINUTILS_SRC_DIR}" \
-    "${BINUTILS_BUILD_DIR}" \
-    "${BINUTILS_INSTALL_DIR}"
-
-rm -f "binutils-${BINUTILS_VERSION}.tar.xz"
 
 wget -q \
     "https://ftp.gnu.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.xz"
@@ -131,8 +97,9 @@ export AR="${BINUTILS_INSTALL_DIR}/bin/ar"
 export RANLIB="${BINUTILS_INSTALL_DIR}/bin/ranlib"
 
 # install dependency
-# python3.14 -m pip install --upgrade pip
-python3.14 -m pip install setuptools ninja build wheel auditwheel
+python3.14 -m pip install --upgrade pip
+python3.14 -m pip install setuptools ninja build wheel
+
 # clone source repository
 cd $CURRENT_DIR
 git clone $PACKAGE_URL
