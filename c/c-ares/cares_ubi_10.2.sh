@@ -28,10 +28,18 @@ yum install -y python3.14 python3.14-pip python3.14-devel git make cmake glibc-d
 
 yum install -y gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++
 
-export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-export PATH="/usr/local/bin:/usr/bin:$PATH"
-export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64"
+if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
+    source /opt/rh/gcc-toolset-15/enable
+elif [[ -d /opt/rh/gcc-toolset-15/root/usr/bin ]]; then
+    export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
+    export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:$LD_LIBRARY_PATH"
+else
+    echo "ERROR: gcc-toolset-15 not found"
+    exit 1
+fi
 
+export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
+export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:${LD_LIBRARY_PATH:-}"
 export CC="/opt/rh/gcc-toolset-15/root/usr/bin/gcc"
 export CXX="/opt/rh/gcc-toolset-15/root/usr/bin/g++"
 
