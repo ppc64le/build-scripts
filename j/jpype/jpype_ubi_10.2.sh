@@ -129,15 +129,18 @@ export CLASSPATH="$(pwd)/test/classes:$(pwd)/h2.jar:$(pwd)/hsqldb.jar:$(pwd)/sql
 export JPYPE_JVM_ARGS="-Djava.class.path=$CLASSPATH"
 
 # Locate JPype support JAR
-JPYPE_JAR=$(find /usr/local /usr/lib /opt -name org.jpype.jar -type f 2>/dev/null | head -1)
+SITE_PACKAGES=$(python3.14 -c "import site; print(site.getsitepackages()[0])")
+JPYPE_JAR="${SITE_PACKAGES}/org.jpype.jar"
 
-if [ -n "$JPYPE_JAR" ]; then
+if [ -f "$JPYPE_JAR" ]; then
     echo "Found JPype support library: $JPYPE_JAR"
     cp "$JPYPE_JAR" "$(pwd)/org.jpype.jar"
     echo "JPype support library copied to:"
     ls -lh "$(pwd)/org.jpype.jar"
 else
-    echo "ERROR: org.jpype.jar was not found after installation"
+    echo "ERROR: org.jpype.jar was not found at $JPYPE_JAR"
+    echo "Searching for JAR..."
+    find /usr/local /usr/lib /opt /jpype -name org.jpype.jar -type f 2>/dev/null || true
     exit 1
 fi
 
