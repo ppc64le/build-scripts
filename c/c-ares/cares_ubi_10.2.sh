@@ -43,35 +43,6 @@ export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:${LD_LIBRARY_PATH:
 export CC="/opt/rh/gcc-toolset-15/root/usr/bin/gcc"
 export CXX="/opt/rh/gcc-toolset-15/root/usr/bin/g++"
 
-# Build PATCHELF from source
-# PATCHELF_VERSION="0.18.0"
-# PATCHELF_SRC_DIR="${CURRENT_DIR}/patchelf-${PATCHELF_VERSION}-src"
-
-# cd "${CURRENT_DIR}"
-
-# rm -rf "${PATCHELF_SRC_DIR}"
-# rm -f "patchelf-${PATCHELF_VERSION}.tar.gz"
-
-# wget -q \
-#     "https://github.com/NixOS/patchelf/archive/refs/tags/${PATCHELF_VERSION}.tar.gz" \
-#     -O "patchelf-${PATCHELF_VERSION}.tar.gz"
-
-# tar -xf "patchelf-${PATCHELF_VERSION}.tar.gz"
-
-# mv \
-#     "patchelf-${PATCHELF_VERSION}" \
-#     "${PATCHELF_SRC_DIR}"
-
-# cd "${PATCHELF_SRC_DIR}"
-
-# ./bootstrap.sh
-# ./configure --prefix=/usr/local
-# make -j"$(nproc)"
-# make install
-
-# which patchelf
-# patchelf --version
-
 # ---------------------------------------------------------------------------
 # Build and install GNU binutils from source
 # ---------------------------------------------------------------------------
