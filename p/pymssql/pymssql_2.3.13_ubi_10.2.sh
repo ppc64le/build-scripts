@@ -74,19 +74,6 @@ else
     exit 1
 fi
 
-# Install only the build-time requirements needed to compile the extension.
-# Do NOT install dev/requirements-dev.txt — it pulls in Sphinx and sphinxcontrib
-# packages that drop Python 3.7-era .pth files into site-packages, which corrupts
-# stdlib imports (json, traceback) under Python 3.14 and breaks the pip wheel
-# subprocess with "ModuleNotFoundError: No module named 'json'".
-python3.14 -m pip install \
-    "cython>=3.1.0" \
-    "setuptools>=80.0" \
-    "setuptools_scm[toml]>=5.0,<10.0" \
-    "wheel>=0.36.2" \
-    "packaging>=24.2" \
-    "standard-distutils"
-
 # Apply version-specific source fixes.
 # pymssql <= 2.3.4 still references the Python 2 `long` type.
 if [[ "$(printf '%s\n' "2.3.4" "${PACKAGE_VERSION#v}" | sort -V | head -n1)" == "${PACKAGE_VERSION#v}" ]]; then
