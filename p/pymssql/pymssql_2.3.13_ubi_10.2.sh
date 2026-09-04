@@ -66,10 +66,6 @@ git clone "$PACKAGE_URL" "$PACKAGE_DIR"
 cd "$PACKAGE_DIR"
 
 git checkout ${PACKAGE_VERSION}
-else
-    echo "ERROR: No git tag found for version '${PACKAGE_VERSION}'"
-    exit 1
-fi
 
 
 # Apply version-specific source fixes.
