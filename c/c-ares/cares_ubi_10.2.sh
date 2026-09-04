@@ -131,9 +131,8 @@ export AR="${BINUTILS_INSTALL_DIR}/bin/ar"
 export RANLIB="${BINUTILS_INSTALL_DIR}/bin/ranlib"
 
 # install dependency
-python3.14 -m pip install --upgrade pip
+# python3.14 -m pip install --upgrade pip
 python3.14 -m pip install setuptools ninja build wheel auditwheel
-
 # clone source repository
 cd $CURRENT_DIR
 git clone $PACKAGE_URL
