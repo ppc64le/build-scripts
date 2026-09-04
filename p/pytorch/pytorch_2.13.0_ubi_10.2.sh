@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : torch
+# Package          : pytorch
 # Version          : 2.13.0
 # Source repo      : https://github.com/pytorch/pytorch
 # Tested on        : UBI:10.2
@@ -26,7 +26,7 @@
 
 set -e
 
-PACKAGE_NAME=torch
+PACKAGE_NAME=pytorch
 PACKAGE_VERSION=${1:-2.13.0}
 PACKAGE_URL=https://github.com/pytorch/pytorch
 CURRENT_DIR=$(pwd)
