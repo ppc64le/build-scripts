@@ -18,19 +18,13 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e 
+PACKAGE_NAME="c-ares"
+PACKAGE_VERSION="${1:-cares-1_19_1}"
+PACKAGE_URL="https://github.com/c-ares/c-ares.git"
+CURRENT_DIR="$(pwd -P)"
 
-PACKAGE_NAME=c-ares
-PACKAGE_VERSION=${1:-cares-1_19_1}
-PACKAGE_URL=https://github.com/c-ares/c-ares.git
-CURRENT_DIR=$(pwd)
-PACKAGE_DIR=c-ares
-
-echo "------------------------Installing dependencies-------------------"
-yum install -y wget
-
-# install core dependencies
 yum install -y \
+    wget \
     python3.14 \
     python3.14-pip \
     python3.14-devel \
@@ -40,34 +34,33 @@ yum install -y \
     glibc-devel \
     findutils \
     diffutils \
-    xz
+    xz \
+    gcc-toolset-15 \
+    gcc-toolset-15-gcc \
+    gcc-toolset-15-gcc-c++
 
-yum install gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ -y
-
-# ---------------------------------------------------------------------------
-# Activate GCC Toolset 15 (SCL removed in UBI 10 — use PATH export)
-# ---------------------------------------------------------------------------
-if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
-    source /opt/rh/gcc-toolset-15/enable
-elif [[ -d /opt/rh/gcc-toolset-15/root/usr/bin ]]; then
-    export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
-    export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:$LD_LIBRARY_PATH"
-else
-    echo "ERROR: gcc-toolset-15 not found"
-    exit 1
-fi
-
-export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
-export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:${LD_LIBRARY_PATH:-}"
+export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64"
 
 export CC="/opt/rh/gcc-toolset-15/root/usr/bin/gcc"
 export CXX="/opt/rh/gcc-toolset-15/root/usr/bin/g++"
 
+unset LIBRARY_PATH
+unset GCC_EXEC_PREFIX
+unset COMPILER_PATH
+unset LDFLAGS
+unset CFLAGS
+unset CXXFLAGS
+unset CPPFLAGS
+unset CMAKE_ARGS
+unset PKG_CONFIG_PATH
+unset BINUTILS_ROOT
+unset LD
+
 # ---------------------------------------------------------------------------
 # Build and install GNU binutils from source
 # ---------------------------------------------------------------------------
-BINUTILS_VERSION=2.45
-
+BINUTILS_VERSION="2.45"
 BINUTILS_SRC_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}-src"
 BINUTILS_BUILD_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}-build"
 BINUTILS_INSTALL_DIR="${CURRENT_DIR}/binutils-${BINUTILS_VERSION}"
@@ -79,13 +72,19 @@ rm -rf \
     "${BINUTILS_BUILD_DIR}" \
     "${BINUTILS_INSTALL_DIR}"
 
-wget -q "https://ftp.gnu.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.xz"
+rm -f "binutils-${BINUTILS_VERSION}.tar.xz"
+
+wget -q \
+    "https://ftp.gnu.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.xz"
 
 tar -xf "binutils-${BINUTILS_VERSION}.tar.xz"
 
-mv "binutils-${BINUTILS_VERSION}" "${BINUTILS_SRC_DIR}"
+mv \
+    "binutils-${BINUTILS_VERSION}" \
+    "${BINUTILS_SRC_DIR}"
 
 mkdir -p "${BINUTILS_BUILD_DIR}"
+
 cd "${BINUTILS_BUILD_DIR}"
 
 "${BINUTILS_SRC_DIR}/configure" \
@@ -96,40 +95,8 @@ cd "${BINUTILS_BUILD_DIR}"
 make -j"$(nproc)"
 make install
 
-# ---------------------------------------------------------------------------
-# Use source-built binutils
-# ---------------------------------------------------------------------------
-export BINUTILS_ROOT="${BINUTILS_INSTALL_DIR}"
-export PATH="${BINUTILS_ROOT}/bin:${PATH}"
-export LD_LIBRARY_PATH="${BINUTILS_ROOT}/lib:${LD_LIBRARY_PATH:-}"
-export CPPFLAGS="-I${BINUTILS_ROOT}/include ${CPPFLAGS:-}"
-export LDFLAGS="-L${BINUTILS_ROOT}/lib ${LDFLAGS:-}"
-export PKG_CONFIG_PATH="${BINUTILS_ROOT}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
-
-# ---------------------------------------------------------------------------
-# Verify
-# ---------------------------------------------------------------------------
-echo "------------------------Using source-built binutils-------------------"
-
-which ar
-which ld
-which as
-
-ar --version
-ld --version
-as --version
-
-test -f "${BINUTILS_ROOT}/include/bfd.h"
-test -f "${BINUTILS_ROOT}/lib/libbfd.a"
-
-echo "binutils ${BINUTILS_VERSION} installed successfully"
-
-# ------------------------------------------------------------------------------------
-
-OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
-
-target_platform=$(uname)-$(uname -m)
-AR=$(which ar)
+export AR="${BINUTILS_INSTALL_DIR}/bin/ar"
+export RANLIB="${BINUTILS_INSTALL_DIR}/bin/ranlib"
 
 # install dependency
 python3.14 -m pip install --upgrade pip
@@ -142,23 +109,25 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 mkdir -p prefix
-export PREFIX=$(pwd)/prefix
-mkdir cmake-build && cd cmake-build
+export PREFIX="$(pwd)/prefix"
+mkdir cmake-build 
+cd cmake-build
 
 export CARES_STATIC=OFF                                                                                                           
 export CARES_SHARED=ON                                                                                                            
-export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_AR=${AR}"   
 
-cmake ${CMAKE_ARGS} .. \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_INSTALL_PREFIX="$PREFIX" \
-      -DCARES_STATIC=${CARES_STATIC} \
-      -DCARES_SHARED=${CARES_SHARED} \
-      -DCARES_INSTALL=ON \
-      -DCMAKE_INSTALL_LIBDIR=lib \
-      -DCARES_BUILD_TOOLS=OFF \
-      -DCARES_BUILD_TESTS=ON \
-      -GNinja
+cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
+    -DCARES_STATIC="${CARES_STATIC}" \
+    -DCARES_SHARED="${CARES_SHARED}" \
+    -DCARES_INSTALL=ON \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DCARES_BUILD_TOOLS=OFF \
+    -DCARES_BUILD_TESTS=ON \
+    -DCMAKE_AR="${AR}" \
+    -DCMAKE_RANLIB="${RANLIB}" \
+    -GNinja
 
 echo "-------------------------------------------------------Building the package-------------------------------------"
 
