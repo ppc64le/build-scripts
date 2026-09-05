@@ -113,7 +113,7 @@ python3.12 -m pip install nbformat testfixtures mock nbconvert
 echo "installing numpy..."
 python3.12 -m pip install numpy==2.0.2
 echo "installing scipy..."
-python3.12 -m pip install scipy==1.15.2
+python3.12 -m pip install scipy==1.15.2 'smart_open<8.0'
 echo "installing cython..."
 python3.12 -m pip install Cython
 
