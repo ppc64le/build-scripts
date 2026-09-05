@@ -81,9 +81,7 @@ fi
 python3.14 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 
 # Test
-cd "$CURRENT_DIR"
-if ! pytest "$CURRENT_DIR/$PACKAGE_DIR/tests/hazmat/primitives/" \
-        --import-mode=importlib -v --timeout=60 -x; then
+if ! pytest; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
