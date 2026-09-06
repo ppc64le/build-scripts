@@ -102,7 +102,8 @@ python3.14 -m pip install "$CURRENT_DIR"/gensim-*.whl
 # Run test cases
 cd $PACKAGE_NAME
 # Tests are failing with `TypeError: cannot pickle 'generator' object`. These failures are because gensim does not support python3.14 yet
-if !(pytest -q -k "not TestWikiCorpus"); then
+# Issue logged for the same : https://github.com/piskvorky/gensim/issues/3628
+if !(pytest -q -k "not TestWikiCorpus and not TestSegmentWiki"); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
