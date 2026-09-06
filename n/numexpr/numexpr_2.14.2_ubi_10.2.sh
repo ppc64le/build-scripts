@@ -78,8 +78,11 @@ python3.14 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 
 # Test
 cd "$CURRENT_DIR"
+mkdir -p /tmp/numexpr_tests
+cp -r $CURRENT_DIR/$PACKAGE_NAME/numexpr/tests /tmp/numexpr_tests
+
 python3.14 -m pip install pytest
-if ! python3.14 -m pytest "$CURRENT_DIR/$PACKAGE_DIR/numexpr/tests/"; then
+if ! python3.14 -m pytest "/tmp/numexpr_tests"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
