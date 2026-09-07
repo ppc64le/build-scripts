@@ -4,6 +4,7 @@
   "github_url": "https://github.com/ollama/ollama",
   "version": "v0.32.7",
   "wheel_build": true,
+  "wheel_name": "ollama-python-package",
   "package_dir": "o/ollama",
   "default_branch": "main",
   "build_script": "ollama_v0.30.10_ubi_9.6.sh",
