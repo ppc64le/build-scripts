@@ -75,23 +75,34 @@ dnf install -y \
 # ----------------------------------------------------------------------------
 
 cd "$BUILD_HOME"
+rm -rf OpenBLAS
 
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
-git checkout v0.3.29
+git checkout v0.3.34
+
 ret=0
-make -j"$(nproc)" TARGET=POWER8 DYNAMIC_ARCH=1 DYNAMIC_OLDER=1 USE_OPENMP=0 NUM_THREADS=20 NO_AFFINITY=1 || ret=$?
+make -j"$(nproc)" libs || ret=$?
 if [ "$ret" -ne 0 ]; then
     echo "FAIL: OpenBLAS build failed."
     exit 1
 fi
-make install
+make -j"$(nproc)" shared
+make PREFIX=/usr/local install
+
+# Make /usr/local/lib visible to the runtime linker.
+echo "/usr/local/lib" > /etc/ld.so.conf.d/openblas.conf
+ldconfig
+
+# Verify OpenBLAS is available.
+ldconfig -p | grep openblas
 
 # ----------------------------------------------------------------------------
 # Build and install gflags
 # ----------------------------------------------------------------------------
 
 cd "$BUILD_HOME"
+rm -rf gflags
 
 git clone \
     --branch v2.3.0 \
@@ -127,6 +138,7 @@ pip3.11 install \
     wheel \
     scipy \
     numpy==1.26.4 \
+    swig \
     auditwheel \
     patchelf \
     --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
@@ -143,12 +155,8 @@ export PATH="$HOME/.local/bin:$PATH"
 # ----------------------------------------------------------------------------
 
 cd "$BUILD_HOME"
-
-if [ -d "$PACKAGE_NAME" ]; then
-    echo "Directory '$PACKAGE_NAME' already exists, skipping clone."
-else
-    git clone "$PACKAGE_URL" -b "$PACKAGE_VERSION"
-fi
+rm -rf "$PACKAGE_NAME"
+git clone "$PACKAGE_URL" -b "$PACKAGE_VERSION"
 
 cd "$PACKAGE_NAME"
 

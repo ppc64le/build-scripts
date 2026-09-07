@@ -20,7 +20,6 @@ PACKAGE_ORG="facebookresearch"
 PACKAGE_VERSION="v1.9.0"
 PACKAGE_URL="https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}.git"
 BUILD_HOME=$(pwd)
-SCRIPT_PATH=$(dirname "$(realpath "$0")")
 
 # ----------------------------------------------------------------------------
 # Install repositories and dependencies
@@ -95,13 +94,15 @@ dnf install -y \
     swig
 
 # ----------------------------------------------------------------------------
+# Enable GCC Toolset
+# ----------------------------------------------------------------------------
+source /opt/rh/gcc-toolset-11/enable
+
+# ----------------------------------------------------------------------------
 # Build and install OpenBLAS
 # ----------------------------------------------------------------------------
-
 cd "$BUILD_HOME"
-
 rm -rf OpenBLAS
-
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.34
@@ -122,12 +123,6 @@ ldconfig
 
 # Verify OpenBLAS is available.
 ldconfig -p | grep openblas
-
-# ----------------------------------------------------------------------------
-# Enable GCC Toolset
-# ----------------------------------------------------------------------------
-
-source /opt/rh/gcc-toolset-11/enable
 
 # ----------------------------------------------------------------------------
 # Build and install gflags
