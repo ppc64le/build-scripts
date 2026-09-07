@@ -111,6 +111,7 @@ fi
 NUMPY_WHL=$(find "${CURRENT_DIR}" -maxdepth 1 -name "numpy-*.whl" | head -1)
 echo "Installing numpy wheel: ${NUMPY_WHL}"
 python3.14 -m pip install "${NUMPY_WHL}"
+rm -f "${CURRENT_DIR}"/numpy-*.whl
 
 cd "${CURRENT_DIR}"
 
