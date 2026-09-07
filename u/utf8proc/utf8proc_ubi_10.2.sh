@@ -92,7 +92,7 @@ python3.14 -m pip wheel --wheel-dir ${WORK_DIR} -vv --no-build-isolation --no-de
 
 # Install locally built wheel for validation
 
-WHEEL=$(find "${WORK_DIR}" -name "${PACKAGE}-*.whl" | head -1)
+WHEEL=$(find "${WORK_DIR}" -name "${PACKAGE_NAME}-*.whl" | head -1)
 echo "Built wheel: ${WHEEL}"
 
 if ! python3.14 -m pip install "${WHEEL}" --no-deps; then
