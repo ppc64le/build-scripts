@@ -1,12 +1,12 @@
 {
-  "maintainer": "Shivansh-ibm",
+  "maintainer": "tejasBadjateIBM",
   "package_name": "PyAV",
   "github_url": "https://github.com/PyAV-Org/PyAV",
-  "version": "v17.0.0",
+  "version": "v18.1.0",
   "wheel_build" : true,
   "package_dir": "p/pyav",
   "default_branch": "main",
-  "build_script": "pyav_ubi_9.3.sh",
+  "build_script": "pyav_ubi_10.2.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
@@ -14,7 +14,13 @@
   "10.0.0": {
     "build_script": "pyav_10-0_ubi_9.3.sh"
   },
-  "*": {
-    "build_script": "pyav_ubi_9.3.sh"
+  "v18.1.0": {
+    "build_script": "pyav_ubi_10.2.sh"
+  },
+  "*" : {
+    "build_script": [
+      "pyav_ubi_10.2.sh",
+      "pyav_ubi_9.3.sh"
+    ]
   }
 }
