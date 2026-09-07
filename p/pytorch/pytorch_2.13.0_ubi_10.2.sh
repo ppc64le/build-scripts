@@ -16,7 +16,7 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
-# Note: torch 2.13.0 for ppc64le (cp314) is installed from the IBM
+# Note: pytorch 2.13.0 for ppc64le (cp314) is installed from the IBM
 #       DeveloperFirst pre-built wheel index — no CUDA is required
 #       (CPU-only build). numpy 2.5.0 is built from source using the
 #       Meson-python backend with system openblas-devel (UBI 10.2 ppc64le).
@@ -102,6 +102,7 @@ fi
 NUMPY_WHL=$(find "${CURRENT_DIR}" -maxdepth 1 -name "numpy-*.whl" | head -1)
 echo "Installing numpy wheel: ${NUMPY_WHL}"
 python3.14 -m pip install "${NUMPY_WHL}"
+rm -f "${CURRENT_DIR}"/numpy-*.whl
 
 cd "${CURRENT_DIR}"
 
