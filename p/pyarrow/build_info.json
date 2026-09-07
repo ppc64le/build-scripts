@@ -1,5 +1,5 @@
 {
-  "maintainer": "SakshiJain0302",
+  "maintainer": "Nayana Thorat <Nayana.Thorat1@ibm.com>",
   "package_name": "pyarrow",
   "github_url": "https://github.com/apache/arrow.git",
   "version": "apache-arrow-25.0.0",
