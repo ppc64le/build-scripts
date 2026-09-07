@@ -33,6 +33,9 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 python3.12 -m pip install pytest
 
+# Added below sed to get static folder missing in the wheel.
+sed -i 's|osp.join(here, "..", ".git")|osp.join(here, ".git")|; s/if in_checkout:/if not in_checkout:/' hatch_build.py
+
 # Install
 if ! python3.12 -m pip install .; then
 	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
