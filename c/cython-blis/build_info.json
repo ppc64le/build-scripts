@@ -8,6 +8,7 @@
    "package_dir": "c/cython-bliss",
    "docker_build": false,
    "wheel_build": true,
+   "wheel_name": "blis",
    "validate_build_script": true,
    "use_non_root_user": false,
    "*": {
