@@ -4,6 +4,7 @@
   "github_url": "https://github.com/open-telemetry/opentelemetry-python-contrib",
   "version": "v1.16.0",
   "wheel_build" : true,
+  "wheel_name": "opentelemetry-python",
   "default_branch": "main",
   "package_dir": "o/opentelemetry-python-contrib",
   "build_script": "opentelemetry-python-contrib_ubi_9.6.sh",
