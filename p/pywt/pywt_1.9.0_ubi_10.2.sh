@@ -24,10 +24,18 @@ PACKAGE_VERSION=${1:-v1.9.0}
 PACKAGE_URL=https://github.com/PyWavelets/pywt
 
 # Install dependencies
-yum install -y gcc gcc-c++ make libtool cmake git wget xz python3.14 python3.14-devel python3.14-pip zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel libjpeg-turbo-devel
+yum install -y make libtool cmake git wget xz python3.14 python3.14-devel python3.14-pip gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ gcc-toolset-15-gcc-gfortran zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel libjpeg-turbo-devel
 
-export CC=/usr/bin/gcc
-export CXX=/usr/bin/g++
+# Activate GCC Toolset 15
+if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
+    source /opt/rh/gcc-toolset-15/enable
+elif [[ -d /opt/rh/gcc-toolset-15/root/usr/bin ]]; then
+    export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:${PATH}"
+    export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:${LD_LIBRARY_PATH:-}"
+else
+    echo "ERROR: gcc-toolset-15 not found"
+    exit 1
+fi
 
 # Clone the repository
 git clone $PACKAGE_URL
