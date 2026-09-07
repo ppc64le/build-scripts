@@ -158,6 +158,7 @@ make install
 PYTHON_BIN=$(command -v python3 || command -v python)
 "${PYTHON_BIN}" -m venv "$BUILD_HOME/faiss-env"
 source "$BUILD_HOME/faiss-env/bin/activate"
+pip install --upgrade pip
 
 # ----------------------------------------------------------------------------
 # Install Python dependencies
