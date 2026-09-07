@@ -158,13 +158,16 @@ make install
 PYTHON_BIN=$(command -v python3 || command -v python)
 "${PYTHON_BIN}" -m venv "$BUILD_HOME/faiss-env"
 source "$BUILD_HOME/faiss-env/bin/activate"
-pip install --upgrade pip
 
-# Install numpy from IBM ppc64le wheel index first.
-pip install \
-    --prefer-binary \
-    --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux \
-    "numpy==1.26.4"
+# Download numpy ppc64le wheel directly from IBM index and install from disk.
+# UBI 8 has glibc 2.28 — use manylinux_2_27 wheels.
+PYVER=$("${PYTHON_BIN}" -c "import sys; print(f'cp{sys.version_info.major}{sys.version_info.minor}')")
+NUMPY_WHL="numpy-2.4.6+ppc64le1-${PYVER}-${PYVER}-manylinux_2_27_ppc64le.whl"
+curl -fsSL \
+    "https://wheels.developerfirst.ibm.com/ppc64le/linux/${NUMPY_WHL}" \
+    -o "/tmp/${NUMPY_WHL}"
+pip install "/tmp/${NUMPY_WHL}"
+rm -f "/tmp/${NUMPY_WHL}"
 
 # ----------------------------------------------------------------------------
 # Install Python dependencies
