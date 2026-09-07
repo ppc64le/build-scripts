@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : grpc-cpp 
-# Version       : v1.71.0
+# Package       : grpc-cpp
+# Version       : v1.80.0
 # Source repo   : https://github.com/grpc/grpc
 # Tested on     : UBI:10.2
 # Language      : Python, C++
-# Ci-Check  : True
+# Ci-Check      : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Sakshi Jain <sakshi.jain16@ibm.com>
+# Maintainer    : Nayana Thorat <Nayana.Thorat1@ibm.com>
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -17,116 +17,107 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
-
-PACKAGE_NAME=grpc-cpp
-PACKAGE_DIR=grpc
-PACKAGE_VERSION=${1:-v1.71.0}
+PACKAGE_NAME=grpccpp
+PACKAGE_DIR=grpccpp
+PACKAGE_VERSION=${1:-1.80.0}
 PACKAGE_URL=https://github.com/grpc/grpc
+    
+yum install -y python3.14 python3.14-pip git make cmake zlib-devel libjpeg-devel gcc-toolset-15 wget openssl-devel
+python3.14 -m pip install ninja setuptools
 
-yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python3.14 python3.14-devel ninja-build gcc-toolset-15  pkg-config 
-
+# Use GCC Toolset 15
 export PATH=/opt/rh/gcc-toolset-15/root/usr/bin:$PATH
+
+export CC="$(which gcc)"
+export CXX="$(which g++)"
+
+echo "CC  = ${CC}"
+echo "CXX = ${CXX}"
+echo "GCC = $(gcc --version | head -1)"
+echo "G++ = $(g++ --version | head -1)"
+
 SCRIPT_DIR=$(pwd)
 
-#installing dependencies
-python3.14 -m ensurepip --upgrade && python3.14 -m pip install --upgrade cmake pip setuptools wheel ninja packaging pytest
-
-echo "----------Installing c-ares----------------"
-#Building c-areas
-git clone https://github.com/c-ares/c-ares.git
+echo "-----------c-ares installing------------------"
+git clone -b cares-1_19_1 https://github.com/c-ares/c-ares
 cd c-ares
-git checkout cares-1_19_1
 
+export CA_PREFIX="$(pwd)/prefix"
+mkdir -p "$CA_PREFIX"
 
-target_platform=$(uname)-$(uname -m)
-AR=$(which ar)
-PKG_NAME=c-ares
+mkdir -p build
+cd build
 
-mkdir -p c_ares_prefix
-export C_ARES_PREFIX=$(pwd)/c_ares_prefix
+AR="$(which ar)"
 
-echo "Building ${PKG_NAME}."
+echo "CA_PREFIX=$CA_PREFIX"
 
-# Isolate the build.
-mkdir build && cd build
-
-if [[ "$PKG_NAME" == *static ]]; then
-  CARES_STATIC=ON
-  CARES_SHARED=OFF
-else
-  CARES_STATIC=OFF
-  CARES_SHARED=ON
-fi
-
-if [[ "${target_platform}" == Linux-* ]]; then
-  CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_AR=${AR}"
-fi
-
-python3.14 -m pip install cmake==3.30.2
-
-# Generate the build files.
-echo "Generating the build files..."
-cmake ${CMAKE_ARGS} .. \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_INSTALL_PREFIX="$C_ARES_PREFIX" \
-      -DCARES_STATIC=${CARES_STATIC} \
-      -DCARES_SHARED=${CARES_SHARED} \
-      -DCARES_INSTALL=ON \
-      -DCMAKE_INSTALL_LIBDIR=lib \
-      -GNinja
-      #${SRC_DIR}
+cmake -GNinja .. \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX="$CA_PREFIX" \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DCARES_STATIC=OFF \
+    -DCARES_SHARED=ON \
+    -DCARES_INSTALL=ON \
+    -DCMAKE_AR="$AR"
 
 # Build.
 echo "Building..."
-ninja || exit 1
-
-# Installing
-echo "Installing..."
-ninja install || exit 1
+ninja -v
+ninja install
 
 cd $SCRIPT_DIR
 
-echo "----------c-areas installed-----------------------"
+echo "-----------re2 installing------------------"
+git clone https://github.com/google/re2.git
+cd re2
+git checkout 2022-04-01
 
-#cloning abseil-cpp
- ABSEIL_VERSION=20240116.2
- ABSEIL_URL="https://github.com/abseil/abseil-cpp"
+mkdir -p $(pwd)/local/re2
+export RE2_PREFIX=$(pwd)/local/re2
+export CPU_COUNT=`nproc`
 
- git clone $ABSEIL_URL -b $ABSEIL_VERSION
+mkdir build-cmake
+cd build-cmake
 
- echo "------------abseil-cpp cloned--------------"
+cmake ${CMAKE_ARGS} -GNinja \
+  -DCMAKE_PREFIX_PATH=$RE2_PREFIX \
+  -DCMAKE_INSTALL_PREFIX="${RE2_PREFIX}" \
+  -DCMAKE_INSTALL_LIBDIR=lib \
+  -DENABLE_TESTING=ON \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_SHARED_LIBS=ON \
+  ..
 
-#building libprotobuf
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
+ninja -v install
 
+echo " -------------------------Building protobuf ---------------------------------------------- "
+cd $SCRIPT_DIR
 git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
-git checkout v4.25.8
+git checkout v33.6
+git submodule update --init --recursive
+
 
 LIBPROTO_DIR=$(pwd)
 mkdir -p $LIBPROTO_DIR/local/libprotobuf
 LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
+export PROTOBUF_PREFIX=$LIBPROTO_INSTALL
 
-git submodule update --init --recursive
-rm -rf ./third_party/googletest | true
-rm -rf ./third_party/abseil-cpp | true
-
-cp -r $SCRIPT_DIR/abseil-cpp ./third_party/
 
 mkdir build
 cd build
 
+#Building and testing is performed through the same command
 cmake -G "Ninja" \
    ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_C_COMPILER=$C_COMPILER \
-    -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
+    -DCMAKE_C_COMPILER=$CC \
+    -DCMAKE_CXX_COMPILER=$CXX \
     -DCMAKE_INSTALL_PREFIX=$LIBPROTO_INSTALL \
     -Dprotobuf_BUILD_TESTS=OFF \
-    -Dprotobuf_BUILD_LIBUPB=OFF \
     -Dprotobuf_BUILD_SHARED_LIBS=ON \
     -Dprotobuf_ABSL_PROVIDER="module" \
     -Dprotobuf_JSONCPP_PROVIDER="package" \
@@ -135,139 +126,88 @@ cmake -G "Ninja" \
 
 cmake --build . --verbose
 cmake --install .
-cd $SCRIPT_DIR 
 
-echo "------------ libprotobuf installed--------------"
+cd $SCRIPT_DIR
 
-#re2 install from sosurce
-git clone https://github.com/google/re2
-cd re2
-git checkout 2022-04-01
-git submodule update --init
+echo "------- grpc-cpp installing----------------------"
 
-mkdir re2-prefix
-export RE2_PREFIX=$(pwd)/re2-prefix
-
-export CPU_COUNT=`nproc`
-
-mkdir build-cmake
-pushd build-cmake
-
-cmake ${CMAKE_ARGS} -GNinja \
-  -DCMAKE_PREFIX_PATH=$RE2_PREFIX \
-  -DCMAKE_INSTALL_PREFIX="${RE2_PREFIX}" \
-  -DCMAKE_INSTALL_LIBDIR=lib \
-  -DENABLE_TESTING=OFF \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DBUILD_SHARED_LIBS=ON \
-  ..
-
-  ninja -v install
-  popd
-
-make -j "${CPU_COUNT}" prefix=${RE2_PREFIX} shared-install
-cd $SCRIPT_DIR 
-
-echo "------------ re2 installed--------------"
-
-
-git clone $PACKAGE_URL
+git clone -b $PACKAGE_VERSION $PACKAGE_URL
 cd grpc
-git checkout $PACKAGE_VERSION
-
-if [ $PACKAGE_VERSION == v1.54.3 ]; then
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/g/grpc-cpp/grpc-cpp-compatibility.patch
-git apply grpc-cpp-compatibility.patch
-fi
-
 git submodule update --init
 
-mkdir grpc-prefix
-export GRPC_PREFIX=$(pwd)/grpc-prefix
+mkdir prefix
+export PREFIX=$(pwd)/prefix
 
 AR=`which ar`
 RANLIB=`which ranlib`
 
 PROTOC_BIN=$LIBPROTO_INSTALL/bin/protoc
-PROTOBUF_SRC=$LIBPROTO_INSTALL
+PROTOBUF_SRC=$LIBPROTO_DIR
 
-export CMAKE_PREFIX_PATH="$C_ARES_PREFIX;$RE2_PREFIX;$LIBPROTO_INSTALL"
+export CMAKE_PREFIX_PATH="$CA_PREFIX:$RE2_PREFIX:$LIBPROTO_DIR:$LIBPROTO_INSTALL"
+export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$LIBPROTO_INSTALL/lib:$CA_PREFIX/lib:$RE2_PREFIX/lib:${LD_LIBRARY_PATH}"
 
-export LD_LIBRARY_PATH=$LIBPROTO_INSTALL/lib64:${LD_LIBRARY_PATH}
+export ABSL_DIR="$LIBPROTO_INSTALL/lib64/cmake/absl"
+export Protobuf_DIR="$LIBPROTO_INSTALL/lib64/cmake/protobuf"
 
 target_platform=$(uname)-$(uname -m)
 
-if [[ "${target_platform}" == osx* ]]; then
-  export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_CXX_STANDARD=14"
-else
-  export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_CXX_STANDARD=17"
-fi
-
+export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_CXX_STANDARD=17"
 
 mkdir -p build-cpp
-pushd build-cpp
+cd build-cpp
+
 cmake ${CMAKE_ARGS} ..  \
       -GNinja \
       -DBUILD_SHARED_LIBS=ON \
       -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_INSTALL_PREFIX=$GRPC_PREFIX \
+      -DCMAKE_INSTALL_PREFIX=$PREFIX \
       -DgRPC_CARES_PROVIDER="package" \
+      -DCARES_INCLUDE_DIR="$CA_PREFIX/include" \
       -DgRPC_GFLAGS_PROVIDER="package" \
       -DgRPC_PROTOBUF_PROVIDER="package" \
-      -DgRPC_PROTOBUF_PACKAGE_TYPE=CONFIG \
-      -DProtobuf_ROOT=$PROTOBUF_SRC \
+      -DProtobuf_ROOT=$LIBPROTO_INSTALL \
+      -DProtobuf_DIR="$LIBPROTO_INSTALL/lib64/cmake/protobuf" \
       -DgRPC_SSL_PROVIDER="package" \
       -DgRPC_ZLIB_PROVIDER="package" \
       -DgRPC_ABSL_PROVIDER="package" \
+      -Dabsl_DIR="$LIBPROTO_INSTALL/lib64/cmake/absl" \
       -DgRPC_RE2_PROVIDER="package" \
       -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH \
       -DCMAKE_AR=${AR} \
       -DCMAKE_RANLIB=${RANLIB} \
       -DCMAKE_VERBOSE_MAKEFILE=ON \
-      -DProtobuf_PROTOC_EXECUTABLE=$PROTOC_BIN \
-      -DgRPC_BUILD_CODEGEN=ON \
-      -DgRPC_BUILD_CSHARP_EXT=OFF \
-      -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF \
-      -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF \
-      -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF \
-      -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF \
-      -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
-      -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF
+      -DProtobuf_PROTOC_EXECUTABLE=$PROTOC_BIN
 
 ninja install -v
-popd
 
-cd $SCRIPT_DIR
+cd "${SCRIPT_DIR}"
+
 mkdir -p local/grpccpp
 
-cp -r grpc/grpc-prefix/* local/grpccpp/
-export LD_LIBRARY_PATH=$GRPC_PREFIX/lib:$GRPC_PREFIX/lib64:$LIBPROTO_INSTALL/lib:$LIBPROTO_INSTALL/lib64:$RE2_PREFIX/lib:$C_ARES_PREFIX/lib:${LD_LIBRARY_PATH}
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/g/grpc-cpp/pyproject.toml
-sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
+cp -r grpc/prefix/* local/grpccpp/
 
-python3.14 -m pip install --upgrade pip build setuptools wheel
+echo "------------------ Downloading pyproject.toml ------------------"
+
+wget -O pyproject.toml \
+    https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/g/grpc-cpp/pyproject.toml
+
+sed -i "s/{PACKAGE_VERSION}/${PACKAGE_VERSION}/g" pyproject.toml
+
+echo "------------------ Building Python wheel ------------------"
+
+python3.14 -m pip wheel \
+    -w "${SCRIPT_DIR}" \
+    -vv \
+    --no-build-isolation \
+    --no-deps \
+    .
+
+echo "------------------ Installing grpccpp ------------------"
 
 if ! python3.14 -m pip install . ; then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    echo "------------------${PACKAGE_NAME}:Install_fails-------------------------------------"
+    echo "${PACKAGE_URL} ${PACKAGE_NAME}"
+    echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | GitHub | Fail | Install_Fails"
     exit 1
-fi
-
-echo "Build and installation completed successfully."
-echo "There are no test cases available. Skipping the test cases."
-
-#Creating Wheel
-#During wheel creation for this package we need exported vars. Once script get exit, and if we build wheel through wrapper script, then those are not applicable during wheel creation. So we are generating wheel for this package in script itself.
-
-if ! (python3.14 -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"); then
-    echo "--------------------$PACKAGE_NAME:Install_success_but_wheel_creation_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_wheel_creation_fails"
-    exit 2
-else
-    echo "------------------$PACKAGE_NAME:Install_&_wheel_Creation_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Install_&_wheel_Creation_both_success"
-    exit 0
 fi
