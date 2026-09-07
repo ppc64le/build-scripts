@@ -82,27 +82,22 @@ if ! rpm -q epel-release &>/dev/null; then
     rm -f "$EPEL_RPM"
 fi
 
-dnf install -y \
-    git \
-    gcc-toolset-11 \
-    cmake \
-    file \
-    lapack-devel \
-    python3.11-devel \
-    python3.11-pip \
-    pkg-config \
-    swig
+dnf install -y git gcc-toolset-11 cmake file lapack-devel python3-devel python3-pip pkg-config swig
 
 # ----------------------------------------------------------------------------
 # Enable GCC Toolset
 # ----------------------------------------------------------------------------
+
 source /opt/rh/gcc-toolset-11/enable
 
 # ----------------------------------------------------------------------------
 # Build and install OpenBLAS
 # ----------------------------------------------------------------------------
+
 cd "$BUILD_HOME"
+
 rm -rf OpenBLAS
+
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.34
@@ -157,10 +152,18 @@ fi
 make install
 
 # ----------------------------------------------------------------------------
+# Detect Python and create virtual environment
+# ----------------------------------------------------------------------------
+
+PYTHON_BIN=$(command -v python3 || command -v python)
+"${PYTHON_BIN}" -m venv "$BUILD_HOME/faiss-env"
+source "$BUILD_HOME/faiss-env/bin/activate"
+
+# ----------------------------------------------------------------------------
 # Install Python dependencies
 # ----------------------------------------------------------------------------
 
-pip3.11 install \
+pip install \
     --prefer-binary \
     pytest \
     wheel \
@@ -170,13 +173,6 @@ pip3.11 install \
     auditwheel \
     patchelf \
     --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
-
-mkdir -p ~/.local/bin
-
-ln -sf /usr/bin/python3.11 ~/.local/bin/python
-ln -sf /usr/bin/python3.11 ~/.local/bin/python3
-
-export PATH="$HOME/.local/bin:$PATH"
 
 # ----------------------------------------------------------------------------
 # Clone FAISS
@@ -204,6 +200,7 @@ cmake \
     -DBUILD_TESTING=ON \
     -DFAISS_ENABLE_C_API=ON \
     -DCMAKE_BUILD_TYPE=Release \
+    -DPython_EXECUTABLE="$(command -v python)" \
     ..
 
 ret=0
@@ -242,7 +239,7 @@ rm -rf wheelhouse
 mkdir -p wheelhouse/raw
 
 ret=0
-python3.11 -m pip wheel . -w wheelhouse/raw || ret=$?
+python -m pip wheel . -w wheelhouse/raw || ret=$?
 if [ "$ret" -ne 0 ]; then
     echo "FAIL: Python wheel build failed."
     exit 1
@@ -307,13 +304,13 @@ auditwheel show "$REPAIRED_WHEEL"
 # Install repaired wheel
 # ----------------------------------------------------------------------------
 
-python3.11 -m pip install \
+pip install \
     --force-reinstall \
     "$REPAIRED_WHEEL"
 
 # FAISS 1.9.0 was built against NumPy 1.x.
 # Prevent pip from leaving NumPy 2.x installed.
-python3.11 -m pip install \
+pip install \
     --force-reinstall \
     --no-deps \
     --only-binary=:all: \
@@ -324,11 +321,9 @@ python3.11 -m pip install \
 # Verify Python imports
 # ----------------------------------------------------------------------------
 
-python3.11 -c \
-    "import numpy; print('NumPy:', numpy.__version__)"
+python -c "import numpy; print('NumPy:', numpy.__version__)"
 
-python3.11 -c \
-    "import faiss; print('FAISS:', faiss.__version__)"
+python -c "import faiss; print('FAISS:', faiss.__version__)"
 
 # ----------------------------------------------------------------------------
 # Python tests
@@ -337,7 +332,7 @@ python3.11 -c \
 cd "$BUILD_HOME/$PACKAGE_NAME"
 
 ret=0
-python3.11 -m pytest ./tests/test_*.py -v || ret=$?
+python -m pytest ./tests/test_*.py -v || ret=$?
 if [ "$ret" -ne 0 ]; then
     echo "FAIL: Python tests failed."
     exit 2
