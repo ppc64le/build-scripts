@@ -160,18 +160,21 @@ PYTHON_BIN=$(command -v python3 || command -v python)
 source "$BUILD_HOME/faiss-env/bin/activate"
 pip install --upgrade pip
 
+# Install numpy from IBM ppc64le wheel index first.
+pip install \
+    --prefer-binary \
+    --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux \
+    "numpy==1.26.4"
+
 # ----------------------------------------------------------------------------
 # Install Python dependencies
 # ----------------------------------------------------------------------------
 
 pip install \
     --prefer-binary \
-    --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux \
-    --index-strategy=unsafe-best-match \
     pytest \
     wheel \
     scipy \
-    numpy==1.26.4 \
     swig \
     auditwheel \
     patchelf
@@ -309,15 +312,6 @@ auditwheel show "$REPAIRED_WHEEL"
 pip install \
     --force-reinstall \
     "$REPAIRED_WHEEL"
-
-# FAISS 1.9.0 was built against NumPy 1.x.
-# Prevent pip from leaving NumPy 2.x installed.
-pip install \
-    --force-reinstall \
-    --no-deps \
-    --only-binary=:all: \
-    --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux \
-    "numpy==1.26.4"
 
 # ----------------------------------------------------------------------------
 # Verify Python imports
