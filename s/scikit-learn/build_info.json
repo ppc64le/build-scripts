@@ -29,15 +29,9 @@
         "build_script": "scikit-learn_1.8.0_ubi_9.6.sh"
     },
     "1.9.0": {
-        "build_script": [
-            "scikit-learn_1.9.0_ubi_10.1.sh",
-            "scikit-learn_ubi_10.2.sh"
-        ]
+        "build_script": "scikit-learn_ubi_10.2.sh"
     },
     "*": {
-        "build_script": [
-            "scikit-learn_1.9.0_ubi_10.1.sh",
-            "scikit-learn_ubi_10.2.sh"
-        ]
+        "build_script": "scikit-learn_ubi_10.2.sh"
     }
 }
