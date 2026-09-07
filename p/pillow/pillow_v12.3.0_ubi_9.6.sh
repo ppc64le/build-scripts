@@ -21,6 +21,7 @@ PACKAGE_NAME=pillow
 PACKAGE_IMPORT=PIL
 PACKAGE_DIR=Pillow
 PACKAGE_VERSION="${1:-12.3.0}"
+PACKAGE_VERSION="${PACKAGE_VERSION#v}"
 PACKAGE_URL="https://github.com/python-pillow/Pillow/"
 SOURCE_ROOT="$(pwd)"
 
