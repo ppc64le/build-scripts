@@ -31,10 +31,7 @@ PACKAGE_NAME=llvmlite
 PACKAGE_VERSION=${1:-v0.49.0}
 PACKAGE_URL=https://github.com/numba/llvmlite
 PACKAGE_DIR=llvmlite
-# Pin to a safe non-root workdir so wheel paths never start with // (pip 26 fix)
-mkdir -p /build
-cd /build
-CURRENT_DIR=/build
+CURRENT_DIR=$(pwd)
 
 LLVM_VERSION=22.1.0
 LLVM_SHORT=22
