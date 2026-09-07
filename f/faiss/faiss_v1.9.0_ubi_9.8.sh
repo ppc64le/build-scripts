@@ -58,7 +58,7 @@ EOF
 
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
-dnf install -y git gcc-toolset-13 cmake file lapack-devel python3-devel python3-pip pkg-config swig
+dnf install -y git gcc-toolset-13 cmake file lapack-devel python3-devel python3-pip pkg-config swig unzip
 
 # ----------------------------------------------------------------------------
 # Enable GCC Toolset
@@ -141,14 +141,15 @@ pip install --upgrade pip
 
 pip install \
     --prefer-binary \
+    --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux \
+    --index-strategy=unsafe-best-match \
     pytest \
     wheel \
     scipy \
     numpy==1.26.4 \
     swig \
     auditwheel \
-    patchelf \
-    --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+    patchelf
 
 # ----------------------------------------------------------------------------
 # Clone FAISS
