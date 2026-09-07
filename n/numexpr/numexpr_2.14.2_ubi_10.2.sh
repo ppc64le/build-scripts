@@ -49,15 +49,7 @@ python3.14 -m pip install --upgrade pip setuptools wheel build
 cd "$CURRENT_DIR"
 git clone "$PACKAGE_URL" "$PACKAGE_DIR"
 cd "$PACKAGE_DIR"
-
-if git rev-parse "v${PACKAGE_VERSION}" &>/dev/null; then
-    git checkout "v${PACKAGE_VERSION}"
-elif git rev-parse "${PACKAGE_VERSION}" &>/dev/null; then
-    git checkout "${PACKAGE_VERSION}"
-else
-    echo "ERROR: No git tag found for version '${PACKAGE_VERSION}'"
-    exit 1
-fi
+git checkout "${PACKAGE_VERSION}"
 
 # Fix pyproject.toml for PEP 639 / setuptools compatibility
 sed -i 's/^license = "MIT"/license = {text = "MIT"}/' pyproject.toml
