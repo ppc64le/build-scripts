@@ -58,17 +58,13 @@ EOF
 
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
-dnf install -y \
-    git \
-    gcc \
-    gcc-c++ \
-    cmake \
-    file \
-    lapack-devel \
-    python3-devel \
-    python3-pip \
-    pkg-config \
-    swig
+dnf install -y git gcc-toolset-13 cmake file lapack-devel python3-devel python3-pip pkg-config swig
+
+# ----------------------------------------------------------------------------
+# Enable GCC Toolset
+# ----------------------------------------------------------------------------
+
+source /opt/rh/gcc-toolset-13/enable
 
 # ----------------------------------------------------------------------------
 # Build and install OpenBLAS

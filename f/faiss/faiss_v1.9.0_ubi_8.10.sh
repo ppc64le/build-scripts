@@ -82,13 +82,13 @@ if ! rpm -q epel-release &>/dev/null; then
     rm -f "$EPEL_RPM"
 fi
 
-dnf install -y git gcc-toolset-11 cmake file lapack-devel python3-devel python3-pip pkg-config swig
+dnf install -y git gcc-toolset-12 cmake file lapack-devel python3-devel python3-pip pkg-config swig
 
 # ----------------------------------------------------------------------------
 # Enable GCC Toolset
 # ----------------------------------------------------------------------------
 
-source /opt/rh/gcc-toolset-11/enable
+source /opt/rh/gcc-toolset-12/enable
 
 # ----------------------------------------------------------------------------
 # Build and install OpenBLAS
