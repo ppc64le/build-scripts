@@ -22,7 +22,13 @@ PACKAGE_NAME=pyyaml
 PACKAGE_VERSION=${1:-"6.0.3"}
 PACKAGE_URL=https://github.com/yaml/pyyaml.git
 
-yum install -y git python3.14 python3.14-devel libyaml-devel gcc gcc-c++
+yum install -y git python3.14 python3.14-devel libyaml-devel gcc-toolset-15
+
+# Use GCC Toolset 15
+export PATH=/opt/rh/gcc-toolset-15/root/usr/bin:$PATH
+
+export CC="$(which gcc)"
+export CXX="$(which g++)"
 
 python3.14 -m ensurepip --upgrade
 python3.14 -m pip install --upgrade pip setuptools wheel
