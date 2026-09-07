@@ -1,0 +1,16 @@
+{
+  "maintainer": "Rosman Carino",
+  "package_name": "onigurumacffi",
+  "github_url": "https://github.com/asottile/onigurumacffi",
+  "version": "v1.5.0",
+  "default_branch": "main",
+  "build_script": "onigurumacffi_ubi_9.6.sh",
+  "package_dir": "o/onigurumacffi",
+  "docker_build": false,
+  "wheel_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "onigurumacffi_ubi_9.6.sh"
+  }
+}

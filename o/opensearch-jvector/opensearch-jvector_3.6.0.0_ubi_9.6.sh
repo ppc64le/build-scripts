@@ -39,7 +39,7 @@ sudo dnf install -y java-25-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-25-openjdk
 export PATH="/usr/local/bin:$HOME/.local/bin:$JAVA_HOME/bin:$PATH"
 
-sudo chown -R test_user:test_user /home/tester
+
 
 # -------------------------------
 # Remove existing repositories (if they exist)

@@ -1,0 +1,20 @@
+{
+    "maintainer": "Varsha Kumar",
+    "package_name": "faiss-cpu",
+    "github_url": "https://github.com/faiss-wheels/faiss-wheels.git",
+    "version": "1.9.0.post1",
+    "default_branch": "main",
+    "build_script": "faiss-cpu_1.9.0.post1_ubi_10.2.sh",
+    "package_dir": "f/faiss-cpu",
+    "docker_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "wheel_build": true,
+
+    "1.9.0.post1": {
+        "build_script": "faiss-cpu_1.9.0.post1_ubi_10.2.sh"
+     }, 
+    "*": {
+        "build_script": "faiss-cpu_1.9.0.post1_ubi_10.2.sh"
+     }
+}

@@ -1,0 +1,287 @@
+diff --git a/cassandra/Dockerfile-4.1.ubi b/cassandra/Dockerfile-4.1.ubi
+index 1e30170..4795644 100644
+--- a/cassandra/Dockerfile-4.1.ubi
++++ b/cassandra/Dockerfile-4.1.ubi
+@@ -3,6 +3,150 @@ ARG UBI_BASETAG=latest
+ ARG CASSANDRA_VERSION=4.1.11
+ FROM cassandra:${CASSANDRA_VERSION} AS cassandra-base
+ 
++FROM registry.access.redhat.com/ubi9/ubi:9.8 AS netty-builder
++
++RUN dnf update -y && \
++    dnf install -y \
++    git \
++    autoconf \
++    automake \
++    cmake \
++    gcc \
++    gcc-c++ \
++    make \
++    patch \
++    java-11-openjdk \
++    java-11-openjdk-devel \
++    wget \
++    python3-devel \
++    libtool \
++    apr-devel \
++    apr-util-devel \
++    openssl-devel \
++    ninja-build \
++    golang \
++    pkgconf-pkg-config \
++    tar \
++    gzip \
++    which \
++    perl \
++    perl-FindBin \
++    findutils && \
++    dnf clean all
++
++RUN export JAVA_HOME=/usr/lib/jvm/java-11-openjdk && \
++    export JRE_HOME=${JAVA_HOME} && \
++    export PATH=${JAVA_HOME}/bin:$PATH && \
++    cd /opt && \
++    wget https://archive.apache.org/dist/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz && \
++    tar -xvf apache-maven-3.9.9-bin.tar.gz && \
++    mv apache-maven-3.9.9 /opt/apache-maven && \
++    export M2_HOME=/opt/apache-maven && \
++    export PATH="$M2_HOME/bin:$PATH" && \
++    git clone https://github.com/netty/netty-tcnative.git && \
++    cd netty-tcnative && \
++    git checkout netty-tcnative-parent-2.0.77.Final && \
++    sed -i "s#<module>boringssl-static</module>##g" pom.xml && \
++    mvn install -DskipTests && \
++    mvn install:install-file \
++        -Dfile=openssl-dynamic/target/netty-tcnative-2.0.77.Final-linux-ppcle_64.jar \
++        -DgroupId=io.netty \
++        -DartifactId=netty-tcnative \
++        -Dversion=2.0.77.Final \
++        -Dclassifier=linux-ppcle_64-fedora \
++        -Dpackaging=jar
++
++RUN export JAVA_HOME=/usr/lib/jvm/java-11-openjdk && \
++    export JRE_HOME=${JAVA_HOME} && \
++    export PATH=${JAVA_HOME}/bin:$PATH && \
++    export M2_HOME=/opt/apache-maven && \
++    export PATH="$M2_HOME/bin:$PATH" && \
++    cd /opt && \
++    git clone https://github.com/netty/netty.git && \
++    cd netty && \
++    git checkout netty-4.1.135.Final && \
++    cd transport-native-unix-common && \
++    mvn install -DskipTests && \
++    cd ../transport-native-epoll && \
++    mvn install -DskipTests && \
++    cd ../common && \
++    mvn install -DskipTests && \
++    cd ../all && \
++    mvn install -DskipTests
++FROM registry.access.redhat.com/ubi9/ubi:9.8 AS netty58-builder
++
++RUN dnf update -y && \
++    dnf install -y \
++    git \
++    autoconf \
++    automake \
++    cmake \
++    gcc \
++    gcc-c++ \
++    make \
++    patch \
++    java-11-openjdk \
++    java-11-openjdk-devel \
++    wget \
++    python3-devel \
++    libtool \
++    apr-devel \
++    apr-util-devel \
++    openssl-devel \
++    ninja-build \
++    golang \
++    pkgconf-pkg-config \
++    tar \
++    gzip \
++    which \
++    perl \
++    perl-FindBin \
++    findutils && \
++    dnf clean all
++
++
++RUN export JAVA_HOME=/usr/lib/jvm/java-11-openjdk && \
++    export JRE_HOME=${JAVA_HOME} && \
++    export PATH=${JAVA_HOME}/bin:$PATH && \
++    cd /opt && \
++    wget https://archive.apache.org/dist/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz && \
++    tar -xvf apache-maven-3.9.9-bin.tar.gz && \
++    mv apache-maven-3.9.9 /opt/apache-maven && \
++    export M2_HOME=/opt/apache-maven && \
++    export PATH="$M2_HOME/bin:$PATH" && \
++    git clone https://github.com/netty/netty-tcnative.git && \
++    cd netty-tcnative && \
++    git checkout netty-tcnative-parent-2.0.63.Final && \
++    sed -i "s#<module>boringssl-static</module>##g" pom.xml && \
++    mvn install -DskipTests && \
++    mvn install:install-file \
++    -Dfile=openssl-dynamic/target/netty-tcnative-2.0.63.Final-linux-ppcle_64.jar \
++    -DgroupId=io.netty \
++    -DartifactId=netty-tcnative \
++    -Dversion=2.0.63.Final \
++    -Dclassifier=linux-ppcle_64-fedora \
++    -Dpackaging=jar
++
++
++RUN export JAVA_HOME=/usr/lib/jvm/java-11-openjdk && \
++    export JRE_HOME=${JAVA_HOME} && \
++    export PATH=${JAVA_HOME}/bin:$PATH && \
++    export M2_HOME=/opt/apache-maven && \
++    export PATH="$M2_HOME/bin:$PATH" && \
++    cd /opt && \
++    git clone https://github.com/netty/netty.git && \
++    cd netty && \
++    git checkout netty-4.1.58.Final && \
++    cd transport-native-unix-common && \
++    mvn install -DskipTests && \
++    cd ../transport-native-epoll && \
++    mvn install -DskipTests && \
++    cd ../common && \
++    mvn install -DskipTests && \
++    cd ../all && \
++    mvn install -DskipTests
++
++
+ FROM --platform=$BUILDPLATFORM registry.access.redhat.com/ubi${UBI_MAJOR}/ubi-minimal:${UBI_BASETAG} AS builder
+ 
+ ARG METRICS_COLLECTOR_VERSION=0.3.6
+@@ -64,7 +208,7 @@ RUN if ! grep -qxF "JVM_OPTS=\"\$JVM_OPTS -javaagent:${MCAC_PATH}/lib/datastax-m
+ 
+ 
+ FROM --platform=linux/arm64 builder AS cassandra-builder-arm64
+-
++FROM --platform=linux/ppc64le builder AS cassandra-builder-ppc64le
+ FROM cassandra-builder-${TARGETARCH} AS cassandra-builder
+ 
+ #############################################################
+@@ -128,6 +272,32 @@ RUN microdnf install -y --nodocs shadow-utils \
+ COPY --from=cassandra-builder --chown=cassandra:root /etc/cassandra /etc/cassandra
+ COPY --from=cassandra-builder --chown=cassandra:root ${CASSANDRA_PATH} ${CASSANDRA_PATH}
+ COPY --from=cassandra-builder --chown=cassandra:root ${CASSANDRA_PATH}/LICENSE.txt /licenses/
++#
++# Power (ppc64le) Netty replacement
++#
++COPY --from=netty-builder \
++    --chown=cassandra:root \
++    /opt/netty/transport-native-epoll/target/native-build/target/lib/libnetty_transport_native_epoll_ppcle_64.so \
++    /usr/lib/
++
++RUN rm -f \
++    ${CASSANDRA_PATH}/lib/netty-all-4.1.58.Final.jar \
++    ${CASSANDRA_PATH}/lib/netty-tcnative-boringssl-static-2.0.36.Final.jar
++
++COPY --from=netty58-builder \
++    --chown=cassandra:root \
++    /opt/netty/all/target/netty-all-4.1.58.Final.jar \
++    ${CASSANDRA_PATH}/lib/netty-all-4.1.58.Final.jar
++
++COPY --from=netty58-builder \
++    --chown=cassandra:root \
++    /opt/netty-tcnative/openssl-static/target/netty-tcnative-openssl-static-2.0.63.Final.jar \
++    ${CASSANDRA_PATH}/lib/netty-tcnative-boringssl-static-2.0.36.Final.jar
++
++COPY --from=netty58-builder \
++    --chown=cassandra:root \
++    /opt/netty-tcnative/openssl-static/target/netty-tcnative-openssl-static-2.0.63.Final-linux-ppcle_64.jar \
++    ${CASSANDRA_PATH}/lib/netty-tcnative-boringssl-static-2.0.36.Final-linux-ppcle_64.jar
+ COPY --from=cassandra-builder --chown=cassandra:root ${MCAC_PATH} ${MCAC_PATH}
+ COPY --from=cassandra-builder --chown=cassandra:root ${CDC_AGENT_PATH} ${CDC_AGENT_PATH}
+ COPY --from=mgmtapi-setup --chown=cassandra:root ${MAAC_PATH} ${MAAC_PATH}
+@@ -153,8 +323,14 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh && \
+   ln -sf /proc/mounts /etc/mtab
+ 
+ ENV TINI_VERSION=v0.19.0
+-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${TARGETARCH} /tini
+-RUN chmod +x /tini
++ARG TARGETARCH
++
++RUN if [ "$TARGETARCH" = "ppc64le" ]; then \
++      wget -O /tini https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-ppc64le ; \
++    else \
++      wget -O /tini https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${TARGETARCH} ; \
++    fi && \
++    chmod +x /tini
+ 
+ # Set user to run as
+ USER cassandra
+diff --git a/cassandra/scripts/docker-entrypoint.sh b/cassandra/scripts/docker-entrypoint.sh
+index eb0e1c4..a697fc3 100644
+--- a/cassandra/scripts/docker-entrypoint.sh
++++ b/cassandra/scripts/docker-entrypoint.sh
+@@ -42,7 +42,7 @@ _sed-in-place() {
+ 
+ _metrics_collector_supported() {
+     # currently, metrics collector does not work on arm64
+-    [ "$(uname -m)" != "aarch64" ] && [ -z "$MGMT_API_DISABLE_MCAC" ] && [ -e ${MCAC_PATH}/lib/datastax-mcac-agent.jar ]
++    [ "$(uname -m)" != "ppc64le" ] && [ -z "$MGMT_API_DISABLE_MCAC" ] && [ -e ${MCAC_PATH}/lib/datastax-mcac-agent.jar ]
+ }
+ 
+ if [ "$1" = 'mgmtapi' ]; then
+@@ -194,7 +194,7 @@ if [ "$1" = 'mgmtapi' ]; then
+     MGMT_API_JAR="${MAAC_PATH}/datastax-mgmtapi-server.jar"
+ 
+     # use default of 128m heap if env variable not set
+-    : "${MGMT_API_HEAP_SIZE:=128m}"
++    : "${MGMT_API_HEAP_SIZE:=12g}"
+ 
+     echo "Running" java ${MGMT_API_JAVA_OPTS} -Xms${MGMT_API_HEAP_SIZE} -Xmx${MGMT_API_HEAP_SIZE} -jar "$MGMT_API_JAR" $MGMT_API_ARGS
+     java ${MGMT_API_JAVA_OPTS} -Xms${MGMT_API_HEAP_SIZE} -Xmx${MGMT_API_HEAP_SIZE} -jar "$MGMT_API_JAR" $MGMT_API_ARGS
+diff --git a/management-api-test/src/test/java/com/datastax/mgmtapi/BaseDockerIntegrationTest.java b/management-api-test/src/test/java/com/datastax/mgmtapi/BaseDockerIntegrationTest.java
+index 5b731dc..46fa59d 100644
+--- a/management-api-test/src/test/java/com/datastax/mgmtapi/BaseDockerIntegrationTest.java
++++ b/management-api-test/src/test/java/com/datastax/mgmtapi/BaseDockerIntegrationTest.java
+@@ -279,15 +279,12 @@ public abstract class BaseDockerIntegrationTest {
+     boolean ready = false;
+ 
+     // Startup
++    FullHttpResponse response =
++        client.post(URI.create(BASE_PATH + "/lifecycle/start").toURL(), null).join();
+     boolean started =
+-        client
+-            .post(URI.create(BASE_PATH + "/lifecycle/start").toURL(), null)
+-            .thenApply(
+-                r ->
+-                    r.status().code() == HttpStatus.SC_CREATED
+-                        || r.status().code() == HttpStatus.SC_ACCEPTED)
+-            .join();
+-
++        response.status().code() == HttpStatus.SC_CREATED
++            || response.status().code() == HttpStatus.SC_ACCEPTED
++            || response.status().code() == HttpStatus.SC_NO_CONTENT;
+     assertTrue(started);
+ 
+     int tries = 0;
+diff --git a/management-api-test/src/test/java/com/datastax/mgmtapi/helpers/DockerHelper.java b/management-api-test/src/test/java/com/datastax/mgmtapi/helpers/DockerHelper.java
+index 16086c8..2f0d7c6 100644
+--- a/management-api-test/src/test/java/com/datastax/mgmtapi/helpers/DockerHelper.java
++++ b/management-api-test/src/test/java/com/datastax/mgmtapi/helpers/DockerHelper.java
+@@ -225,7 +225,7 @@ public class DockerHelper {
+     pb.command().add("--target");
+     pb.command().add(config.target);
+     pb.command().add("--platform");
+-    pb.command().add("linux/amd64");
++    pb.command().add("linux/ppc64le");
+     pb.command().add(config.baseDir.getPath());
+ 
+     Process p = pb.inheritIO().start();
+@@ -371,9 +371,9 @@ public class DockerHelper {
+           if (tags == null) {
+             logger.warn(String.format("Image has NULL tags: %s", image.getId()));
+           } else {
+-            for (int i = 0; i < tags.length; ++i) {
+-              if (tags[i].startsWith(imageName)) {
+-                logger.info(String.format("Found an image named %s", imageName));
++            for (String tag : tags) {
++              if (tag.contains(imageName)) {
++                logger.info("Found image: " + tag);
+                 return image;
+               }
+             }

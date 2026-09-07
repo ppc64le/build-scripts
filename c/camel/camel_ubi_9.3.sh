@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : camel
-# Version          : 4.10.2
+# Version          : camel-4.10.2
 # Source repo      : https://github.com/apache/camel.git
 # Tested on        : UBI:9.3
 # Language         : Java
@@ -26,10 +26,10 @@ PACKAGE_URL=https://github.com/apache/camel.git
 echo "Installing dependencies"
 yum install -y git wget tar
 
-#install java17
-echo "Installing java17"
-yum install -y java-17-openjdk-devel
-JDK_PATHS=$(compgen -G '/usr/lib/jvm/java-17-openjdk-*')
+#install java21
+echo "Installing java21"
+yum install -y java-21-openjdk-devel
+JDK_PATHS=$(compgen -G '/usr/lib/jvm/java-21-openjdk-*')
 export JAVA_HOME=${JDK_PATHS%$'\n'*}
 export PATH=$JAVA_HOME/bin:$PATH
 echo "Installed JAVA"

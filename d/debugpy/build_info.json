@@ -1,0 +1,19 @@
+{
+  "maintainer": "vrushanaik",
+  "package_name": "debugpy",
+  "github_url": "https://github.com/microsoft/debugpy.git",
+  "version": "v1.8.20",
+  "wheel_build": true,
+  "default_branch": "main",
+  "build_script": "debugpy_ubi_9.6.sh",
+  "package_dir": "d/debugpy",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v1.8.20": {
+    "build_script": "debugpy_ubi_9.6.sh"
+  },
+  "*": {
+    "build_script": "debugpy_ubi_9.6.sh"
+  }
+}

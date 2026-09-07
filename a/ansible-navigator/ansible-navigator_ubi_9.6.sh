@@ -41,7 +41,7 @@ if ! $PYTHON_CMD -c "import _curses" 2>/dev/null; then
     wget -q https://www.python.org/ftp/python/${PY_PATCH}/Python-${PY_PATCH}.tgz
     tar xf Python-${PY_PATCH}.tgz
     cd Python-${PY_PATCH}
-    ./configure --prefix=/usr/local --enable-optimizations
+    ./configure --prefix=/usr/local
     make -j$(nproc)
     make altinstall
     cd $CURRENT_DIR
@@ -67,6 +67,13 @@ echo "src/ansible_navigator/data/ansible-navigator.json" >> .gitignore
 
 python3.11 -m pip install --upgrade pip setuptools build tox tox-uv wheel pycparser
 export LD_LIBRARY_PATH=$(find / -name 'libonig.so.5*' 2>/dev/null | grep '/usr/local/lib' | head -n 1 | xargs dirname):$LD_LIBRARY_PATH
+
+# onigurumacffi has no pre-built ppc64le wheel and no pyproject.toml, so pip
+# falls back to the deprecated setup.py-install path which requires gcc on PATH.
+# Build a wheel now (while gcc-toolset-13 is on PATH) and install it so the
+# main package install does not attempt to compile it from source.
+python3.11 -m pip wheel --use-pep517 --no-deps -w /tmp/onigurumacffi_wheel onigurumacffi
+python3.11 -m pip install /tmp/onigurumacffi_wheel/onigurumacffi*.whl
 
 if ! python3.11 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Build_Failure---------------------"

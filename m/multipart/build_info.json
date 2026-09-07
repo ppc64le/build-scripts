@@ -9,7 +9,7 @@
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "docker_build": true,
   "use_non_root_user": "false",
-  "wheel_build": "true",
+  "wheel_build": true,
   "validate_build_script": true,
   "*": {
     "dir": "v1.2.1_ubi9",

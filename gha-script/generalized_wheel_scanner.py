@@ -54,16 +54,29 @@ class WheelCVEScanner:
         print(f"Scanning Wheel: {self.wheel_name}")
         print(f"{'='*70}\n")
 
-        # Step 0: Check grype availability — grype is installed by the workflow
-        # step before this script runs; if it is missing, grype-dependent lanes
-        # are skipped gracefully and Lane 3 (NVD) still runs.
+        # Step 0: Locate grype.
+        # Grype is installed in the workflow's install_scan_tools job and cached
+        # as scan-tools-bin/grype in the artifact.  The workspace is volume-mounted
+        # into this container at /home/tester/, so the binary is accessible at
+        # /home/tester/scan-tools-bin/grype — passed in via the GRYPE_BIN env var
+        # by build_wheels.py.  We honour GRYPE_BIN first; if unset or the path is
+        # not executable we fall back to shutil.which('grype') for local runs.
+        # If neither resolves, grype-dependent lanes are skipped gracefully and
+        # Lane 3 (NVD) still runs.
         print("Step 0: Checking grype availability...")
-        grype_available = bool(shutil.which('grype'))
-        if grype_available:
-            print("  grype is available.")
+        grype_bin = os.environ.get("GRYPE_BIN", "").strip()
+        if grype_bin and os.path.isfile(grype_bin) and os.access(grype_bin, os.X_OK):
+            grype_available = True
+            print(f"  grype found via GRYPE_BIN: {grype_bin}")
         else:
-            print("  WARNING: grype not found. Lane 1, Lane 2 and Phase 1 "
-                  "(wheel direct scan) will be skipped. Lane 3 (NVD) will still run.")
+            grype_bin = shutil.which('grype') or ""
+            grype_available = bool(grype_bin)
+            if grype_available:
+                print(f"  grype found on PATH: {grype_bin}")
+            else:
+                print("  WARNING: grype not found. Lane 1, Lane 2 and Phase 1 "
+                      "(wheel direct scan) will be skipped. Lane 3 (NVD) will still run.")
+        self.grype_bin = grype_bin            # used by _scan_wheel_direct / _scan_for_cves
         self.results['grype_available'] = grype_available
 
         # Step 1: Create system library inventory
@@ -471,7 +484,7 @@ class WheelCVEScanner:
         print(f"  Running grype on extracted wheel: {extract_dir}")
         try:
             result = subprocess.run(
-                ['grype', f'dir:{extract_dir}', '-o', 'json'],
+                [self.grype_bin, f'dir:{extract_dir}', '-o', 'json'],
                 capture_output=True, text=True, timeout=300
             )
             if result.returncode == 0:
@@ -512,7 +525,7 @@ class WheelCVEScanner:
 
         try:
             result = subprocess.run(
-                ['grype', 'dir:/', '-o', 'json'],
+                [self.grype_bin, 'dir:/', '-o', 'json'],
                 capture_output=True,
                 text=True,
                 timeout=300

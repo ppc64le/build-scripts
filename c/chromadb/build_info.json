@@ -1,22 +1,26 @@
 {
-  "maintainer": "afsanjar",
+  "maintainer": "Varsha Kumar",
   "package_name": "chromadb",
   "github_url": "https://github.com/chroma-core/chroma.git",
-  "version": "1.5.9",
+  "version": "latest",
   "wheel_build" : true,
   "package_dir": "c/chromadb",
   "default_branch": "main",
-  "build_script": "chromadb_1.5.9_ubi_9.6.sh",
+  "build_script": "chromadb_1.5.10_ubi_10.2.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "required_versions": {"Releases": ["*"],"Tags": ["latest"]},
   "1.0.20": {
     "build_script": "chromadb_1.0.20_ubi_9.6.sh"  
   },
   "1.5.9": {
     "build_script": "chromadb_1.5.9_ubi_9.6.sh"  
   },
+  "latest": {
+    "build_script": "chromadb_1.5.10_ubi_10.2.sh"
+  },
   "*": {
-    "build_script": "chromadb_1.5.9_ubi_9.6.sh"
+    "build_script": "chromadb_1.5.10_ubi_10.2.sh"
   }
 }

@@ -1,0 +1,85 @@
+FROM registry.access.redhat.com/ubi9/ubi
+
+# Set working directory
+WORKDIR /opensearch-build
+
+# Install system dependencies
+RUN yum install -y --allowerasing \
+    git \
+    gcc \
+    gcc-c++ \
+    gcc-gfortran \
+    make \
+    patch \
+    tar \
+    unzip \
+    zip \
+    which \
+    curl \
+    jq \
+    python3 \
+    python3-devel \
+    python3-pip \
+    bzip2-devel \
+    zlib-devel \
+    openssl-devel \
+    libffi-devel \
+    xz-devel \
+    rpm-build \
+    && yum clean all
+
+# Install yq v4 (required by assemble scripts)
+RUN curl -fsSL "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_ppc64le" \
+    -o /usr/local/bin/yq && chmod +x /usr/local/bin/yq
+
+# Install JDK 25.0.4 (Red_Hat-25.0.4.0.7-1) pinned so the bundled JDK in the
+# final OpenSearch image matches the expected runtime version.
+RUN yum install -y \
+    java-25-openjdk-devel && \
+    yum clean all
+
+# Set Java environment
+ENV JAVA_HOME=/usr/lib/jvm/java-25-openjdk
+ENV PATH=$JAVA_HOME/bin:$PATH
+ENV GRADLE_USER_HOME=/root/.gradle
+
+# Pre-cache all Gradle distributions used by 3.7.0 components to avoid
+# network timeouts during the build (each component's gradlew would otherwise
+# download its own distribution at build time).
+# Versions needed:
+#   9.4.1 - OpenSearch core, ml-commons, neural-search, k-NN, index-management
+#   9.5.0 - job-scheduler, security
+#   9.2.0 - common-utils
+RUN for version in 9.4.1 9.5.0 9.2.0; do \
+        mkdir -p /root/.gradle/wrapper/dists/gradle-${version}-all && \
+        curl -fsSL "https://services.gradle.org/distributions/gradle-${version}-all.zip" \
+            -o /tmp/gradle-${version}-all.zip && \
+        HASH=$(sha256sum /tmp/gradle-${version}-all.zip | cut -d' ' -f1) && \
+        DEST="/root/.gradle/wrapper/dists/gradle-${version}-all/${HASH}" && \
+        mkdir -p "${DEST}" && \
+        mv /tmp/gradle-${version}-all.zip "${DEST}/gradle-${version}-all.zip" && \
+        touch "${DEST}/gradle-${version}-all.zip.ok"; \
+    done
+
+# Install Maven
+RUN MAVEN_URL=$(curl -s https://maven.apache.org/download.cgi \
+        | grep -Eo '["\047].*.bin.tar.gz["\047]' | tr -d "\"'" | uniq | head -n 1) && \
+    mkdir -p /usr/local/apache-maven && \
+    curl -s "$MAVEN_URL" | tar xzf - --strip-components=1 -C /usr/local/apache-maven && \
+    ln -sfn /usr/local/apache-maven/bin/mvn /usr/local/bin/mvn
+
+# Install pipenv (pin setuptools+virtualenv to avoid packaging incompatibility with pipenv 2023.6.12)
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install --ignore-installed \
+        "setuptools==67.8.0" \
+        "virtualenv==20.24.5" \
+        "pipenv==2023.6.12"
+
+# Copy the build repo
+COPY . .
+
+# Pre-install Python dependencies
+RUN python3 -m pipenv install --deploy --ignore-pipfile
+
+# Set default command
+CMD ["/bin/bash"]

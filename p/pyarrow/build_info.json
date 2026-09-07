@@ -43,7 +43,11 @@
   "apache-arrow-22.0.0": {
     "build_script": "pyarrow_22.0.0_ubi_9.6.sh"
   },
+  "apache-arrow-23.0.1": {
+    "build_script": "pyarrow_23.0.1_ubi_8.10.sh"
+  },
   "*": {
     "build_script": "pyarrow_23.0.1_ubi_9.3.sh"
   }
 }
+

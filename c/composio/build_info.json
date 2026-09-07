@@ -10,6 +10,7 @@
    "wheel_build": true,
    "validate_build_script": true,
    "use_non_root_user": false,
+   "required_versions": {"Releases": ["*"],"Tags": ["*"]},
    "py@0.16.0":{
            "build_script": "composio_0.16.0_ubi_9.6.sh"
    },

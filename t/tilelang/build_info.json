@@ -1,0 +1,21 @@
+{
+    "maintainer":"Daniel-Schenker",
+    "package_name" : "tilelang",
+    "github_url":"https://github.com/tile-ai/tilelang",
+    "version": "v0.1.10",
+    "default_branch": "main",
+    "package_dir": "t/tilelang",
+    "build_script": "tilelang_0.1.10_ubi_10.2.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "wheel_build": true,
+    "required_versions": {"Releases": ["*"],"Tags": ["v0.1.10"]},
+    "auditwheel_exclude": [
+        "libtvm_ffi.so",
+        "libz3.so*"
+    ],
+    "*": {
+     "build_script":"tilelang_0.1.10_ubi_10.2.sh"
+   }
+}

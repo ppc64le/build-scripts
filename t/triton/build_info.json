@@ -1,0 +1,17 @@
+{
+    "maintainer":"Daniel-Schenker",
+    "package_name" : "triton",
+    "github_url":"https://github.com/triton-lang/triton",
+    "version": "v3.6.0",
+    "default_branch": "main",
+    "package_dir": "t/triton",
+    "build_script": "triton_3.6.0_ubi_10.2.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "wheel_build": true,
+    "required_versions":{"Releases": ["*"], "Tags": ["v3.6.0"]},
+    "*": {
+     "build_script":"triton_3.6.0_ubi_10.2.sh"
+   }
+}

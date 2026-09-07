@@ -4,7 +4,7 @@
   "github_url": "https://github.com/ansible/ansible-navigator.git",
   "version": "v25.9.0",
   "package_dir": "a/ansible-navigator",
-  "wheel_build" : "true",
+  "wheel_build" : true,
   "default_branch": "main",
   "build_script": "ansible-navigator_ubi_9.6.sh",
   "docker_build": false,
