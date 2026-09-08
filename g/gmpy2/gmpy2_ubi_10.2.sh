@@ -50,15 +50,7 @@ python3.14 -m pip install cython
 # Clone repository
 git clone "$PACKAGE_URL" "$PACKAGE_DIR"
 cd "$PACKAGE_DIR"
-
-if git rev-parse "${PACKAGE_VERSION}" &>/dev/null; then
-    git checkout "${PACKAGE_VERSION}"
-elif git rev-parse "v${PACKAGE_VERSION}" &>/dev/null; then
-    git checkout "v${PACKAGE_VERSION}"
-else
-    echo "ERROR: No git tag found for version '${PACKAGE_VERSION}'"
-    exit 1
-fi
+git checkout "${PACKAGE_VERSION}"
 
 # Install
 if ! python3.14 -m pip install --no-build-isolation .; then
