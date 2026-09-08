@@ -37,7 +37,7 @@ yum install -y python python-pip python-devel  gcc-toolset-15 gcc-toolset-15-bin
 python -m pip install --upgrade pip setuptools wheel build
 
 export PATH=/opt/rh/gcc-toolset-15/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-15/root/usr/lib64:$LD_LIBRARY_PATH
 gcc --version
 
 echo "**** Checking GCC version..."
