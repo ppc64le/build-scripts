@@ -64,7 +64,7 @@ for package in openblas lame opus libvpx ffmpeg pillow numpy==2.5.0; do
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
 done
 
-python3.14 -m pip install cython pytest
+python3.14 -m pip install "cython<3.2" pytest
 
 #installing openblas
 cd $CURRENT_DIR
