@@ -4,6 +4,7 @@
   "github_url": "https://github.com/langchain-ai/langchain",
   "version": "langchain==1.2.10",
   "wheel_build" : true,
+  "wheel_name": "langchain-classic",
   "default_branch": "master",
   "package_dir": "l/langchain",
   "build_script": "langchain_v1.2.10_ubi9.7.sh",

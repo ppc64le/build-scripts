@@ -65,6 +65,10 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
                # Set to "false" by pr-build.yaml to skip the CVE scan in PR builds.
                # Defaults to "true" (scan runs) when unset (currency-build.yaml).
                "ENABLE_CVE_SCAN": os.getenv("ENABLE_CVE_SCAN", "true"),
+               # COS key prefix used by post_process_wheel.py to look up existing wheels in COS. 
+               # Passed under distinct names to avoid colliding with any PACKAGE_NAME / VERSION variables already used inside the container.
+               "COS_PACKAGE_NAME": os.getenv("PACKAGE_NAME", ""),
+               "COS_VERSION": os.getenv("VERSION", ""),
             }
         )
         

@@ -71,9 +71,10 @@ jobs:
       ENABLE_SYFT: ${{ inputs.enable_syft }}
       ENABLE_GRYPE: ${{ inputs.enable_grype }}
     outputs:
-      script_ubi8:  ${{ steps.emit.outputs.script_ubi8 }}
-      script_ubi9:  ${{ steps.emit.outputs.script_ubi9 }}
-      script_ubi10: ${{ steps.emit.outputs.script_ubi10 }}
+      script_ubi8:           ${{ steps.emit.outputs.script_ubi8 }}
+      script_ubi9:           ${{ steps.emit.outputs.script_ubi9 }}
+      script_ubi10:          ${{ steps.emit.outputs.script_ubi10 }}
+      skip_python_versions:  ${{ steps.emit.outputs.skip_python_versions }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -106,6 +107,7 @@ jobs:
           echo "SCRIPT_UBI8=$SCRIPT_UBI8"
           echo "SCRIPT_UBI9=$SCRIPT_UBI9"
           echo "SCRIPT_UBI10=$SCRIPT_UBI10"
+          echo "SKIP_PYTHON_VERSIONS=$SKIP_PYTHON_VERSIONS"
           # Use multiline delimiter syntax so JSON double-quotes are not truncated
           {
             echo "script_ubi8<<__EOF__"
@@ -116,6 +118,9 @@ jobs:
             echo "__EOF__"
             echo "script_ubi10<<__EOF__"
             echo "$SCRIPT_UBI10"
+            echo "__EOF__"
+            echo "skip_python_versions<<__EOF__"
+            echo "$SKIP_PYTHON_VERSIONS"
             echo "__EOF__"
           } >> $GITHUB_OUTPUT
 
@@ -142,11 +147,12 @@ jobs:
 
   # ---------------------------------------------------------------------------
   # install_scan_tools: installs grype + fetches scancode-toolkit source ONCE.
-  # Skipped entirely when wheel_build=false.
+  # Runs when wheel_build=true (scancode needed for wheels) OR enable_grype=true
+  # (grype needed for source/image scanners).
   # ---------------------------------------------------------------------------
   install_scan_tools:
     needs: build_info
-    if: ${{ inputs.wheel_build == 'true' }}
+    if: ${{ inputs.wheel_build == 'true' || inputs.enable_grype == 'true' }}
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - name: Checkout code
@@ -363,7 +369,10 @@ jobs:
 
   wheel_build_ubi8_py311:
     needs: [build_info, install_scan_tools]
-    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi8 != '' }}
+    if: >-
+      ${{ inputs.wheel_build == 'true' &&
+          needs.build_info.outputs.script_ubi8 != '' &&
+          !contains(needs.build_info.outputs.skip_python_versions, '3.11') }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     env:
       PYTHON_VERSION: "3.11"
@@ -453,7 +462,10 @@ jobs:
 
   wheel_build_ubi8_py312:
     needs: [build_info, install_scan_tools]
-    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi8 != '' }}
+    if: >-
+      ${{ inputs.wheel_build == 'true' &&
+          needs.build_info.outputs.script_ubi8 != '' &&
+          !contains(needs.build_info.outputs.skip_python_versions, '3.12') }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     env:
       PYTHON_VERSION: "3.12"
@@ -543,7 +555,10 @@ jobs:
 
   wheel_build_ubi9_py310:
     needs: [build_info, install_scan_tools]
-    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    if: >-
+      ${{ inputs.wheel_build == 'true' &&
+          needs.build_info.outputs.script_ubi9 != '' &&
+          !contains(needs.build_info.outputs.skip_python_versions, '3.10') }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     env:
       PYTHON_VERSION: "3.10"
@@ -627,7 +642,10 @@ jobs:
 
   wheel_build_ubi9_py311:
     needs: [build_info, install_scan_tools]
-    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    if: >-
+      ${{ inputs.wheel_build == 'true' &&
+          needs.build_info.outputs.script_ubi9 != '' &&
+          !contains(needs.build_info.outputs.skip_python_versions, '3.11') }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     env:
       PYTHON_VERSION: "3.11"
@@ -711,7 +729,10 @@ jobs:
 
   wheel_build_ubi9_py312:
     needs: [build_info, install_scan_tools]
-    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    if: >-
+      ${{ inputs.wheel_build == 'true' &&
+          needs.build_info.outputs.script_ubi9 != '' &&
+          !contains(needs.build_info.outputs.skip_python_versions, '3.12') }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     env:
       PYTHON_VERSION: "3.12"
@@ -795,7 +816,10 @@ jobs:
 
   wheel_build_ubi9_py313:
     needs: [build_info, install_scan_tools]
-    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    if: >-
+      ${{ inputs.wheel_build == 'true' &&
+          needs.build_info.outputs.script_ubi9 != '' &&
+          !contains(needs.build_info.outputs.skip_python_versions, '3.13') }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     continue-on-error: true
     env:
@@ -880,7 +904,10 @@ jobs:
 
   wheel_build_ubi9_py314:
     needs: [build_info, install_scan_tools]
-    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi9 != '' }}
+    if: >-
+      ${{ inputs.wheel_build == 'true' &&
+          needs.build_info.outputs.script_ubi9 != '' &&
+          !contains(needs.build_info.outputs.skip_python_versions, '3.14') }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     continue-on-error: true
     env:
@@ -967,7 +994,10 @@ jobs:
 
   wheel_build_ubi10_py312:
     needs: [build_info, install_scan_tools]
-    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi10 != '' }}
+    if: >-
+      ${{ inputs.wheel_build == 'true' &&
+          needs.build_info.outputs.script_ubi10 != '' &&
+          !contains(needs.build_info.outputs.skip_python_versions, '3.12') }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     env:
       PYTHON_VERSION: "3.12"
@@ -1051,7 +1081,10 @@ jobs:
 
   wheel_build_ubi10_py313:
     needs: [build_info, install_scan_tools]
-    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi10 != '' }}
+    if: >-
+      ${{ inputs.wheel_build == 'true' &&
+          needs.build_info.outputs.script_ubi10 != '' &&
+          !contains(needs.build_info.outputs.skip_python_versions, '3.13') }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     continue-on-error: true
     env:
@@ -1136,7 +1169,10 @@ jobs:
 
   wheel_build_ubi10_py314:
     needs: [build_info, install_scan_tools]
-    if: ${{ inputs.wheel_build == 'true' && needs.build_info.outputs.script_ubi10 != '' }}
+    if: >-
+      ${{ inputs.wheel_build == 'true' &&
+          needs.build_info.outputs.script_ubi10 != '' &&
+          !contains(needs.build_info.outputs.skip_python_versions, '3.14') }}
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     continue-on-error: true
     env:
@@ -1371,7 +1407,7 @@ jobs:
   # Only runs when the corresponding build_ubiN succeeded and has a script.
   # ---------------------------------------------------------------------------
   source_scanner_ubi8:
-    needs: build_ubi8
+    needs: [build_ubi8, install_scan_tools]
     if: ${{ always() && inputs.validate_build_script == 'true' && needs.build_ubi8.result == 'success' }}
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
@@ -1436,7 +1472,7 @@ jobs:
           bash ./gha-script/upload-scripts/upload_file.sh source_scanner_ubi8.tar.gz
 
   source_scanner_ubi9:
-    needs: build_ubi9
+    needs: [build_ubi9, install_scan_tools]
     if: ${{ always() && inputs.validate_build_script == 'true' && needs.build_ubi9.result == 'success' }}
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
@@ -1501,7 +1537,7 @@ jobs:
           bash ./gha-script/upload-scripts/upload_file.sh source_scanner_ubi9.tar.gz
 
   source_scanner_ubi10:
-    needs: build_ubi10
+    needs: [build_ubi10, install_scan_tools]
     if: ${{ always() && inputs.validate_build_script == 'true' && needs.build_ubi10.result == 'success' }}
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:

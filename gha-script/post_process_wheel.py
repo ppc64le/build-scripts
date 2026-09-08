@@ -11,10 +11,10 @@ Main responsibilities:
 4. Update the wheel METADATA by injecting the classifier:
    "Classifier: Environment :: MetaData :: IBM Python Ecosystem"
 5. Determine the correct version suffix (+ppc64leN) by checking IBM COS:
-   - Compute SHA256 of the local wheel.
-   - Check if a wheel with the same name already exists in COS.
-   - If SHA matches → reuse suffix.
-   - If SHA differs → increment suffix (ppc64le1, ppc64le2, etc.).
+   - Check if the no-suffix wheel already exists in COS.
+   - If not found → first upload, no suffix added.
+   - If found and SHA matches → same build, no suffix added.
+   - If found and SHA differs → new build, resolve suffixed slot (ppc64le1, ppc64le2, etc.).
 6. Update the wheel version with the resolved suffix.
 7. Regenerate the RECORD file with updated hashes.
 8. Repack the wheel.
@@ -22,6 +22,9 @@ Main responsibilities:
 Execution Flow:
 Wheel Build → Auditwheel Repair → post_process_wheel.py → Upload to COS
 This script is executed by the CI pipeline through create_wheel_wrapper.sh.
+
+Requirements:
+    ibm-cos-sdk (provides ibm_boto3 and ibm_botocore)
 """
 
 import os
@@ -44,12 +47,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # COS configuration — only available in currency builds.
-# When absent, suffix resolution is skipped and PR_BUILD_FALLBACK_SUFFIX is used;
+# When absent, suffix resolution is skipped and no suffix is added to the wheel;
 # all other post-processing steps (license injection, classifier, RECORD) still run.
 COS_API_KEY = os.environ.get("GHA_CURRENCY_SERVICE_ID_API_KEY", "")
 COS_SERVICE_INSTANCE_ID = os.environ.get("GHA_CURRENCY_SERVICE_ID", "")
 COS_ENDPOINT = "https://s3.us.cloud-object-storage.appdomain.cloud"
 COS_BUCKET = "ose-power-artifacts-production"
+COS_PACKAGE_NAME = os.environ.get("COS_PACKAGE_NAME", "")
+COS_VERSION = os.environ.get("COS_VERSION", "")
 
 
 # License extraction utilities
@@ -404,7 +409,21 @@ def regenerate_record(extract_path, dist_info_dir):
         logger.exception(f"Failed to regenerate RECORD file → {e}")
 
 def resolve_suffix(client, package, version, wheel_name, wheel_sha256):
-    # Resolve a unique suffix for the wheel based on its name and local hash.
+    # Resolve the correct suffix for the wheel by checking IBM COS.
+    #
+    # Logic:
+    # Step 1 — Check the no-suffix wheel in COS (e.g. numpy-1.26.4-...-linux_ppc64le.whl):
+    #   - NOT FOUND              → return None        (first upload, publish clean)
+    #   - FOUND, SHA matches     → return None        (same wheel, publish clean)
+    #   - FOUND, SHA missing     → return None        (treat as match, publish clean)
+    #   - FOUND, SHA differs     → proceed to Step 2
+    #
+    # Step 2+ — Check suffixed slots ppc64le1, ppc64le2, ... in order:
+    #   - NOT FOUND              → return "ppc64leN"  (free slot, use it)
+    #   - FOUND, SHA matches     → return "ppc64leN"  (same wheel, reuse suffix)
+    #   - FOUND, SHA missing     → return "ppc64leN"  (treat as match, reuse suffix)
+    #   - FOUND, SHA differs     → increment N, repeat
+    #
     # When client is None (PR build — no COS credentials), skip COS lookup
     # and return None to signal that suffix addition should be skipped entirely.
     if client is None:
@@ -422,50 +441,86 @@ def resolve_suffix(client, package, version, wheel_name, wheel_sha256):
 
         pkg, ver = pkg_ver.rsplit("-", 1)
 
-        base_keys = [
-            f"{package}/v{version}",
-            f"{package}/{version}"
-        ]
+        # COS_PACKAGE_NAME and COS_VERSION are injected by build_wheels.py into the Docker container environment. 
+        # They match exactly what upload_wheel.sh uses:
+        # $PACKAGE_NAME/$VERSION — so the same COS key is used for both upload and lookup.
+        cos_prefix = f"{COS_PACKAGE_NAME}/{COS_VERSION}"
+        logger.info(f"Artifact path → {cos_prefix}")
 
-        n = 1
-        while True:
-            suffix = f"{BASE_SUFFIX}{n}"
-            candidate = f"{pkg}-{ver}+{suffix}-{remainder}.whl"
-            found = False
-            response = None
-            for base in base_keys:
-                cos_key = f"{base}/{candidate}"
-                logger.info(f"Checking COS object → {cos_key}")
-                try:
-                    response = client.head_object(
-                        Bucket=COS_BUCKET,
-                        Key=cos_key
-                    )
-                    found = True
-                    break
-                except Exception:
-                    pass
+        def head_object(candidate):
+            # Look up the candidate wheel under the resolved COS prefix.
+            cos_key = f"{cos_prefix}/{candidate}"
+            logger.info(f"Checking → {cos_key}")
+            try:
+                resp = client.head_object(Bucket=COS_BUCKET, Key=cos_key)
+                return True, resp
+            except Exception:
+                pass
+            return False, None
 
-            if not found:
-                return suffix
-
-            remote_sha = (
+        def get_remote_sha(response):
+            return (
                 response.get("Metadata", {}).get("sha256")
                 or response.get("Metadata", {}).get("Sha256")
             )
-            logger.info(f"Found existing object in COS with SHA256 → {remote_sha}")
-            logger.info(f"Comparing COS SHA={remote_sha} with build SHA={wheel_sha256}")
-            # CASE 1 - COS object exists but SHA metadata missing
+
+        # ── Step 1: check the no-suffix wheel ──────────────────────────────
+        no_suffix_candidate = f"{pkg}-{ver}-{remainder}.whl"
+        found, response = head_object(no_suffix_candidate)
+
+        if not found:
+            logger.info("Not found in COS → First upload, publishing without suffix.")
+            return None
+
+        remote_sha = get_remote_sha(response)
+        logger.info(f"Found in COS → Remote SHA: {remote_sha} | Local SHA: {wheel_sha256}")
+
+        if remote_sha is None:
+            # SHA metadata missing → treat as match, publish clean
+            logger.info("SHA metadata missing → Assuming match, no suffix needed.")
+            return None
+
+        if remote_sha.strip() == wheel_sha256.strip():
+            # SHA matches → same wheel, publish clean
+            logger.info("SHA match → Already published, no suffix needed.")
+            return None
+
+        # SHA differs → new build of same version, proceed to suffixed slots
+        logger.info("SHA mismatch → New build detected, resolving versioned suffix.")
+
+        # ── Step 2+: check ppc64le1, ppc64le2, ... ─────────────────────────
+        n = 1
+        while True:
+            suffix = f"{BASE_SUFFIX}{n}"
+            if "+" in ver:
+                ver_base, ver_local = ver.split("+", 1)
+                candidate = f"{pkg}-{ver_base}+{ver_local}{suffix}-{remainder}.whl"
+            else:
+                candidate = f"{pkg}-{ver}+{suffix}-{remainder}.whl"
+            found, response = head_object(candidate)
+
+            if not found:
+                # Free slot → use it
+                logger.info(f"Slot {suffix} is free → Assigning suffix {suffix}.")
+                return suffix
+
+            remote_sha = get_remote_sha(response)
+            logger.info(f"Slot {suffix} occupied → Remote SHA: {remote_sha} | Local SHA: {wheel_sha256}")
+
             if remote_sha is None:
-                logger.info("COS SHA metadata missing → using suffix ppc64le1")
+                # SHA metadata missing → treat as match, reuse this suffix
+                logger.info(f"SHA metadata missing for slot {suffix} → Assuming match, reusing suffix {suffix}.")
                 return suffix
-            # CASE 2 - SHA matches
-            if remote_sha and remote_sha.strip() == wheel_sha256.strip():
-                logger.info(f"SHA match → reusing suffix {suffix}")
+
+            if remote_sha.strip() == wheel_sha256.strip():
+                # SHA matches → same wheel, reuse this suffix
+                logger.info(f"SHA match → Reusing suffix {suffix}.")
                 return suffix
-            # CASE 3 - SHA mismatch → try next suffix
-            logger.info(f"SHA mismatch → trying next suffix")
+
+            # SHA differs → try next suffix
+            logger.info(f"SHA mismatch → Slot {suffix} taken, trying next suffix.")
             n += 1
+
     except Exception as e:
         logger.exception(f"Suffix resolution failed → {e}")
         sys.exit(1)
@@ -501,7 +556,7 @@ def inject_classifier(dist_info):
         logger.error(f"Failed to inject classifier → {e}")
 
 # Main processing function
-def process_wheel(wheel_path, suffix):
+def process_wheel(wheel_path, suffix, is_pr_build=False):
     try:
         logger.info(f"Processing wheel: {wheel_path} with suffix: {suffix}")
         # os.path.dirname of a bare filename returns ""; normalise to "." so
@@ -554,7 +609,9 @@ def process_wheel(wheel_path, suffix):
                 if existing_license_files:
                     update_record(dist_info, existing_license_files)
 
-                # Version suffix processing — skipped in PR builds (suffix is None).
+                # Version suffix processing.
+                # suffix is None either because no suffix is needed (first upload or SHA match)
+                # or because COS credentials are absent (PR build).
                 if suffix is not None:
                     old_version = read_version_from_metadata(dist_info)
 
@@ -566,8 +623,10 @@ def process_wheel(wheel_path, suffix):
                     update_metadata_version(dist_info, new_version)
                     dist_info = rename_dist_info_dir(extract_path, old_version, new_version)
                     regenerate_record(extract_path, dist_info)
+                elif is_pr_build:
+                    logger.info("Suffix addition skipped — PR build, no COS credentials.")
                 else:
-                    logger.info("Suffix addition skipped (PR build — no COS credentials).")
+                    logger.info("No suffix required — wheel will be published as-is.")
 
             # Pack wheel
             subprocess.run(["wheel", "pack", extract_path, "-d", wheel_dir], check=True)
@@ -622,15 +681,17 @@ def main():
 
     # Create COS client only when credentials are available (currency builds).
     # In PR builds credentials are absent — client stays None and resolve_suffix
-    # will return PR_BUILD_FALLBACK_SUFFIX without contacting COS.
+    # returns None without contacting COS.
     if COS_API_KEY and COS_SERVICE_INSTANCE_ID:
         client = create_cos_client()
         if client is None:
             logger.error("COS client creation failed")
             sys.exit(1)
+        is_pr_build = False
     else:
         logger.info("COS credentials not set — running in PR build mode (suffix resolution skipped)")
         client = None
+        is_pr_build = True
 
     suffix = resolve_suffix(
         client,
@@ -640,7 +701,7 @@ def main():
         wheel_sha256
     )
 
-    new_wheel = process_wheel(wheel_path, suffix)
+    new_wheel = process_wheel(wheel_path, suffix, is_pr_build)
     if not new_wheel:
         logger.error("Wheel processing failed")
         sys.exit(1)

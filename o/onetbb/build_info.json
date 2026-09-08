@@ -1,8 +1,8 @@
 {
-    "maintainer": "Anumala Rajesh",
+    "maintainer": "SakshiJain0302",
     "package_name": "oneTBB",
     "github_url": "https://github.com/uxlfoundation/oneTBB",
-    "version": "v2021.8.0",
+    "version": "v2023.1.0",
     "default_branch": "master",
     "package_dir": "o/onetbb",
     "build_script": "onetbb_ubi_9.3.sh",
@@ -16,5 +16,11 @@
             "PATCH":"https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/onetbb/tbb.patch"
         },
         "build_script": "onetbb_ubi_9.3.sh"
+    },
+    "v2023.1.0":{
+        "patches":{
+            "PATCH":"https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/onetbb/tbb_ubi_10.2.patch"
+        },
+        "build_script":"onetbb_ubi_10.2.sh"
     }
  }

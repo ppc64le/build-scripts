@@ -278,6 +278,13 @@ if jq -e 'has("auditwheel_exclude")' "$config_file" >/dev/null; then
   AUDITWHEEL_EXCLUDE=$(jq -r '.auditwheel_exclude | join(" ")' "$config_file")
 fi
 
+# Extract optional skip_python_versions list (e.g. ["3.12","3.14"]).
+# When absent the variable stays empty and all Python versions are built.
+SKIP_PYTHON_VERSIONS=""
+if jq -e 'has("skip_python_versions")' "$config_file" >/dev/null; then
+  SKIP_PYTHON_VERSIONS=$(jq -r '.skip_python_versions | join(",")' "$config_file")
+fi
+
 # ---------------------------------------------------------------------------
 # Write variable.sh
 # JSON objects are single-quote-wrapped so embedded double-quotes survive.
@@ -291,6 +298,7 @@ echo "export BASENAME=\"$basename\""                             >> $CUR_DIR/var
 echo "export NON_ROOT_BUILD=\"$nonRootBuild\""                   >> $CUR_DIR/variable.sh
 echo "export TESTED_ON=\"$tested_on\""                           >> $CUR_DIR/variable.sh
 echo "export AUDITWHEEL_EXCLUDE=\"$AUDITWHEEL_EXCLUDE\""         >> $CUR_DIR/variable.sh
+echo "export SKIP_PYTHON_VERSIONS=\"$SKIP_PYTHON_VERSIONS\""     >> $CUR_DIR/variable.sh
 # Full array  -  kept for any downstream consumer that still needs it
 echo "export BUILD_SCRIPTS_JSON='$BUILD_SCRIPTS_JSON'"       >> $CUR_DIR/variable.sh
 # Per-UBI-major named exports  -  empty string when that UBI version has no script

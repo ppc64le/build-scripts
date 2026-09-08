@@ -1,18 +1,21 @@
 {
-	"maintainer": "shivansh-ibm",
+	"maintainer": "tejasBadjateIBM",
 	"package_name": "jpype",
 	"github_url": "https://github.com/jpype-project/jpype.git",
-	"version": "v1.7.0",
+	"version": "v1.7.1",
 	"default_branch": "master",
-	"build_script": "jpype_ubi_9.3.sh",
+	"build_script": "jpype_ubi_10.2.sh",
 	"package_dir": "j/jpype",
 	"docker_build": false,
 	"validate_build_script": true,
 	"wheel_build" : true,
 	"use_non_root_user": false,
 	"wheel_name": "jpype1",
-	"*": {
+	"v1.7.0": {
 	   "build_script": "jpype_ubi_9.3.sh"
+	},
+	"*" : {
+		"build_script" : "jpype_ubi_10.2.sh"
 	}
 }
 

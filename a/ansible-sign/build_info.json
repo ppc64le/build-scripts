@@ -5,7 +5,7 @@
   "version": "v0.1.2",
   "default_branch": "main",
   "package_dir": "a/ansible-sign",
-  "wheel_build" : "true",
+  "wheel_build" : true,
   "build_script": "ansible-sign_ubi_9.6.sh",
   "docker_build": false,
   "validate_build_script": true,
