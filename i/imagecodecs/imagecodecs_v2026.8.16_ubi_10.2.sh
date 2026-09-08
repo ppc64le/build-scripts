@@ -250,10 +250,10 @@ git clone --branch v1.5.7 https://github.com/facebook/zstd.git
 cd zstd && make -j$(nproc) && make install
 cd ..
 
-# hdf5 1.14.3
-wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.3/src/hdf5-1.14.3.tar.gz
-tar -xf hdf5-1.14.3.tar.gz
-cd hdf5-1.14.3
+# hdf5 1.12.1
+wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.12/hdf5-1.12.1/src/hdf5-1.12.1.tar.gz
+tar -xf hdf5-1.12.1.tar.gz
+cd hdf5-1.12.1
 ./configure && make -j$(nproc) && make install
 cd ..
 
