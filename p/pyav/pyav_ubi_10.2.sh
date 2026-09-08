@@ -64,7 +64,7 @@ for package in openblas lame opus libvpx ffmpeg pillow numpy==2.5.0; do
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
 done
 
-python3.14 -m pip install "cython<3.2" pytest
+python3.14 -m pip install cython pytest
 
 #installing openblas
 cd $CURRENT_DIR
@@ -145,7 +145,6 @@ export PKG_CONFIG_PATH=${LIBVPX_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion vpx
 echo "-----------------------------------------------------Installed libvpx------------------------------------------------"
 
-
 #installing lame
 cd $CURRENT_DIR
 wget https://downloads.sourceforge.net/sourceforge/lame/lame-4.0.tar.gz
@@ -205,37 +204,36 @@ echo "-----------------------------------------------------Installed opus-------
 cd $CURRENT_DIR
 git clone https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
-git checkout n7.1
 
-# Helper function to compare versions (moving this up so FFmpeg can use it)
-# version_ge() {
-#     [ "$(printf '%s\n' "$2" "$1" | sort -V | head -n1)" = "$2" ]
-# }
+#Helper function to compare versions (moving this up so FFmpeg can use it)
+version_ge() {
+    [ "$(printf '%s\n' "$2" "$1" | sort -V | head -n1)" = "$2" ]
+}
 
 # Strip the 'v' from PACKAGE_VERSION for clean comparison
-# VERSION_STR="${PACKAGE_VERSION#v}"
+VERSION_STR="${PACKAGE_VERSION#v}"
 
 # Conditionally checkout FFmpeg based on PyAV version
-# if version_ge "$VERSION_STR" "17.0.0"; then
-#     echo "PyAV version $PACKAGE_VERSION requires FFmpeg 8.0+. Checking out n8.0.1..."
-#     git checkout n8.0.1
-# else
-#     echo "PyAV version $PACKAGE_VERSION requires legacy FFmpeg. Checking out n7.1..."
-#     git checkout n7.1
-# fi
+if version_ge "$VERSION_STR" "17.0.0"; then
+    echo "PyAV version $PACKAGE_VERSION requires FFmpeg 8.0+. Checking out n8.0.1..."
+    git checkout n9.0.1
+else
+    echo "PyAV version $PACKAGE_VERSION requires legacy FFmpeg. Checking out n7.1..."
+    git checkout n7.1
+fi
 
 git submodule update --init
 
 yum install -y gmp-devel freetype-devel openssl-devel
 
 # # Set version-specific FFmpeg configure flags
-# if version_ge "$VERSION_STR" "17.0.0"; then
-#     echo "Applying FFmpeg 8.0 build flags..."
-#     FFMPEG_POSTPROC_FLAG=""
-# else
-echo "Applying FFmpeg 7.1 build flags..."
-FFMPEG_POSTPROC_FLAG="--enable-postproc --enable-hardcoded-tables"
-# fi
+if version_ge "$VERSION_STR" "17.0.0"; then
+    echo "Applying FFmpeg 9.0 build flags..."
+    FFMPEG_POSTPROC_FLAG=""
+else
+    echo "Applying FFmpeg 7.1 build flags..."
+    FFMPEG_POSTPROC_FLAG="--enable-postproc --enable-hardcoded-tables"
+fi
 
 export CPU_COUNT=$(nproc)
 unset CFLAGS
