@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : vllm
-# Version       : v0.24.0
+# Version       : v0.28.0
 # Source repo   : https://github.com/vllm-project/vllm
 # Tested on     : UBI 10 (ppc64le)
 # Language      : Python, C++, CUDA/HIP
@@ -70,13 +70,15 @@ dnf install -y \
     libjpeg-devel    \
     openblas-devel   \
     cmake            \
-    libdrm-devel
+    libdrm-devel     \
+    libomp           \
+    patch
 
 PYTHON_BIN="/usr/bin/python3.13"
 GCC_TOOLSET_BIN="/opt/rh/gcc-toolset-15/root/usr/bin"
 VLLM_REPO_URL="https://github.com/vllm-project/vllm.git"
 VLLM_SRC_DIR="$PWD/vllm"
-VLLM_VERSION="v0.24.0"
+VLLM_VERSION="v0.28.0"
 VENV_DIR="$PWD/vllm-venv"
 ROCM_PATH="/opt/rocm"
 ROCM_REPO_URL="https://public.dhe.ibm.com/software/server/POWER/Linux/AMD/ROCm/RHEL/10/ppc64le/"
@@ -84,6 +86,7 @@ TORCH_WHEEL_DIR="$PWD/torch-wheels"
 EXTRA_WHEEL_DIR="$PWD/extra-wheels"
 OUTPUT_DIR=""          # resolved to ${VLLM_SRC_DIR}/../vllm-wheels after arg parsing
 SKIP_CLONE=0
+IBM_WHEEL_INDEX="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 
 die() {
     echo "ERROR: $*" >&2
@@ -575,17 +578,21 @@ install_z3_and_tilelang_wheels() {
 
     python -m pip install "$z3_wheel"
 
+    # Install apache-tvm-ffi and torch-c-dlpack-ext from the IBM wheel index
+    # before tilelang so that pre-built ppc64le wheels are used.  tilelang
+    # declares these as dependencies; installing them explicitly here prevents
+    # pip from attempting a source build during the tilelang install step.
+    echo "Installing apache-tvm-ffi and torch-c-dlpack-ext from IBM wheel index..."
+    python -m pip install \
+        apache-tvm-ffi \
+        torch-c-dlpack-ext \
+        --index-url "$IBM_WHEEL_INDEX"
+
     echo "Installing tilelang wheel:"
     echo "  $tilelang_wheel"
 
     # tilelang is installed with --no-build-isolation so that pip reuses the
     # already-installed torch in this venv rather than downloading a fresh copy.
-    # With --no-build-isolation pip does not create an isolated build environment,
-    # so any build-time deps that tilelang's transitive dependencies (e.g.
-    # apache-tvm-ffi) require must already be present in the venv.
-    # apache-tvm-ffi build-system.requires (from its pyproject.toml):
-    #   scikit-build-core>=0.10.0, cython>=3.2.8, setuptools-scm
-    python -m pip install cmake ninja "scikit-build-core[pyproject]>=0.10.0" "cython>=3.2.8" setuptools-scm
     python -m pip install "$tilelang_wheel" --no-build-isolation
 
     echo "Installed z3-solver and tilelang packages:"
@@ -601,7 +608,7 @@ install_opencv_and_grpcio() {
         --prefer-binary \
         opencv-python-headless==4.13.0.92 \
         grpcio \
-        --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+        --extra-index-url="$IBM_WHEEL_INDEX"
 }
 
 install_extra_dependencies() {
@@ -693,8 +700,6 @@ PY
     esac
 }
 
-IBM_WHEEL_INDEX="https://wheels.developerfirst.ibm.com/ppc64le/linux"
-
 install_ibm_wheel_packages() {
     echo "Installing sentencepiece from IBM wheel index..."
     python -m pip install sentencepiece --index-url "$IBM_WHEEL_INDEX"
@@ -720,7 +725,7 @@ build_vllm_wheel() {
     ls -lh dist/*.whl
 
     mkdir -p "$OUTPUT_DIR"
-    find dist -maxdepth 1 -name "vllm-*.whl" | while read -r whl; do
+    find dist -maxdepth 1 -name "vllm*.whl" | while read -r whl; do
         cp "$whl" "$OUTPUT_DIR/"
     done
     echo "vLLM wheel copied to $OUTPUT_DIR"
