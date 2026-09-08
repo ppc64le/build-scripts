@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : opencv-python-headless
-# Version          : v5.0.0.93
+# Version          : 5.0.0.93
 # Source repo      : https://github.com/opencv/opencv-python.git
 # Tested on        : UBI:10.2
 # Language         : Python
@@ -23,7 +23,7 @@ set -e
 PACKAGE_NAME=opencv-python-headless
 PACKAGE_VERSION=${1:-93}
 # The git tag is the last dot-separated component: 5.0.0.93 -> 93
-GIT_TAG=${1:-93}
+GIT_TAG="${PACKAGE_VERSION##*.}"
 PACKAGE_URL=https://github.com/opencv/opencv-python
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=opencv-python
@@ -73,17 +73,9 @@ ranlib --version | head -1
 # -----------------------------------------------------------------------------
 
 python3.14 -m pip install --upgrade pip wheel
-python3.14 -m pip install --no-cache-dir "setuptools<70.0.0"
+python3.14 -m pip install --no-cache-dir setuptools "numpy==2.5.0"
 
 python3.14 -m pip install cython pytest scikit-build build wheel cmake ninja
-
-# -----------------------------------------------------------------------------
-# NumPy
-# -----------------------------------------------------------------------------
-
-NUMPY_VERSION="2.5.0"
-
-python3.14 -m pip install "numpy==${NUMPY_VERSION}" setuptools
 
 # -----------------------------------------------------------------------------
 # Resolve OpenBLAS paths
