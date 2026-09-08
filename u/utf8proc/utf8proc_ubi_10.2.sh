@@ -105,6 +105,10 @@ test -f "${SITE_PACKAGES}/utf8proc/include/utf8proc.h" || {
     echo "ERROR: utf8proc.h not found"
     exit 1
 }
+ls ${SITE_PACKAGES}/utf8proc
+ls ${SITE_PACKAGES}/utf8proc/lib
+ls ${SITE_PACKAGES}/utf8proc/lib64
+ls ${SITE_PACKAGES}/utf8proc/include 
 
 test -f "${SITE_PACKAGES}/utf8proc/lib64/libutf8proc.so" || {
     echo "ERROR: libutf8proc.so not found"
