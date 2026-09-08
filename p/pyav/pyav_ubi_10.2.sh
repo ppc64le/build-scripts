@@ -190,7 +190,7 @@ echo "-----------------------------------------------------Installed lame-------
 cd $CURRENT_DIR
 git clone https://github.com/xiph/opus
 cd opus
-git checkout v1.3.1
+git checkout  v1.5.2
 yum install -y autoconf automake libtool
 ./autogen.sh
 ./configure --prefix=$OPUS_PREFIX
@@ -205,36 +205,37 @@ echo "-----------------------------------------------------Installed opus-------
 cd $CURRENT_DIR
 git clone https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
+git checkout n7.1
 
 # Helper function to compare versions (moving this up so FFmpeg can use it)
-version_ge() {
-    [ "$(printf '%s\n' "$2" "$1" | sort -V | head -n1)" = "$2" ]
-}
+# version_ge() {
+#     [ "$(printf '%s\n' "$2" "$1" | sort -V | head -n1)" = "$2" ]
+# }
 
 # Strip the 'v' from PACKAGE_VERSION for clean comparison
-VERSION_STR="${PACKAGE_VERSION#v}"
+# VERSION_STR="${PACKAGE_VERSION#v}"
 
 # Conditionally checkout FFmpeg based on PyAV version
-if version_ge "$VERSION_STR" "17.0.0"; then
-    echo "PyAV version $PACKAGE_VERSION requires FFmpeg 8.0+. Checking out n8.0.1..."
-    git checkout n8.0.1
-else
-    echo "PyAV version $PACKAGE_VERSION requires legacy FFmpeg. Checking out n7.1..."
-    git checkout n7.1
-fi
+# if version_ge "$VERSION_STR" "17.0.0"; then
+#     echo "PyAV version $PACKAGE_VERSION requires FFmpeg 8.0+. Checking out n8.0.1..."
+#     git checkout n8.0.1
+# else
+#     echo "PyAV version $PACKAGE_VERSION requires legacy FFmpeg. Checking out n7.1..."
+#     git checkout n7.1
+# fi
 
 git submodule update --init
 
 yum install -y gmp-devel freetype-devel openssl-devel
 
-# Set version-specific FFmpeg configure flags
-if version_ge "$VERSION_STR" "17.0.0"; then
-    echo "Applying FFmpeg 8.0 build flags..."
-    FFMPEG_POSTPROC_FLAG=""
-else
-    echo "Applying FFmpeg 7.1 build flags..."
-    FFMPEG_POSTPROC_FLAG="--enable-postproc --enable-hardcoded-tables"
-fi
+# # Set version-specific FFmpeg configure flags
+# if version_ge "$VERSION_STR" "17.0.0"; then
+#     echo "Applying FFmpeg 8.0 build flags..."
+#     FFMPEG_POSTPROC_FLAG=""
+# else
+echo "Applying FFmpeg 7.1 build flags..."
+FFMPEG_POSTPROC_FLAG="--enable-postproc --enable-hardcoded-tables"
+# fi
 
 export CPU_COUNT=$(nproc)
 unset CFLAGS
@@ -314,7 +315,7 @@ echo "-----------------------------------------------------Installed ffmpeg-----
 cd $CURRENT_DIR
 git clone https://github.com/python-pillow/Pillow
 cd Pillow
-git checkout 11.1.0
+git checkout 12.3.0
 
 yum install -y libjpeg-turbo-devel
 git submodule update --init
