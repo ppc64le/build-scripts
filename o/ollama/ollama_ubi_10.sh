@@ -4,7 +4,7 @@
 # Package         : Ollama (Power10 optimized)
 # Version         : v0.33.3
 # Source repo     : https://github.com/ollama/ollama
-# Tested on       : UBI:9.6
+# Tested on       : UBI:10
 # Language        : Go, C, Python
 # Ci-Check        : True
 # Script License  : Apache License, Version 2 or later
@@ -32,7 +32,7 @@ SCRIPT_PATH=$(dirname $(realpath $0))
 echo "------------------------Installing dependencies-------------------"
 
 # install core dependencies
-yum install -y python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils wget patch
+yum install -y python python-pip python-devel  gcc-toolset-15 gcc-toolset-15-binutils gcc-toolset-15-binutils-devel gcc-toolset-15-gcc-c++ git make cmake binutils wget patch
 
 python -m pip install --upgrade pip setuptools wheel build
 
