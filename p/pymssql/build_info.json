@@ -26,6 +26,9 @@
     "build_script":"pymssql_2.3.13_ubi_10.2.sh"
   },
   "*":{
-    "build_script":"pymssql_2.3.13_ubi_10.2.sh"
+    "build_script": [
+      "pymssql_2.3.13_ubi_10.2.sh",
+      "pymssql_2.3.11_ubi_9.6.sh"
+    ]
   }
 }
