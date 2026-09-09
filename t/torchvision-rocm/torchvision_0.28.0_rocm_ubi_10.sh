@@ -255,7 +255,7 @@ fi
 # ---------------------------------------------------------------------------
 # Apply patches
 # ---------------------------------------------------------------------------
-PATCH_BASE_URL=${PATCH_BASE_URL:-"https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision"}
+PATCH_BASE_URL=${PATCH_BASE_URL:-"https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision-rocm"}
 
 # License exclusion patch — required; removes SWAG CC-BY-NC-4.0 licensed
 # models (regnet.py, vision_transformer SWAG weights) from the wheel.
