@@ -1,15 +1,16 @@
-#Copyright OpenSearch Contributors
+# Copyright OpenSearch Contributors
 # SPDX-License-Identifier: Apache-2.0
 #
-# Dockerfile for building an OpenSearch image using UBI9 instead of amazonlinux.
-# It assumes that the working directory contains these files: an OpenSearch tarball (opensearch.tgz), log4j2.properties, opensearch.yml, opensearch-docker-entrypoint.sh, opensearch-onetime-setup.sh, opensearch-build.patch‎ and the snapshots of the plugins required .
+# Dockerfile for building an OpenSearch image using UBI9 for ppc64le / OCP compatibility.
+# It assumes that the working directory contains these files: an OpenSearch tarball (opensearch-ppc64le.tgz),
+# log4j2.properties, opensearch.yml, opensearch-docker-entrypoint.sh, opensearch-onetime-setup.sh, and plugin zips.
+#
 # Build arguments:
 #   VERSION: Required. Used to label the image.
-#   BUILD_DATE: Required. Used to label the image. Should be in the form 'yyyy-mm-ddThh:mm:ssZ', i.e. a date-time from https://tools.ietf.org/html/rfc3339. The timestamp must be in UTC.
+#   BUILD_DATE: Required. Used to label the image (e.g. 'yyyy-mm-ddThh:mm:ssZ').
 #   UID: Optional. Specify the opensearch userid. Defaults to 1000.
 #   GID: Optional. Specify the opensearch groupid. Defaults to 1000.
 #   OPENSEARCH_HOME: Optional. Specify the opensearch root directory. Defaults to /usr/share/opensearch.
-#
 
 ########################### Stage 0 ########################
 FROM registry.access.redhat.com/ubi9:latest AS linux_stage_0
@@ -23,20 +24,19 @@ ARG OPENSEARCH_PATH_CONF=$OPENSEARCH_HOME/config
 ARG SECURITY_PLUGIN_DIR=$OPENSEARCH_HOME/plugins/opensearch-security
 ARG PERFORMANCE_ANALYZER_PLUGIN_CONFIG_DIR=$OPENSEARCH_PATH_CONF/opensearch-performance-analyzer
 
-# Update packages
-# Install the tools we need: tar and gzip to unpack the OpenSearch tarball, and shadow-utils to give us `groupadd` and `useradd`.
-# Install which to allow running of securityadmin.sh
-RUN dnf update -y && dnf install -y tar gzip shadow-utils which && dnf clean all
+# Update packages and install required extraction/user tools
+RUN dnf upgrade -y curl-minimal libcurl-minimal libpng && \
+    dnf install -y tar gzip shadow-utils which openssl && \
+    dnf clean all
 
-# Create an opensearch user, group
-# OpenShift compatibility: Add user to root group (GID 0) for random UID support
+# Create an opensearch user and group, add to GID 0 (root) for OpenShift arbitrary UID compatibility
 RUN groupadd -g $GID opensearch && \
     adduser -u $UID -g $GID -G 0 -d $OPENSEARCH_HOME opensearch && \
-    mkdir $TEMP_DIR
+    mkdir -p $TEMP_DIR $OPENSEARCH_HOME
 
-# Prepare working directory
-# Copy artifacts and configurations to corresponding directories
+# Prepare working directory and copy artifacts
 COPY * $TEMP_DIR/
+COPY plugin-zips $TEMP_DIR/plugin-zips/
 RUN ls -l $TEMP_DIR && \
     tar -xzpf /tmp/opensearch/opensearch-ppc64le.tgz -C $OPENSEARCH_HOME --strip-components=1 && \
     MAJOR_VERSION_ENTRYPOINT=`echo $VERSION | cut -d. -f1` && \
@@ -48,47 +48,39 @@ RUN ls -l $TEMP_DIR && \
     cp -v $TEMP_DIR/opensearch-docker-entrypoint-$MAJOR_VERSION_ENTRYPOINT.x.sh $OPENSEARCH_HOME/opensearch-docker-entrypoint.sh && \
     cp -v $TEMP_DIR/opensearch-onetime-setup.sh $OPENSEARCH_HOME/ && \
     cp -v $TEMP_DIR/log4j2.properties $TEMP_DIR/opensearch.yml $OPENSEARCH_PATH_CONF/ && \
+    mkdir -p $OPENSEARCH_HOME/plugin-zips && \
+    (cp -v $TEMP_DIR/plugin-zips/*.zip $OPENSEARCH_HOME/plugin-zips/ 2>/dev/null || true) && \
     ls -l $OPENSEARCH_HOME && \
     rm -rf $TEMP_DIR
 
 
 ########################### Stage 1 ########################
-# Copy working directory to the actual release docker images
 FROM registry.access.redhat.com/ubi9:latest
 
 ARG UID=1000
 ARG GID=1000
 ARG OPENSEARCH_HOME=/usr/share/opensearch
 
-# Update packages
-# Install the tools we need: tar and gzip to unpack the OpenSearch tarball, and shadow-utils to give us `groupadd` and `useradd`.
-# Install which to allow running of securityadmin.sh
-RUN dnf update -y && dnf install -y tar gzip shadow-utils which && dnf clean all
+# Install tools, OpenSSL for certificate generation, and Java 25 OpenJDK
+RUN dnf upgrade -y curl-minimal libcurl-minimal libpng && \
+    dnf install -y tar gzip shadow-utils which openssl \
+    java-25-openjdk \
+    java-25-openjdk-devel \
+    java-25-openjdk-headless \
+    java-25-openjdk-crypto-adapter && \
+    dnf clean all
 
-# Create an opensearch user, group
-RUN groupadd -g $GID opensearch && \
-    adduser -u $UID -g $GID -d $OPENSEARCH_HOME opensearch
-
-# Copy from Stage0
-COPY --from=linux_stage_0 --chown=$UID:$GID $OPENSEARCH_HOME $OPENSEARCH_HOME
-WORKDIR $OPENSEARCH_HOME
-
-RUN yum install -y \
-    java-25-openjdk-devel && \
-    yum clean all
-
+# Point JAVA_HOME and PATH to the system installed OpenJDK (ppc64le has no bundled JDK)
 ENV JAVA_HOME=/usr/lib/jvm/java-25-openjdk
-ENV PATH=$JAVA_HOME/bin:$PATH
-ENV GRADLE_USER_HOME=/root/.gradle
+ENV PATH=$OPENSEARCH_HOME/bin:$JAVA_HOME/bin:$PATH
 
-# Set $JAVA_HOME
-RUN echo "export JAVA_HOME=$OPENSEARCH_HOME/jdk" >> /etc/profile.d/java_home.sh && \
-    echo "export PATH=\$PATH:\$JAVA_HOME/bin" >> /etc/profile.d/java_home.sh && \
-    ls -l $OPENSEARCH_HOME
+# Create opensearch user and add to root group (GID 0) for OpenShift arbitrary UID compatibility
+RUN groupadd -g $GID opensearch && \
+    adduser -u $UID -g $GID -G 0 -d $OPENSEARCH_HOME opensearch
 
-
-ENV JAVA_HOME=$OPENSEARCH_HOME/jdk
-ENV PATH=$PATH:$JAVA_HOME/bin:$OPENSEARCH_HOME/bin
+# Copy unpacked OpenSearch tree from Stage 0
+COPY --from=linux_stage_0 --chown=$UID:0 $OPENSEARCH_HOME $OPENSEARCH_HOME
+WORKDIR $OPENSEARCH_HOME
 
 # Add k-NN lib directory to library loading path variable
 ENV LD_LIBRARY_PATH="$OPENSEARCH_HOME/plugins/opensearch-knn/lib"
@@ -96,32 +88,30 @@ ENV LD_LIBRARY_PATH="$OPENSEARCH_HOME/plugins/opensearch-knn/lib"
 # Disable FIPS approved-only mode to allow standard passwords
 ENV OPENSEARCH_JAVA_OPTS="-Dorg.bouncycastle.fips.approved_only=false"
 
-# OpenShift restricted-v2 compatibility: Fix ownership and permissions for random UID
-# COPY --chown may not work correctly, so explicitly set ownership and permissions
+# Run setup scripts
+ARG DISABLE_INSTALL_DEMO_CONFIG=true
+ARG DISABLE_SECURITY_PLUGIN=false
+RUN ./opensearch-onetime-setup.sh
+
+# OpenShift restricted-v2 compatibility:
+# Set full group ownership (GID 0) and permissions AFTER all setup scripts finish
 RUN chown -R $UID:0 $OPENSEARCH_HOME && \
     chmod -R g+rwX $OPENSEARCH_HOME && \
     find $OPENSEARCH_HOME -type d -exec chmod g+x {} \; && \
     chmod g+rwX $OPENSEARCH_HOME/opensearch-docker-entrypoint.sh && \
     chmod g+rwX $OPENSEARCH_HOME/opensearch-onetime-setup.sh
 
-# Change user
+# Change to unprivileged user
 USER $UID
 
-# Setup OpenSearch
-# Disable security demo installation during image build, and allow user to disable during startup of the container
-# Enable security plugin during image build, and allow user to disable during startup of the container
-ARG DISABLE_INSTALL_DEMO_CONFIG=true
-ARG DISABLE_SECURITY_PLUGIN=false
-RUN ./opensearch-onetime-setup.sh
-
-# Expose ports for the opensearch service (9200 for HTTP and 9300 for internal transport) and performance analyzer (9600 for the agent and 9650 for the root cause analysis component)
+# Expose ports: 9200 (HTTP), 9300 (Transport), 9600 (Performance Analyzer Agent), 9650 (Root Cause Analysis)
 EXPOSE 9200 9300 9600 9650
 
 ARG VERSION
 ARG BUILD_DATE
 ARG NOTES
 
-# Label
+# Metadata Labels
 LABEL org.label-schema.schema-version="1.0" \
   org.label-schema.name="opensearch" \
   org.label-schema.version="$VERSION" \
@@ -132,6 +122,5 @@ LABEL org.label-schema.schema-version="1.0" \
   org.label-schema.description="$NOTES" \
   org.label-schema.build-date="$BUILD_DATE"
 
-# CMD to run
 ENTRYPOINT ["./opensearch-docker-entrypoint.sh"]
 CMD ["opensearch"]

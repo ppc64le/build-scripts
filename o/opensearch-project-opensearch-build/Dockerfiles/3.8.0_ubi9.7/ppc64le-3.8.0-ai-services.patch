@@ -1,0 +1,2705 @@
+From 02002b1cece6cc52fe6d428f84721b5d883b9bb4 Mon Sep 17 00:00:00 2001
+From: irapandey <ira.pandey2001@gmail.com>
+Date: Thu, 20 Aug 2026 16:01:34 +0530
+Subject: [PATCH 1/2] patch
+
+Signed-off-by: irapandey <ira.pandey2001@gmail.com>
+---
+ manifests/3.8.0/opensearch-3.8.0.yml          |  24 ---
+ opensearch.patch                              |  94 ++++++++
+ .../build.pre20260429.sh                      |   8 +-
+ .../components/OpenSearch-DataFusion/build.sh |   8 +-
+ scripts/components/OpenSearch/build.sh        |   8 +-
+ scripts/components/OpenSearch/integtest.sh    |   2 +-
+ scripts/components/alerting/integtest.sh      |   2 +-
+ .../components/core-plugins-sandbox/build.sh  |   4 +-
+ scripts/components/k-NN/build.sh              | 203 ++++++++++++++++++
+ scripts/components/k-NN/integtest.sh          |   4 +-
+ .../components/notifications-core/build.sh    |   6 +-
+ scripts/components/notifications/build.sh     |   6 +-
+ .../components/opensearch-jvector/build.sh    | 189 ++++++++++++++++
+ scripts/default/bwctest.sh                    |   2 +-
+ scripts/default/integtest.sh                  |   2 +-
+ scripts/default/opensearch/build.sh           |   6 +-
+ security.patch                                |  16 ++
+ src/build_workflow/build_args.py              |   1 +
+ src/build_workflow/builder_from_source.py     |  96 +++++++++
+ .../ci_check_gradle_dependencies.py           |   2 +-
+ src/ci_workflow/ci_check_gradle_properties.py |   2 +-
+ .../ci_check_gradle_publish_to_maven_local.py |   2 +-
+ .../component_opensearch.py                   |   2 +-
+ .../test_ci_check_gradle_dependencies.py      |  10 +-
+ ...ci_check_gradle_dependencies_opensearch.py |   8 +-
+ .../test_ci_check_gradle_properties.py        |   6 +-
+ ..._ci_check_gradle_publish_to_maven_local.py |   6 +-
+ .../test_component_opensearch.py              |   6 +-
+ 28 files changed, 650 insertions(+), 75 deletions(-)
+ create mode 100644 opensearch.patch
+ create mode 100644 scripts/components/k-NN/build.sh
+ create mode 100755 scripts/components/opensearch-jvector/build.sh
+ create mode 100644 security.patch
+
+diff --git a/manifests/3.8.0/opensearch-3.8.0.yml b/manifests/3.8.0/opensearch-3.8.0.yml
+index 74040626..43e57327 100644
+--- a/manifests/3.8.0/opensearch-3.8.0.yml
++++ b/manifests/3.8.0/opensearch-3.8.0.yml
+@@ -182,16 +182,6 @@ components:
+       - notifications-core
+       - notifications
+       - sql
+-  - name: security-analytics
+-    repository: https://github.com/opensearch-project/security-analytics.git
+-    ref: 9957176cf7f2c5ae67ff280ab6e6034c017e5dd7
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - common-utils
+-      - alerting
+-      - job-scheduler
+   - name: index-management
+     repository: https://github.com/opensearch-project/index-management.git
+     ref: 592e20171db2d385c67abf3e4c48bcf1555c6e3c
+@@ -219,20 +209,6 @@ components:
+       - k-NN
+       - neural-search
+       - job-scheduler
+-  - name: skills
+-    repository: https://github.com/opensearch-project/skills.git
+-    ref: 6a62f5584586bad8a8d55bbe3415414d5c3fda8c
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - job-scheduler
+-      - anomaly-detection
+-      - sql
+-      - ml-commons
+-      - alerting
+-      - neural-search
+-      - k-NN
+   - name: query-insights
+     repository: https://github.com/opensearch-project/query-insights.git
+     ref: 0bbb49b991448451705f9205839440a32fe16b9c
+diff --git a/opensearch.patch b/opensearch.patch
+new file mode 100644
+index 00000000..e4532414
+--- /dev/null
++++ b/opensearch.patch
+@@ -0,0 +1,94 @@
++diff --git a/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java b/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java
++index baeaeb72b24..85aca3b35d7 100644
++--- a/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java
+++++ b/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java
++@@ -127,7 +127,35 @@ public class OpenSearchJavaPlugin implements Plugin<Project> {
++                 // just a self contained test-fixture configuration, likely transitive and hellacious
++                 return;
++             }
++-            configuration.resolutionStrategy(ResolutionStrategy::failOnVersionConflict);
+++            configuration.resolutionStrategy(strategy -> {
+++                strategy.failOnVersionConflict();
+++                strategy.eachDependency(details -> {
+++                    String group = details.getRequested().getGroup();
+++                    String name = details.getRequested().getName();
+++                    // Force all com.fasterxml.jackson artifacts to 2.22.1 (CVE-2026-54512, CVE-2026-54513)
+++                    if ("com.fasterxml.jackson.core".equals(group)) {
+++                        if ("jackson-databind".equals(name) || "jackson-core".equals(name)) {
+++                            details.useVersion("2.22.1");
+++                        } else if ("jackson-annotations".equals(name)) {
+++                            details.useVersion("2.22");
+++                        }
+++                    }
+++                    if ("com.fasterxml.jackson.datatype".equals(group)
+++                        || "com.fasterxml.jackson.dataformat".equals(group)) {
+++                        details.useVersion("2.22.1");
+++                    }
+++                    // Force all tools.jackson artifacts to 3.2.1 (CVE-2026-54512, CVE-2026-54513)
+++                    if ("tools.jackson.core".equals(group)
+++                        || "tools.jackson.datatype".equals(group)
+++                        || "tools.jackson.dataformat".equals(group)) {
+++                        details.useVersion("3.2.1");
+++                    }
+++                    // Force httpcore5 artifacts to 5.4.3 to resolve conflict with older transitive 5.4
+++                    if ("org.apache.httpcomponents.core5".equals(group)) {
+++                        details.useVersion("5.4.3");
+++                    }
+++                });
+++            });
++         });
++ 
++         // force all dependencies added directly to compile/testImplementation to be non-transitive, except for ES itself
++diff --git a/gradle/libs.versions.toml b/gradle/libs.versions.toml
++index 3bf10a02ced..18624c5df6d 100644
++--- a/gradle/libs.versions.toml
+++++ b/gradle/libs.versions.toml
++@@ -50,7 +50,7 @@ reactor           = "3.8.6"
++ 
++ # client dependencies
++ httpclient5       = "5.6.1"
++-httpcore5         = "5.4"
+++httpcore5         = "5.4.3"
++ httpclient        = "4.5.14"
++ httpcore          = "4.4.16"
++ httpasyncclient   = "4.1.5"
++diff --git a/security.patch b/security.patch
++new file mode 100644
++index 00000000000..ba087f04a44
++--- /dev/null
+++++ b/security.patch
++@@ -0,0 +1,31 @@
+++diff --git a/build.gradle b/build.gradle
+++index 42401ee1..f552e082 100644
+++--- a/build.gradle
++++++ b/build.gradle
+++@@ -487,6 +487,7 @@ configurations {
+++             force "com.fasterxml.jackson.core:jackson-databind:${versions.jackson_databind}"
+++             force "io.netty:netty-buffer:${versions.netty}"
+++             force "io.netty:netty-codec-base:${versions.netty}"
++++            force "io.netty:netty-codec-compression:${versions.netty}"
+++             force "io.netty:netty-codec-http:${versions.netty}"
+++             force "io.netty:netty-codec-http2:${versions.netty}"
+++             force "io.netty:netty-codec-http3:${versions.netty}"
+++diff --git a/libs/opensaml/build.gradle b/libs/opensaml/build.gradle
+++index 49affbb4..77210e79 100644
+++--- a/libs/opensaml/build.gradle
++++++ b/libs/opensaml/build.gradle
+++@@ -26,6 +26,10 @@ configurations.all {
+++         force "org.bouncycastle:bcprov-jdk18on:1.84"
+++         force "org.apache.commons:commons-lang3:${versions.commonslang}"
+++         force "tools.jackson.core:jackson-core:${versions.jackson3}"
++++        force "com.fasterxml.jackson.core:jackson-core:${versions.jackson}"
++++        force "com.fasterxml.jackson.core:jackson-databind:${versions.jackson_databind}"
++++        force "org.apache.httpcomponents.core5:httpcore5:${versions.httpcore5}"
++++        force "org.apache.httpcomponents.core5:httpcore5-h2:${versions.httpcore5}"
+++     }
+++ }
+++ 
+++-- 
+++2.51.2
+++
+++
++-- 
++2.51.2
++
+diff --git a/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh b/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh
+index bbe39bfd..108ae8cb 100755
+--- a/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh
++++ b/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh
+@@ -75,11 +75,11 @@ mkdir -p $OUTPUT/maven/org/opensearch
+ 
+ # Build project and publish to maven local.
+ echo "Building and publishing OpenSearch project to Maven Local"
+-./gradlew publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -PrustRelease -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -PrustRelease -Pcrypto.standard=FIPS-140-3
+ 
+ # Publish to existing test repo, using this to stage release versions of the artifacts that can be released from the same build.
+ echo "Publishing OpenSearch to Test Repository"
+-./gradlew publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -PrustRelease -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -PrustRelease -Pcrypto.standard=FIPS-140-3
+ 
+ # Copy maven publications to be promoted
+ echo "Copying Maven publications to $OUTPUT/maven/org"
+@@ -164,7 +164,7 @@ esac
+ 
+ echo "Building OpenSearch for $PLATFORM-$DISTRIBUTION-$ARCHITECTURE"
+ 
+-./gradlew :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -PrustRelease -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -PrustRelease -Pcrypto.standard=FIPS-140-3
+ 
+ # Copy artifact to dist folder in bundle build output
+ echo "Copying artifact to ${OUTPUT}/dist"
+@@ -176,7 +176,7 @@ cp distribution/$TYPE/$TARGET/build/distributions/$ARTIFACT_BUILD_NAME "${OUTPUT
+ echo "Building core plugins..."
+ mkdir -p "${OUTPUT}/core-plugins"
+ cd plugins
+-../gradlew assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -PrustRelease -Pcrypto.standard=FIPS-140-3
++../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -PrustRelease -Pcrypto.standard=FIPS-140-3
+ cd ..
+ for plugin in plugins/*; do
+   PLUGIN_NAME=$(basename "$plugin")
+diff --git a/scripts/components/OpenSearch-DataFusion/build.sh b/scripts/components/OpenSearch-DataFusion/build.sh
+index 3fa912bf..66c9f838 100755
+--- a/scripts/components/OpenSearch-DataFusion/build.sh
++++ b/scripts/components/OpenSearch-DataFusion/build.sh
+@@ -75,11 +75,11 @@ mkdir -p $OUTPUT/maven/org/opensearch
+ 
+ # Build project and publish to maven local.
+ echo "Building and publishing OpenSearch project to Maven Local"
+-./gradlew publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
+ 
+ # Publish to existing test repo, using this to stage release versions of the artifacts that can be released from the same build.
+ echo "Publishing OpenSearch to Test Repository"
+-./gradlew publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
+ 
+ # Copy maven publications to be promoted
+ echo "Copying Maven publications to $OUTPUT/maven/org"
+@@ -164,7 +164,7 @@ esac
+ 
+ echo "Building OpenSearch for $PLATFORM-$DISTRIBUTION-$ARCHITECTURE"
+ 
+-./gradlew :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
+ 
+ # Copy artifact to dist folder in bundle build output
+ echo "Copying artifact to ${OUTPUT}/dist"
+@@ -176,7 +176,7 @@ cp -v distribution/$TYPE/$TARGET/build/distributions/$ARTIFACT_BUILD_NAME "${OUT
+ echo "Building core plugins..."
+ mkdir -p "${OUTPUT}/core-plugins"
+ cd plugins
+-../gradlew assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
+ cd ..
+ for plugin in plugins/*; do
+   PLUGIN_NAME=$(basename "$plugin")
+diff --git a/scripts/components/OpenSearch/build.sh b/scripts/components/OpenSearch/build.sh
+index 0797262e..6be344a8 100755
+--- a/scripts/components/OpenSearch/build.sh
++++ b/scripts/components/OpenSearch/build.sh
+@@ -75,11 +75,11 @@ mkdir -p $OUTPUT/maven/org/opensearch
+ 
+ # Build project and publish to maven local.
+ echo "Building and publishing OpenSearch project to Maven Local"
+-./gradlew publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+ 
+ # Publish to existing test repo, using this to stage release versions of the artifacts that can be released from the same build.
+ echo "Publishing OpenSearch to Test Repository"
+-./gradlew publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+ 
+ # Copy maven publications to be promoted
+ echo "Copying Maven publications to $OUTPUT/maven/org"
+@@ -164,7 +164,7 @@ esac
+ 
+ echo "Building OpenSearch for $PLATFORM-$DISTRIBUTION-$ARCHITECTURE"
+ 
+-./gradlew :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+ 
+ # Copy artifact to dist folder in bundle build output
+ echo "Copying artifact to ${OUTPUT}/dist"
+@@ -176,7 +176,7 @@ cp -v distribution/$TYPE/$TARGET/build/distributions/$ARTIFACT_BUILD_NAME "${OUT
+ echo "Building core plugins..."
+ mkdir -p "${OUTPUT}/core-plugins"
+ cd plugins
+-../gradlew assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+ cd ..
+ for plugin in plugins/*; do
+   PLUGIN_NAME=$(basename "$plugin")
+diff --git a/scripts/components/OpenSearch/integtest.sh b/scripts/components/OpenSearch/integtest.sh
+index dce75c86..3be5ee8d 100644
+--- a/scripts/components/OpenSearch/integtest.sh
++++ b/scripts/components/OpenSearch/integtest.sh
+@@ -13,7 +13,7 @@ echo "Check if distribution is deb or rpm on linux"
+ if [ "$OSTYPE" = "linux-gnu" ]; then
+     if (dpkg -s opensearch > /dev/null 2>&1) || (rpm -q opensearch > /dev/null 2>&1); then
+         echo "Run systemd integTest for OpenSearch core engine"
+-        ./gradlew qa:systemd-test:integTest --tests org.opensearch.systemdinteg.SystemdIntegTests --console=plain
++        ./gradlew --console=plain qa:systemd-test:integTest --tests org.opensearch.systemdinteg.SystemdIntegTests --console=plain
+     else
+         echo "No deb or rpm installed detected, skip test"
+     fi
+diff --git a/scripts/components/alerting/integtest.sh b/scripts/components/alerting/integtest.sh
+index b12b5e5d..b27311b1 100755
+--- a/scripts/components/alerting/integtest.sh
++++ b/scripts/components/alerting/integtest.sh
+@@ -102,4 +102,4 @@ fi
+ USERNAME=`echo $CREDENTIAL | awk -F ':' '{print $1}'`
+ PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
+ 
+-./gradlew integTest -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Dsecurity=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
++./gradlew --console=plain integTest -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Dsecurity=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
+diff --git a/scripts/components/core-plugins-sandbox/build.sh b/scripts/components/core-plugins-sandbox/build.sh
+index 71d60f9a..0c8a62db 100755
+--- a/scripts/components/core-plugins-sandbox/build.sh
++++ b/scripts/components/core-plugins-sandbox/build.sh
+@@ -93,7 +93,7 @@ cd -
+ 
+ # Sandbox Plugins
+ echo "Building sandbox plugins..."
+-../../gradlew assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++../../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
+ INSTALL_ORDER=1
+ for plugin in ./*; do
+   PLUGIN_NAME=$(basename "$plugin")
+@@ -127,7 +127,7 @@ done
+ # Rustlib
+ cd ../
+ echo "Specifically saving rustlib..."
+-../gradlew :sandbox:libs:dataformat-native:buildRustLibrary -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++../gradlew --console=plain :sandbox:libs:dataformat-native:buildRustLibrary -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
+ for libext in so dylib dll; do
+   cp -v ./libs/dataformat-native/rust/target/release/libopensearch_native."$libext" "${OUTPUT_REAL}"/dist/ || echo "$libext not found"
+ done
+diff --git a/scripts/components/k-NN/build.sh b/scripts/components/k-NN/build.sh
+new file mode 100644
+index 00000000..d2aa3aa9
+--- /dev/null
++++ b/scripts/components/k-NN/build.sh
+@@ -0,0 +1,203 @@
++#!/bin/bash
++
++# Copyright OpenSearch Contributors
++# SPDX-License-Identifier: Apache-2.0
++#
++# The OpenSearch Contributors require contributions made to
++# this file be licensed under the Apache-2.0 license or a
++# compatible open source license.
++#
++# This script overrides the upstream k-NN build.sh to add ppc64le support.
++# On ppc64le the cmake/JNI native library build is skipped because:
++#   - The upstream CMakeLists.txt has no ppc64le MACH_ARCH mapping
++#   - AVX2/AVX512 SIMD instructions do not exist on ppc64le (VSX/VMX are different ISA)
++#   - The standard CI runner for ppc64le does not install cmake
++# The Java plugin artifact is built normally; the native JNI libs are simply absent.
++
++set -ex
++
++function usage() {
++    echo "Usage: $0 [args]"
++    echo ""
++    echo "Arguments:"
++    echo -e "-v VERSION\t[Required] OpenSearch version."
++    echo -e "-q QUALIFIER\t[Optional] Version qualifier."
++    echo -e "-s SNAPSHOT\t[Optional] Build a snapshot, default is 'false'."
++    echo -e "-p PLATFORM\t[Optional] Platform, ignored."
++    echo -e "-a ARCHITECTURE\t[Optional] Build architecture."
++    echo -e "-o OUTPUT\t[Optional] Output path, default is 'artifacts'."
++    echo -e "-j NPROC_COUNT\t[Optional] Number of CPUs to use when building JNI library. Default is 1."
++    echo -e "-h help"
++}
++
++while getopts ":h:v:q:s:o:p:a:j:" arg; do
++    case $arg in
++        h)
++            usage
++            exit 1
++            ;;
++        v)
++            VERSION=$OPTARG
++            ;;
++        s)
++            SNAPSHOT=$OPTARG
++            ;;
++        q)
++            QUALIFIER=$OPTARG
++            ;;
++        o)
++            OUTPUT=$OPTARG
++            ;;
++        p)
++            PLATFORM=$OPTARG
++            ;;
++        a)
++            ARCHITECTURE=$OPTARG
++            ;;
++        j)
++            NPROC_COUNT=$OPTARG
++            ;;
++        :)
++            echo "Error: -${OPTARG} requires an argument"
++            usage
++            exit 1
++            ;;
++        ?)
++            echo "Invalid option: -${arg}"
++            exit 1
++            ;;
++    esac
++done
++
++if [ -z "$VERSION" ]; then
++    echo "Error: You must specify the OpenSearch version"
++    usage
++    exit 1
++fi
++
++[[ ! -z "$QUALIFIER" ]] && VERSION=$VERSION-$QUALIFIER
++[[ "$SNAPSHOT" == "true" ]] && VERSION=$VERSION-SNAPSHOT
++[ -z "$OUTPUT" ] && OUTPUT=artifacts
++
++work_dir=$PWD
++
++# Pull library submodule explicitly. While "cmake ." actually pulls the submodule if its not there, we
++# need to pull it before calling cmake. Also, we need to call it from the root git directory.
++# Otherwise, the submodule update call may fail on earlier versions of git.
++git submodule update --init -- jni/external/nmslib
++git submodule update --init -- jni/external/faiss
++
++if [ "$JAVA_HOME" = "" ]; then
++    export JAVA_HOME=`/usr/libexec/java_home`
++    echo "SET JAVA_HOME=$JAVA_HOME"
++fi
++
++# ppc64le: skip cmake/JNI native library compilation entirely.
++# The upstream CMakeLists.txt does not define MACH_ARCH for ppc64le and the AVX/NEON
++# SIMD flags used by the faiss/nmslib targets are x64/arm64-only.  cmake is also
++# not guaranteed to be installed on the ppc64le CI runner.
++if [ "$ARCHITECTURE" = "ppc64le" ]; then
++    echo "ppc64le detected: skipping JNI native library build (cmake not required)"
++
++    # Use bundlePlugin directly (not assemble or build) so the zip is produced by the
++    # opensearchplugin Gradle plugin's own packaging task, which correctly assembles only
++    # the runtime classpath into the plugin zip.  assemble also invokes bundlePlugin but
++    # chains additional tasks that can pull in test-fixture or remote-index-build-client
++    # artifacts that end up as a second copy of KNNVectorScriptDocValues inside the zip,
++    # triggering the "multiple java classes ... from different class loaders" Painless error.
++    ./gradlew --no-daemon --refresh-dependencies bundlePlugin \
++        -Dopensearch.version=$VERSION \
++        -Dbuild.snapshot=$SNAPSHOT \
++        -Dbuild.version_qualifier=$QUALIFIER \
++        -Dbuild.lib.commit_patches=false
++
++else
++    # x64/arm64: use the full upstream build path
++
++    # Setup knnlib build params
++    cd jni
++
++    # For x64, generalize arch so library is compatible for processors without simd instruction extensions
++    if [ "$ARCHITECTURE" = "x64" ]; then
++        NMSLIB_SIMD_FLAGS="x86-64"
++    fi
++
++    # For arm, march=native is broken in centos 7. Manually override to lowest version of armv8.
++    if [ "$ARCHITECTURE" = "arm64" ]; then
++        NMSLIB_SIMD_FLAGS="armv8-a"
++    fi
++
++    # Ensure gcc version is above the minimum required
++    GCC_VERSION=`gcc --version | head -n 1 | cut -d ' ' -f3`
++    if [ "$ARCHITECTURE" = "x64" ]; then
++        GCC_REQUIRED_VERSION=12.4
++    else
++        GCC_REQUIRED_VERSION=9.0.0
++    fi
++    COMPARE_VERSION=`echo $GCC_REQUIRED_VERSION $GCC_VERSION | tr ' ' '\n' | sort -V | uniq | head -n 1`
++    if [ "$COMPARE_VERSION" != "$GCC_REQUIRED_VERSION" ]; then
++        echo "gcc version on this env is older than $GCC_REQUIRED_VERSION, exit 1"
++        exit 1
++    fi
++
++    cd $work_dir
++    ./gradlew build --no-daemon --refresh-dependencies -x integTest -x test -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dbuild.lib.commit_patches=false -Dnmslib_simd_flags=$NMSLIB_SIMD_FLAGS
++    ./gradlew :buildJniLib -Pknn_libs=opensearchknn_faiss,opensearchknn_simd -Davx512.enabled=false -Davx512_spr.enabled=false -Davx2.enabled=false -Dbuild.lib.commit_patches=false -Dnproc.count=${NPROC_COUNT:-1} -Dbuild.snapshot=$SNAPSHOT
++
++    if [ "$PLATFORM" != "windows" ] && [ "$ARCHITECTURE" = "x64" ]; then
++        echo "Building k-NN library nmslib with gcc 10 on non-windows x64"
++        rm -rf jni/build/CMakeCache.txt jni/build/CMakeFiles
++        env CC=gcc10-gcc CXX=gcc10-g++ FC=gcc10-gfortran ./gradlew :buildJniLib -Pknn_libs=opensearchknn_nmslib -Dbuild.lib.commit_patches=false -Dbuild.lib.apply_patches=false -Dbuild.snapshot=$SNAPSHOT
++
++        echo "Building k-NN library after enabling AVX2"
++        rm -rf jni/build/CMakeCache.txt jni/build/CMakeFiles
++        ./gradlew :buildJniLib -Pknn_libs=opensearchknn_faiss,opensearchknn_simd -Davx2.enabled=true -Davx512.enabled=false -Davx512_spr.enabled=false -Dbuild.lib.commit_patches=false -Dbuild.lib.apply_patches=false -Dbuild.snapshot=$SNAPSHOT
++
++        echo "Building k-NN library after enabling AVX512"
++        ./gradlew :buildJniLib -Pknn_libs=opensearchknn_faiss,opensearchknn_simd -Davx512.enabled=true -Davx512_spr.enabled=false -Dbuild.lib.commit_patches=false -Dbuild.lib.apply_patches=false -Dbuild.snapshot=$SNAPSHOT
++
++        echo "Building k-NN library after enabling AVX512_SPR"
++        ./gradlew :buildJniLib -Pknn_libs=opensearchknn_faiss,opensearchknn_simd -Davx512_spr.enabled=true -Dbuild.lib.commit_patches=false -Dbuild.lib.apply_patches=false -Dbuild.snapshot=$SNAPSHOT
++    else
++        ./gradlew :buildJniLib -Pknn_libs=opensearchknn_nmslib -Dbuild.lib.commit_patches=false -Dbuild.lib.apply_patches=false -Dbuild.snapshot=$SNAPSHOT
++    fi
++fi
++
++./gradlew publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
++./gradlew publishPluginZipPublicationToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dopensearch.version=$VERSION
++
++# Add lib to zip (only for platforms that build native libs)
++zipPath=$(find "$(pwd)/build/distributions" -path \*.zip)
++distributions="$(dirname "${zipPath}")"
++
++if [ "$ARCHITECTURE" != "ppc64le" ]; then
++    mkdir -p $distributions/lib
++    libPrefix="libopensearchknn"
++    if [ "$PLATFORM" = "windows" ]; then
++        libPrefix="opensearchknn"
++        cp -v ./src/main/resources/windowsDependencies/libopenblas.dll $distributions/lib
++
++        # Have to define $MINGW_BIN either in ENV VAR or User Provided Var
++        cp -v "$MINGW_BIN/libgcc_s_seh-1.dll" $distributions/lib
++        cp -v "$MINGW_BIN/libwinpthread-1.dll" $distributions/lib
++        cp -v "$MINGW_BIN/libstdc++-6.dll" $distributions/lib
++        cp -v "$MINGW_BIN/libgomp-1.dll" $distributions/lib
++    else
++        ompPath=$(ldconfig -p | grep libgomp | cut -d ' ' -f 4)
++        cp -v $ompPath $distributions/lib
++    fi
++    cp -v ./jni/build/release/${libPrefix}* $distributions/lib
++    ls -l $distributions/lib
++
++    # Add lib directory to the k-NN plugin zip
++    cd $distributions
++    zip -ur $zipPath lib
++    cd $work_dir
++fi
++
++echo "COPY ${distributions}/*.zip"
++mkdir -p $OUTPUT/plugins
++cp -v ${distributions}/*.zip $OUTPUT/plugins
++
++mkdir -p $OUTPUT/maven/org/opensearch
++cp -r ./build/local-staging-repo/org/opensearch/. $OUTPUT/maven/org/opensearch
+diff --git a/scripts/components/k-NN/integtest.sh b/scripts/components/k-NN/integtest.sh
+index 9026e924..1bbbd7ea 100755
+--- a/scripts/components/k-NN/integtest.sh
++++ b/scripts/components/k-NN/integtest.sh
+@@ -111,8 +111,8 @@ if [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "win32" ]
+     echo "Set new tests.path.repo to $REPO_PATH"
+     sed -i 's|^[[:space:]]\+task\.systemProperty\s*"tests\.path\.repo".*|    task.systemProperty "tests.path.repo", System.getProperty("tests.path.repo", "${buildDir}/testSnapshotFolder")|' build.gradle
+     sed -i 's|^[[:space:]]\+systemProperty\s*"tests\.path\.repo".*|    systemProperty "tests.path.repo", System.getProperty("tests.path.repo", "${buildDir}/testSnapshotFolder")|' build.gradle
+-    ./gradlew integTest -Dtests.path.repo="$REPO_PATH" -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
++    ./gradlew --console=plain integTest -Dtests.path.repo="$REPO_PATH" -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
+ 
+ else
+-    ./gradlew integTest -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
++    ./gradlew --console=plain integTest -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
+ fi
+diff --git a/scripts/components/notifications-core/build.sh b/scripts/components/notifications-core/build.sh
+index b162b4e0..3df3a026 100644
+--- a/scripts/components/notifications-core/build.sh
++++ b/scripts/components/notifications-core/build.sh
+@@ -68,13 +68,13 @@ fi
+ [[ "$SNAPSHOT" == "true" ]] && VERSION=$VERSION-SNAPSHOT
+ [ -z "$OUTPUT" ] && OUTPUT=artifacts
+ 
+-./gradlew assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+-./gradlew publishToMavenLocal -PexcludeTests="**/SesChannelIT*" -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishToMavenLocal -PexcludeTests="**/SesChannelIT*" -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+ 
+ mkdir -p ./$OUTPUT/plugins
+ notifCoreZipPath=$(ls core/build/distributions/ | grep .zip)
+ cp -v core/build/distributions/$notifCoreZipPath ./$OUTPUT/plugins
+ 
+-./gradlew publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+ mkdir -p $OUTPUT/maven/org/opensearch/plugin
+ cp -r ./build/local-staging-repo/org/opensearch/plugin/opensearch-notifications-core $OUTPUT/maven/org/opensearch/plugin/
+diff --git a/scripts/components/notifications/build.sh b/scripts/components/notifications/build.sh
+index bdadef1b..8f961b29 100644
+--- a/scripts/components/notifications/build.sh
++++ b/scripts/components/notifications/build.sh
+@@ -68,14 +68,14 @@ fi
+ [[ "$SNAPSHOT" == "true" ]] && VERSION=$VERSION-SNAPSHOT
+ [ -z "$OUTPUT" ] && OUTPUT=artifacts
+ 
+-./gradlew assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+-./gradlew publishToMavenLocal -PexcludeTests="**/SesChannelIT*" -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishToMavenLocal -PexcludeTests="**/SesChannelIT*" -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+ 
+ mkdir -p ./$OUTPUT/plugins
+ 
+ notifCoreZipPath=$(ls notifications/build/distributions/ | grep .zip)
+ cp -v notifications/build/distributions/$notifCoreZipPath ./$OUTPUT/plugins
+ 
+-./gradlew publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+ mkdir -p $OUTPUT/maven/org/opensearch/plugin
+ cp -r ./build/local-staging-repo/org/opensearch/plugin/notifications $OUTPUT/maven/org/opensearch/plugin/
+diff --git a/scripts/components/opensearch-jvector/build.sh b/scripts/components/opensearch-jvector/build.sh
+new file mode 100755
+index 00000000..11c3ca7b
+--- /dev/null
++++ b/scripts/components/opensearch-jvector/build.sh
+@@ -0,0 +1,189 @@
++#!/bin/bash
++
++# Copyright OpenSearch Contributors
++# SPDX-License-Identifier: Apache-2.0
++#
++# The OpenSearch Contributors require contributions made to
++# this file be licensed under the Apache-2.0 license or a
++# compatible open source license.
++#
++# Build override for opensearch-jvector on all platforms.
++#
++# PROBLEM:
++#   opensearch-jvector and opensearch-knn both ship a compiled copy of
++#   org.opensearch.knn.index.KNNVectorScriptDocValues (and several sibling
++#   classes) because jvector uses the same package namespace as k-NN.
++#   Both plugins declare `extended.plugins=lang-painless,transport-grpc`
++#   in their plugin-descriptor.properties.  When OpenSearch starts, the
++#   Painless script engine discovers KNNAllowlistExtension via SPI in
++#   *both* plugin class loaders.  Each loader produces a distinct Class
++#   object for KNNVectorScriptDocValues.
++#   PainlessLookupBuilder.addPainlessClass() checks identity
++#   (existingClass != clazz) and throws:
++#     "class [org.opensearch.knn.index.KNNVectorScriptDocValues] cannot
++#      represent multiple java classes with the same name from different
++#      class loaders"
++#
++# FIX:
++#   After bundlePlugin, patch the plugin-descriptor.properties inside the
++#   jvector zip to add `opensearch-knn` to the `extended.plugins` value.
++#   OpenSearch then loads jvector with the k-NN class loader as a parent,
++#   so KNNVectorScriptDocValues is resolved from the same Class object by
++#   both plugins' KNNAllowlistExtension implementations, and the Painless
++#   identity check passes.
++#
++# The rest of this script is functionally identical to the upstream
++# default build (scripts/default/opensearch/build.sh).
++
++set -ex
++
++function usage() {
++    echo "Usage: $0 [args]"
++    echo ""
++    echo "Arguments:"
++    echo -e "-v VERSION\t[Required] OpenSearch version."
++    echo -e "-q QUALIFIER\t[Optional] Version qualifier."
++    echo -e "-s SNAPSHOT\t[Optional] Build a snapshot, default is 'false'."
++    echo -e "-p PLATFORM\t[Optional] Platform, ignored."
++    echo -e "-a ARCHITECTURE\t[Optional] Build architecture, ignored."
++    echo -e "-o OUTPUT\t[Optional] Output path, default is 'artifacts'."
++    echo -e "-h help"
++}
++
++while getopts ":h:v:q:s:o:p:a:" arg; do
++    case $arg in
++        h)
++            usage
++            exit 1
++            ;;
++        v)
++            VERSION=$OPTARG
++            ;;
++        q)
++            QUALIFIER=$OPTARG
++            ;;
++        s)
++            SNAPSHOT=$OPTARG
++            ;;
++        o)
++            OUTPUT=$OPTARG
++            ;;
++        p)
++            PLATFORM=$OPTARG
++            ;;
++        a)
++            ARCHITECTURE=$OPTARG
++            ;;
++        :)
++            echo "Error: -${OPTARG} requires an argument"
++            usage
++            exit 1
++            ;;
++        ?)
++            echo "Invalid option: -${arg}"
++            exit 1
++            ;;
++    esac
++done
++
++if [ -z "$VERSION" ]; then
++    echo "Error: You must specify the OpenSearch version"
++    usage
++    exit 1
++fi
++
++[[ ! -z "$QUALIFIER" ]] && VERSION=$VERSION-$QUALIFIER
++[[ "$SNAPSHOT" == "true" ]] && VERSION=$VERSION-SNAPSHOT
++[ -z "$OUTPUT" ] && OUTPUT=artifacts
++
++mkdir -p $OUTPUT
++
++./gradlew --console=plain assemble --no-daemon --refresh-dependencies -DskipTests=true \
++    -Dopensearch.version=$VERSION \
++    -Dbuild.snapshot=$SNAPSHOT \
++    -Dbuild.version_qualifier=$QUALIFIER \
++    -Pcrypto.standard=FIPS-140-3
++
++zipPath=$(find "$(pwd)/build/distributions" -name \*.zip | head -1)
++
++if [ -z "$zipPath" ]; then
++    echo "Error: could not find bundled plugin zip under build/distributions/"
++    exit 1
++fi
++
++distributions="$(dirname "$zipPath")"
++
++# -----------------------------------------------------------------------
++# Patch plugin-descriptor.properties inside the built zip.
++#
++# The generated descriptor contains:
++#   extended.plugins=lang-painless,transport-grpc
++#
++# We rewrite it to:
++#   extended.plugins=lang-painless,transport-grpc,opensearch-knn
++#
++# This makes OpenSearch:
++# 1. Use the k-NN plugin's class loader as a parent for jvector so that
++#    KNNVectorScriptDocValues is resolved from the same Class object by
++#    both plugins' KNNAllowlistExtension implementations, satisfying
++#    Painless's identity check at runtime.
++# 2. Exclude classes already present in the k-NN plugin jar (including
++#    shared third-party jars like commons-lang3) from the jar-hell check
++#    performed by `opensearch-plugin install`, preventing install failures
++#    when opensearch-knn is already installed.
++# -----------------------------------------------------------------------
++echo "Patching extended.plugins in $zipPath to include opensearch-knn"
++
++work_dir=$PWD
++tmpDir=$(mktemp -d)
++trap "rm -rf $tmpDir" EXIT
++
++# Extract the full zip contents, preserving the internal directory layout.
++unzip -q "$zipPath" -d "$tmpDir"
++
++descriptor="$tmpDir/plugin-descriptor.properties"
++
++if [ ! -f "$descriptor" ]; then
++    echo "Error: plugin-descriptor.properties not found inside zip"
++    exit 1
++fi
++
++# Append opensearch-knn only if not already present (idempotent).
++if grep -q "opensearch-knn" "$descriptor"; then
++    echo "opensearch-knn already in extended.plugins — no patch needed"
++else
++    # GNU sed (-i '') and BSD sed (-i '') are both portable with an empty suffix.
++    sed -i'' 's/^\(extended\.plugins=.*\)$/\1,opensearch-knn/' "$descriptor"
++    echo "Patched extended.plugins: $(grep extended.plugins $descriptor)"
++fi
++
++# Rebuild the zip from the patched directory tree (same compression as zip default).
++rm -f "$zipPath"
++cd "$tmpDir"
++zip -r "$zipPath" .
++cd "$work_dir"
++
++echo "Rebuilt zip: $zipPath"
++
++# Publish the patched zip to maven local and staging repo.
++# -x bundlePlugin skips the bundle task so Gradle reads the already-patched
++# zip from build/distributions/ rather than regenerating it from source.
++./gradlew --console=plain publishPluginZipPublicationToMavenLocal \
++    -x bundlePlugin \
++    -Dopensearch.version=$VERSION \
++    -Dbuild.snapshot=$SNAPSHOT \
++    -Dbuild.version_qualifier=$QUALIFIER \
++    -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishPluginZipPublicationToZipStagingRepository \
++    -x bundlePlugin \
++    -Dopensearch.version=$VERSION \
++    -Dbuild.snapshot=$SNAPSHOT \
++    -Dbuild.version_qualifier=$QUALIFIER \
++    -Pcrypto.standard=FIPS-140-3
++
++echo "COPY ${distributions}/*.zip"
++mkdir -p $OUTPUT/plugins
++cp ${distributions}/*.zip ./$OUTPUT/plugins
++
++mkdir -p $OUTPUT/maven/org/opensearch
++cp -r ./build/local-staging-repo/org/opensearch/. $OUTPUT/maven/org/opensearch
+diff --git a/scripts/default/bwctest.sh b/scripts/default/bwctest.sh
+index d1f687f5..3c860036 100755
+--- a/scripts/default/bwctest.sh
++++ b/scripts/default/bwctest.sh
+@@ -35,4 +35,4 @@ while getopts ":h" arg; do
+     esac
+ done
+ 
+-./gradlew bwcTestSuite -Dtests.security.manager=false -PcustomDistributionDownloadType=bundle
++./gradlew --console=plain bwcTestSuite -Dtests.security.manager=false -PcustomDistributionDownloadType=bundle
+diff --git a/scripts/default/integtest.sh b/scripts/default/integtest.sh
+index 7a600d4c..17cfe1f2 100755
+--- a/scripts/default/integtest.sh
++++ b/scripts/default/integtest.sh
+@@ -102,4 +102,4 @@ fi
+ USERNAME=`echo $CREDENTIAL | awk -F ':' '{print $1}'`
+ PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
+ 
+-./gradlew integTest -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
++./gradlew --console=plain integTest -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
+diff --git a/scripts/default/opensearch/build.sh b/scripts/default/opensearch/build.sh
+index 518c722a..67094c45 100755
+--- a/scripts/default/opensearch/build.sh
++++ b/scripts/default/opensearch/build.sh
+@@ -70,7 +70,7 @@ fi
+ 
+ mkdir -p $OUTPUT
+ 
+-./gradlew assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+ 
+ zipPath=$(find . -path \*build/distributions/*.zip)
+ distributions="$(dirname "${zipPath}")"
+@@ -80,7 +80,7 @@ mkdir -p $OUTPUT/plugins
+ cp ${distributions}/*.zip ./$OUTPUT/plugins
+ 
+ # Publish plugin zips to maven
+-./gradlew publishPluginZipPublicationToMavenLocal -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+-./gradlew publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishPluginZipPublicationToMavenLocal -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+ mkdir -p $OUTPUT/maven/org/opensearch
+ cp -r ./build/local-staging-repo/org/opensearch/. $OUTPUT/maven/org/opensearch
+diff --git a/security.patch b/security.patch
+new file mode 100644
+index 00000000..4513387c
+--- /dev/null
++++ b/security.patch
+@@ -0,0 +1,16 @@
++diff --git a/libs/opensaml/build.gradle b/libs/opensaml/build.gradle
++index 96074b9d..0e322b4e 100644
++--- a/libs/opensaml/build.gradle
+++++ b/libs/opensaml/build.gradle
++@@ -28,6 +28,8 @@ configurations.all {
++         force "org.bouncycastle:bcprov-jdk18on:1.85"
++         force "org.apache.commons:commons-lang3:${versions.commonslang}"
++         force "tools.jackson.core:jackson-core:${versions.jackson3}"
+++        force "org.apache.httpcomponents.core5:httpcore5:${versions.httpcore5}"
+++        force "org.apache.httpcomponents.core5:httpcore5-h2:${versions.httpcore5}"
++     }
++ }
++ 
++-- 
++2.51.2
++
+diff --git a/src/build_workflow/build_args.py b/src/build_workflow/build_args.py
+index d67c27a7..271962ab 100644
+--- a/src/build_workflow/build_args.py
++++ b/src/build_workflow/build_args.py
+@@ -16,6 +16,7 @@ class BuildArgs:
+     SUPPORTED_ARCHITECTURES = [
+         "x64",
+         "arm64",
++        "ppc64le",
+     ]
+     SUPPORTED_DISTRIBUTIONS = ["tar", "zip", "rpm", "deb"]
+ 
+diff --git a/src/build_workflow/builder_from_source.py b/src/build_workflow/builder_from_source.py
+index 2c77c80d..c5500c0c 100644
+--- a/src/build_workflow/builder_from_source.py
++++ b/src/build_workflow/builder_from_source.py
+@@ -6,6 +6,7 @@
+ # compatible open source license.
+ 
+ import os
++import logging
+ 
+ from build_workflow.build_recorder import BuildRecorder
+ from build_workflow.builder import Builder
+@@ -18,6 +19,8 @@ It will notify the build recorder of build information such as repository and gi
+ Artifacts found in "<build root>/artifacts/<maven|plugins|libs|dist|core-plugins>" will be recognized and recorded.
+ """
+ 
++OPENSEARCH_PATCH_FILE = os.path.join(os.getcwd(), "opensearch.patch")
++SECURITY_PATCH_FILE = os.path.join(os.getcwd(), "security.patch")
+ 
+ class BuilderFromSource(Builder):
+     def checkout(self, work_dir: str) -> None:
+@@ -28,6 +31,99 @@ class BuilderFromSource(Builder):
+             self.component.working_directory,
+         )
+ 
++        # Apply OpenSearch core patch (opensearch.patch) if building OpenSearch
++        if self.component.name == "OpenSearch":
++            if os.path.isfile(OPENSEARCH_PATCH_FILE):
++                logging.info(f"Applying patch {OPENSEARCH_PATCH_FILE} to {self.component.name}")
++                self.git_repo.execute(f"git apply {OPENSEARCH_PATCH_FILE}")
++                logging.info(f"Successfully applied patch to {self.component.name}")
++            else:
++                logging.warning(f"Patch file not found: {OPENSEARCH_PATCH_FILE}")
++
++        # Apply security patch (security.patch) if building security
++        if self.component.name == "security":
++            if os.path.isfile(SECURITY_PATCH_FILE):
++                logging.info(f"Applying patch {SECURITY_PATCH_FILE} to {self.component.name}")
++                self.git_repo.execute(f"git apply {SECURITY_PATCH_FILE}")
++                logging.info(f"Successfully applied patch to {self.component.name}")
++            else:
++                logging.warning(f"Patch file not found: {SECURITY_PATCH_FILE}")
++
++        self._apply_ppc64le_gradle_fix()
++        self._apply_kotlin_version_fix()
++
++    def _apply_ppc64le_gradle_fix(self) -> None:
++        """
++        Apply ppc64le architecture fix for Gradle builds.
++        Creates gradle.properties to disable native platform support which doesn't work on ppc64le.
++        """
++        gradle_properties_path = os.path.join(self.git_repo.working_directory, "gradle.properties")
++
++        # Check if this is a Gradle project (has gradlew or build.gradle)
++        has_gradlew = os.path.isfile(os.path.join(self.git_repo.working_directory, "gradlew"))
++        has_build_gradle = os.path.isfile(os.path.join(self.git_repo.working_directory, "build.gradle"))
++
++        if not (has_gradlew or has_build_gradle):
++            logging.debug(f"Skipping ppc64le Gradle fix for {self.component.name} - not a Gradle project")
++            return
++
++        gradle_properties_content = (
++            "# Disable native platform support for ppc64le architecture compatibility\n"
++            "# The native-platform library does not support ppc64le; fall back to pure Java implementations.\n"
++            "org.gradle.native=false\n"
++            "# Use plain console output (no rich formatting that requires native platform)\n"
++            "org.gradle.console=plain\n"
++            "# Limit parallel workers to avoid thread exhaustion (pthread_create EAGAIN) on ppc64le\n"
++            "org.gradle.workers.max=4\n"
++        )
++
++        # If gradle.properties already exists, append our settings
++        if os.path.isfile(gradle_properties_path):
++            logging.info(f"Appending ppc64le fix to existing gradle.properties for {self.component.name}")
++            with open(gradle_properties_path, 'a') as f:
++                f.write("\n" + gradle_properties_content)
++        else:
++            logging.info(f"Creating gradle.properties with ppc64le fix for {self.component.name}")
++            with open(gradle_properties_path, 'w') as f:
++                f.write(gradle_properties_content)
++
++    def _apply_kotlin_version_fix(self) -> None:
++        """
++        Update Kotlin version from 2.2.0 to 2.2.20 in build.gradle for specific plugins.
++        Only applies to plugins that use Kotlin and need the version update.
++        """
++        # List of plugins that need Kotlin version update
++        KOTLIN_PLUGINS = ['k-NN', 'cross-cluster-replication', 'opensearch-observability',
++                         'opensearch-reports', 'alerting', 'index-management']
++
++        if self.component.name not in KOTLIN_PLUGINS:
++            logging.debug(f"Skipping Kotlin version fix for {self.component.name} - not in Kotlin plugins list")
++            return
++
++        build_gradle_path = os.path.join(self.git_repo.working_directory, "build.gradle")
++
++        if not os.path.isfile(build_gradle_path):
++            logging.warning(f"build.gradle not found for {self.component.name} at {build_gradle_path}")
++            return
++
++        # Read the current build.gradle content
++        with open(build_gradle_path, 'r') as f:
++            content = f.read()
++
++        # Check if Kotlin 2.2.0 is present
++        if '2.2.0' not in content:
++            logging.debug(f"Kotlin version 2.2.0 not found in build.gradle for {self.component.name}")
++            return
++
++        # Replace Kotlin version 2.2.0 with 2.2.20
++        updated_content = content.replace('2.2.0', '2.2.20')
++
++        # Write the updated content back
++        with open(build_gradle_path, 'w') as f:
++            f.write(updated_content)
++
++        logging.info(f"Updated Kotlin version from 2.2.0 to 2.2.20 in build.gradle for {self.component.name}")
++
+     def build(self, build_recorder: BuildRecorder) -> None:
+ 
+         # List of components whose build scripts support `-d` parameter
+diff --git a/src/ci_workflow/ci_check_gradle_dependencies.py b/src/ci_workflow/ci_check_gradle_dependencies.py
+index 5295b85c..b4e1949a 100644
+--- a/src/ci_workflow/ci_check_gradle_dependencies.py
++++ b/src/ci_workflow/ci_check_gradle_dependencies.py
+@@ -27,7 +27,7 @@ class CiCheckGradleDependencies(CiCheckSource):
+             filter(
+                 None,
+                 [
+-                    f"./gradlew {self.gradle_project or ''}:dependencies",
++                    f"./gradlew --console=plain {self.gradle_project or ''}:dependencies",
+                     f"-Dopensearch.version={self.target.opensearch_version}",
+                     f"-Dbuild.snapshot={str(self.target.snapshot).lower()}",
+                     f"-Dbuild.version_qualifier={str(self.target.qualifier)}" if self.target.qualifier else None,
+diff --git a/src/ci_workflow/ci_check_gradle_properties.py b/src/ci_workflow/ci_check_gradle_properties.py
+index 4eb073c7..19bb99b1 100644
+--- a/src/ci_workflow/ci_check_gradle_properties.py
++++ b/src/ci_workflow/ci_check_gradle_properties.py
+@@ -24,7 +24,7 @@ class CiCheckGradleProperties(CiCheckSource):
+             filter(
+                 None,
+                 [
+-                    "./gradlew properties",
++                    "./gradlew --console=plain properties",
+                     f"-Dopensearch.version={self.target.opensearch_version}",
+                     f"-Dbuild.snapshot={str(self.target.snapshot).lower()}",
+                     f"-Dbuild.version_qualifier={str(self.target.qualifier)}" if self.target.qualifier else None,
+diff --git a/src/ci_workflow/ci_check_gradle_publish_to_maven_local.py b/src/ci_workflow/ci_check_gradle_publish_to_maven_local.py
+index dfdc6fab..2ba2e07b 100644
+--- a/src/ci_workflow/ci_check_gradle_publish_to_maven_local.py
++++ b/src/ci_workflow/ci_check_gradle_publish_to_maven_local.py
+@@ -14,7 +14,7 @@ class CiCheckGradlePublishToMavenLocal(CiCheckSource):
+             filter(
+                 None,
+                 [
+-                    "./gradlew publishToMavenLocal",
++                    "./gradlew --console=plain publishToMavenLocal",
+                     f"-Dopensearch.version={self.target.opensearch_version}",
+                     f"-Dbuild.snapshot={str(self.target.snapshot).lower()}",
+                     f"-Dbuild.version_qualifier={str(self.target.qualifier)}" if self.target.qualifier else None,
+diff --git a/src/manifests_workflow/component_opensearch.py b/src/manifests_workflow/component_opensearch.py
+index c382e106..71d5e2af 100644
+--- a/src/manifests_workflow/component_opensearch.py
++++ b/src/manifests_workflow/component_opensearch.py
+@@ -64,6 +64,6 @@ class ComponentOpenSearch(Component):
+ 
+     @classmethod
+     def gradle_cmd(self, target: str, props: dict = {}) -> str:
+-        cmd = [f"./gradlew {target}"]
++        cmd = [f"./gradlew --console=plain {target}"]
+         cmd.extend([f"-D{k}={v}" for k, v in props.items()])
+         return " ".join(cmd)
+diff --git a/tests/tests_ci_workflow/test_ci_check_gradle_dependencies.py b/tests/tests_ci_workflow/test_ci_check_gradle_dependencies.py
+index 808fbd38..ed4d0f4e 100644
+--- a/tests/tests_ci_workflow/test_ci_check_gradle_dependencies.py
++++ b/tests/tests_ci_workflow/test_ci_check_gradle_dependencies.py
+@@ -33,34 +33,34 @@ class TestCiCheckGradleDependencies(unittest.TestCase):
+     def test_executes_gradle_dependencies(self) -> None:
+         check = self.__mock_dependencies()
+         output = unittest.mock.create_autospec(check.git_repo.output)
+-        output.assert_called_once_with('./gradlew :dependencies -Dopensearch.version=1.1.0 -Dbuild.snapshot=false --configuration compileOnly | grep -e "---"')
++        output.assert_called_once_with('./gradlew --console=plain :dependencies -Dopensearch.version=1.1.0 -Dbuild.snapshot=false --configuration compileOnly | grep -e "---"')
+ 
+     def test_executes_gradle_dependencies_snapshot(self) -> None:
+         check = self.__mock_dependencies(snapshot=True)
+         output = unittest.mock.create_autospec(check.git_repo.output)
+         output.assert_called_once_with(
+-            './gradlew :dependencies -Dopensearch.version=1.1.0-SNAPSHOT -Dbuild.snapshot=true --configuration compileOnly | grep -e "---"'
++            './gradlew --console=plain :dependencies -Dopensearch.version=1.1.0-SNAPSHOT -Dbuild.snapshot=true --configuration compileOnly | grep -e "---"'
+         )
+ 
+     def test_executes_gradle_dependencies_qualifier_snapshot(self) -> None:
+         check = self.__mock_dependencies(qualifier="alpha1", snapshot=True)
+         output = unittest.mock.create_autospec(check.git_repo.output)
+         output.assert_called_once_with(
+-            './gradlew :dependencies -Dopensearch.version=1.1.0-alpha1-SNAPSHOT -Dbuild.snapshot=true -Dbuild.version_qualifier=alpha1 --configuration compileOnly | grep -e "---"'
++            './gradlew --console=plain :dependencies -Dopensearch.version=1.1.0-alpha1-SNAPSHOT -Dbuild.snapshot=true -Dbuild.version_qualifier=alpha1 --configuration compileOnly | grep -e "---"'
+         )
+ 
+     def test_executes_gradle_dependencies_project(self) -> None:
+         check = self.__mock_dependencies(snapshot=True, gradle_project="project")
+         output = unittest.mock.create_autospec(check.git_repo.output)
+         output.assert_called_once_with(
+-            './gradlew project:dependencies -Dopensearch.version=1.1.0-SNAPSHOT -Dbuild.snapshot=true --configuration compileOnly | grep -e "---"'
++            './gradlew --console=plain project:dependencies -Dopensearch.version=1.1.0-SNAPSHOT -Dbuild.snapshot=true --configuration compileOnly | grep -e "---"'
+         )
+ 
+     def test_executes_gradle_dependencies_project_qualifier(self) -> None:
+         check = self.__mock_dependencies(qualifier="alpha1", snapshot=True, gradle_project="project")
+         output = unittest.mock.create_autospec(check.git_repo.output)
+         output.assert_called_once_with(
+-            './gradlew project:dependencies -Dopensearch.version=1.1.0-alpha1-SNAPSHOT -Dbuild.snapshot=true -Dbuild.version_qualifier=alpha1 --configuration compileOnly | grep -e "---"'
++            './gradlew --console=plain project:dependencies -Dopensearch.version=1.1.0-alpha1-SNAPSHOT -Dbuild.snapshot=true -Dbuild.version_qualifier=alpha1 --configuration compileOnly | grep -e "---"'
+         )
+ 
+     def test_loads_tree(self) -> None:
+diff --git a/tests/tests_ci_workflow/test_ci_check_gradle_dependencies_opensearch.py b/tests/tests_ci_workflow/test_ci_check_gradle_dependencies_opensearch.py
+index 46c54e85..db4d6016 100644
+--- a/tests/tests_ci_workflow/test_ci_check_gradle_dependencies_opensearch.py
++++ b/tests/tests_ci_workflow/test_ci_check_gradle_dependencies_opensearch.py
+@@ -59,7 +59,7 @@ class TestCiCheckGradleDependenciesOpenSearchVersion(unittest.TestCase):
+         )
+         output = unittest.mock.create_autospec(check.git_repo.output)
+         output.assert_called_once_with(
+-            './gradlew :dependencies -Dopensearch.version=1.1.0-SNAPSHOT -Dbuild.snapshot=true --configuration compileOnly | grep -e "---"'
++            './gradlew --console=plain :dependencies -Dopensearch.version=1.1.0-SNAPSHOT -Dbuild.snapshot=true --configuration compileOnly | grep -e "---"'
+         )
+ 
+     def test_executes_gradle_command_qualifier(self) -> None:
+@@ -71,7 +71,7 @@ class TestCiCheckGradleDependenciesOpenSearchVersion(unittest.TestCase):
+         )
+         output = unittest.mock.create_autospec(check.git_repo.output)
+         output.assert_called_once_with(
+-            './gradlew :dependencies -Dopensearch.version=2.0.0-alpha1-SNAPSHOT -Dbuild.snapshot=true -Dbuild.version_qualifier=alpha1 --configuration compileOnly | grep -e "---"'
++            './gradlew --console=plain :dependencies -Dopensearch.version=2.0.0-alpha1-SNAPSHOT -Dbuild.snapshot=true -Dbuild.version_qualifier=alpha1 --configuration compileOnly | grep -e "---"'
+         )
+ 
+     def test_executes_gradle_command_with_arg(self) -> None:
+@@ -83,7 +83,7 @@ class TestCiCheckGradleDependenciesOpenSearchVersion(unittest.TestCase):
+         )
+         output = unittest.mock.create_autospec(check.git_repo.output)
+         output.assert_called_once_with(
+-            './gradlew plugin:dependencies -Dopensearch.version=1.1.0-SNAPSHOT -Dbuild.snapshot=true --configuration compileOnly | grep -e "---"'
++            './gradlew --console=plain plugin:dependencies -Dopensearch.version=1.1.0-SNAPSHOT -Dbuild.snapshot=true --configuration compileOnly | grep -e "---"'
+         )
+ 
+     def test_executes_gradle_command_qualifier_with_arg(self) -> None:
+@@ -95,5 +95,5 @@ class TestCiCheckGradleDependenciesOpenSearchVersion(unittest.TestCase):
+         )
+         output = unittest.mock.create_autospec(check.git_repo.output)
+         output.assert_called_once_with(
+-            './gradlew plugin:dependencies -Dopensearch.version=2.0.0-alpha1-SNAPSHOT -Dbuild.snapshot=true -Dbuild.version_qualifier=alpha1 --configuration compileOnly | grep -e "---"'
++            './gradlew --console=plain plugin:dependencies -Dopensearch.version=2.0.0-alpha1-SNAPSHOT -Dbuild.snapshot=true -Dbuild.version_qualifier=alpha1 --configuration compileOnly | grep -e "---"'
+         )
+diff --git a/tests/tests_ci_workflow/test_ci_check_gradle_properties.py b/tests/tests_ci_workflow/test_ci_check_gradle_properties.py
+index 16c3a918..5d4fa4cc 100644
+--- a/tests/tests_ci_workflow/test_ci_check_gradle_properties.py
++++ b/tests/tests_ci_workflow/test_ci_check_gradle_properties.py
+@@ -27,7 +27,7 @@ class TestCiCheckGradleProperties(unittest.TestCase):
+             target=CiTarget(version="1.1.0", name="opensearch", qualifier=None, snapshot=False),
+         )
+ 
+-        git_repo.output.assert_called_once_with("./gradlew properties -Dopensearch.version=1.1.0 -Dbuild.snapshot=false")
++        git_repo.output.assert_called_once_with("./gradlew --console=plain properties -Dopensearch.version=1.1.0 -Dbuild.snapshot=false")
+ 
+     def test_executes_gradle_properties_snapshot(self) -> None:
+         git_repo = MagicMock()
+@@ -39,7 +39,7 @@ class TestCiCheckGradleProperties(unittest.TestCase):
+             target=CiTarget(version="1.1.0", name="opensearch", qualifier=None, snapshot=True),
+         )
+ 
+-        git_repo.output.assert_called_once_with("./gradlew properties -Dopensearch.version=1.1.0-SNAPSHOT -Dbuild.snapshot=true")
++        git_repo.output.assert_called_once_with("./gradlew --console=plain properties -Dopensearch.version=1.1.0-SNAPSHOT -Dbuild.snapshot=true")
+ 
+     def test_executes_gradle_properties_qualifier_snapshot(self) -> None:
+         git_repo = MagicMock()
+@@ -51,4 +51,4 @@ class TestCiCheckGradleProperties(unittest.TestCase):
+             target=CiTarget(version="2.0.0", name="opensearch", qualifier="alpha1", snapshot=True),
+         )
+ 
+-        git_repo.output.assert_called_once_with("./gradlew properties -Dopensearch.version=2.0.0-alpha1-SNAPSHOT -Dbuild.snapshot=true -Dbuild.version_qualifier=alpha1")
++        git_repo.output.assert_called_once_with("./gradlew --console=plain properties -Dopensearch.version=2.0.0-alpha1-SNAPSHOT -Dbuild.snapshot=true -Dbuild.version_qualifier=alpha1")
+diff --git a/tests/tests_ci_workflow/test_ci_check_gradle_publish_to_maven_local.py b/tests/tests_ci_workflow/test_ci_check_gradle_publish_to_maven_local.py
+index 0991e0f9..847d1b8f 100644
+--- a/tests/tests_ci_workflow/test_ci_check_gradle_publish_to_maven_local.py
++++ b/tests/tests_ci_workflow/test_ci_check_gradle_publish_to_maven_local.py
+@@ -21,7 +21,7 @@ class TestCiCheckGradlePublishToMavenLocal(unittest.TestCase):
+         )
+         check.check()
+         exec_command = unittest.mock.create_autospec(check.git_repo.execute)
+-        exec_command.assert_called_once_with("./gradlew publishToMavenLocal -Dopensearch.version=1.1.0 -Dbuild.snapshot=false")
++        exec_command.assert_called_once_with("./gradlew --console=plain publishToMavenLocal -Dopensearch.version=1.1.0 -Dbuild.snapshot=false")
+ 
+     def test_executes_gradle_command_snapshot(self) -> None:
+         check = CiCheckGradlePublishToMavenLocal(
+@@ -31,7 +31,7 @@ class TestCiCheckGradlePublishToMavenLocal(unittest.TestCase):
+         )
+         check.check()
+         exec_command = unittest.mock.create_autospec(check.git_repo.execute)
+-        exec_command.assert_called_once_with("./gradlew publishToMavenLocal -Dopensearch.version=1.1.0-SNAPSHOT -Dbuild.snapshot=true")
++        exec_command.assert_called_once_with("./gradlew --console=plain publishToMavenLocal -Dopensearch.version=1.1.0-SNAPSHOT -Dbuild.snapshot=true")
+ 
+     def test_executes_gradle_command_qualifier_snapshot(self) -> None:
+         check = CiCheckGradlePublishToMavenLocal(
+@@ -41,4 +41,4 @@ class TestCiCheckGradlePublishToMavenLocal(unittest.TestCase):
+         )
+         check.check()
+         exec_command = unittest.mock.create_autospec(check.git_repo.execute)
+-        exec_command.assert_called_once_with("./gradlew publishToMavenLocal -Dopensearch.version=2.0.0-alpha1-SNAPSHOT -Dbuild.snapshot=true -Dbuild.version_qualifier=alpha1")
++        exec_command.assert_called_once_with("./gradlew --console=plain publishToMavenLocal -Dopensearch.version=2.0.0-alpha1-SNAPSHOT -Dbuild.snapshot=true -Dbuild.version_qualifier=alpha1")
+diff --git a/tests/tests_manifests_workflow/test_component_opensearch.py b/tests/tests_manifests_workflow/test_component_opensearch.py
+index 267d8a84..8f7a5721 100644
+--- a/tests/tests_manifests_workflow/test_component_opensearch.py
++++ b/tests/tests_manifests_workflow/test_component_opensearch.py
+@@ -42,16 +42,16 @@ class TestComponentOpenSearch(unittest.TestCase):
+         )
+ 
+     def test_gradle_cmd_target(self) -> None:
+-        self.assertEqual(ComponentOpenSearch.gradle_cmd("properties"), "./gradlew properties")
++        self.assertEqual(ComponentOpenSearch.gradle_cmd("properties"), "./gradlew --console=plain properties")
+ 
+     def test_gradle_cmd_prop(self) -> None:
+         self.assertEqual(
+             ComponentOpenSearch.gradle_cmd("properties", {"build.snapshot": "false"}),
+-            "./gradlew properties -Dbuild.snapshot=false",
++            "./gradlew --console=plain properties -Dbuild.snapshot=false",
+         )
+ 
+     def test_gradle_cmd_props(self) -> None:
+         self.assertEqual(
+             ComponentOpenSearch.gradle_cmd("properties", {"build.snapshot": "false", "opensearch.version": "1.0"}),
+-            "./gradlew properties -Dbuild.snapshot=false -Dopensearch.version=1.0",
++            "./gradlew --console=plain properties -Dbuild.snapshot=false -Dopensearch.version=1.0",
+         )
+-- 
+2.51.2
+
+
+From b766ff07b1ca8dd7d4762a72785d139c610c5ca9 Mon Sep 17 00:00:00 2001
+From: irapandey <ira.pandey2001@gmail.com>
+Date: Mon, 7 Sep 2026 11:18:51 +0530
+Subject: [PATCH 2/2] fips
+
+Signed-off-by: irapandey <ira.pandey2001@gmail.com>
+---
+ opensearch.patch                              | 624 ++++++++++++++++++
+ .../build.pre20260429.sh                      |   8 +-
+ .../components/OpenSearch-DataFusion/build.sh |   8 +-
+ scripts/components/OpenSearch/build.sh        |   8 +-
+ .../components/core-plugins-sandbox/build.sh  |   4 +-
+ .../components/notifications-core/build.sh    |   6 +-
+ scripts/components/notifications/build.sh     |   6 +-
+ .../components/opensearch-jvector/build.sh    |   9 +-
+ scripts/default/opensearch/build.sh           |   6 +-
+ security.patch                                | 603 +++++++++++++++++
+ 10 files changed, 1253 insertions(+), 29 deletions(-)
+
+diff --git a/opensearch.patch b/opensearch.patch
+index e4532414..6d799007 100644
+--- a/opensearch.patch
++++ b/opensearch.patch
+@@ -92,3 +92,627 @@ index 00000000000..ba087f04a44
+ -- 
+ 2.51.2
+ 
++
++From 49176b4e498096bd796ba37b771937347dbc83db Mon Sep 17 00:00:00 2001
++From: irapandey <ira.pandey2001@gmail.com>
++Date: Mon, 7 Sep 2026 17:14:20 +0530
++Subject: [PATCH 2/2] fips
++
++Signed-off-by: irapandey <ira.pandey2001@gmail.com>
++---
++ .../opensearch/gradle/test/rest/RestTestUtil.java |  7 +------
++ client/rest-high-level/build.gradle               |  5 ++---
++ client/rest-http-client/build.gradle              |  5 ++---
++ client/rest/build.gradle                          |  5 ++---
++ client/sniffer/build.gradle                       |  5 ++---
++ client/test/build.gradle                          |  2 +-
++ .../org/opensearch/client/RestClientTestCase.java | 13 ++++++++++---
++ .../tools/fips-demo-installer-cli/build.gradle    |  2 +-
++ distribution/tools/keystore-cli/build.gradle      |  2 +-
++ distribution/tools/plugin-cli/build.gradle        |  4 ++--
++ .../tools/cli/plugin/InstallPluginCommand.java    |  6 +++---
++ .../cli/plugin/InstallPluginCommandTests.java     |  8 ++++----
++ gradle/libs.versions.toml                         | 11 +++++------
++ libs/ssl-config/build.gradle                      |  7 +++----
++ .../java/org/opensearch/common/ssl/PemUtils.java  | 15 +++++----------
++ modules/reindex/build.gradle                      |  7 +++----
++ modules/transport-grpc/build.gradle               |  5 ++---
++ modules/transport-netty4/build.gradle             |  5 ++---
++ plugins/arrow-flight-rpc/build.gradle             |  5 ++---
++ plugins/discovery-ec2/build.gradle                |  5 ++---
++ plugins/discovery-gce/build.gradle                |  5 ++---
++ plugins/ingestion-kinesis/build.gradle            |  5 ++---
++ plugins/repository-gcs/build.gradle               |  5 ++---
++ plugins/repository-s3/build.gradle                |  5 ++---
++ plugins/transport-reactor-netty4/build.gradle     |  7 +++----
++ qa/wildfly/build.gradle                           |  5 ++---
++ server/build.gradle                               |  5 ++---
++ test/framework/build.gradle                       |  6 +++---
++ .../main/java/org/opensearch/fips/FipsMode.java   | 11 +++++++----
++ .../java/org/opensearch/test/KeyStoreUtils.java   |  4 ++--
++ 30 files changed, 82 insertions(+), 100 deletions(-)
++
++diff --git a/buildSrc/src/main/java/org/opensearch/gradle/test/rest/RestTestUtil.java b/buildSrc/src/main/java/org/opensearch/gradle/test/rest/RestTestUtil.java
++index c122ce88d46..4830041d507 100644
++--- a/buildSrc/src/main/java/org/opensearch/gradle/test/rest/RestTestUtil.java
+++++ b/buildSrc/src/main/java/org/opensearch/gradle/test/rest/RestTestUtil.java
++@@ -106,12 +106,7 @@ public class RestTestUtil {
++             project.getDependencies()
++                 .add(
++                     sourceSet.getImplementationConfigurationName(),
++-                    "org.bouncycastle:bc-fips:" + VersionProperties.getVersions().get("bouncycastle_jce")
++-                );
++-            project.getDependencies()
++-                .add(
++-                    sourceSet.getImplementationConfigurationName(),
++-                    "org.bouncycastle:bctls-fips:" + VersionProperties.getVersions().get("bouncycastle_tls")
+++                    "org.bouncycastle:bcprov-jdk18on:" + VersionProperties.getVersions().get("bouncycastle")
++                 );
++         }
++     }
++diff --git a/client/rest-high-level/build.gradle b/client/rest-high-level/build.gradle
++index 965cd99b647..b44c3fe5719 100644
++--- a/client/rest-high-level/build.gradle
+++++ b/client/rest-high-level/build.gradle
++@@ -67,9 +67,8 @@ dependencies {
++   testImplementation "junit:junit:${versions.junit}"
++   //this is needed to make RestHighLevelClientTests#testApiNamingConventions work from IDEs
++   testImplementation project(":rest-api-spec")
++-  testFipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  testFipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ }
++ 
++ tasks.named('forbiddenApisMain').configure {
++diff --git a/client/rest-http-client/build.gradle b/client/rest-http-client/build.gradle
++index 69a6813f032..3cf8ea8256c 100644
++--- a/client/rest-http-client/build.gradle
+++++ b/client/rest-http-client/build.gradle
++@@ -29,9 +29,8 @@ dependencies {
++   api "commons-codec:commons-codec:${versions.commonscodec}"
++   api "commons-logging:commons-logging:${versions.commonslogging}"
++   api "org.slf4j:slf4j-api:${versions.slf4j}"
++-  fipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  fipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  fipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  fipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  fipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ 
++   // reactor
++   api "io.projectreactor:reactor-core:${versions.reactor}"
++diff --git a/client/rest/build.gradle b/client/rest/build.gradle
++index 5a0a3c21722..dfbfd1862f8 100644
++--- a/client/rest/build.gradle
+++++ b/client/rest/build.gradle
++@@ -52,9 +52,8 @@ dependencies {
++   api "commons-codec:commons-codec:${versions.commonscodec}"
++   api "commons-logging:commons-logging:${versions.commonslogging}"
++   api "org.slf4j:slf4j-api:${versions.slf4j}"
++-  fipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  fipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  fipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  fipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  fipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ 
++   // reactor
++   api "io.projectreactor:reactor-core:${versions.reactor}"
++diff --git a/client/sniffer/build.gradle b/client/sniffer/build.gradle
++index 7731d98c59f..1761b1fd66f 100644
++--- a/client/sniffer/build.gradle
+++++ b/client/sniffer/build.gradle
++@@ -56,9 +56,8 @@ dependencies {
++   testImplementation "org.objenesis:objenesis:${versions.objenesis}"
++   testImplementation "net.bytebuddy:byte-buddy:${versions.bytebuddy}"
++   testImplementation "net.bytebuddy:byte-buddy-agent:${versions.bytebuddy}"
++-  testFipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  testFipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ }
++ 
++ tasks.named('forbiddenApisMain').configure {
++diff --git a/client/test/build.gradle b/client/test/build.gradle
++index 41a4b1545e8..f0da9353e6d 100644
++--- a/client/test/build.gradle
+++++ b/client/test/build.gradle
++@@ -44,7 +44,7 @@ dependencies {
++   api "com.carrotsearch.randomizedtesting:randomizedtesting-runner:${versions.randomizedrunner}"
++   api "junit:junit:${versions.junit}"
++   api "org.hamcrest:hamcrest:${versions.hamcrest}"
++-  fipsOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
+++  implementation "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
++ }
++ 
++ tasks.named('forbiddenApisMain').configure {
++diff --git a/client/test/src/main/java/org/opensearch/client/RestClientTestCase.java b/client/test/src/main/java/org/opensearch/client/RestClientTestCase.java
++index e08a46f086e..712cb3d0c6e 100644
++--- a/client/test/src/main/java/org/opensearch/client/RestClientTestCase.java
+++++ b/client/test/src/main/java/org/opensearch/client/RestClientTestCase.java
++@@ -46,8 +46,6 @@ import com.carrotsearch.randomizedtesting.annotations.ThreadLeakZombies;
++ import com.carrotsearch.randomizedtesting.annotations.TimeoutSuite;
++ 
++ import org.apache.hc.core5.http.Header;
++-import org.bouncycastle.crypto.CryptoServicesRegistrar;
++-
++ import java.util.ArrayList;
++ import java.util.HashMap;
++ import java.util.HashSet;
++@@ -120,7 +118,16 @@ public abstract class RestClientTestCase extends RandomizedTest {
++     }
++ 
++     protected static boolean inFipsJvm() {
++-        return CryptoServicesRegistrar.isInApprovedOnlyMode();
+++        try {
+++            // Equivalent to: boolean approvedOnly = CryptoServicesRegistrar.isInApprovedOnlyMode()
+++            // Use reflection to avoid a compile-time dependency on bc-fips, which is only on the
+++            // classpath at runtime when running in FIPS mode.
+++            Class<?> registrarClass = Class.forName("org.bouncycastle.crypto.CryptoServicesRegistrar");
+++            java.lang.reflect.Method isApprovedOnlyMethod = registrarClass.getMethod("isInApprovedOnlyMode");
+++            return (Boolean) isApprovedOnlyMethod.invoke(null);
+++        } catch (ReflectiveOperationException | NoClassDefFoundError e) {
+++            return false;
+++        }
++     }
++ 
++     private static void addValueToListEntry(final Map<String, List<String>> map, final String name, final String value) {
++diff --git a/distribution/tools/fips-demo-installer-cli/build.gradle b/distribution/tools/fips-demo-installer-cli/build.gradle
++index 3e18fb9bb5c..cba03253bbc 100644
++--- a/distribution/tools/fips-demo-installer-cli/build.gradle
+++++ b/distribution/tools/fips-demo-installer-cli/build.gradle
++@@ -15,7 +15,7 @@ dependencies {
++   api project(":libs:opensearch-common")
++   api project(':distribution:tools:java-version-checker')
++   api "info.picocli:picocli:${versions.picocli}"
++-  api "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
+++  api "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
++ 
++   testImplementation project(":test:framework")
++ }
++diff --git a/distribution/tools/keystore-cli/build.gradle b/distribution/tools/keystore-cli/build.gradle
++index 5fb9afb5bbd..2ad090ebbe7 100644
++--- a/distribution/tools/keystore-cli/build.gradle
+++++ b/distribution/tools/keystore-cli/build.gradle
++@@ -38,5 +38,5 @@ dependencies {
++   testRuntimeOnly("com.google.guava:guava:${versions.guava}") {
++     transitive = false
++   }
++-  testFipsRuntimeOnly("org.bouncycastle:bc-fips:${versions.bouncycastle_jce}")
+++  testFipsRuntimeOnly("org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}")
++ }
++diff --git a/distribution/tools/plugin-cli/build.gradle b/distribution/tools/plugin-cli/build.gradle
++index adad705e8cf..5efa91da72e 100644
++--- a/distribution/tools/plugin-cli/build.gradle
+++++ b/distribution/tools/plugin-cli/build.gradle
++@@ -38,8 +38,8 @@ dependencies {
++   compileOnly project(":server")
++   compileOnly project(":libs:opensearch-cli")
++   api project(":libs:agent-sm:agent-policy")
++-  api "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  api "org.bouncycastle:bcpg-fips:${versions.bouncycastle_pg}"
+++  api "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  api "org.bouncycastle:bcpg-jdk18on:${versions.bouncycastle}"
++   testImplementation project(":test:framework")
++   testImplementation 'com.google.jimfs:jimfs:1.3.1'
++   testRuntimeOnly("com.google.guava:guava:${versions.guava}") {
++diff --git a/distribution/tools/plugin-cli/src/main/java/org/opensearch/tools/cli/plugin/InstallPluginCommand.java b/distribution/tools/plugin-cli/src/main/java/org/opensearch/tools/cli/plugin/InstallPluginCommand.java
++index dc2d389a8e2..45df2caf64f 100644
++--- a/distribution/tools/plugin-cli/src/main/java/org/opensearch/tools/cli/plugin/InstallPluginCommand.java
+++++ b/distribution/tools/plugin-cli/src/main/java/org/opensearch/tools/cli/plugin/InstallPluginCommand.java
++@@ -40,7 +40,7 @@ import org.apache.lucene.search.spell.LevenshteinDistance;
++ import org.apache.lucene.util.CollectionUtil;
++ import org.apache.lucene.util.Constants;
++ import org.bouncycastle.bcpg.ArmoredInputStream;
++-import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+++import org.bouncycastle.jce.provider.BouncyCastleProvider;
++ import org.bouncycastle.openpgp.PGPException;
++ import org.bouncycastle.openpgp.PGPPublicKey;
++ import org.bouncycastle.openpgp.PGPPublicKeyRingCollection;
++@@ -634,8 +634,8 @@ class InstallPluginCommand extends EnvironmentAwareCommand {
++             // compute the signature of the downloaded plugin zip
++             final PGPPublicKeyRingCollection collection = new PGPPublicKeyRingCollection(ain, new JcaKeyFingerprintCalculator());
++             final PGPPublicKey key = collection.getPublicKey(signature.getKeyID());
++-            Security.addProvider(new BouncyCastleFipsProvider());
++-            signature.init(new JcaPGPContentVerifierBuilderProvider().setProvider("BCFIPS"), key);
+++            Security.addProvider(new BouncyCastleProvider());
+++            signature.init(new JcaPGPContentVerifierBuilderProvider().setProvider("BC"), key);
++             final byte[] buffer = new byte[1024];
++             int read;
++             while ((read = fin.read(buffer)) != -1) {
++diff --git a/distribution/tools/plugin-cli/src/test/java/org/opensearch/tools/cli/plugin/InstallPluginCommandTests.java b/distribution/tools/plugin-cli/src/test/java/org/opensearch/tools/cli/plugin/InstallPluginCommandTests.java
++index 1e5b679dd56..8f3d3b3ff53 100644
++--- a/distribution/tools/plugin-cli/src/test/java/org/opensearch/tools/cli/plugin/InstallPluginCommandTests.java
+++++ b/distribution/tools/plugin-cli/src/test/java/org/opensearch/tools/cli/plugin/InstallPluginCommandTests.java
++@@ -41,7 +41,7 @@ import org.apache.lucene.tests.util.LuceneTestCase;
++ import org.bouncycastle.bcpg.ArmoredOutputStream;
++ import org.bouncycastle.bcpg.BCPGOutputStream;
++ import org.bouncycastle.bcpg.HashAlgorithmTags;
++-import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+++import org.bouncycastle.jce.provider.BouncyCastleProvider;
++ import org.bouncycastle.openpgp.PGPEncryptedData;
++ import org.bouncycastle.openpgp.PGPException;
++ import org.bouncycastle.openpgp.PGPKeyPair;
++@@ -144,8 +144,8 @@ import static org.hamcrest.Matchers.startsWith;
++ public class InstallPluginCommandTests extends OpenSearchTestCase {
++ 
++     static {
++-        if (Security.getProvider(BouncyCastleFipsProvider.PROVIDER_NAME) == null) {
++-            Security.addProvider(new BouncyCastleFipsProvider());
+++        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+++            Security.addProvider(new BouncyCastleProvider());
++         }
++     }
++ 
++@@ -1426,7 +1426,7 @@ public class InstallPluginCommandTests extends OpenSearchTestCase {
++             null,
++             null,
++             new JcaPGPContentSignerBuilder(pkp.getPublicKey().getAlgorithm(), HashAlgorithmTags.SHA256),
++-            new JcePBESecretKeyEncryptorBuilder(PGPEncryptedData.AES_192, sha1Calc).setProvider("BCFIPS").build("passphrase".toCharArray())
+++            new JcePBESecretKeyEncryptorBuilder(PGPEncryptedData.AES_192, sha1Calc).setProvider("BC").build("passphrase".toCharArray())
++         );
++     }
++ 
++diff --git a/gradle/libs.versions.toml b/gradle/libs.versions.toml
++index 18624c5df6d..465d011155c 100644
++--- a/gradle/libs.versions.toml
+++++ b/gradle/libs.versions.toml
++@@ -74,6 +74,7 @@ bouncycastle_tls  = "2.1.20"
++ bouncycastle_pkix = "2.1.9"
++ bouncycastle_pg   = "2.1.11"
++ bouncycastle_util = "2.1.4"
+++bouncycastle      = "1.85"
++ password4j        = "1.8.3"
++ picocli           = "4.7.7"
++ 
++@@ -119,11 +120,10 @@ asm-commons = { group = "org.ow2.asm", name = "asm-commons", version.ref = "asm"
++ asm-core = { group = "org.ow2.asm", name = "asm", version.ref = "asm" }
++ asm-tree = { group = "org.ow2.asm", name = "asm-tree", version.ref = "asm" }
++ asm-util = { group = "org.ow2.asm", name = "asm-util", version.ref = "asm" }
++-bouncycastle-jce = { group = "org.bouncycastle", name = "bc-fips", version.ref = "bouncycastle_jce"}
++-bouncycastle-tls = { group = "org.bouncycastle", name = "bctls-fips", version.ref = "bouncycastle_tls"}
++-bouncycastle-pkix = { group = "org.bouncycastle", name = "bcpkix-fips", version.ref = "bouncycastle_pkix"}
++-bouncycastle-pg = { group = "org.bouncycastle", name = "bcpg-fips", version.ref = "bouncycastle_pg"}
++-bouncycastle-util = { group = "org.bouncycastle", name = "bcutil-fips", version.ref = "bouncycastle_util"}
+++bouncycastle-jce = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle"}
+++bouncycastle-pkix = { group = "org.bouncycastle", name = "bcpkix-jdk18on", version.ref = "bouncycastle"}
+++bouncycastle-pg = { group = "org.bouncycastle", name = "bcpg-jdk18on", version.ref = "bouncycastle"}
+++bouncycastle-util = { group = "org.bouncycastle", name = "bcutil-jdk18on", version.ref = "bouncycastle"}
++ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
++ hamcrest = { group = "org.hamcrest", name = "hamcrest", version.ref = "hamcrest" }
++ hdrhistogram = { group = "org.hdrhistogram", name = "HdrHistogram", version.ref = "hdrhistogram" }
++@@ -257,7 +257,6 @@ reactornetty = [
++ 
++ bouncycastle = [
++     "bouncycastle-jce",
++-    "bouncycastle-tls",
++     "bouncycastle-pkix",
++     "bouncycastle-pg",
++     "bouncycastle-util"
++diff --git a/libs/ssl-config/build.gradle b/libs/ssl-config/build.gradle
++index 13035db8090..f6c796c6bc6 100644
++--- a/libs/ssl-config/build.gradle
+++++ b/libs/ssl-config/build.gradle
++@@ -35,10 +35,9 @@ apply from: "$rootDir/gradle/fips.gradle"
++ 
++ dependencies {
++   api project(':libs:opensearch-common')
++-  fipsOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  fipsOnly "org.bouncycastle:bcpkix-fips:${versions.bouncycastle_pkix}"
++-  fipsOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  fipsOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  implementation "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  implementation "org.bouncycastle:bcpkix-jdk18on:${versions.bouncycastle}"
+++  implementation "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ 
++   testImplementation(project(":test:framework")) {
++     exclude group: 'org.opensearch', module: 'opensearch-ssl-config'
++diff --git a/libs/ssl-config/src/main/java/org/opensearch/common/ssl/PemUtils.java b/libs/ssl-config/src/main/java/org/opensearch/common/ssl/PemUtils.java
++index d6559aaf0fc..c821c679dd2 100644
++--- a/libs/ssl-config/src/main/java/org/opensearch/common/ssl/PemUtils.java
+++++ b/libs/ssl-config/src/main/java/org/opensearch/common/ssl/PemUtils.java
++@@ -34,8 +34,7 @@ package org.opensearch.common.ssl;
++ 
++ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
++ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
++-import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
++-import org.bouncycastle.jsse.provider.BouncyCastleJsseProvider;
+++import org.bouncycastle.jce.provider.BouncyCastleProvider;
++ import org.bouncycastle.openssl.PEMEncryptedKeyPair;
++ import org.bouncycastle.openssl.PEMKeyPair;
++ import org.bouncycastle.openssl.PEMParser;
++@@ -64,12 +63,8 @@ import java.util.function.Supplier;
++ final class PemUtils {
++ 
++     static {
++-        var highestPriority = 1;
++-        if (Security.getProvider(BouncyCastleFipsProvider.PROVIDER_NAME) == null) {
++-            Security.insertProviderAt(new BouncyCastleFipsProvider(), highestPriority++);
++-        }
++-        if (Security.getProvider(BouncyCastleJsseProvider.PROVIDER_NAME) == null) {
++-            Security.insertProviderAt(new BouncyCastleJsseProvider(), highestPriority);
+++        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+++            Security.addProvider(new BouncyCastleProvider());
++         }
++     }
++ 
++@@ -126,12 +121,12 @@ final class PemUtils {
++             switch (object) {
++                 case PKCS8EncryptedPrivateKeyInfo privateKeyInfo -> {
++                     var inputDecryptorProvider = new JcePKCSPBEInputDecryptorProviderBuilder().setProvider(
++-                        BouncyCastleFipsProvider.PROVIDER_NAME
+++                        BouncyCastleProvider.PROVIDER_NAME
++                     ).build(passwordSupplier.get());
++                     return privateKeyInfo.decryptPrivateKeyInfo(inputDecryptorProvider);
++                 }
++                 case PEMEncryptedKeyPair encryptedKeyPair -> {
++-                    var decryptorProvider = new JcePEMDecryptorProviderBuilder().setProvider(BouncyCastleFipsProvider.PROVIDER_NAME)
+++                    var decryptorProvider = new JcePEMDecryptorProviderBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME)
++                         .build(passwordSupplier.get());
++                     var keyPair = encryptedKeyPair.decryptKeyPair(decryptorProvider);
++                     return keyPair.getPrivateKeyInfo();
++diff --git a/modules/reindex/build.gradle b/modules/reindex/build.gradle
++index 0da5e2ca59b..56d83896950 100644
++--- a/modules/reindex/build.gradle
+++++ b/modules/reindex/build.gradle
++@@ -68,10 +68,9 @@ dependencies {
++   api project(":libs:opensearch-ssl-config")
++   // for http - testing reindex from remote
++   testImplementation project(':modules:transport-netty4')
++-  testFipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcpkix-fips:${versions.bouncycastle_pkix}"
++-  testFipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcpkix-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++   // for parent/child testing
++   testImplementation project(':modules:parent-join')
++ }
++diff --git a/modules/transport-grpc/build.gradle b/modules/transport-grpc/build.gradle
++index d6421b06732..9957d193e3e 100644
++--- a/modules/transport-grpc/build.gradle
+++++ b/modules/transport-grpc/build.gradle
++@@ -37,9 +37,8 @@ dependencies {
++   implementation "io.perfmark:perfmark-api:0.27.0"
++   implementation "org.opensearch:protobufs:${versions.opensearchprotobufs}"
++   testImplementation project(':test:framework')
++-  testFipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  testFipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ }
++ 
++ tasks.named("dependencyLicenses").configure {
++diff --git a/modules/transport-netty4/build.gradle b/modules/transport-netty4/build.gradle
++index ced25865d7f..36f23d752a8 100644
++--- a/modules/transport-netty4/build.gradle
+++++ b/modules/transport-netty4/build.gradle
++@@ -74,9 +74,8 @@ dependencies {
++   api "io.netty:netty-transport:${versions.netty}"
++   api "io.netty:netty-transport-native-unix-common:${versions.netty}"
++ 
++-  testFipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  testFipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ 
++   // Bundle all supported OSes and Archs
++   runtimeOnly "io.netty:netty-codec-native-quic:${versions.netty}:linux-x86_64"
++diff --git a/plugins/arrow-flight-rpc/build.gradle b/plugins/arrow-flight-rpc/build.gradle
++index 50492118a97..62aeae927af 100644
++--- a/plugins/arrow-flight-rpc/build.gradle
+++++ b/plugins/arrow-flight-rpc/build.gradle
++@@ -68,9 +68,8 @@ dependencies {
++   // Javassist for bytecode injection chaos testing
++   internalClusterTestImplementation 'org.javassist:javassist:3.29.2-GA'
++   internalClusterTestImplementation project(':plugins:arrow-base')
++-  testFipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  testFipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ }
++ 
++ tasks.named('test').configure {
++diff --git a/plugins/discovery-ec2/build.gradle b/plugins/discovery-ec2/build.gradle
++index db459a53f55..70f9e8dc301 100644
++--- a/plugins/discovery-ec2/build.gradle
+++++ b/plugins/discovery-ec2/build.gradle
++@@ -76,9 +76,8 @@ dependencies {
++   api "com.fasterxml.jackson.core:jackson-databind:${versions.jackson_databind}"
++   api "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson_annotations}"
++   api "org.reactivestreams:reactive-streams:${versions.reactivestreams}"
++-  testFipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  testFipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ }
++ 
++ restResources {
++diff --git a/plugins/discovery-gce/build.gradle b/plugins/discovery-gce/build.gradle
++index b62a6e0af77..d3fb0a78e24 100644
++--- a/plugins/discovery-gce/build.gradle
+++++ b/plugins/discovery-gce/build.gradle
++@@ -35,9 +35,8 @@ dependencies {
++   api 'io.opencensus:opencensus-api:0.31.1'
++   api 'io.opencensus:opencensus-contrib-http-util:0.31.1'
++   runtimeOnly "com.google.guava:guava:${versions.guava}"
++-  testFipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  testFipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ }
++ 
++ restResources {
++diff --git a/plugins/ingestion-kinesis/build.gradle b/plugins/ingestion-kinesis/build.gradle
++index 2d2e03f3d9b..6b45af8e422 100644
++--- a/plugins/ingestion-kinesis/build.gradle
+++++ b/plugins/ingestion-kinesis/build.gradle
++@@ -95,9 +95,8 @@ dependencies {
++   testImplementation "org.apache.commons:commons-compress:${versions.commonscompress}"
++   testImplementation "commons-io:commons-io:${versions.commonsio}"
++   testImplementation 'org.awaitility:awaitility:4.2.0'
++-  testFipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  testFipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ }
++ 
++ internalClusterTest{
++diff --git a/plugins/repository-gcs/build.gradle b/plugins/repository-gcs/build.gradle
++index 1552852532c..7a4594b7f0c 100644
++--- a/plugins/repository-gcs/build.gradle
+++++ b/plugins/repository-gcs/build.gradle
++@@ -97,9 +97,8 @@ dependencies {
++   runtimeOnly "io.grpc:grpc-api:1.71.0"
++ 
++   testImplementation project(':test:fixtures:gcs-fixture')
++-  testFipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  testFipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ }
++ 
++ compileJava {
++diff --git a/plugins/repository-s3/build.gradle b/plugins/repository-s3/build.gradle
++index 9a713646547..21abad34f34 100644
++--- a/plugins/repository-s3/build.gradle
+++++ b/plugins/repository-s3/build.gradle
++@@ -114,9 +114,8 @@ dependencies {
++   api 'javax.xml.bind:jaxb-api:2.3.1'
++ 
++   testImplementation project(':test:fixtures:s3-fixture')
++-  testFipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  testFipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ }
++ 
++ restResources {
++diff --git a/plugins/transport-reactor-netty4/build.gradle b/plugins/transport-reactor-netty4/build.gradle
++index 3911ff8bfec..42aef117d59 100644
++--- a/plugins/transport-reactor-netty4/build.gradle
+++++ b/plugins/transport-reactor-netty4/build.gradle
++@@ -50,10 +50,9 @@ dependencies {
++   testImplementation libs.log4jslf4jimpl
++   javaRestTestImplementation libs.reactor.test
++   testImplementation project(":modules:transport-netty4")
++-  testFipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  testFipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcpkix-fips:${versions.bouncycastle_pkix}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcpkix-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ }
++ 
++ restResources {
++diff --git a/qa/wildfly/build.gradle b/qa/wildfly/build.gradle
++index 12f2eacccd9..eed7c3f05cf 100644
++--- a/qa/wildfly/build.gradle
+++++ b/qa/wildfly/build.gradle
++@@ -66,9 +66,8 @@ dependencies {
++   testImplementation(project(':test:framework')) {
++     exclude module: 'jakarta.annotation-api'
++   }
++-  fipsOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  fipsOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  fipsOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  fipsOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  fipsOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ }
++ 
++ war {
++diff --git a/server/build.gradle b/server/build.gradle
++index ad38c8b21ed..f9710f35796 100644
++--- a/server/build.gradle
+++++ b/server/build.gradle
++@@ -140,9 +140,8 @@ dependencies {
++   internalClusterTestImplementation(project(":test:framework")) {
++     exclude group: 'org.opensearch', module: 'server'
++   }
++-  testFipsRuntimeOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  testFipsRuntimeOnly "org.bouncycastle:bctls-fips:${versions.bouncycastle_tls}"
++-  testFipsRuntimeOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  testFipsRuntimeOnly "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ }
++ 
++ tasks.withType(JavaCompile).configureEach {
++diff --git a/test/framework/build.gradle b/test/framework/build.gradle
++index 4f4b36d4c04..c4ca6271110 100644
++--- a/test/framework/build.gradle
+++++ b/test/framework/build.gradle
++@@ -62,9 +62,9 @@ dependencies {
++   api "net.bytebuddy:byte-buddy:${versions.bytebuddy}"
++   api "org.objenesis:objenesis:${versions.objenesis}"
++   api libs.netty.pkitesting
++-  fipsOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-  fipsOnly "org.bouncycastle:bcpkix-fips:${versions.bouncycastle_pkix}"
++-  fipsOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++  implementation "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+++  implementation "org.bouncycastle:bcpkix-jdk18on:${versions.bouncycastle}"
+++  implementation "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
++ 
++   compileOnly project(":libs:agent-sm:bootstrap")
++   compileOnly "com.github.spotbugs:spotbugs-annotations:4.10.1"
++diff --git a/test/framework/src/main/java/org/opensearch/fips/FipsMode.java b/test/framework/src/main/java/org/opensearch/fips/FipsMode.java
++index 0ee9fd928ec..1b0c1abfe75 100644
++--- a/test/framework/src/main/java/org/opensearch/fips/FipsMode.java
+++++ b/test/framework/src/main/java/org/opensearch/fips/FipsMode.java
++@@ -8,14 +8,17 @@
++ 
++ package org.opensearch.fips;
++ 
++-import org.bouncycastle.crypto.CryptoServicesRegistrar;
++-
++ public class FipsMode {
++ 
++     public static Check CHECK = () -> {
++         try {
++-            return CryptoServicesRegistrar.isInApprovedOnlyMode();
++-        } catch (NoClassDefFoundError | NoSuchMethodError e) {
+++            // Equivalent to: boolean approvedOnly = CryptoServicesRegistrar.isInApprovedOnlyMode()
+++            // Use reflection to avoid a compile-time dependency on bc-fips, which is only on the
+++            // classpath at runtime when running in FIPS mode.
+++            var registrarClass = Class.forName("org.bouncycastle.crypto.CryptoServicesRegistrar");
+++            var isApprovedOnlyMethod = registrarClass.getMethod("isInApprovedOnlyMode");
+++            return (Boolean) isApprovedOnlyMethod.invoke(null);
+++        } catch (ReflectiveOperationException | NoClassDefFoundError e) {
++             return false;
++         }
++     };
++diff --git a/test/framework/src/main/java/org/opensearch/test/KeyStoreUtils.java b/test/framework/src/main/java/org/opensearch/test/KeyStoreUtils.java
++index 0ca4eb09c37..9f53b1eb1c1 100644
++--- a/test/framework/src/main/java/org/opensearch/test/KeyStoreUtils.java
+++++ b/test/framework/src/main/java/org/opensearch/test/KeyStoreUtils.java
++@@ -9,7 +9,7 @@
++ package org.opensearch.test;
++ 
++ import org.bouncycastle.asn1.LocaleUtil;
++-import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+++import org.bouncycastle.jce.provider.BouncyCastleProvider;
++ import org.opensearch.fips.FipsMode;
++ 
++ import java.security.KeyStore;
++@@ -73,7 +73,7 @@ public class KeyStoreUtils {
++             return new CertificateBuilder().subject("CN=Test CA Certificate")
++                 .setIsCertificateAuthority(true)
++                 .algorithm(algorithm)
++-                .provider(new BouncyCastleFipsProvider())
+++                .provider(new BouncyCastleProvider())
++                 .buildSelfSigned();
++         } finally {
++             Locale.setDefault(locale);
++-- 
++2.51.2
++
+diff --git a/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh b/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh
+index 108ae8cb..efd5699f 100755
+--- a/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh
++++ b/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh
+@@ -75,11 +75,11 @@ mkdir -p $OUTPUT/maven/org/opensearch
+ 
+ # Build project and publish to maven local.
+ echo "Building and publishing OpenSearch project to Maven Local"
+-./gradlew --console=plain publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -PrustRelease -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -PrustRelease
+ 
+ # Publish to existing test repo, using this to stage release versions of the artifacts that can be released from the same build.
+ echo "Publishing OpenSearch to Test Repository"
+-./gradlew --console=plain publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -PrustRelease -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -PrustRelease
+ 
+ # Copy maven publications to be promoted
+ echo "Copying Maven publications to $OUTPUT/maven/org"
+@@ -164,7 +164,7 @@ esac
+ 
+ echo "Building OpenSearch for $PLATFORM-$DISTRIBUTION-$ARCHITECTURE"
+ 
+-./gradlew --console=plain :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -PrustRelease -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -PrustRelease
+ 
+ # Copy artifact to dist folder in bundle build output
+ echo "Copying artifact to ${OUTPUT}/dist"
+@@ -176,7 +176,7 @@ cp distribution/$TYPE/$TARGET/build/distributions/$ARTIFACT_BUILD_NAME "${OUTPUT
+ echo "Building core plugins..."
+ mkdir -p "${OUTPUT}/core-plugins"
+ cd plugins
+-../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -PrustRelease -Pcrypto.standard=FIPS-140-3
++../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -PrustRelease
+ cd ..
+ for plugin in plugins/*; do
+   PLUGIN_NAME=$(basename "$plugin")
+diff --git a/scripts/components/OpenSearch-DataFusion/build.sh b/scripts/components/OpenSearch-DataFusion/build.sh
+index 66c9f838..f2188a6a 100755
+--- a/scripts/components/OpenSearch-DataFusion/build.sh
++++ b/scripts/components/OpenSearch-DataFusion/build.sh
+@@ -75,11 +75,11 @@ mkdir -p $OUTPUT/maven/org/opensearch
+ 
+ # Build project and publish to maven local.
+ echo "Building and publishing OpenSearch project to Maven Local"
+-./gradlew --console=plain publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease
+ 
+ # Publish to existing test repo, using this to stage release versions of the artifacts that can be released from the same build.
+ echo "Publishing OpenSearch to Test Repository"
+-./gradlew --console=plain publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease
+ 
+ # Copy maven publications to be promoted
+ echo "Copying Maven publications to $OUTPUT/maven/org"
+@@ -164,7 +164,7 @@ esac
+ 
+ echo "Building OpenSearch for $PLATFORM-$DISTRIBUTION-$ARCHITECTURE"
+ 
+-./gradlew --console=plain :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease
+ 
+ # Copy artifact to dist folder in bundle build output
+ echo "Copying artifact to ${OUTPUT}/dist"
+@@ -176,7 +176,7 @@ cp -v distribution/$TYPE/$TARGET/build/distributions/$ARTIFACT_BUILD_NAME "${OUT
+ echo "Building core plugins..."
+ mkdir -p "${OUTPUT}/core-plugins"
+ cd plugins
+-../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease
+ cd ..
+ for plugin in plugins/*; do
+   PLUGIN_NAME=$(basename "$plugin")
+diff --git a/scripts/components/OpenSearch/build.sh b/scripts/components/OpenSearch/build.sh
+index 6be344a8..80b201d2 100755
+--- a/scripts/components/OpenSearch/build.sh
++++ b/scripts/components/OpenSearch/build.sh
+@@ -75,11 +75,11 @@ mkdir -p $OUTPUT/maven/org/opensearch
+ 
+ # Build project and publish to maven local.
+ echo "Building and publishing OpenSearch project to Maven Local"
+-./gradlew --console=plain publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ 
+ # Publish to existing test repo, using this to stage release versions of the artifacts that can be released from the same build.
+ echo "Publishing OpenSearch to Test Repository"
+-./gradlew --console=plain publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ 
+ # Copy maven publications to be promoted
+ echo "Copying Maven publications to $OUTPUT/maven/org"
+@@ -164,7 +164,7 @@ esac
+ 
+ echo "Building OpenSearch for $PLATFORM-$DISTRIBUTION-$ARCHITECTURE"
+ 
+-./gradlew --console=plain :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ 
+ # Copy artifact to dist folder in bundle build output
+ echo "Copying artifact to ${OUTPUT}/dist"
+@@ -176,7 +176,7 @@ cp -v distribution/$TYPE/$TARGET/build/distributions/$ARTIFACT_BUILD_NAME "${OUT
+ echo "Building core plugins..."
+ mkdir -p "${OUTPUT}/core-plugins"
+ cd plugins
+-../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER
+ cd ..
+ for plugin in plugins/*; do
+   PLUGIN_NAME=$(basename "$plugin")
+diff --git a/scripts/components/core-plugins-sandbox/build.sh b/scripts/components/core-plugins-sandbox/build.sh
+index 0c8a62db..2fa77a38 100755
+--- a/scripts/components/core-plugins-sandbox/build.sh
++++ b/scripts/components/core-plugins-sandbox/build.sh
+@@ -93,7 +93,7 @@ cd -
+ 
+ # Sandbox Plugins
+ echo "Building sandbox plugins..."
+-../../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++../../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease
+ INSTALL_ORDER=1
+ for plugin in ./*; do
+   PLUGIN_NAME=$(basename "$plugin")
+@@ -127,7 +127,7 @@ done
+ # Rustlib
+ cd ../
+ echo "Specifically saving rustlib..."
+-../gradlew --console=plain :sandbox:libs:dataformat-native:buildRustLibrary -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++../gradlew --console=plain :sandbox:libs:dataformat-native:buildRustLibrary -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease
+ for libext in so dylib dll; do
+   cp -v ./libs/dataformat-native/rust/target/release/libopensearch_native."$libext" "${OUTPUT_REAL}"/dist/ || echo "$libext not found"
+ done
+diff --git a/scripts/components/notifications-core/build.sh b/scripts/components/notifications-core/build.sh
+index 3df3a026..177c56a5 100644
+--- a/scripts/components/notifications-core/build.sh
++++ b/scripts/components/notifications-core/build.sh
+@@ -68,13 +68,13 @@ fi
+ [[ "$SNAPSHOT" == "true" ]] && VERSION=$VERSION-SNAPSHOT
+ [ -z "$OUTPUT" ] && OUTPUT=artifacts
+ 
+-./gradlew --console=plain assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+-./gradlew --console=plain publishToMavenLocal -PexcludeTests="**/SesChannelIT*" -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
++./gradlew --console=plain publishToMavenLocal -PexcludeTests="**/SesChannelIT*" -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ 
+ mkdir -p ./$OUTPUT/plugins
+ notifCoreZipPath=$(ls core/build/distributions/ | grep .zip)
+ cp -v core/build/distributions/$notifCoreZipPath ./$OUTPUT/plugins
+ 
+-./gradlew --console=plain publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ mkdir -p $OUTPUT/maven/org/opensearch/plugin
+ cp -r ./build/local-staging-repo/org/opensearch/plugin/opensearch-notifications-core $OUTPUT/maven/org/opensearch/plugin/
+diff --git a/scripts/components/notifications/build.sh b/scripts/components/notifications/build.sh
+index 8f961b29..cbf6b488 100644
+--- a/scripts/components/notifications/build.sh
++++ b/scripts/components/notifications/build.sh
+@@ -68,14 +68,14 @@ fi
+ [[ "$SNAPSHOT" == "true" ]] && VERSION=$VERSION-SNAPSHOT
+ [ -z "$OUTPUT" ] && OUTPUT=artifacts
+ 
+-./gradlew --console=plain assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+-./gradlew --console=plain publishToMavenLocal -PexcludeTests="**/SesChannelIT*" -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
++./gradlew --console=plain publishToMavenLocal -PexcludeTests="**/SesChannelIT*" -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ 
+ mkdir -p ./$OUTPUT/plugins
+ 
+ notifCoreZipPath=$(ls notifications/build/distributions/ | grep .zip)
+ cp -v notifications/build/distributions/$notifCoreZipPath ./$OUTPUT/plugins
+ 
+-./gradlew --console=plain publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ mkdir -p $OUTPUT/maven/org/opensearch/plugin
+ cp -r ./build/local-staging-repo/org/opensearch/plugin/notifications $OUTPUT/maven/org/opensearch/plugin/
+diff --git a/scripts/components/opensearch-jvector/build.sh b/scripts/components/opensearch-jvector/build.sh
+index 11c3ca7b..d46a2f16 100755
+--- a/scripts/components/opensearch-jvector/build.sh
++++ b/scripts/components/opensearch-jvector/build.sh
+@@ -101,8 +101,7 @@ mkdir -p $OUTPUT
+ ./gradlew --console=plain assemble --no-daemon --refresh-dependencies -DskipTests=true \
+     -Dopensearch.version=$VERSION \
+     -Dbuild.snapshot=$SNAPSHOT \
+-    -Dbuild.version_qualifier=$QUALIFIER \
+-    -Pcrypto.standard=FIPS-140-3
++    -Dbuild.version_qualifier=$QUALIFIER
+ 
+ zipPath=$(find "$(pwd)/build/distributions" -name \*.zip | head -1)
+ 
+@@ -172,14 +171,12 @@ echo "Rebuilt zip: $zipPath"
+     -x bundlePlugin \
+     -Dopensearch.version=$VERSION \
+     -Dbuild.snapshot=$SNAPSHOT \
+-    -Dbuild.version_qualifier=$QUALIFIER \
+-    -Pcrypto.standard=FIPS-140-3
++    -Dbuild.version_qualifier=$QUALIFIER
+ ./gradlew --console=plain publishPluginZipPublicationToZipStagingRepository \
+     -x bundlePlugin \
+     -Dopensearch.version=$VERSION \
+     -Dbuild.snapshot=$SNAPSHOT \
+-    -Dbuild.version_qualifier=$QUALIFIER \
+-    -Pcrypto.standard=FIPS-140-3
++    -Dbuild.version_qualifier=$QUALIFIER
+ 
+ echo "COPY ${distributions}/*.zip"
+ mkdir -p $OUTPUT/plugins
+diff --git a/scripts/default/opensearch/build.sh b/scripts/default/opensearch/build.sh
+index 67094c45..ea049ea8 100755
+--- a/scripts/default/opensearch/build.sh
++++ b/scripts/default/opensearch/build.sh
+@@ -70,7 +70,7 @@ fi
+ 
+ mkdir -p $OUTPUT
+ 
+-./gradlew --console=plain assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ 
+ zipPath=$(find . -path \*build/distributions/*.zip)
+ distributions="$(dirname "${zipPath}")"
+@@ -80,7 +80,7 @@ mkdir -p $OUTPUT/plugins
+ cp ${distributions}/*.zip ./$OUTPUT/plugins
+ 
+ # Publish plugin zips to maven
+-./gradlew --console=plain publishPluginZipPublicationToMavenLocal -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+-./gradlew --console=plain publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishPluginZipPublicationToMavenLocal -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
++./gradlew --console=plain publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ mkdir -p $OUTPUT/maven/org/opensearch
+ cp -r ./build/local-staging-repo/org/opensearch/. $OUTPUT/maven/org/opensearch
+diff --git a/security.patch b/security.patch
+index 4513387c..ce933755 100644
+--- a/security.patch
++++ b/security.patch
+@@ -14,3 +14,606 @@ index 96074b9d..0e322b4e 100644
+ -- 
+ 2.51.2
+ 
++
++From 2345275686bbcf58d69d3a005cec1e3d93d313b1 Mon Sep 17 00:00:00 2001
++From: irapandey <ira.pandey2001@gmail.com>
++Date: Mon, 7 Sep 2026 14:34:26 +0530
++Subject: [PATCH 2/2] fips
++
++Signed-off-by: irapandey <ira.pandey2001@gmail.com>
++---
++ 0001-ppc64le-patch.patch                      | 26 ++++++++++++++++
++ build.gradle                                  | 21 ++++---------
++ .../ssl/util/SSLRequestHelperTests.java       |  5 ++--
++ .../CertificatesIssuerFactory.java            |  4 +--
++ .../ssl/OpenSearchSecuritySSLPlugin.java      |  8 ++---
++ .../security/ssl/config/SanParser.java        |  4 ---
++ .../security/ssl/util/SSLConfigConstants.java |  6 +---
++ .../security/ssl/util/SSLRequestHelper.java   |  3 +-
++ .../security/support/PemKeyReader.java        |  7 -----
++ .../ssl/CertificateValidatorTest.java         | 21 +++----------
++ .../security/ssl/CertificatesRule.java        | 10 +++----
++ .../security/ssl/config/SanParserTest.java    | 30 ++++---------------
++ .../PemKeyReaderDetectStoreTypeTest.java      | 11 ++-----
++ .../security/test/helper/file/FileHelper.java | 12 --------
++ .../bcfks-generation/ConvertKeystore.java     |  4 +--
++ .../generate_bcfks_keystores.sh               | 10 +++----
++ 16 files changed, 66 insertions(+), 116 deletions(-)
++ create mode 100644 0001-ppc64le-patch.patch
++
++diff --git a/0001-ppc64le-patch.patch b/0001-ppc64le-patch.patch
++new file mode 100644
++index 00000000..132124b6
++--- /dev/null
+++++ b/0001-ppc64le-patch.patch
++@@ -0,0 +1,26 @@
+++From 67a4cf5a32a3ef6724aef8bd36689abe05d8bc56 Mon Sep 17 00:00:00 2001
+++From: irapandey <ira.pandey2001@gmail.com>
+++Date: Wed, 2 Sep 2026 12:01:09 +0530
+++Subject: [PATCH] ppc64le patch
+++
+++Signed-off-by: irapandey <ira.pandey2001@gmail.com>
+++---
+++ libs/opensaml/build.gradle | 2 ++
+++ 1 file changed, 2 insertions(+)
+++
+++diff --git a/libs/opensaml/build.gradle b/libs/opensaml/build.gradle
+++index 96074b9d..0e322b4e 100644
+++--- a/libs/opensaml/build.gradle
++++++ b/libs/opensaml/build.gradle
+++@@ -28,6 +28,8 @@ configurations.all {
+++         force "org.bouncycastle:bcprov-jdk18on:1.85"
+++         force "org.apache.commons:commons-lang3:${versions.commonslang}"
+++         force "tools.jackson.core:jackson-core:${versions.jackson3}"
++++        force "org.apache.httpcomponents.core5:httpcore5:${versions.httpcore5}"
++++        force "org.apache.httpcomponents.core5:httpcore5-h2:${versions.httpcore5}"
+++     }
+++ }
+++ 
+++-- 
+++2.51.2
+++
++diff --git a/build.gradle b/build.gradle
++index ea39593a..15db82b5 100644
++--- a/build.gradle
+++++ b/build.gradle
++@@ -592,9 +592,8 @@ allprojects {
++                 integrationTestImplementation "org.apache.logging.log4j:log4j-core:${versions.log4j}"
++                 integrationTestImplementation "org.apache.logging.log4j:log4j-jul:${versions.log4j}"
++                 integrationTestImplementation 'org.hamcrest:hamcrest:2.2'
++-                integrationTestImplementation "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-                integrationTestImplementation "org.bouncycastle:bcpkix-fips:${versions.bouncycastle_pkix}"
++-                integrationTestImplementation "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
+++                integrationTestImplementation "org.bouncycastle:bcprov-jdk18on:1.85"
+++                integrationTestImplementation "org.bouncycastle:bcpkix-jdk18on:1.85"
++                 integrationTestImplementation('org.awaitility:awaitility:4.3.0') {
++                     exclude(group: 'org.hamcrest', module: 'hamcrest')
++                 }
++@@ -697,16 +696,9 @@ dependencies {
++     implementation libs.google.guava
++     implementation 'org.greenrobot:eventbus-java:3.3.1'
++     implementation 'commons-cli:commons-cli:1.11.0'
++-    // When building with crypto.standard=FIPS-140-3 (set in gradle.properties), bcFips jars are provided by OpenSearch
++-    if (FipsBuildParams.isInFipsMode()) {
++-        compileOnly "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-        compileOnly "org.bouncycastle:bcpkix-fips:${versions.bouncycastle_pkix}"
++-        compileOnly "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
++-    } else {
++-        implementation "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-        implementation "org.bouncycastle:bcpkix-fips:${versions.bouncycastle_pkix}"
++-        implementation "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
++-    }
+++    implementation "org.bouncycastle:bcprov-jdk18on:1.85"
+++    implementation "org.bouncycastle:bcpkix-jdk18on:1.85"
+++    implementation "org.bouncycastle:bcutil-jdk18on:1.85"
++     implementation 'org.ldaptive:ldaptive:1.2.3'
++     implementation 'com.nimbusds:nimbus-jose-jwt:10.9.1'
++     implementation 'com.rfksystems:blake2b:2.0.0'
++@@ -811,9 +803,6 @@ dependencies {
++     testImplementation('org.awaitility:awaitility:4.3.0') {
++         exclude(group: 'org.hamcrest', module: 'hamcrest')
++     }
++-    testImplementation "org.bouncycastle:bc-fips:${versions.bouncycastle_jce}"
++-    testImplementation "org.bouncycastle:bcpkix-fips:${versions.bouncycastle_pkix}"
++-    testImplementation "org.bouncycastle:bcutil-fips:${versions.bouncycastle_util}"
++     // JUnit build requirement
++     testCompileOnly 'org.apiguardian:apiguardian-api:1.1.2'
++ 
++diff --git a/src/integrationTest/java/org/opensearch/security/ssl/util/SSLRequestHelperTests.java b/src/integrationTest/java/org/opensearch/security/ssl/util/SSLRequestHelperTests.java
++index 71c06422..53627d7d 100644
++--- a/src/integrationTest/java/org/opensearch/security/ssl/util/SSLRequestHelperTests.java
+++++ b/src/integrationTest/java/org/opensearch/security/ssl/util/SSLRequestHelperTests.java
++@@ -39,7 +39,6 @@ import org.junit.Test;
++ import org.junit.rules.TemporaryFolder;
++ import org.bouncycastle.asn1.x509.CRLReason;
++ import org.bouncycastle.cert.jcajce.JcaX509v2CRLBuilder;
++-import org.bouncycastle.crypto.CryptoServicesRegistrar;
++ import org.bouncycastle.operator.ContentSigner;
++ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
++ 
++@@ -59,8 +58,8 @@ import static org.junit.Assert.assertThrows;
++ 
++ public class SSLRequestHelperTests {
++ 
++-    private static final String STORE_NAME = CryptoServicesRegistrar.isInApprovedOnlyMode() ? "truststore.bcfks" : "truststore.jks";
++-    private static final String STORE_TYPE = CryptoServicesRegistrar.isInApprovedOnlyMode() ? "BCFKS" : "JKS";
+++    private static final String STORE_NAME = "truststore.jks";
+++    private static final String STORE_TYPE = "JKS";
++     private static final char[] INTERNAL_STORE_PASSWORD = DEFAULT_STORE_PASSWORD.toCharArray();
++ 
++     /** Minimum TLS packet buffer size used when the engine reports a smaller value. */
++diff --git a/src/integrationTest/java/org/opensearch/test/framework/certificate/CertificatesIssuerFactory.java b/src/integrationTest/java/org/opensearch/test/framework/certificate/CertificatesIssuerFactory.java
++index 8d7c43c6..f68ccf60 100644
++--- a/src/integrationTest/java/org/opensearch/test/framework/certificate/CertificatesIssuerFactory.java
+++++ b/src/integrationTest/java/org/opensearch/test/framework/certificate/CertificatesIssuerFactory.java
++@@ -12,7 +12,7 @@ package org.opensearch.test.framework.certificate;
++ import java.security.Provider;
++ import java.util.Optional;
++ 
++-import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+++import org.bouncycastle.jce.provider.BouncyCastleProvider;
++ 
++ import static org.opensearch.test.framework.certificate.AlgorithmKit.ecdsaSha256withEcdsa;
++ import static org.opensearch.test.framework.certificate.AlgorithmKit.rsaSha256withRsa;
++@@ -30,7 +30,7 @@ class CertificatesIssuerFactory {
++ 
++     }
++ 
++-    private static final Provider DEFAULT_SECURITY_PROVIDER = new BouncyCastleFipsProvider();;
+++    private static final Provider DEFAULT_SECURITY_PROVIDER = new BouncyCastleProvider();
++ 
++     /**
++     * @see {@link #rsaBaseCertificateIssuer(Provider)}
++diff --git a/src/main/java/org/opensearch/security/ssl/OpenSearchSecuritySSLPlugin.java b/src/main/java/org/opensearch/security/ssl/OpenSearchSecuritySSLPlugin.java
++index 5a4780f8..30ad9df0 100644
++--- a/src/main/java/org/opensearch/security/ssl/OpenSearchSecuritySSLPlugin.java
+++++ b/src/main/java/org/opensearch/security/ssl/OpenSearchSecuritySSLPlugin.java
++@@ -32,7 +32,7 @@ import java.util.function.Supplier;
++ 
++ import org.apache.logging.log4j.LogManager;
++ import org.apache.logging.log4j.Logger;
++-import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+++import org.bouncycastle.jce.provider.BouncyCastleProvider;
++ 
++ import org.opensearch.OpenSearchException;
++ import org.opensearch.Version;
++@@ -745,9 +745,9 @@ public class OpenSearchSecuritySSLPlugin extends Plugin implements SystemIndexPl
++ 
++     private void tryAddSecurityProvider() {
++         AccessController.doPrivileged(() -> {
++-            if (Security.getProvider("BCFIPS") == null) {
++-                Security.addProvider(new BouncyCastleFipsProvider());
++-                log.debug("Bouncy Castle FIPS Provider added");
+++            if (Security.getProvider("BC") == null) {
+++                Security.addProvider(new BouncyCastleProvider());
+++                log.debug("Bouncy Castle Provider added");
++             }
++             return null;
++         });
++diff --git a/src/main/java/org/opensearch/security/ssl/config/SanParser.java b/src/main/java/org/opensearch/security/ssl/config/SanParser.java
++index 00c02ad3..04f86089 100644
++--- a/src/main/java/org/opensearch/security/ssl/config/SanParser.java
+++++ b/src/main/java/org/opensearch/security/ssl/config/SanParser.java
++@@ -31,7 +31,6 @@ import org.bouncycastle.asn1.x509.GeneralNames;
++ import org.bouncycastle.asn1.x509.OtherName;
++ import org.bouncycastle.cert.X509CertificateHolder;
++ import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
++-import org.bouncycastle.crypto.CryptoServicesRegistrar;
++ 
++ public class SanParser {
++ 
++@@ -69,9 +68,6 @@ public class SanParser {
++             return sans.isEmpty() ? "" : sans.toString();
++         } catch (final CertificateEncodingException | UnknownHostException e) {
++             LOGGER.error("Couldn't parse subject alternative names", e);
++-            if (CryptoServicesRegistrar.isInApprovedOnlyMode()) {
++-                throw new RuntimeException("Couldn't parse subject alternative names", e);
++-            }
++             return "";
++         }
++     }
++diff --git a/src/main/java/org/opensearch/security/ssl/util/SSLConfigConstants.java b/src/main/java/org/opensearch/security/ssl/util/SSLConfigConstants.java
++index 689c4123..407f4efa 100644
++--- a/src/main/java/org/opensearch/security/ssl/util/SSLConfigConstants.java
+++++ b/src/main/java/org/opensearch/security/ssl/util/SSLConfigConstants.java
++@@ -24,8 +24,6 @@ import java.util.List;
++ import java.util.Locale;
++ import java.util.function.Function;
++ 
++-import org.bouncycastle.crypto.CryptoServicesRegistrar;
++-
++ import org.opensearch.common.settings.Setting;
++ import org.opensearch.common.settings.Settings;
++ import org.opensearch.security.ssl.config.CertType;
++@@ -46,9 +44,7 @@ public final class SSLConfigConstants {
++     public static final String ENABLED = "enabled";
++     public static final String CLIENT_AUTH_MODE = "clientauth_mode";
++     public static final String ENFORCE_CERT_RELOAD_DN_VERIFICATION = "enforce_cert_reload_dn_verification";
++-    public static final String DEFAULT_STORE_TYPE = CryptoServicesRegistrar.isInApprovedOnlyMode()
++-        ? "BCFKS"
++-        : KeyStore.getDefaultType().toUpperCase(Locale.ROOT);
+++    public static final String DEFAULT_STORE_TYPE = KeyStore.getDefaultType().toUpperCase(Locale.ROOT);
++     public static final String SSL_PREFIX = "plugins.security.ssl.";
++ 
++     public static final String KEYSTORE_TYPE = "keystore_type";
++diff --git a/src/main/java/org/opensearch/security/ssl/util/SSLRequestHelper.java b/src/main/java/org/opensearch/security/ssl/util/SSLRequestHelper.java
++index 2dd4bef9..cf3fd2e9 100644
++--- a/src/main/java/org/opensearch/security/ssl/util/SSLRequestHelper.java
+++++ b/src/main/java/org/opensearch/security/ssl/util/SSLRequestHelper.java
++@@ -43,7 +43,6 @@ import javax.net.ssl.SSLSession;
++ 
++ import org.apache.logging.log4j.LogManager;
++ import org.apache.logging.log4j.Logger;
++-import org.bouncycastle.crypto.CryptoServicesRegistrar;
++ 
++ import org.opensearch.OpenSearchException;
++ import org.opensearch.common.settings.Settings;
++@@ -245,7 +244,7 @@ public class SSLRequestHelper {
++         final Collection<? extends CRL> crls,
++         final String truststore
++     ) throws IOException, GeneralSecurityException {
++-        final String defaultStoreType = CryptoServicesRegistrar.isInApprovedOnlyMode() ? "BCFKS" : "JKS";
+++        final String defaultStoreType = "JKS";
++         final String truststoreType = settings.get(SSLConfigConstants.SECURITY_SSL_HTTP_TRUSTSTORE_TYPE, defaultStoreType);
++         final String truststorePassword = SECURITY_SSL_HTTP_TRUSTSTORE_PASSWORD.getSetting(settings);
++         final KeyStore ts = KeyStore.getInstance(truststoreType);
++diff --git a/src/main/java/org/opensearch/security/support/PemKeyReader.java b/src/main/java/org/opensearch/security/support/PemKeyReader.java
++index e99ee516..1a7a2760 100644
++--- a/src/main/java/org/opensearch/security/support/PemKeyReader.java
+++++ b/src/main/java/org/opensearch/security/support/PemKeyReader.java
++@@ -53,7 +53,6 @@ import java.security.cert.X509Certificate;
++ import java.security.spec.InvalidKeySpecException;
++ import java.security.spec.PKCS8EncodedKeySpec;
++ import java.util.Collection;
++-import java.util.Locale;
++ import javax.crypto.Cipher;
++ import javax.crypto.EncryptedPrivateKeyInfo;
++ import javax.crypto.NoSuchPaddingException;
++@@ -67,7 +66,6 @@ import org.bouncycastle.asn1.ASN1Encodable;
++ import org.bouncycastle.asn1.ASN1InputStream;
++ import org.bouncycastle.asn1.ASN1Integer;
++ import org.bouncycastle.asn1.ASN1Sequence;
++-import org.bouncycastle.crypto.CryptoServicesRegistrar;
++ import org.bouncycastle.util.io.pem.PemObject;
++ import org.bouncycastle.util.io.pem.PemReader;
++ 
++@@ -358,11 +356,6 @@ public final class PemKeyReader {
++         if (null == storeType) {
++             storeType = detectStoreType(storePath);
++         }
++-        if (CryptoServicesRegistrar.isInApprovedOnlyMode() && !PemKeyReader.BCFKS.equalsIgnoreCase(storeType)) {
++-            throw new IllegalArgumentException(
++-                storeType.toUpperCase(Locale.ROOT) + " keystores / truststores are not supported in FIPS mode - use BCFKS."
++-            );
++-        }
++         return storeType;
++     }
++ 
++diff --git a/src/test/java/org/opensearch/security/ssl/CertificateValidatorTest.java b/src/test/java/org/opensearch/security/ssl/CertificateValidatorTest.java
++index 3740eb91..1f37dfbd 100644
++--- a/src/test/java/org/opensearch/security/ssl/CertificateValidatorTest.java
+++++ b/src/test/java/org/opensearch/security/ssl/CertificateValidatorTest.java
++@@ -35,7 +35,6 @@ import org.apache.logging.log4j.LogManager;
++ import org.apache.logging.log4j.Logger;
++ import org.junit.Assert;
++ import org.junit.Test;
++-import org.bouncycastle.crypto.CryptoServicesRegistrar;
++ 
++ import org.opensearch.security.ssl.util.CertificateValidator;
++ import org.opensearch.security.ssl.util.ExceptionUtils;
++@@ -87,10 +86,7 @@ public class CertificateValidatorTest {
++             validator.validate(certsToValidate.toArray(new X509Certificate[0]));
++             Assert.fail();
++         } catch (GeneralSecurityException e) {
++-            String expectedMessage = CryptoServicesRegistrar.isInApprovedOnlyMode()
++-                ? "Certificate revocation after 2018-05-05"
++-                : "Certificate has been revoked";
++-            Assert.assertNotNull(ExceptionUtils.findMsg(e, expectedMessage));
+++            Assert.assertNotNull(ExceptionUtils.findMsg(e, "Certificate has been revoked"));
++         }
++     }
++ 
++@@ -129,10 +125,7 @@ public class CertificateValidatorTest {
++         try {
++             validator.validate(certsToValidate.toArray(new X509Certificate[0]));
++         } catch (GeneralSecurityException e) {
++-            String expectedMessage = CryptoServicesRegistrar.isInApprovedOnlyMode()
++-                ? "No CRLs found for issuer"
++-                : "Certificate has been revoked";
++-            Assert.assertNotNull(ExceptionUtils.findMsg(e, expectedMessage));
+++            Assert.assertNotNull(ExceptionUtils.findMsg(e, "Certificate has been revoked"));
++         }
++     }
++ 
++@@ -165,10 +158,7 @@ public class CertificateValidatorTest {
++             Assert.fail();
++         } catch (GeneralSecurityException e) {
++             assertThat(e, instanceOf(CertPathValidatorException.class));
++-            String expectedMessage = CryptoServicesRegistrar.isInApprovedOnlyMode()
++-                ? "No CRLs found for issuer"
++-                : "Certificate has been revoked";
++-            Assert.assertNotNull(ExceptionUtils.findMsg(e, expectedMessage));
+++            Assert.assertNotNull(ExceptionUtils.findMsg(e, "Certificate has been revoked"));
++         }
++     }
++ 
++@@ -203,10 +193,7 @@ public class CertificateValidatorTest {
++             validator.validate(certsToValidate.toArray(new X509Certificate[0]));
++             Assert.fail();
++         } catch (GeneralSecurityException e) {
++-            String expectedMessage = CryptoServicesRegistrar.isInApprovedOnlyMode()
++-                ? "No CRLs found for issuer"
++-                : "Certificate has been revoked";
++-            Assert.assertNotNull(ExceptionUtils.findMsg(e, expectedMessage));
+++            Assert.assertNotNull(ExceptionUtils.findMsg(e, "Certificate has been revoked"));
++         }
++     }
++ }
++diff --git a/src/test/java/org/opensearch/security/ssl/CertificatesRule.java b/src/test/java/org/opensearch/security/ssl/CertificatesRule.java
++index 65786ba0..dc2ce2e7 100644
++--- a/src/test/java/org/opensearch/security/ssl/CertificatesRule.java
+++++ b/src/test/java/org/opensearch/security/ssl/CertificatesRule.java
++@@ -45,7 +45,7 @@ import org.bouncycastle.cert.X509CertificateHolder;
++ import org.bouncycastle.cert.X509v3CertificateBuilder;
++ import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
++ import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
++-import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+++import org.bouncycastle.jce.provider.BouncyCastleProvider;
++ import org.bouncycastle.operator.OperatorCreationException;
++ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
++ 
++@@ -53,7 +53,7 @@ import org.opensearch.common.collect.Tuple;
++ 
++ public class CertificatesRule extends ExternalResource {
++ 
++-    private final static BouncyCastleFipsProvider BOUNCY_CASTLE_FIPS_PROVIDER = new BouncyCastleFipsProvider();
+++    private final static BouncyCastleProvider BOUNCY_CASTLE_PROVIDER = new BouncyCastleProvider();
++ 
++     private final TemporaryFolder temporaryFolder = new TemporaryFolder();
++ 
++@@ -128,7 +128,7 @@ public class CertificatesRule extends ExternalResource {
++     }
++ 
++     public KeyPair generateKeyPair() throws NoSuchAlgorithmException {
++-        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", BOUNCY_CASTLE_FIPS_PROVIDER);
+++        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", BOUNCY_CASTLE_PROVIDER);
++         generator.initialize(4096);
++         return generator.generateKeyPair();
++     }
++@@ -179,7 +179,7 @@ public class CertificatesRule extends ExternalResource {
++             endDate
++         ).addExtension(Extension.basicConstraints, true, new BasicConstraints(true))
++             .addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyCertSign | KeyUsage.cRLSign))
++-            .build(new JcaContentSignerBuilder("SHA256withRSA").setProvider(BOUNCY_CASTLE_FIPS_PROVIDER).build(parentKeyPair.getPrivate()));
+++            .build(new JcaContentSignerBuilder("SHA256withRSA").setProvider(BOUNCY_CASTLE_PROVIDER).build(parentKeyPair.getPrivate()));
++     }
++ 
++     public Tuple<PrivateKey, X509CertificateHolder> generateAccessCertificate(final KeyPair parentKeyPair) throws NoSuchAlgorithmException,
++@@ -300,7 +300,7 @@ public class CertificatesRule extends ExternalResource {
++             )
++             .addExtension(Extension.extendedKeyUsage, true, new ExtendedKeyUsage(KeyPurposeId.id_kp_clientAuth))
++             .addExtension(Extension.subjectAlternativeName, false, new DERSequence(sans.toArray(sans.toArray(new ASN1Encodable[0]))))
++-            .build(new JcaContentSignerBuilder("SHA256withRSA").setProvider(BOUNCY_CASTLE_FIPS_PROVIDER).build(parentKeyPair.getPrivate()));
+++            .build(new JcaContentSignerBuilder("SHA256withRSA").setProvider(BOUNCY_CASTLE_PROVIDER).build(parentKeyPair.getPrivate()));
++         return Tuple.tuple(keyPair.getPrivate(), certificate);
++     }
++ 
++diff --git a/src/test/java/org/opensearch/security/ssl/config/SanParserTest.java b/src/test/java/org/opensearch/security/ssl/config/SanParserTest.java
++index b8774a12..5ab91a95 100644
++--- a/src/test/java/org/opensearch/security/ssl/config/SanParserTest.java
+++++ b/src/test/java/org/opensearch/security/ssl/config/SanParserTest.java
++@@ -13,7 +13,6 @@ package org.opensearch.security.ssl.config;
++ 
++ import java.io.InputStream;
++ import java.math.BigInteger;
++-import java.net.UnknownHostException;
++ import java.nio.file.Files;
++ import java.security.KeyPair;
++ import java.security.KeyPairGenerator;
++@@ -21,7 +20,6 @@ import java.security.cert.CertificateFactory;
++ import java.security.cert.X509Certificate;
++ import java.util.Date;
++ 
++-import org.junit.Assume;
++ import org.junit.Test;
++ import org.bouncycastle.asn1.DEROctetString;
++ import org.bouncycastle.asn1.x500.X500Name;
++@@ -30,7 +28,6 @@ import org.bouncycastle.asn1.x509.GeneralName;
++ import org.bouncycastle.asn1.x509.GeneralNames;
++ import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
++ import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
++-import org.bouncycastle.crypto.CryptoServicesRegistrar;
++ import org.bouncycastle.operator.ContentSigner;
++ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
++ 
++@@ -38,10 +35,7 @@ import org.opensearch.security.test.helper.file.FileHelper;
++ 
++ import static org.hamcrest.MatcherAssert.assertThat;
++ import static org.hamcrest.Matchers.containsString;
++-import static org.hamcrest.Matchers.equalTo;
++-import static org.hamcrest.Matchers.instanceOf;
++ import static org.hamcrest.Matchers.is;
++-import static org.junit.Assert.assertThrows;
++ 
++ public class SanParserTest {
++ 
++@@ -51,27 +45,15 @@ public class SanParserTest {
++     private static final String EXPECTED_VALUE = "node-1.example.com";
++ 
++     @Test
++-    public void parseOtherNameSan_providerAgnostic() throws Exception {
++-        X509Certificate jdkCert = loadCert(CertificateFactory.getInstance("X.509", "SUN"));
++-        X509Certificate bcCert = loadCert(CertificateFactory.getInstance("X.509", "BCFIPS"));
++-        String sansJdk = SanParser.parse(jdkCert);
++-        String sansBc = SanParser.parse(bcCert);
++-        assertThat(sansJdk, containsString(EXPECTED_OID));
++-        assertThat(sansJdk, containsString(EXPECTED_VALUE));
++-        assertThat(sansJdk, equalTo(sansBc));
+++    public void parseOtherNameSan() throws Exception {
+++        X509Certificate certificate = loadCert(CertificateFactory.getInstance("X.509", "SUN"));
+++        String sans = SanParser.parse(certificate);
+++        assertThat(sans, containsString(EXPECTED_OID));
+++        assertThat(sans, containsString(EXPECTED_VALUE));
++     }
++ 
++     @Test
++-    public void badIpSan_fipsMode_throwsRuntimeException() throws Exception {
++-        Assume.assumeTrue(CryptoServicesRegistrar.isInApprovedOnlyMode());
++-        X509Certificate x509 = buildCertWithBadIpSan();
++-        RuntimeException ex = assertThrows(RuntimeException.class, () -> SanParser.parse(x509));
++-        assertThat(ex.getCause(), instanceOf(UnknownHostException.class));
++-    }
++-
++-    @Test
++-    public void badIpSan_nonFipsMode_returnsEmpty() throws Exception {
++-        Assume.assumeFalse(CryptoServicesRegistrar.isInApprovedOnlyMode());
+++    public void badIpSan_returnsEmpty() throws Exception {
++         assertThat(SanParser.parse(buildCertWithBadIpSan()), is(""));
++     }
++ 
++diff --git a/src/test/java/org/opensearch/security/support/PemKeyReaderDetectStoreTypeTest.java b/src/test/java/org/opensearch/security/support/PemKeyReaderDetectStoreTypeTest.java
++index 133d8b40..4870be18 100644
++--- a/src/test/java/org/opensearch/security/support/PemKeyReaderDetectStoreTypeTest.java
+++++ b/src/test/java/org/opensearch/security/support/PemKeyReaderDetectStoreTypeTest.java
++@@ -21,21 +21,19 @@ import org.apache.lucene.tests.util.LuceneTestCase;
++ import org.junit.Rule;
++ import org.junit.Test;
++ import org.junit.rules.TemporaryFolder;
++-import org.bouncycastle.crypto.CryptoServicesRegistrar;
++-import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+++import org.bouncycastle.jce.provider.BouncyCastleProvider;
++ 
++ import static org.hamcrest.MatcherAssert.assertThat;
++ import static org.hamcrest.Matchers.equalTo;
++ import static org.opensearch.security.ssl.util.SSLConfigConstants.DEFAULT_STORE_TYPE;
++ import static org.junit.Assert.assertNotNull;
++ import static org.junit.Assert.assertThrows;
++-import static org.junit.Assume.assumeFalse;
++ 
++ public class PemKeyReaderDetectStoreTypeTest extends LuceneTestCase {
++ 
++     static {
++-        if (Security.getProvider("BCFIPS") == null) {
++-            Security.addProvider(new BouncyCastleFipsProvider());
+++        if (Security.getProvider("BC") == null) {
+++            Security.addProvider(new BouncyCastleProvider());
++         }
++     }
++ 
++@@ -44,14 +42,12 @@ public class PemKeyReaderDetectStoreTypeTest extends LuceneTestCase {
++ 
++     @Test
++     public void detectsJks() throws Exception {
++-        assumeFalse("JKS truststores are not supported in FIPS mode", CryptoServicesRegistrar.isInApprovedOnlyMode());
++         File file = storeFile("JKS");
++         assertThat(PemKeyReader.extractStoreType(file.getAbsolutePath(), null), equalTo(PemKeyReader.JKS));
++     }
++ 
++     @Test
++     public void detectsPkcs12() throws Exception {
++-        assumeFalse("PKCS12 truststores are not supported in FIPS mode", CryptoServicesRegistrar.isInApprovedOnlyMode());
++         File file = storeFile("PKCS12");
++         assertThat(PemKeyReader.extractStoreType(file.getAbsolutePath(), null), equalTo(PemKeyReader.PKCS12));
++     }
++@@ -65,7 +61,6 @@ public class PemKeyReaderDetectStoreTypeTest extends LuceneTestCase {
++     @Test
++     public void explicitTypeSkipsDetection() throws Exception {
++         // file content is irrelevant when type is explicitly provided
++-        assumeFalse("PKCS12 truststores are not supported in FIPS mode", CryptoServicesRegistrar.isInApprovedOnlyMode());
++         File file = tempDir.newFile("irrelevant.bin");
++         try (FileOutputStream fos = new FileOutputStream(file)) {
++             fos.write(new byte[] { 0x00, 0x01, 0x02, 0x03 });
++diff --git a/src/test/java/org/opensearch/security/test/helper/file/FileHelper.java b/src/test/java/org/opensearch/security/test/helper/file/FileHelper.java
++index b19042de..17f81548 100644
++--- a/src/test/java/org/opensearch/security/test/helper/file/FileHelper.java
+++++ b/src/test/java/org/opensearch/security/test/helper/file/FileHelper.java
++@@ -47,7 +47,6 @@ import java.util.Map;
++ 
++ import org.apache.logging.log4j.LogManager;
++ import org.apache.logging.log4j.Logger;
++-import org.bouncycastle.crypto.CryptoServicesRegistrar;
++ 
++ import org.opensearch.common.io.Streams;
++ import org.opensearch.common.xcontent.XContentFactory;
++@@ -104,23 +103,12 @@ public class FileHelper {
++     /**
++      * Resolves a keystore/truststore classpath resource by base name (without extension),
++      * returning both the path and the inferred keystore type.
++-     * <p>
++-     * The format is chosen based on the runtime environment:
++-     * <ul>
++-     *   <li>FIPS approved-only mode ({@link CryptoServicesRegistrar#isInApprovedOnlyMode()}) →
++-     *       {@code .bcfks} / {@code "BCFKS"}</li>
++-     *   <li>Non-FIPS → {@code .jks} / {@code "JKS"} if a JKS variant exists on the classpath,
++-     *       otherwise {@code .p12} / {@code "PKCS12"}</li>
++-     * </ul>
++      *
++      * @param baseName classpath-relative base name without extension, e.g. {@code "ssl/truststore"}
++      * @return a {@link TypedStore} holding the absolute path and the store type string
++      * @throws IllegalStateException if no matching file is found on the classpath
++      */
++     public static TypedStore resolveStore(final String baseName) {
++-        if (CryptoServicesRegistrar.isInApprovedOnlyMode()) {
++-            return new TypedStore(getAbsoluteFilePathFromClassPath(baseName + ".bcfks"), "BCFKS");
++-        }
++         if (classpathResourceExists(baseName + ".jks")) {
++             return new TypedStore(getAbsoluteFilePathFromClassPath(baseName + ".jks"), "JKS");
++         }
++diff --git a/src/test/resources/bcfks-generation/ConvertKeystore.java b/src/test/resources/bcfks-generation/ConvertKeystore.java
++index d5c58c8d..4b44fbc9 100644
++--- a/src/test/resources/bcfks-generation/ConvertKeystore.java
+++++ b/src/test/resources/bcfks-generation/ConvertKeystore.java
++@@ -20,7 +20,7 @@ import java.security.UnrecoverableKeyException;
++ import java.security.cert.Certificate;
++ import java.util.Enumeration;
++ 
++-import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+++import org.bouncycastle.jce.provider.BouncyCastleProvider;
++ 
++ public class ConvertKeystore {
++     public static void main(String[] args) throws Exception {
++@@ -34,7 +34,7 @@ public class ConvertKeystore {
++         String destFile = args[3];
++         String destPass = args.length > 4 ? args[4] : srcPass;
++ 
++-        Security.addProvider(new BouncyCastleFipsProvider());
+++        Security.addProvider(new BouncyCastleProvider());
++ 
++         KeyStore srcKs = KeyStore.getInstance(srcType);
++         try (InputStream is = new FileInputStream(srcFile)) {
++diff --git a/src/test/resources/bcfks-generation/generate_bcfks_keystores.sh b/src/test/resources/bcfks-generation/generate_bcfks_keystores.sh
++index 1770ffc6..eefed410 100755
++--- a/src/test/resources/bcfks-generation/generate_bcfks_keystores.sh
+++++ b/src/test/resources/bcfks-generation/generate_bcfks_keystores.sh
++@@ -8,15 +8,15 @@
++ 
++ set -euo pipefail
++ 
++-if [[ -z "${BC_FIPS_JAR:-}" ]]; then
++-  echo "ERROR: BC_FIPS_JAR is not set. Point it to the bc-fips-*.jar, e.g.:" >&2
++-  echo "  export BC_FIPS_JAR=/path/to/bc-fips-2.1.2.jar" >&2
+++if [[ -z "${BCPROV_JAR:-}" ]]; then
+++  echo "ERROR: BCPROV_JAR is not set. Point it to the bcprov-jdk18on-*.jar, e.g.:" >&2
+++  echo "  export BCPROV_JAR=/path/to/bcprov-jdk18on-1.85.jar" >&2
++   exit 1
++ fi
++ 
++ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
++ RESOURCES="$(cd "$SCRIPT_DIR/.." && pwd)"
++-BC_FIPS="$BC_FIPS_JAR"
+++BCPROV="$BCPROV_JAR"
++ 
++ CONVERTED=0
++ 
++@@ -26,7 +26,7 @@ convert() {
++   local pass="${3:-changeit}"
++   local dest="${src%.*}.bcfks"
++   java --enable-native-access=ALL-UNNAMED \
++-       -cp "$BC_FIPS" \
+++       -cp "$BCPROV" \
++        "$SCRIPT_DIR/ConvertKeystore.java" "$src" "$type" "$pass" "$dest" "$pass"
++   CONVERTED=$(( CONVERTED + 1 ))
++ }
++-- 
++2.51.2
++
+-- 
+2.51.2
+
