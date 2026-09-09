@@ -22,7 +22,7 @@ PACKAGE_NAME=azure-core-cpp
 PACKAGE_VERSION=${1:-"1.16.3"}
 PACKAGE_URL=https://github.com/Azure/azure-sdk-for-cpp
 WORKING_DIR=$(pwd)
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Detect CPU generation and set optimization flags accordingly
 if grep -q "POWER10" /proc/cpuinfo 2>/dev/null; then
