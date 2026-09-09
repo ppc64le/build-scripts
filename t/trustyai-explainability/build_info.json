@@ -1,0 +1,12 @@
+{
+    "package_name": "trustyai-explainability",
+    "github_url": "https://github.com/trustyai-explainability/trustyai-explainability",
+    "version": "v0.2.0",
+    "default_branch": "main",
+    "package_dir": "t/trustyai-explainability/",
+    "build_script": "trustyai-explainability_ubi_8.5.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "maintainer": "Viren Dalgade <Viren.Dalgade@ibm.com>"
+}
