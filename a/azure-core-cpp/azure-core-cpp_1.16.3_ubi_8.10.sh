@@ -161,7 +161,19 @@ fi
 cd "$SOURCE_DIR"
 python3.9 -m pip install --upgrade pip setuptools wheel build
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/azure-core-cpp/pyproject.toml
+# BUILD_SCRIPT_PATH is exported by create_wheel_wrapper.sh and points to the
+# original script location (a/azure-core-cpp/...) relative to the repo root.
+# Use it to find pyproject.toml alongside the script; fall back to wget after merge.
+_PYPROJECT_SRC=""
+if [ -n "${BUILD_SCRIPT_PATH:-}" ]; then
+    _PYPROJECT_SRC="$(dirname "$BUILD_SCRIPT_PATH")/pyproject.toml"
+fi
+
+if [ -f "${_PYPROJECT_SRC}" ]; then
+    cp "${_PYPROJECT_SRC}" pyproject.toml
+else
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/azure-core-cpp/pyproject.toml
+fi
 sed -i "s/{PACKAGE_VERSION}/${PACKAGE_VERSION}/g" pyproject.toml
 
 if ! python3.9 -m pip install . --no-build-isolation; then
