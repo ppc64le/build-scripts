@@ -215,7 +215,7 @@ VERSION_STR="${PACKAGE_VERSION#v}"
 
 # Conditionally checkout FFmpeg based on PyAV version
 if version_ge "$VERSION_STR" "17.0.0"; then
-    echo "PyAV version $PACKAGE_VERSION requires FFmpeg 8.0+. Checking out n8.0.1..."
+    echo "PyAV version $PACKAGE_VERSION requires FFmpeg 9.0+. Checking out n9.0.1..."
     git checkout n9.0.1
 else
     echo "PyAV version $PACKAGE_VERSION requires legacy FFmpeg. Checking out n7.1..."
