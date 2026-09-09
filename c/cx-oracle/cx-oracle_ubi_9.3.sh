@@ -68,6 +68,9 @@ git submodule update --init --recursive
 
 ln -sf /opt/rh/gcc-toolset-13/root/usr/lib64/libctf.so.0 /usr/lib64/libctf.so.0
 
+# pkg_resources was split from setuptools in setuptools>=72; install it explicitly
+pip install --upgrade pip "setuptools<72" wheel
+
 #Install
 if ! (pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
