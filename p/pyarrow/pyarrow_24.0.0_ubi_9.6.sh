@@ -4,11 +4,11 @@
 # Package       : pyarrow
 # Version       : apache-arrow-24.0.0
 # Source repo   : https://github.com/apache/arrow
-# Tested on     : UBI:9.3
+# Tested on     : UBI:9.6
 # Language      : Python, C
 # Ci-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Sakshi Jain <sakshi.jain16@ibm.com>
+# Maintainer    : Bhagyashri Gaikwad <Bhagyashri.Gaikwad2@ibm.com> 
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
