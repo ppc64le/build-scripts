@@ -158,15 +158,17 @@ fi
 cd "$SOURCE_DIR"
 python3 -m pip install --upgrade pip setuptools wheel build
 
-# BUILD_SCRIPT_PATH is exported by create_wheel_wrapper.sh and points to the
-# original script location (a/azure-core-cpp/...) relative to the repo root.
-# Use it to find pyproject.toml alongside the script; fall back to wget after merge.
+# Locate pyproject.toml — try two known repo-relative paths before wget:
+#   1. BUILD_SCRIPT_PATH set by create_wheel_wrapper.sh (wheel CI, sourced)
+#   2. WORKING_DIR/a/azure-core-cpp/ (build script CI, executed directly)
 _PYPROJECT_SRC=""
-if [ -n "${BUILD_SCRIPT_PATH:-}" ]; then
+if [ -n "${BUILD_SCRIPT_PATH:-}" ] && [ -f "$(dirname "$BUILD_SCRIPT_PATH")/pyproject.toml" ]; then
     _PYPROJECT_SRC="$(dirname "$BUILD_SCRIPT_PATH")/pyproject.toml"
+elif [ -f "${WORKING_DIR}/a/azure-core-cpp/pyproject.toml" ]; then
+    _PYPROJECT_SRC="${WORKING_DIR}/a/azure-core-cpp/pyproject.toml"
 fi
 
-if [ -f "${_PYPROJECT_SRC}" ]; then
+if [ -n "${_PYPROJECT_SRC}" ]; then
     cp "${_PYPROJECT_SRC}" pyproject.toml
 else
     wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/azure-core-cpp/pyproject.toml
