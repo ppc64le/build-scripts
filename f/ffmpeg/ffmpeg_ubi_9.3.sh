@@ -181,7 +181,6 @@ USE_NONFREE=no   #the options below are set for NO
         --enable-hardcoded-tables \
         --enable-libfreetype \
         --enable-pthreads \
-        --enable-postproc \
         --enable-pic \
         --enable-pthreads \
         --enable-shared \
