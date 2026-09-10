@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : torchvision
-# Version          : 0.28.0
+# Version          : v0.29.0
 # Source repo      : https://github.com/pytorch/vision
 # Tested on        : UBI:10.2
 # Language         : Python
@@ -16,7 +16,7 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
-# Note: torchvision 0.28.0 requires torch==2.13.0 (installed from the IBM
+# Note: torchvision 0.29.0 requires torch==2.13.0 (installed from the IBM
 #       DeveloperFirst wheels index — no ppc64le wheel on PyPI).
 #       torchvision itself has no ppc64le pre-built wheel on PyPI or IBM index
 #       so it is built from source using setup.py + torch.utils.cpp_extension.
@@ -31,7 +31,7 @@
 set -e
 
 PACKAGE_NAME=torchvision
-PACKAGE_VERSION=${1:-0.28.0}
+PACKAGE_VERSION=${1:-v0.29.0}
 PACKAGE_URL=https://github.com/pytorch/vision
 PACKAGE_DIR=vision
 CURRENT_DIR=$(pwd)
@@ -129,7 +129,7 @@ python3.14 -m pip install \
 python3.14 -m pip install pillow requests
 
 # ---------------------------------------------------------------------------
-# Clone torchvision and checkout v0.28.0
+# Clone torchvision and checkout v0.29.0
 # ---------------------------------------------------------------------------
 cd "${CURRENT_DIR}"
 git clone "${PACKAGE_URL}" "${PACKAGE_DIR}"
@@ -168,7 +168,31 @@ WHL=$(ls "${WHEEL_DIR}"/torchvision-*.whl | head -1)
 python3.14 -m installer "${WHL}"
 
 cd "${CURRENT_DIR}"
+for
+# ---------------------------------------------------------------------------
+# Run package's own test suite via pytest
+# ---------------------------------------------------------------------------
+python3.14 -m pip install pytest pytest-mock
 
+cd "${CURRENT_DIR}/${PACKAGE_DIR}"
+
+if ! pytest test/test_architecture_ops.py \
+           test/test_models_detection_anchor_utils.py \
+           test/test_models_detection_negative_samples.py \
+           test/test_internal_utils.py \
+           test/smoke_test.py \
+           test/test_ops.py -k "test_boxes_shape or test_is_leaf_node" -v; then
+    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
+fi
+
+cd "${CURRENT_DIR}"
+
+# ---------------------------------------------------------------------------
+# Sanity smoke test
+# ---------------------------------------------------------------------------
 if ! python3.14 - <<'PYEOF'
 import sys
 import torch
