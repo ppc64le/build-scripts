@@ -21,6 +21,13 @@
   "v2.4.0": {
     "build_script": "pytorch_ubi_9.3.sh"
   },
+  "v2.13.0-rocm": {
+    "build_script": "pytorch_2.13.0_rocm_ubi_10.sh",
+    "patches": {
+      "PATCH1": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch",
+      "PATCH2": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.13.0_rocm_fastgeluasm.patch"
+    }
+  },
   "*": {
      "build_script":"pytorch_2.7.1_ubi_9.3.sh"
   },
