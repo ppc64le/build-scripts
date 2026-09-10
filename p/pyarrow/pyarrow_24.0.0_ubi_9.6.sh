@@ -639,7 +639,7 @@ echo "-----------------installing AWS SDK for C++ ---------------------"
 
 git clone https://github.com/aws/aws-sdk-cpp.git
 cd aws-sdk-cpp
-git checkout v1.11.357  # Use a stable version compatible with Arrow 24.0.0
+git checkout 1.11.357  # Use a stable version compatible with Arrow 24.0.0
 
 mkdir aws-sdk-prefix
 export AWS_SDK_PREFIX=$(pwd)/../aws-sdk-prefix
