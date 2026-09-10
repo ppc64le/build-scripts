@@ -1,0 +1,21 @@
+{
+    "maintainer": "prachi.gaonkar@ibm.com",
+    "package_name": "azure-storage-blobs",
+    "github_url": "https://github.com/Azure/azure-sdk-for-cpp",
+    "version": "12.18.0",
+    "default_branch": "main",
+    "build_script": "azure-storage-blobs_12.18.0_ubi_10.2.sh",
+    "package_dir": "a/azure-storage-blobs",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "wheel_build": true,
+    "12.18.0": {
+        "build_script": [
+            "azure-storage-blobs_12.18.0_ubi_10.2.sh"
+        ]
+    },
+    "*": {
+        "build_script": "azure-storage-blobs_12.18.0_ubi_10.2.sh"
+    }
+}
