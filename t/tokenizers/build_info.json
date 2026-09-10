@@ -1,8 +1,8 @@
 {
-  "maintainer": "aaragga1",
+  "maintainer": "SakshiJain0302",
   "package_name": "tokenizers",
   "github_url": "https://github.com/huggingface/tokenizers",
-  "version": "v0.22.2",
+  "version": "v0.23.1",
   "wheel_build" : true,
   "default_branch": "main",
   "build_script": "tokenizers_ubi_9.3.sh",
@@ -12,6 +12,9 @@
   "use_non_root_user": false,
   "v0.21.0": {
    "build_script": "tokenizers_ubi_9.3.sh"
+  },
+  "v0.23.1": {
+   "build_script": "tokenizers_0.23.1_ubi_10.2.sh"
   },
   "*": {
    "build_script": "tokenizers_ubi_9.3.sh"
