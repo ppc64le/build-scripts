@@ -19,9 +19,8 @@
 # Note: llvmlite 0.49.0 requires LLVM 22 (22.1.0). LLVM has no ppc64le
 #       pre-built binary so this script builds LLVM 22.1.0 from source
 #       using CMake + Ninja, then builds llvmlite against it.
-#       numpy 2.5.0 is built from source (Meson-python backend) using the
-#       same logic as build-scripts/n/numpy/numpy_2.5.0_ubi_10.2.sh and
-#       installed as a runtime companion required by numba.
+#       numpy is installed directly from PyPI as a runtime companion
+#       required by numba.
 #
 # -----------------------------------------------------------------------------
 
@@ -35,7 +34,7 @@ CURRENT_DIR=$(pwd)
 
 LLVM_VERSION=22.1.0
 LLVM_SHORT=22
-NUMPY_VERSION=2.5.0
+NUMPY_VERSION=${2:-2.5.0}
 
 # ---------------------------------------------------------------------------
 # System dependencies
@@ -67,45 +66,13 @@ echo "Using ninja: $(ninja --version)"
 # Python build tools
 # ---------------------------------------------------------------------------
 python3.14 -m pip install --upgrade pip setuptools wheel build
-python3.14 -m pip install "meson-python>=0.18.0" "Cython>=3.0.6" meson ninja patchelf
 
 # ---------------------------------------------------------------------------
-# Build numpy 2.5.0 from source (same logic as numpy_2.5.0_ubi_10.2.sh)
-# Required by numba at runtime; no ppc64le wheel on PyPI for this version.
+# Install numpy from PyPI (runtime companion required by numba)
 # ---------------------------------------------------------------------------
-echo "=== Building numpy ${NUMPY_VERSION} from source ==="
-git clone https://github.com/numpy/numpy numpy-src
-cd numpy-src
-
-if git rev-parse "v${NUMPY_VERSION}" &>/dev/null; then
-    git checkout "v${NUMPY_VERSION}"
-elif git rev-parse "${NUMPY_VERSION}" &>/dev/null; then
-    git checkout "${NUMPY_VERSION}"
-else
-    echo "ERROR: No git tag found for numpy version '${NUMPY_VERSION}'"
-    exit 1
-fi
-
-git submodule sync --recursive
-git submodule update --init --recursive
-
-export PKG_CONFIG_PATH="/usr/lib64/pkgconfig:/usr/share/pkgconfig:${PKG_CONFIG_PATH:-}"
-
-if ! python3.14 -m build --wheel --no-isolation \
-        -Csetup-args="-Dblas=openblas" \
-        -Csetup-args="-Dlapack=openblas" \
-        --outdir="${CURRENT_DIR}/numpy-wheels/"; then
-    echo "ERROR: numpy build failed"
-    exit 1
-fi
-
-python3.14 -m pip install installer
-NUMPY_WHL=$(find "${CURRENT_DIR}/numpy-wheels" -name "numpy-*.whl" | head -1)
-echo "Installing numpy wheel: ${NUMPY_WHL}"
-python3.14 -m installer "${NUMPY_WHL}"
+echo "=== Installing numpy ${NUMPY_VERSION} from PyPI ==="
+python3.14 -m pip install "numpy==${NUMPY_VERSION}"
 echo "numpy ${NUMPY_VERSION} installed successfully"
-
-cd "${CURRENT_DIR}"
 
 # ---------------------------------------------------------------------------
 # Build LLVM 22.1.0 from source for ppc64le
