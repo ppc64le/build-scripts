@@ -1,16 +1,25 @@
 {
-  "maintainer": "Harithanagothu2",
+  "maintainer": "tejasBadjateIBM",
   "package_name": "zstd",
   "github_url": "https://github.com/sergey-dryabzhinsky/python-zstd.git",
-  "version": "v1.5.6.1",
+  "version": "v1.5.7.2",
   "wheel_build" : true,
   "package_dir": "z/zstd",
   "default_branch": "master",
-  "build_script": "zstd_ubi_9.3.sh",
+  "build_script": "zstd_ubi_10.2.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "v1.5.7.2" : {
+    "build_script" : "zstd_ubi_10.2.sh"
+  },
+  "v1.5.6.1" : {
+    "build_script" : "zstd_ubi_9.3.sh"
+  },
   "*":{
-    "build_script":"zstd_ubi_9.3.sh"
+    "build_script": [ 
+      "zstd_ubi_9.3.sh",
+      "zstd_ubi_10.2.sh"
+    ]
   }
 }
