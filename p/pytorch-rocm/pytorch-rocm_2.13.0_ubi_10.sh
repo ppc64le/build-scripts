@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : pytorch-rocm
+# Package       : torch
 # Version       : v2.13.0
 # Source repo   : https://github.com/pytorch/pytorch.git
 # Tested on     : UBI:10 (ppc64le)
-# Language      : Python
+# Language      : Python, C++, HIP
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Ameil Kumar <ameil.kumar@ibm.com>
+# Maintainer    : Daniel Schenker <daniel.schenker@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -22,30 +22,37 @@
 #   rpms   (default) - Install ROCm RPMs from a provided repo URL
 #   path             - Assume ROCm is already present; use ROCM_PATH as-is
 #
+# The pip distribution name is kept as the standard upstream name "torch".
+# The local version suffix (+rocm7.14) and the platform tag (linux_ppc64le)
+# in the wheel filename uniquely identify this as a ROCm ppc64le build on
+# the devpi index. Using the standard name means pip dependency resolution
+# works correctly for all downstream packages (torchvision, vllm, etc.)
+# without any workarounds.
+#
 # Usage:
-#   ./pytorch-rocm_2.13.0_ubi_10.sh [v2.13.0]
+#   ./torch_rocm_v2.13.0_ubi10_stdnames.sh [v2.13.0]
 #
 # Environment variables honoured (can be set before running):
-#   ROCM_INSTALL_MODE    - rpms (default) or path
-#   ROCM_PATH            - Path to the ROCm installation (default: /opt/rocm)
-#   PYTORCH_ROCM_ARCH    - Semicolon-separated GPU targets
-#                          (default: "gfx90a;gfx950")
-#   ROCM_REPO_URL        - RPM repo baseurl
+#   PACKAGE_VERSION   - PyTorch tag to build (default: v2.13.0)
+#   ROCM_INSTALL_MODE - rpms (default) or path
+#   ROCM_PATH         - Path to ROCm installation (default: /opt/rocm)
+#   ROCM_REPO_URL     - RPM repo baseurl for ROCm
+#   PYTORCH_ROCM_ARCH - Semicolon-separated GPU targets (default: "gfx90a;gfx950")
 #
 # ---------------------------------------------------------------------------
 
 set -e
 
-PACKAGE_NAME=pytorch
+PACKAGE_NAME=torch
 PACKAGE_VERSION=${1:-v2.13.0}
 PACKAGE_URL=https://github.com/pytorch/pytorch.git
 CURRENT_DIR=$(pwd)
+OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-ROCM_INSTALL_MODE=${ROCM_INSTALL_MODE:-"rpms"}   # rpms | path
+ROCM_INSTALL_MODE=${ROCM_INSTALL_MODE:-"rpms"}
 ROCM_REPO_URL=${ROCM_REPO_URL:-"https://public.dhe.ibm.com/software/server/POWER/Linux/AMD/ROCm/RHEL/10/ppc64le"}
 ROCM_PATH=${ROCM_PATH:-/opt/rocm}
 
-# GPU architecture targets — override via env var
 PYTORCH_ROCM_ARCH=${PYTORCH_ROCM_ARCH:-"gfx90a;gfx950"}
 
 if [[ "$ROCM_INSTALL_MODE" != "rpms" && "$ROCM_INSTALL_MODE" != "path" ]]; then
@@ -54,21 +61,21 @@ if [[ "$ROCM_INSTALL_MODE" != "rpms" && "$ROCM_INSTALL_MODE" != "path" ]]; then
 fi
 
 echo "=== PyTorch ROCm Build ==="
-echo "  PACKAGE_VERSION      : $PACKAGE_VERSION"
-echo "  ROCM_INSTALL_MODE    : $ROCM_INSTALL_MODE"
-echo "  ROCM_PATH            : $ROCM_PATH"
-echo "  PYTORCH_ROCM_ARCH    : $PYTORCH_ROCM_ARCH"
+echo "  PACKAGE_VERSION   : $PACKAGE_VERSION"
+echo "  ROCM_INSTALL_MODE : $ROCM_INSTALL_MODE"
+echo "  ROCM_PATH         : $ROCM_PATH"
+echo "  PYTORCH_ROCM_ARCH : $PYTORCH_ROCM_ARCH"
 echo "=========================="
 
 # ---------------------------------------------------------------------------
 # Install system build dependencies
 # ---------------------------------------------------------------------------
-
-# Python packages must appear first (wrapper script requirement).
-yum install -y python3.12 python3.12-devel python3.12-pip \
+yum install -y \
     gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ \
     git make wget patch cmake ninja-build \
-    openblas openblas-devel
+    openblas openblas-devel \
+    zlib-devel curl \
+    meson pkgconf-pkg-config
 
 # Configure GCC Toolset 15
 if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
@@ -80,14 +87,49 @@ else
     echo "ERROR: gcc-toolset-15 not found"
     exit 1
 fi
-
 echo "Using gcc: $(gcc --version | head -1)"
 
-# Use Python 3.12 for the build so the produced wheel is cp312
-PYTHON=python3.12
+PYTHON=python
 
 # ---------------------------------------------------------------------------
-# MODE: rpms — install ROCm from a provided RPM repository
+# Build libdrm from source (not available in UBI 10 repo)
+# ---------------------------------------------------------------------------
+LIBDRM_VERSION=${LIBDRM_VERSION:-"libdrm-2.4.124"}
+LIBDRM_URL="https://gitlab.freedesktop.org/mesa/drm.git"
+
+echo "Building libdrm ${LIBDRM_VERSION} from source"
+if [ -d "${CURRENT_DIR}/drm" ]; then
+    echo "drm directory already exists, reusing."
+    cd "${CURRENT_DIR}/drm"
+    git checkout "$LIBDRM_VERSION"
+else
+    if ! git clone --branch "$LIBDRM_VERSION" --depth 1 "$LIBDRM_URL" "${CURRENT_DIR}/drm"; then
+        echo "ERROR: Failed to clone libdrm ${LIBDRM_VERSION}"
+        exit 1
+    fi
+    cd "${CURRENT_DIR}/drm"
+fi
+
+meson setup build \
+    --prefix=/usr/local \
+    --buildtype=release \
+    -Damdgpu=enabled \
+    -Dradeon=enabled \
+    -Dintel=disabled \
+    -Dnouveau=disabled \
+    -Dvmwgfx=disabled \
+    -Dtests=false
+
+ninja -C build
+ninja -C build install
+
+export PKG_CONFIG_PATH="/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+export LD_LIBRARY_PATH="/usr/local/lib64:/usr/local/lib:${LD_LIBRARY_PATH:-}"
+echo "libdrm installed: $(pkg-config --modversion libdrm)"
+cd "${CURRENT_DIR}"
+
+# ---------------------------------------------------------------------------
+# Install ROCm
 # ---------------------------------------------------------------------------
 if [[ "$ROCM_INSTALL_MODE" == "rpms" ]]; then
     if [[ ! "$ROCM_REPO_URL" =~ ^(https?|file):// ]]; then
@@ -95,7 +137,6 @@ if [[ "$ROCM_INSTALL_MODE" == "rpms" ]]; then
         exit 1
     fi
     echo "Installing ROCm from ${ROCM_REPO_URL}"
-
     cat > /etc/yum.repos.d/rocm.repo <<EOF
 [ROCm]
 name=ROCm
@@ -107,15 +148,10 @@ EOF
     ROCM_PATH=/opt/rocm
 fi
 
-# Set ROCm path
 export ROCM_PATH
 export PATH=$ROCM_PATH/bin:$PATH
 export LD_LIBRARY_PATH="${ROCM_PATH}/lib:${ROCM_PATH}/lib64:${LD_LIBRARY_PATH:-}"
 
-# ROCm bundles its own copies of system libraries (lzma, drm, elfutils, …) under
-# lib/rocm_sysdeps/lib.  In containers (e.g. UBI) these OS packages are absent,
-# so we must make the sysdeps directory visible to both the runtime linker and the
-# link-time linker, and point pkg-config at the bundled .pc files.
 ROCM_SYSDEPS_LIB="${ROCM_PATH}/lib/rocm_sysdeps/lib"
 if [[ -d "$ROCM_SYSDEPS_LIB" ]]; then
     export LD_LIBRARY_PATH="${ROCM_SYSDEPS_LIB}:${LD_LIBRARY_PATH}"
@@ -124,22 +160,21 @@ if [[ -d "$ROCM_SYSDEPS_LIB" ]]; then
 fi
 
 if ! command -v hipcc &>/dev/null; then
-    echo "ERROR: hipcc not found under ROCM_PATH=${ROCM_PATH}. Check your ROCm installation."
+    echo "ERROR: hipcc not found under ROCM_PATH=${ROCM_PATH}."
     exit 1
 fi
 echo "ROCm hipcc: $(hipcc --version | head -1)"
 
-# Use OpenBLAS instead of MKL (MKL does not support Power).
-# Disable CUDA/Intel tooling so cmake does not search for them.
+# ---------------------------------------------------------------------------
+# Build PyTorch from source (ROCm)
+# ---------------------------------------------------------------------------
 export PYTORCH_ROCM_ARCH
 export BLAS=OpenBLAS
 export USE_CUDA=0
 export USE_XPU=0
 export USE_ROCM=1
-
 export CMAKE_PREFIX_PATH="${ROCM_PATH}:${CMAKE_PREFIX_PATH:-}"
 
-# Clone PyTorch
 echo "Cloning PyTorch ${PACKAGE_VERSION}"
 if [ -d "${CURRENT_DIR}/pytorch" ]; then
     echo "pytorch directory already exists, reusing."
@@ -148,7 +183,6 @@ if [ -d "${CURRENT_DIR}/pytorch" ]; then
 else
     if ! git clone --recursive --branch "$PACKAGE_VERSION" "$PACKAGE_URL" "${CURRENT_DIR}/pytorch"; then
         echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Clone_Fails"
         exit 1
     fi
@@ -158,79 +192,47 @@ fi
 git submodule sync
 git submodule update --init --recursive
 
-# Install build dependencies
-$PYTHON -m pip install --upgrade pip
+$PYTHON -m pip install --upgrade pip setuptools wheel
 $PYTHON -m pip install --group dev || $PYTHON -m pip install -r requirements.txt
 
-# Run ROCm source transformation
 echo "Running ROCm hipify transformation"
 $PYTHON tools/amd_build/build_amd.py
 
-# Apply patches
-# Fix CUDAGuard narrowing conversion errors under GCC 14 in ROCm HIP flash-attn files
-# This patch is required — fail loudly if it cannot be applied
+# Fix CUDAGuard narrowing conversion errors under GCC 14
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/9c57d3b2c54a629d3cf6f45095b394f85374da3f/p/pytorch-rocm/pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch
 git apply pytorch_v2.13.0_rocm_cuda_guard_narrowing.patch
 
-
-# Fix FastGeluAsm explicit specializations rejected by AMD clang 23.0 in composable_kernel
-# This patch is required — fail loudly if it cannot be applied
+# Fix FastGeluAsm explicit specializations rejected by AMD clang 23.0
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/9c57d3b2c54a629d3cf6f45095b394f85374da3f/p/pytorch-rocm/pytorch_v2.13.0_rocm_fastgeluasm.patch
 git apply --directory=third_party/composable_kernel pytorch_v2.13.0_rocm_fastgeluasm.patch
 
-
-# Build
-echo "Building PyTorch (this will take a while)"
+echo "Building PyTorch ${PACKAGE_VERSION} (this will take a while)"
+# Version suffix +rocm7.14 and platform tag linux_ppc64le in the wheel filename
+# uniquely identify this as a ROCm ppc64le build on the devpi index.
 export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION#v}+rocm7.14
 export PYTORCH_BUILD_NUMBER=1
 
-# Rename the pip distribution to "torch-rocm" for ROCm stack isolation on devpi.
-# The import name (torch) is unchanged — only the wheel distribution name changes.
-#
-# WHY sed on pyproject.toml:
-#   PyTorch v2.13.0 has a pyproject.toml with [project] name = "torch".
-#   setuptools>=77 (which this build requires) reads pyproject.toml as the
-#   authoritative metadata source — it takes precedence over setup.py's
-#   setup(name=...) call.  TORCH_PACKAGE_NAME env var only affects setup.py
-#   but never reaches the wheel name because setuptools overwrites it from
-#   pyproject.toml.  The only reliable fix is to patch the name in-place
-#   before the build runs, exactly as torchaudio-rocm patches setup.py.
-sed -i 's/^name = "torch"$/name = "torch-rocm"/' pyproject.toml
-echo "Patched pyproject.toml: name = torch-rocm"
-
-# Build wheel via setup.py directly.
-# pip wheel always invokes PEP 517 (even with --no-build-isolation), which
-# spawns a subprocess that does not inherit the current environment — causing
-# cmake to re-configure without PYTORCH_ROCM_ARCH and fail.
-# setup.py bdist_wheel runs in-process: all exported env vars are visible,
-# cmake skips recompilation because build/ already exists and targets are
-# up to date, and setuptools reads the patched pyproject.toml for the name.
-echo "Building distribution wheel"
 if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${CURRENT_DIR}/dist"; then
-    echo "------------------$PACKAGE_NAME:install_fails---------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-# Install from the renamed wheel so pip registers it as torch-rocm
-$PYTHON -m pip install --no-build-isolation "${CURRENT_DIR}/dist"/torch_rocm-*.whl
+$PYTHON -m pip install --no-build-isolation "${CURRENT_DIR}/dist"/torch-*.whl
 
-# Basic import test
-echo "Running basic import test"
+# Verify
+echo "Verifying torch install"
 cd "${CURRENT_DIR}"
-
-# Need to export so that export works on other than amd also.
 export ROCPROFILER_LOG_LEVEL=0
+$PYTHON -c "
+import torch
+print('torch version    :', torch.__version__)
+print('torch.version.hip:', torch.version.hip)
+print('ROCm available   :', torch.cuda.is_available())
+if torch.version.hip is None:
+    raise SystemExit('ERROR: torch.version.hip is None — ROCm build may have failed')
+print('torch ROCm check passed')
+"
 
-if ! $PYTHON -c "import torch; print('torch version :', torch.__version__); print('ROCm available:', torch.cuda.is_available())"; then
-    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 2
-else
-    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
-fi
+echo "------------------$PACKAGE_NAME:Install_success-------------------------"
+echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass |  Install_Success"
