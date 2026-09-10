@@ -10,10 +10,10 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "0.24.0": {
+    "build_script": "thrift-cpp_ubi_10.2.sh"
+  },
   "*":{
-    "build_script":[
-        "thrift-cpp_ubi_9.3.sh",
-        "thrift-cpp_ubi_10.2.sh"
-    ]
+    "build_script":"thrift-cpp_ubi_9.3.sh"
   }
 }
