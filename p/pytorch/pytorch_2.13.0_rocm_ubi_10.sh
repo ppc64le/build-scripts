@@ -211,7 +211,7 @@ git apply --directory=third_party/composable_kernel "$SCRIPT_DIR/pytorch_v2.13.0
 
 # Build
 echo "Building PyTorch (this will take a while)"
-export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION#v}+rocm
+export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION#v}+rocm7.14
 export PYTORCH_BUILD_NUMBER=1
 
 # Rename the pip distribution to "torch-rocm" for ROCm stack isolation on devpi.
@@ -225,8 +225,8 @@ export PYTORCH_BUILD_NUMBER=1
 #   but never reaches the wheel name because setuptools overwrites it from
 #   pyproject.toml.  The only reliable fix is to patch the name in-place
 #   before the build runs, exactly as torchaudio-rocm patches setup.py.
-sed -i 's/^name = "torch"$/name = "torch-rocm"/' pyproject.toml
-echo "Patched pyproject.toml: name = torch-rocm"
+# sed -i 's/^name = "torch"$/name = "torch-rocm"/' pyproject.toml
+# echo "Patched pyproject.toml: name = torch-rocm"
 
 # Build wheel via setup.py directly.
 # pip wheel always invokes PEP 517 (even with --no-build-isolation), which
@@ -243,8 +243,8 @@ if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${SCRIPT_DIR}/di
     exit 1
 fi
 
-# Install from the renamed wheel so pip registers it as torch-rocm
-$PYTHON -m pip install --no-build-isolation "${SCRIPT_DIR}/dist"/torch_rocm-*.whl
+# Install the built wheel
+$PYTHON -m pip install --no-build-isolation "${SCRIPT_DIR}/dist"/torch-*.whl
 
 # Basic import test
 echo "Running basic import test"
