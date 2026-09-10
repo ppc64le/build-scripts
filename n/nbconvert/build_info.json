@@ -5,7 +5,7 @@
   "version": "v7.16.4",
   "wheel_build" : true, 
   "default_branch": "main",
-  "package_dir": "n/nbconvert/",
+  "package_dir": "n/nbconvert",
   "build_script": "nbconvert_ubi_9_3.sh",
   "docker_build": false,
   "validate_build_script": true,
