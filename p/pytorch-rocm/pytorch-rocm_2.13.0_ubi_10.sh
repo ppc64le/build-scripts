@@ -23,7 +23,7 @@
 #   path             - Assume ROCm is already present; use ROCM_PATH as-is
 #
 # Usage:
-#   ./pytorch-rocm_2.13.0_ubi_10.sh [v2.13.0]
+#   ./pytorch_2.13.0_rocm_ubi_10.sh [v2.13.0]
 #
 # Environment variables honoured (can be set before running):
 #   ROCM_INSTALL_MODE    - rpms (default) or path
@@ -184,27 +184,13 @@ echo "Building PyTorch (this will take a while)"
 export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION#v}+rocm7.14
 export PYTORCH_BUILD_NUMBER=1
 
-# Rename the pip distribution to "torch-rocm" for ROCm stack isolation on devpi.
-# The import name (torch) is unchanged — only the wheel distribution name changes.
-#
-# WHY sed on pyproject.toml:
-#   PyTorch v2.13.0 has a pyproject.toml with [project] name = "torch".
-#   setuptools>=77 (which this build requires) reads pyproject.toml as the
-#   authoritative metadata source — it takes precedence over setup.py's
-#   setup(name=...) call.  TORCH_PACKAGE_NAME env var only affects setup.py
-#   but never reaches the wheel name because setuptools overwrites it from
-#   pyproject.toml.  The only reliable fix is to patch the name in-place
-#   before the build runs, exactly as torchaudio-rocm patches setup.py.
-sed -i 's/^name = "torch"$/name = "torch-rocm"/' pyproject.toml
-echo "Patched pyproject.toml: name = torch-rocm"
-
 # Build wheel via setup.py directly.
 # pip wheel always invokes PEP 517 (even with --no-build-isolation), which
 # spawns a subprocess that does not inherit the current environment — causing
 # cmake to re-configure without PYTORCH_ROCM_ARCH and fail.
 # setup.py bdist_wheel runs in-process: all exported env vars are visible,
 # cmake skips recompilation because build/ already exists and targets are
-# up to date, and setuptools reads the patched pyproject.toml for the name.
+# up to date.
 echo "Building distribution wheel"
 if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${CURRENT_DIR}/dist"; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------------------------"
@@ -213,16 +199,14 @@ if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${CURRENT_DIR}/d
     exit 1
 fi
 
-# Install from the renamed wheel so pip registers it as torch-rocm
-$PYTHON -m pip install --no-build-isolation "${CURRENT_DIR}/dist"/torch_rocm-*.whl
+# Install the torch wheel
+$PYTHON -m pip install --no-build-isolation "${CURRENT_DIR}/dist"/torch-*.whl
 
 # Basic import test
 echo "Running basic import test"
 cd "${CURRENT_DIR}"
 
-# Need to export so that export works on other than amd also.
 export ROCPROFILER_LOG_LEVEL=0
-
 if ! $PYTHON -c "import torch; print('torch version :', torch.__version__); print('ROCm available:', torch.cuda.is_available())"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
