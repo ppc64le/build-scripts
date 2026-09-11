@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : torchvision-rocm
+# Package       : torchvision
 # Version       : v0.28.0
 # Source repo   : https://github.com/pytorch/vision.git
 # Tested on     : UBI:10 (ppc64le)
@@ -196,20 +196,6 @@ echo "Building PyTorch ${PYTORCH_VERSION} (this will take a while)"
 export PYTORCH_BUILD_VERSION=${PYTORCH_VERSION#v}+rocm7.14
 export PYTORCH_BUILD_NUMBER=1
 
-# Rename the pip distribution to "torch-rocm" for ROCm stack isolation on devpi.
-# The import name (torch) is unchanged — only the wheel distribution name changes.
-#
-# WHY sed on pyproject.toml:
-#   PyTorch v2.13.0 has a pyproject.toml with [project] name = "torch".
-#   setuptools>=77 (which this build requires) reads pyproject.toml as the
-#   authoritative metadata source — it takes precedence over setup.py's
-#   setup(name=...) call.  TORCH_PACKAGE_NAME env var only affects setup.py
-#   but never reaches the wheel name because setuptools overwrites it from
-#   pyproject.toml.  The only reliable fix is to patch the name in-place
-#   before the build runs, exactly as torchaudio-rocm patches setup.py.
-sed -i 's/^name = "torch"$/name = "torch-rocm"/' pyproject.toml
-echo "Patched pyproject.toml: name = torch-rocm"
-
 # Build wheel via setup.py directly.
 # pip wheel always invokes PEP 517 (even with --no-build-isolation), which
 # spawns a subprocess that does not inherit the current environment — causing
@@ -225,8 +211,8 @@ if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${CURRENT_DIR}/d
     exit 1
 fi
 
-# Install from the renamed wheel so pip registers it as torch-rocm
-$PYTHON -m pip install --no-build-isolation "${CURRENT_DIR}/dist"/torch_rocm-*.whl
+# Install the torch wheel
+$PYTHON -m pip install --no-build-isolation "${CURRENT_DIR}/dist"/torch-*.whl
 
 # Verify torch is importable and ROCm is visible through it
 echo "Verifying torch install"
@@ -266,22 +252,10 @@ git apply "${CURRENT_DIR}/${LICENSE_PATCH_FILE}"
 # Patch out the git-sha injection in setup.py that breaks reproducible builds
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
-# Rename the distribution to "torchvision-rocm" via the env var that
-# torchvision's setup.py already supports (TORCHVISION_PACKAGE_NAME).
-# The import name (torchvision) is unchanged — only the pip distribution name
-# changes.
-export TORCHVISION_PACKAGE_NAME="torchvision-rocm"
-
-# Tell torchvision's get_requirements() to list "torch-rocm" as its torch
-# dependency instead of "torch". torchvision's setup.py reads TORCH_PACKAGE_NAME
-# at install_requires time. Without this, pip fails to install the wheel because
-# it looks for "torch" which doesn't exist — only "torch-rocm" is installed.
-export TORCH_PACKAGE_NAME="torch-rocm"
-
 # ---------------------------------------------------------------------------
-# Build torchvision-rocm wheel
+# Build torchvision wheel
 # ---------------------------------------------------------------------------
-echo "Building torchvision-rocm wheel"
+echo "Building torchvision wheel"
 
 # Let torchvision's CMake find the installed torch (editable install above)
 export TORCH_CMAKE_PREFIX=$($PYTHON -c 'import torch; print(torch.utils.cmake_prefix_path)')
@@ -298,11 +272,9 @@ if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${CURRENT_DIR}";
 fi
 
 # Install the wheel we just built so the import test can run.
-# torch-rocm is already installed (editable); pass --find-links so pip can
-# satisfy that dependency without hitting PyPI for it.
-ROCM_WHL=$(ls "${CURRENT_DIR}"/torchvision_rocm-${BUILD_VERSION}-*.whl)
-echo "Built wheel: $(basename $ROCM_WHL)"
-$PYTHON -m pip install --find-links "${CURRENT_DIR}" "$ROCM_WHL"
+TORCHVISION_WHL=$(ls "${CURRENT_DIR}"/torchvision-${BUILD_VERSION}-*.whl)
+echo "Built wheel: $(basename $TORCHVISION_WHL)"
+$PYTHON -m pip install "$TORCHVISION_WHL"
 
 # ---------------------------------------------------------------------------
 # Import test
