@@ -5,6 +5,7 @@ PYTHON_VERSION=$1
 BUILD_SCRIPT_PATH=${2:-""}
 EXTRA_ARGS=${3:-""}
 POST_PROCESS_SCRIPT_PATH=${4:-"post_process_wheel.py"}
+CHECK_WHEEL_VERSION_SCRIPT=${5:-"check_wheel_version.py"}
 CURRENT_DIR=$(pwd)
 
 # install git  -  required by generate_sha() for all Python versions and UBI versions
@@ -359,6 +360,23 @@ fi
 
 cd "$CURRENT_DIR"
 wheel_final=(*.whl)
+
+# ---------------------------------------------------------------------------
+# check_wheel_version: validates the built wheel version against
+# GITHUB_PACKAGE_VERSION before any post-processing takes place.
+#
+# Two checks (both must pass):
+#   1. VERSION MATCH  — wheel base version must correspond to GITHUB_PACKAGE_VERSION
+#      Catches: build script checked out the wrong tag, e.g. requested
+#               v1.14.0 but the package self-reported 1.15.0.dev0.
+#   2. CLEAN VERSION  — wheel must NOT have a PEP 440 local identifier (+...)
+#      Catches: setuptools-scm / build system injected a git hash or build
+#               date because the source tree was not at a clean tagged commit,
+#               e.g. 0.0.30+56be3b5e.d20250607 or 0.1.3.dev0+ga7d8bbf.d20250607
+# ---------------------------------------------------------------------------
+if [ -n "$EXTRA_ARGS" ]; then
+    python "$CHECK_WHEEL_VERSION_SCRIPT" "${wheel_final[0]}" "$EXTRA_ARGS"
+fi
 
 # ---------------------------------------------------------------------------
 # run_cve_scan: runs generalized_wheel_scanner.py on the built wheel.
