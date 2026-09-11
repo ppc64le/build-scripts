@@ -138,13 +138,13 @@ ldconfig /usr/local/lib64
 if ! ldconfig -p | grep -q libazure-core; then
     echo "------------------$PACKAGE_NAME: shared library not found after install-----------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
-    exit 1
+    exit 2
 fi
 
 if ! ls /usr/local/include/azure/core.hpp > /dev/null 2>&1; then
     echo "------------------$PACKAGE_NAME: header not found after install-----------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
-    exit 1
+    exit 2
 fi
 
 # Run unit tests — skip suites that require live network / Azure test proxy
@@ -154,7 +154,7 @@ if ! ctest --output-on-failure -j"$(nproc)" \
     echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Test_Fails"
-    exit 1
+    exit 2
 fi
 
 # Build Python wheel
