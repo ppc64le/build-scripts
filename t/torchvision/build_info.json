@@ -17,6 +17,9 @@
     "libtorch_python.so",
     "libshm.so"
   ],
+  "v0.28.0": {
+    "build_script": "torchvision_0.28.0_rocm_ubi_10.sh"
+  },
   "v*.*.*": {
     "build_script": "torchvision_0.26.0_ubi_9.6.sh"
   },
