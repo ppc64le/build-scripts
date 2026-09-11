@@ -56,7 +56,7 @@ TORCH_WHL_PATH=${TORCH_WHL_PATH:-""}
 # TODO: replace specifier with the correct versioned devpi ROCm torch wheel
 # once https://github.com/ppc64le/build-scripts/pull/XXXX is merged and
 # the wheel is published to wheels.developerfirst.ibm.com.
-TORCH_DEVPI_VERSION=${TORCH_DEVPI_VERSION:-"torch==2.13.0+rocm"}
+TORCH_DEVPI_VERSION=${TORCH_DEVPI_VERSION:-"torch==2.13.0+rocm7.14"}
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 
 # ---------------------------------------------------------------------------
@@ -208,29 +208,20 @@ git apply "${SCRIPT_DIR}/${LICENSE_PATCH_FILE}"
 # Patch out the git-sha injection in setup.py that breaks reproducible builds
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
-# Rename the distribution to "torchvision-rocm" via the env var that
-# torchvision's setup.py already supports (line 38: TORCHVISION_PACKAGE_NAME).
-# The import name (torchvision) is unchanged — only the pip distribution name
-# changes. Follows the same pattern as vllm-rocm.
-export TORCHVISION_PACKAGE_NAME="torchvision-rocm"
-
-# Tell torchvision's get_requirements() to list "torch-rocm" as its torch
-# dependency instead of "torch". torchvision's setup.py reads TORCH_PACKAGE_NAME
-# at install_requires time (same env var PyTorch uses for its own name).
-# Without this, pip fails to install the wheel because it looks for "torch"
-# which doesn't exist — only "torch-rocm" is installed.
-export TORCH_PACKAGE_NAME="torch-rocm"
+# Distribution name stays as "torchvision" (no -rocm suffix).
+# TORCHVISION_PACKAGE_NAME and TORCH_PACKAGE_NAME left unset so setup.py
+# uses its defaults: distribution = torchvision, dependency = torch.
 
 # ---------------------------------------------------------------------------
-# Build torchvision-rocm wheel
+# Build torchvision wheel
 # ---------------------------------------------------------------------------
-echo "Building torchvision-rocm wheel"
+echo "Building torchvision wheel"
 
 # Let torchvision's CMake find the installed torch
 export TORCH_CMAKE_PREFIX=$($PYTHON -c 'import torch; print(torch.utils.cmake_prefix_path)')
 export CMAKE_PREFIX_PATH="${TORCH_CMAKE_PREFIX}:${ROCM_PATH}:${CMAKE_PREFIX_PATH:-}"
 
-export BUILD_VERSION="${PACKAGE_VERSION#v}"
+export BUILD_VERSION="${PACKAGE_VERSION#v}+rocm7.14"
 export SETUPTOOLS_SCM_PRETEND_VERSION="${BUILD_VERSION}"
 
 $PYTHON -m pip install --upgrade setuptools wheel pillow
@@ -245,9 +236,9 @@ fi
 # Install the wheel we just built so the import test can run.
 # torch-rocm is already installed locally; pass --find-links so pip can
 # satisfy that dependency without hitting PyPI for it.
-ROCM_WHL=$(ls "${SCRIPT_DIR}"/torchvision_rocm-${BUILD_VERSION}-*.whl)
+ROCM_WHL=$(ls "${SCRIPT_DIR}"/torchvision-${BUILD_VERSION}-*.whl)
 echo "Built wheel: $(basename $ROCM_WHL)"
-$PYTHON -m pip install --find-links "${SCRIPT_DIR}" "$ROCM_WHL"
+$PYTHON -m pip install "${ROCM_WHL}"
 
 # ---------------------------------------------------------------------------
 # Import test
