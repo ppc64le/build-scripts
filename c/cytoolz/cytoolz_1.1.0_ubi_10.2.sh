@@ -26,8 +26,22 @@ PACKAGE_DIR=./cytoolz
 CURRENT_DIR=$(pwd)
 
 # Install necessary system dependencies
-yum install -y git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel python3.14-devel python3.14-pip
+yum install -y git  gcc gcc-c++ gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ make cmake wget \
+    openssl-devel bzip2-devel libffi-devel zlib-devel \
+    python3.14-pip python3.14-devel
 
+# Setup GCC Toolset 15 for UBI 10
+if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
+    source /opt/rh/gcc-toolset-15/enable
+elif [[ -d /opt/rh/gcc-toolset-15/root/usr/bin ]]; then
+    export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
+    export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:$LD_LIBRARY_PATH"
+else
+    echo "ERROR: gcc-toolset-15 not found"
+    exit 1
+fi
+
+ 
 
 # Clone the repository
 git clone $PACKAGE_URL
