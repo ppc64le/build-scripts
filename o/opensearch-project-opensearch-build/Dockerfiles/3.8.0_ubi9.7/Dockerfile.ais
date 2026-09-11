@@ -82,6 +82,9 @@ RUN groupadd -g $GID opensearch && \
 COPY --from=linux_stage_0 --chown=$UID:0 $OPENSEARCH_HOME $OPENSEARCH_HOME
 WORKDIR $OPENSEARCH_HOME
 
+# Copy third-party license notices into the image
+COPY --chown=$UID:0 THIRD_PARTY_LICENSES.txt $OPENSEARCH_HOME/THIRD_PARTY_LICENSES.txt
+
 # Add k-NN lib directory to library loading path variable
 ENV LD_LIBRARY_PATH="$OPENSEARCH_HOME/plugins/opensearch-knn/lib"
 

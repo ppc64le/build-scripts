@@ -1,0 +1,55 @@
+The following components are bundled in the icr.io/ai-services/opensearch:3.8.0
+container image and are separately licensed under the Eclipse Public License 2.0
+(https://www.eclipse.org/legal/epl-2.0/). These components are used unmodified.
+Source code is available from the upstream repositories listed below.
+
+jakarta.json 2.0.0
+  Source: https://github.com/eclipse-ee4j/jsonp
+
+jakarta.json 2.0.1
+  Source: https://github.com/eclipse-ee4j/jsonp/tree/2.0.1
+
+jakarta.json.bind-api 2.0.0
+  Source: https://github.com/eclipse-ee4j/jsonb-api/tree/2.0.0
+
+jakarta.json.bind-api 3.0.2
+  Source: https://github.com/eclipse-ee4j/jsonb-api/tree/3.0.2
+
+jakarta.mail-api 2.1.3
+  Source: https://github.com/eclipse-ee4j/mail-api/tree/2.1.3
+
+jakarta.transaction-api 1.3.3
+  Source: https://github.com/eclipse-ee4j/jta-api/tree/1.3.3
+
+angus-core 2.0.4
+  Source: https://github.com/eclipse-ee4j/angus-activation/tree/2.0.4
+
+angus-mail 2.0.4
+  Source: https://github.com/eclipse-ee4j/angus-mail/tree/2.0.4
+
+imap 2.0.4
+  Source: https://github.com/eclipse-ee4j/angus-mail/tree/2.0.4
+
+logging-mailhandler 2.0.4
+  Source: https://github.com/eclipse-ee4j/angus-mail/tree/2.0.4
+
+pop3 2.0.4
+  Source: https://github.com/eclipse-ee4j/angus-mail/tree/2.0.4
+
+smtp 2.0.4
+  Source: https://github.com/eclipse-ee4j/angus-mail/tree/2.0.4
+
+jts-io-common 1.19.0
+  Source: https://github.com/locationtech/jts/tree/1.19.0
+
+org.jacoco.agent 0.8.14
+  Source: https://github.com/jacoco/jacoco/tree/v0.8.14
+
+org.jacoco.agent.rt 0.8.14
+  Source: https://github.com/jacoco/jacoco/tree/v0.8.14
+
+org.jacoco.ant 0.8.14
+  Source: https://github.com/jacoco/jacoco/tree/v0.8.14
+
+org.jacoco.core 0.8.14
+  Source: https://github.com/jacoco/jacoco/tree/v0.8.14
