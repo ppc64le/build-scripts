@@ -56,7 +56,7 @@ TORCH_WHL_PATH=${TORCH_WHL_PATH:-""}
 # TODO: replace specifier with the correct versioned devpi ROCm torch wheel
 # once https://github.com/ppc64le/build-scripts/pull/XXXX is merged and
 # the wheel is published to wheels.developerfirst.ibm.com.
-TORCH_DEVPI_VERSION=${TORCH_DEVPI_VERSION:-"torch==2.13.0+rocm"}
+TORCH_DEVPI_VERSION=${TORCH_DEVPI_VERSION:-"torch==2.13.0+rocm7.14"}
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 
 # ---------------------------------------------------------------------------
@@ -205,16 +205,13 @@ git apply "${SCRIPT_DIR}/${LICENSE_PATCH_FILE}"
 echo "Applied license exclusion patch"
 
 # ---------------------------------------------------------------------------
-# Build torchaudio-rocm wheel
+# Build torchaudio wheel
 # ---------------------------------------------------------------------------
-echo "Building torchaudio-rocm wheel"
+echo "Building torchaudio wheel"
 
-# Rename distribution to torchaudio-rocm for ROCm stack isolation.
-# torchaudio's setup.py hardcodes name="torchaudio" with no env var override,
-# so we patch it directly. The import name (torchaudio) is unchanged.
-sed -i 's/name="torchaudio"/name="torchaudio-rocm"/' setup.py
+# Distribution name stays as "torchaudio" (no -rocm suffix).
 
-export BUILD_VERSION="${PACKAGE_VERSION#v}"
+export BUILD_VERSION="${PACKAGE_VERSION#v}+rocm7.14"
 export SETUPTOOLS_SCM_PRETEND_VERSION="${BUILD_VERSION}"
 
 # Let torchaudio's CMake find the installed torch
@@ -238,7 +235,7 @@ if ! $PYTHON -m pip wheel . --no-build-isolation --no-deps -w "${SCRIPT_DIR}"; t
     exit 1
 fi
 
-ROCM_WHL=$(ls "${SCRIPT_DIR}"/torchaudio_rocm-${BUILD_VERSION}-*.whl)
+ROCM_WHL=$(ls "${SCRIPT_DIR}"/torchaudio-${BUILD_VERSION}-*.whl)
 echo "Built wheel: $(basename $ROCM_WHL)"
 $PYTHON -m pip install "$ROCM_WHL"
 
