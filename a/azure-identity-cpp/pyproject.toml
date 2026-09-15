@@ -37,7 +37,6 @@ where = ["local"]
     "include/azure/identity/**/*",
     "share/azure-identity-cpp/*",
 ]
-
 [tool.distutils.bdist_wheel]
 plat-name = "linux_ppc64le"   # Explicitly set the platform tag
 universal = false              # Disable universal wheel (forces platform-specific build)

@@ -166,9 +166,7 @@ echo "Linkage validation passed: libazure-identity links against libazure-core"
 cd "$SOURCE_DIR"
 python3.9 -m pip install --upgrade pip setuptools wheel build
 
-# Locate pyproject.toml — try two known repo-relative paths before wget:
-#   1. BUILD_SCRIPT_PATH set by create_wheel_wrapper.sh (wheel CI, sourced)
-#   2. WORKING_DIR/a/azure-identity-cpp/ (build script CI, executed directly)
+# Locate pyproject.toml
 _PYPROJECT_SRC=""
 if [ -n "${BUILD_SCRIPT_PATH:-}" ] && [ -f "$(dirname "$BUILD_SCRIPT_PATH")/pyproject.toml" ]; then
     _PYPROJECT_SRC="$(dirname "$BUILD_SCRIPT_PATH")/pyproject.toml"
@@ -228,5 +226,4 @@ cd "$WORKING_DIR"
 echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
 echo "$PACKAGE_URL $PACKAGE_NAME"
 echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Both_Install_and_Test_Success"
-
 exit 0
