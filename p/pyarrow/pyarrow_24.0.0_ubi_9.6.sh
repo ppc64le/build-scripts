@@ -26,9 +26,7 @@ PACKAGE_VERSION=${1:-apache-arrow-24.0.0}
 PACKAGE_URL=https://github.com/apache/arrow
 
 echo "Install dependencies and tools."
-dnf install -y gcc-toolset-13 make cmake ninja-build libomp-devel \
-               git python3.12 python3.12-devel python3.12-pip \
-               openssl openssl-devel zlib-devel libuuid-devel libcurl-devel libatomic cargo
+dnf install -y gcc-toolset-13 make cmake ninja-build libomp-devel git python3.12 python3.12-devel python3.12-pip openssl openssl-devel zlib-devel libuuid-devel libcurl-devel libatomic cargo
 
 # Enable GCC toolset
 source /opt/rh/gcc-toolset-13/enable
@@ -42,9 +40,6 @@ rustc --version
 # GCC toolset 13 does not include libatomic, causing '-latomic not found' during linking.
 # Symlink the system-provided libatomic.so.1 so the compiler can resolve it.
 ln -s /usr/lib64/libatomic.so.1   /opt/rh/gcc-toolset-13/root/usr/lib/gcc/ppc64le-redhat-linux/13/libatomic.so
-
-# Installing Python build dependencies
-#python3.12 -m pip install build wheel setuptools numpy setuptools_scm Cython
 
 echo "Entering Pyarrow source directory..."
 git clone $PACKAGE_URL
