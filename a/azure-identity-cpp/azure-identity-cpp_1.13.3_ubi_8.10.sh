@@ -163,7 +163,20 @@ echo "Linkage validation passed: libazure-identity links against libazure-core"
 cd "$SOURCE_DIR"
 python3.9 -m pip install --upgrade pip setuptools wheel build
 
-cp "$SCRIPT_DIR/pyproject.toml" .
+# Locate pyproject.toml — try two known repo-relative paths before wget:
+#   1. BUILD_SCRIPT_PATH set by create_wheel_wrapper.sh (wheel CI, sourced)
+#   2. WORKING_DIR/a/azure-identity-cpp/ (build script CI, executed directly)
+_PYPROJECT_SRC=""
+if [ -n "${BUILD_SCRIPT_PATH:-}" ] && [ -f "$(dirname "$BUILD_SCRIPT_PATH")/pyproject.toml" ]; then
+    _PYPROJECT_SRC="$(dirname "$BUILD_SCRIPT_PATH")/pyproject.toml"
+elif [ -f "${WORKING_DIR}/a/azure-identity-cpp/pyproject.toml" ]; then
+    _PYPROJECT_SRC="${WORKING_DIR}/a/azure-identity-cpp/pyproject.toml"
+fi
+if [ -n "${_PYPROJECT_SRC}" ]; then
+    cp "${_PYPROJECT_SRC}" pyproject.toml
+else
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/azure-identity-cpp/pyproject.toml
+fi
 
 mkdir -p wheelhouse
 if ! python3.9 -m pip wheel . --no-build-isolation -w wheelhouse; then
@@ -190,7 +203,7 @@ if ! pip install --force-reinstall "$WHEEL_FILE"; then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Wheel_Test_Fails"
     deactivate
-    exit 1
+    exit 2
 fi
 
 if ! python3.9 -c "
