@@ -1,0 +1,20 @@
+{
+  "maintainer": "ameil.kumar",
+  "package_name": "fastsafetensors",
+  "github_url": "https://github.com/foundation-model-stack/fastsafetensors.git",
+  "version": "0.4.0",
+  "wheel_build": true,
+  "default_branch": "main",
+  "package_dir": "f/fastsafetensors",
+  "build_script": "fastsafetensors_0.4.0_ubi_10.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "wheel_name": "fastsafetensors",
+  "0.4.0": {
+    "build_script": "fastsafetensors_0.4.0_ubi_10.sh"
+  },
+  "*": {
+    "build_script": "fastsafetensors_0.4.0_ubi_10.sh"
+  }
+}
