@@ -261,7 +261,7 @@ echo "Building torchvision wheel"
 export TORCH_CMAKE_PREFIX=$($PYTHON -c 'import torch; print(torch.utils.cmake_prefix_path)')
 export CMAKE_PREFIX_PATH="${TORCH_CMAKE_PREFIX}:${ROCM_PATH}:${CMAKE_PREFIX_PATH:-}"
 
-export BUILD_VERSION="${PACKAGE_VERSION#v}"
+export BUILD_VERSION="${PACKAGE_VERSION#v}+rocm7.14"
 export SETUPTOOLS_SCM_PRETEND_VERSION="${BUILD_VERSION}"
 
 if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${CURRENT_DIR}"; then
@@ -272,7 +272,7 @@ if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${CURRENT_DIR}";
 fi
 
 # Install the wheel we just built so the import test can run.
-TORCHVISION_WHL=$(ls "${CURRENT_DIR}"/torchvision-${BUILD_VERSION}-*.whl)
+TORCHVISION_WHL=$(ls "${CURRENT_DIR}"/torchvision-*.whl | grep -v torch- | head -1)
 echo "Built wheel: $(basename $TORCHVISION_WHL)"
 $PYTHON -m pip install "$TORCHVISION_WHL"
 

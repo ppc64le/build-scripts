@@ -287,7 +287,7 @@ echo "Applied license exclusion patch"
 # ---------------------------------------------------------------------------
 echo "Building torchaudio wheel"
 
-export BUILD_VERSION="${PACKAGE_VERSION#v}"
+export BUILD_VERSION="${PACKAGE_VERSION#v}+rocm7.14"
 export SETUPTOOLS_SCM_PRETEND_VERSION="${BUILD_VERSION}"
 
 # Let torchaudio's CMake find the installed torch
@@ -311,7 +311,7 @@ if ! $PYTHON -m pip wheel . --no-build-isolation --no-deps -w "${SCRIPT_DIR}"; t
     exit 1
 fi
 
-TORCHAUDIO_WHL=$(ls "${SCRIPT_DIR}"/torchaudio-${BUILD_VERSION}-*.whl)
+TORCHAUDIO_WHL=$(ls "${SCRIPT_DIR}"/torchaudio-*.whl | grep -v torch- | head -1)
 echo "Built wheel: $(basename $TORCHAUDIO_WHL)"
 $PYTHON -m pip install "$TORCHAUDIO_WHL"
 
