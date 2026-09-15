@@ -114,6 +114,7 @@ cmake \
     -DBUILD_TESTING=OFF \
     -DBUILD_SHARED_LIBS=ON \
     -DBUILD_TRANSPORT_CURL=ON \
+    -DCMAKE_INSTALL_RPATH='$ORIGIN' \
     -Dazure-core-cpp_DIR="/usr/local/share/cmake/azure-core-cpp" \
     -GNinja \
     ../sdk/identity/azure-identity
