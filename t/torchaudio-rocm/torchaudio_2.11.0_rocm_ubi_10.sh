@@ -82,7 +82,7 @@ while [[ $# -gt 0 ]]; do
             # Ignore extra positional args passed by create_wheel_wrapper.sh
             # (e.g. the Python version "3.12" appended after the package version)
             shift
-            ;;
+            ;;    
         *)
             echo "Unknown argument: $1"
             echo "Usage: $0 [--rocm-install-mode rpms|path] [--version v2.11.0]"
