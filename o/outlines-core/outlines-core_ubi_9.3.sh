@@ -54,7 +54,7 @@ git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.32
 make -j${MAX_JOBS} TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=120 DYNAMIC_ARCH=1 INTERFACE64=0
-make install
+make install PREFIX=/usr/local
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib
 cd $CURRENT_DIR
 
@@ -695,6 +695,15 @@ export ArrowCompute_DIR=${ARROW_HOME}/lib/cmake/ArrowCompute
 export Arrow_DIR=${ARROW_HOME}/lib/cmake/Arrow
 
 
+export NUMPY_INCLUDE_DIR=$(python3.12 -c "import numpy; print(numpy.get_include())")
+
+export PYARROW_CMAKE_OPTIONS="-DPython3_NumPy_INCLUDE_DIRS=${NUMPY_INCLUDE_DIR}"
+
+export CMAKE_ARGS="-DPython3_NumPy_INCLUDE_DIRS=${NUMPY_INCLUDE_DIR}"
+
+echo "NUMPY_INCLUDE_DIR=${NUMPY_INCLUDE_DIR}"
+echo "PYARROW_CMAKE_OPTIONS=${PYARROW_CMAKE_OPTIONS}"
+echo "CMAKE_ARGS=${CMAKE_ARGS}"
 python3.12 setup.py install
 
 echo "-------------------Installed Pyarrow-------------------------"
