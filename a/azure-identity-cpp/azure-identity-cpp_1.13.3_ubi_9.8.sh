@@ -125,6 +125,9 @@ cd ..
 
 cd "$SOURCE_DIR"
 
+# Bundle azure-core with azure-identity so auditwheel can repair the wheel.
+cp -a /usr/local/lib64/libazure-core.so* "${PREFIX}/lib64/"
+
 # Create __init__.py so setuptools recognises local/azure_identity_cpp as a Python package
 touch local/azure_identity_cpp/__init__.py
 
@@ -158,7 +161,7 @@ echo "Linkage validation passed: libazure-identity links against libazure-core"
 cd "$SOURCE_DIR"
 python3 -m pip install --upgrade pip setuptools wheel build
 
-# Locate pyproject.toml 
+# Locate pyproject.toml
 _PYPROJECT_SRC=""
 if [ -n "${BUILD_SCRIPT_PATH:-}" ] && [ -f "$(dirname "$BUILD_SCRIPT_PATH")/pyproject.toml" ]; then
     _PYPROJECT_SRC="$(dirname "$BUILD_SCRIPT_PATH")/pyproject.toml"

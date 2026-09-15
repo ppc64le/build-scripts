@@ -130,6 +130,9 @@ cd ..
 
 cd "$SOURCE_DIR"
 
+# Bundle azure-core with azure-identity so auditwheel can repair the wheel.
+cp -a /usr/local/lib64/libazure-core.so* "${PREFIX}/lib64/"
+
 # Create __init__.py so setuptools recognises local/azure_identity_cpp as a Python package
 touch local/azure_identity_cpp/__init__.py
 
