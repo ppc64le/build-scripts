@@ -34,7 +34,7 @@ CURRENT_DIR=$(pwd)
 
 LLVM_VERSION=22.1.0
 LLVM_SHORT=22
-NUMPY_VERSION=${2:-2.5.0}
+NUMPY_VERSION=2.5.0
 
 # ---------------------------------------------------------------------------
 # System dependencies
@@ -143,8 +143,6 @@ fi
 
 # ---------------------------------------------------------------------------
 # Build llvmlite wheel
-# ffi/build.py uses CMake internally; LLVMLITE_PACKAGE_FORMAT=wheel tells it
-# to produce a shared library suitable for wheel packaging.
 # ---------------------------------------------------------------------------
 export LLVMLITE_PACKAGE_FORMAT="wheel"
 export LLVMLITE_USE_RTTI="OFF"
@@ -166,21 +164,14 @@ cp dist/*.whl "${CURRENT_DIR}/" 2>/dev/null || true
 
 # ---------------------------------------------------------------------------
 # Install wheel and test
-# Pip 26+ blocks file:// URIs to non-localhost paths; use python -m installer.
 # ---------------------------------------------------------------------------
 python3.14 -m pip install installer
 WHL=$(ls "${WHEEL_DIR}"/llvmlite-*.whl | head -1)
 python3.14 -m installer "${WHL}"
 
-if ! python3.14 -c "
-import llvmlite
-import llvmlite.binding as llvm
-# initialize(), initialize_native_target(), initialize_native_asmprinter()
-# were removed in llvmlite 0.44+; LLVM init is now automatic.
-print('llvmlite version:', llvmlite.__version__)
-print('LLVM version:', llvm.llvm_version_info)
-print('llvmlite import OK')
-"; then
+# Run tests
+cd "${CURRENT_DIR}"
+if ! python3.14 -m llvmlite.tests ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
@@ -188,6 +179,6 @@ print('llvmlite import OK')
 else
     echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
