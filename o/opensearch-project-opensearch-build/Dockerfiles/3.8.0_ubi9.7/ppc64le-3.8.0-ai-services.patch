@@ -123,6 +123,22 @@ index 00000000..e4532414
 ++                    if ("org.apache.httpcomponents.core5".equals(group)) {
 ++                        details.useVersion("5.4.3");
 ++                    }
+++                    // Force all io.netty artifacts to 4.2.17.Final (CVE-2026-75595, CVE-2026-75596, CVE-2026-59903)
+++                    if ("io.netty".equals(group)) {
+++                        details.useVersion("4.2.17.Final");
+++                    }
+++                    // Force httpclient5 to 5.6.3 (CVE-2026-64607)
+++                    if ("org.apache.httpcomponents.client5".equals(group)) {
+++                        details.useVersion("5.6.3");
+++                    }
+++                    // Force log4j to 2.25.5 (CVE-2026-49844)
+++                    if ("org.apache.logging.log4j".equals(group)) {
+++                        details.useVersion("2.25.5");
+++                    }
+++                    // Force jsoup to 1.23.1 (CVE-2026-71497)
+++                    if ("org.jsoup".equals(group) && "jsoup".equals(name)) {
+++                        details.useVersion("1.23.1");
+++                    }
 ++                });
 ++            });
 +         });
@@ -132,15 +148,34 @@ index 00000000..e4532414
 +index 3bf10a02ced..18624c5df6d 100644
 +--- a/gradle/libs.versions.toml
 ++++ b/gradle/libs.versions.toml
-+@@ -50,7 +50,7 @@ reactor           = "3.8.6"
-+ 
++@@ -50,9 +50,9 @@ reactor           = "3.8.6"
++
 + # client dependencies
-+ httpclient5       = "5.6.1"
++-httpclient5       = "5.6.1"
+++httpclient5       = "5.6.3"
 +-httpcore5         = "5.4"
 ++httpcore5         = "5.4.3"
 + httpclient        = "4.5.14"
 + httpcore          = "4.4.16"
 + httpasyncclient   = "4.1.5"
++diff --git a/gradle/libs.versions.toml b/gradle/libs.versions.toml
++index 18624c5df6d..nettyfix 100644
++--- a/gradle/libs.versions.toml
+++++ b/gradle/libs.versions.toml
++@@ -42,7 +42,7 @@ guava             = "33.4.8-jre"
++
++ # netty
++-netty             = "4.2.16.Final"
+++netty             = "4.2.17.Final"
++diff --git a/gradle/libs.versions.toml b/gradle/libs.versions.toml
++index nettyfix..log4jfix 100644
++--- a/gradle/libs.versions.toml
+++++ b/gradle/libs.versions.toml
++@@ -29,7 +29,7 @@ guava             = "33.4.8-jre"
++
++ # logging
++-log4j                   = "2.25.4"
+++log4j                   = "2.25.5"
 +diff --git a/security.patch b/security.patch
 +new file mode 100644
 +index 00000000000..ba087f04a44

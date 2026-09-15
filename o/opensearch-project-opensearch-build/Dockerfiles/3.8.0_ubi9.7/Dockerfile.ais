@@ -25,8 +25,10 @@ ARG SECURITY_PLUGIN_DIR=$OPENSEARCH_HOME/plugins/opensearch-security
 ARG PERFORMANCE_ANALYZER_PLUGIN_CONFIG_DIR=$OPENSEARCH_PATH_CONF/opensearch-performance-analyzer
 
 # Update packages and install required extraction/user tools
+# Remove vim-minimal (pulled as transitive dep) - eliminates 3 HIGH + 18 MEDIUM CVEs
 RUN dnf upgrade -y curl-minimal libcurl-minimal libpng && \
     dnf install -y tar gzip shadow-utils which openssl && \
+    dnf remove -y vim-minimal && \
     dnf clean all
 
 # Create an opensearch user and group, add to GID 0 (root) for OpenShift arbitrary UID compatibility
@@ -62,12 +64,14 @@ ARG GID=1000
 ARG OPENSEARCH_HOME=/usr/share/opensearch
 
 # Install tools, OpenSSL for certificate generation, and Java 25 OpenJDK
+# Remove vim-minimal (pulled as transitive dep) - eliminates 3 HIGH + 18 MEDIUM CVEs
 RUN dnf upgrade -y curl-minimal libcurl-minimal libpng && \
     dnf install -y tar gzip shadow-utils which openssl \
     java-25-openjdk \
     java-25-openjdk-devel \
     java-25-openjdk-headless \
     java-25-openjdk-crypto-adapter && \
+    dnf remove -y vim-minimal && \
     dnf clean all
 
 # Point JAVA_HOME and PATH to the system installed OpenJDK (ppc64le has no bundled JDK)
