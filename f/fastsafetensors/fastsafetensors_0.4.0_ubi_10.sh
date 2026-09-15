@@ -121,15 +121,16 @@ echo "Built wheel: $(basename "$FST_WHL")"
 $PYTHON -m pip install "typer>=0.9.0"
 $PYTHON -m pip install "$FST_WHL"
 
-# torch and safetensors are needed by the unit tests (conftest generates a
-# tiny GPT-2 safetensors fixture and the frameworks/_torch.py module).
-# Neither is available on PyPI for ppc64le — pull from the IBM devpi index.
+# torch, safetensors and numpy are needed by the unit tests (conftest generates
+# a tiny GPT-2 safetensors fixture; safetensors.torch.save_file() requires numpy).
+# torch/safetensors are not on PyPI for ppc64le — pull from the IBM devpi index.
 echo "Installing test dependencies from devpi index: ${DEVPI_INDEX}"
 $PYTHON -m pip install --prefer-binary \
     --extra-index-url "${DEVPI_INDEX}" \
     torch \
     "safetensors>=0.4.0" \
-    "pytest>=9.0.3"
+    "pytest>=9.0.3" \
+    numpy
 
 # ---------------------------------------------------------------------------
 # Import test
