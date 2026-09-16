@@ -2,11 +2,11 @@
   "maintainer": "Daniel Schenker <daniel.schenker@ibm.com>",
   "package_name": "vllm-rocm",
   "github_url": "https://github.com/vllm-project/vllm.git",
-  "version": "v0.24.0",
+  "version": "v0.28.0",
   "wheel_build": true,
   "default_branch": "main",
   "package_dir": "v/vllm-rocm",
-  "build_script": "vllm_rocm_v0.24.0_ubi_10.sh",
+  "build_script": "vllm_v0.28.0_rocm_ubi_10.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
@@ -25,10 +25,10 @@
     "librocblas.so",
     "librocm_smi64.so"
   ],
-  "v0.24.0": {
-    "build_script": "vllm_rocm_v0.24.0_ubi_10.sh"
+  "v0.28.0": {
+    "build_script": "vllm_v0.28.0_rocm_ubi_10.sh"
   },
   "*": {
-    "build_script": "vllm_rocm_v0.24.0_ubi_10.sh"
+    "build_script": "vllm_v0.28.0_rocm_ubi_10.sh"
   }
 }
