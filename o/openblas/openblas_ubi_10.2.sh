@@ -67,11 +67,9 @@ if [ -n "${FFLAGS}" ]; then
 fi
 
 build_opts+=(BINARY="64")
-build_opts+=(DYNAMIC_ARCH=1)
 
-# Set target platform-/CPU-specific options
-#only seeting option for x86-cpu platform
-build_opts+=(TARGET="PRESCOTT")
+# Set target platform-/CPU-specific options for ppc64le
+build_opts+=(TARGET="POWER9")
 
 # Placeholder for future builds that may include ILP64 variants.
 build_opts+=(INTERFACE64=0)
@@ -104,6 +102,7 @@ CFLAGS="${CF}" FFLAGS="${FFLAGS}" \
 #install pyproject.toml
 wget https://raw.githubusercontent.com/i-wheels-cpd/build-scripts/refs/heads/main/o/openblas/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
+sed -i 's/plat-name = "linux_x86_64"/plat-name = "linux_ppc64le"/' pyproject.toml
 
 # Finalize OpenBLAS package layout
 touch "${PREFIX}/__init__.py"
