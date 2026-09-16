@@ -2,7 +2,7 @@
     "maintainer": "Siddesh-Sangodkar1",
     "package_name": "onnx",
     "github_url": "https://github.com/onnx/onnx",
-    "version": "1.21.0",
+    "version": "v1.21.0",
     "wheel_build" : true,
     "package_dir": "o/onnx",
     "default_branch": "main",
@@ -16,7 +16,7 @@
     "v1.13.1" : {
       "build_script": "onnx_1.13.1_ubi_9.3.sh" 
     },
-    "1.21.0": {
+    "v1.21.0": {
         "build_script": "onnx_1.21.0_ubi_10.2.sh"
     },
     "*": {
