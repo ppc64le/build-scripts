@@ -70,7 +70,6 @@ export CPATH=/opt/rh/gcc-toolset-12/root/usr/include:$CPATH
 # Apply CPU optimization flags
 export CFLAGS="${CPU_FLAGS}"
 export CXXFLAGS="${CPU_FLAGS}"
-export LDFLAGS="${CPU_FLAGS}"
 
 # Disable vcpkg auto-integration — use system-installed libraries instead
 export AZURE_SDK_DISABLE_AUTO_VCPKG=1
