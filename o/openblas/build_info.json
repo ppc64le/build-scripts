@@ -2,7 +2,7 @@
   "maintainer": "Yogita kulkarni",
   "package_name": "OpenBLAS",
   "github_url": "https://github.com/OpenMathLib/OpenBLAS",
-  "version": "v0.3.23",
+  "version": "v0.3.33",
   "wheel_build" : true,
   "package_dir": "o/openblas",
   "default_branch": "develop",
