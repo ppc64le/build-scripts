@@ -25,10 +25,6 @@ PACKAGE_DIR=azure-sdk-for-cpp
 WORKING_DIR=$(pwd)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# azure-core version bundled at the azure-identity_1.13.3 tag
-# (confirmed from sdk/core/azure-core/src/private/package_version.hpp)
-AZURE_CORE_VERSION="1.16.2"
-
 # Detect CPU generation and set optimization flags accordingly
 if grep -q "POWER10" /proc/cpuinfo 2>/dev/null; then
     CPU_FLAGS="-mcpu=power10 -mtune=power10"
@@ -55,7 +51,6 @@ export CPATH=/opt/rh/gcc-toolset-12/root/usr/include:$CPATH
 # Apply CPU optimization flags
 export CFLAGS="${CPU_FLAGS}"
 export CXXFLAGS="${CPU_FLAGS}"
-export LDFLAGS="${CPU_FLAGS}"
 
 # Disable vcpkg auto-integration — use system-installed libraries instead
 export AZURE_SDK_DISABLE_AUTO_VCPKG=1
