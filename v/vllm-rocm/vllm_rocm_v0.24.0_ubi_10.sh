@@ -93,7 +93,7 @@ yum install -y python3.12 python3.12-devel python3.12-pip \
     openblas openblas-devel \
     libjpeg-devel libpng-devel \
     zlib-devel curl \
-    meson pkgconf-pkg-config pciaccess-devel
+    meson pkgconf-pkg-config
 
 # Configure GCC Toolset 15
 if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
