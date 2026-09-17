@@ -348,6 +348,7 @@ fi
 TORCHVISION_WHL=$(ls "${CURRENT_DIR}"/torchvision-*.whl | grep -v torch- | head -1)
 echo "Built wheel: $(basename $TORCHVISION_WHL)"
 $PYTHON -m pip install "$TORCHVISION_WHL"
+mv "$TORCHVISION_WHL" "${CURRENT_DIR}/dist/"
 
 # Verify torchvision is importable
 echo "Verifying torchvision install"
@@ -403,6 +404,7 @@ fi
 TORCHAUDIO_WHL=$(ls "${CURRENT_DIR}"/torchaudio-*.whl | grep -v torch- | head -1)
 echo "Built wheel: $(basename $TORCHAUDIO_WHL)"
 $PYTHON -m pip install "$TORCHAUDIO_WHL"
+mv "$TORCHAUDIO_WHL" "${CURRENT_DIR}/dist/"
 
 # Verify torchaudio is importable
 echo "Verifying torchaudio install"
@@ -652,7 +654,7 @@ echo "Building vLLM ROCm wheel (this will take a while)"
 # The override is used as-is — producing e.g. vllm-0.28.0+rocm7.14-cp312-...
 unset BUILD_VERSION SETUPTOOLS_SCM_PRETEND_VERSION
 export VLLM_VERSION_OVERRIDE="${PACKAGE_VERSION#v}+rocm7.14"
-if ! $PYTHON setup.py bdist_wheel --universal --dist-dir "${CURRENT_DIR}/dist"; then
+if ! $PYTHON setup.py bdist_wheel --universal --dist-dir "${CURRENT_DIR}"; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
@@ -660,9 +662,9 @@ if ! $PYTHON setup.py bdist_wheel --universal --dist-dir "${CURRENT_DIR}/dist"; 
 fi
 
 echo "Built vLLM wheel(s):"
-ls -lh "${CURRENT_DIR}/dist"/vllm-*.whl
+ls -lh "${CURRENT_DIR}"/vllm-*.whl
 
-$PYTHON -m pip install "${CURRENT_DIR}/dist"/vllm-*.whl --prefer-binary --extra-index-url "${DEVPI_INDEX}"
+$PYTHON -m pip install "${CURRENT_DIR}"/vllm-*.whl --prefer-binary --extra-index-url "${DEVPI_INDEX}"
 
 # ---------------------------------------------------------------------------
 # Import test
