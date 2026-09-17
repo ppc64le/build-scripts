@@ -1,11 +1,11 @@
-#!/bin/bash -e
+#!/bin/bash
 # -----------------------------------------------------------------------------
 #
 # Package       : vllm
-# Version       : v0.24.0
-# Source repo   : https://github.com/vllm-project/vllm.git
-# Tested on     : UBI:10 (ppc64le)
-# Language      : Python, C++, HIP
+# Version       : v0.28.0
+# Source repo   : https://github.com/vllm-project/vllm
+# Tested on     : UBI 10 (ppc64le)
+# Language      : Python, C++, CUDA/HIP
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Daniel Schenker <daniel.schenker@ibm.com>
@@ -16,7 +16,7 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
-# -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 #
 # ROCm installation mode (ROCM_INSTALL_MODE env var):
 #   rpms   (default) - Install ROCm RPMs from a provided repo URL
@@ -26,11 +26,15 @@
 # so that ROCm-enabled shared libraries are available at vLLM's CMake
 # configure time.
 #
+# Runtime dependencies that are only available on the IBM devpi index
+# (xgrammar, sentencepiece, etc.) are installed from DEVPI_INDEX before the
+# wheel build so they are present in the environment at test time.
+#
 # Usage:
-#   ./vllm_rocm_v0.24.0_ubi_10.sh [v0.24.0]
+#   ./vllm_v0.28.0_rocm_ubi_10.sh [v0.28.0]
 #
 # Environment variables honoured (can be set before running):
-#   PACKAGE_VERSION      - vLLM tag to build (default: v0.24.0)
+#   PACKAGE_VERSION      - vLLM tag to build (default: v0.28.0)
 #   PYTORCH_VERSION      - PyTorch tag to build (default: v2.13.0)
 #   TORCHVISION_VERSION  - torchvision tag to build (default: v0.28.0)
 #   TORCHAUDIO_VERSION   - torchaudio tag to build (default: v2.11.0)
@@ -39,13 +43,15 @@
 #   ROCM_REPO_URL        - RPM repo baseurl for ROCm
 #   PYTORCH_ROCM_ARCH    - Semicolon-separated GPU targets
 #                          (default: "gfx90a;gfx950")
+#   DEVPI_INDEX          - IBM ppc64le devpi wheel index URL
+#                          (default: https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple)
 #
 # ---------------------------------------------------------------------------
 
 set -e
 
 PACKAGE_NAME=vllm
-PACKAGE_VERSION=${1:-v0.24.0}
+PACKAGE_VERSION=${1:-v0.28.0}
 PACKAGE_URL=https://github.com/vllm-project/vllm.git
 CURRENT_DIR=$(pwd)
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
@@ -63,6 +69,8 @@ ROCM_INSTALL_MODE=${ROCM_INSTALL_MODE:-"rpms"}   # rpms | path
 ROCM_REPO_URL=${ROCM_REPO_URL:-"https://public.dhe.ibm.com/software/server/POWER/Linux/AMD/ROCm/RHEL/10/ppc64le"}
 ROCM_PATH=${ROCM_PATH:-/opt/rocm}
 
+DEVPI_INDEX=${DEVPI_INDEX:-"https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple"}
+
 # GPU architecture targets — override via env var
 PYTORCH_ROCM_ARCH=${PYTORCH_ROCM_ARCH:-"gfx90a;gfx950"}
 
@@ -79,6 +87,7 @@ echo "  TORCHAUDIO_VERSION   : $TORCHAUDIO_VERSION"
 echo "  ROCM_INSTALL_MODE    : $ROCM_INSTALL_MODE"
 echo "  ROCM_PATH            : $ROCM_PATH"
 echo "  PYTORCH_ROCM_ARCH    : $PYTORCH_ROCM_ARCH"
+echo "  DEVPI_INDEX          : $DEVPI_INDEX"
 echo "==================================================================="
 
 # ---------------------------------------------------------------------------
@@ -266,27 +275,12 @@ echo "Building PyTorch ${PYTORCH_VERSION} (this will take a while)"
 export PYTORCH_BUILD_VERSION=${PYTORCH_VERSION#v}+rocm7.14
 export PYTORCH_BUILD_NUMBER=1
 
-# Rename the pip distribution to "torch-rocm" for ROCm stack isolation on devpi.
-# The import name (torch) is unchanged — only the wheel distribution name changes.
-#
-# WHY sed on pyproject.toml:
-#   PyTorch v2.13.0 has a pyproject.toml with [project] name = "torch".
-#   setuptools>=77 (which this build requires) reads pyproject.toml as the
-#   authoritative metadata source — it takes precedence over setup.py's
-#   setup(name=...) call.  TORCH_PACKAGE_NAME env var only affects setup.py
-#   but never reaches the wheel name because setuptools overwrites it from
-#   pyproject.toml.  The only reliable fix is to patch the name in-place
-#   before the build runs, exactly as torchaudio-rocm patches setup.py.
-sed -i 's/^name = "torch"$/name = "torch-rocm"/' pyproject.toml
-echo "Patched pyproject.toml: name = torch-rocm"
-
 # Build wheel via setup.py directly.
 # pip wheel always invokes PEP 517 (even with --no-build-isolation), which
 # spawns a subprocess that does not inherit the current environment — causing
 # cmake to re-configure without PYTORCH_ROCM_ARCH and fail.
 # setup.py bdist_wheel runs in-process: all exported env vars are visible,
-# cmake skips recompilation because build/ already exists and targets are
-# up to date, and setuptools reads the patched pyproject.toml for the name.
+# cmake skips recompilation because build/ already exists and targets are up to date.
 echo "Building distribution wheel"
 if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${CURRENT_DIR}/dist"; then
     echo "------------------pytorch:Install_fails-------------------------------------"
@@ -295,8 +289,11 @@ if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${CURRENT_DIR}/d
     exit 1
 fi
 
-# Install from the renamed wheel so pip registers it as torch-rocm
-$PYTHON -m pip install --no-build-isolation "${CURRENT_DIR}/dist"/torch_rocm-*.whl
+$PYTHON -m pip install --upgrade setuptools wheel
+$PYTHON -m pip install apache-tvm-ffi==0.1.10
+
+# Install the torch wheel
+$PYTHON -m pip install --no-build-isolation "${CURRENT_DIR}/dist"/torch-*.whl
 
 # Verify torch is importable and ROCm is visible through it
 echo "Verifying torch install"
@@ -322,7 +319,7 @@ else
     cd "${CURRENT_DIR}/vision"
 fi
 
-TORCHVISION_PATCH_BASE_URL=${TORCHVISION_PATCH_BASE_URL:-"https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision"}
+TORCHVISION_PATCH_BASE_URL=${TORCHVISION_PATCH_BASE_URL:-"https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision-rocm"}
 
 # License exclusion patch — required; removes SWAG CC-BY-NC-4.0 licensed
 # models (regnet.py, vision_transformer SWAG weights) from the wheel.
@@ -333,23 +330,12 @@ git apply "${CURRENT_DIR}/${TORCHVISION_LICENSE_PATCH}"
 # Patch out the git-sha injection in setup.py that breaks reproducible builds
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
-# Rename the distribution to "torchvision-rocm" via the env var that
-# torchvision's setup.py already supports (TORCHVISION_PACKAGE_NAME).
-# The import name (torchvision) is unchanged — only the pip distribution name changes.
-export TORCHVISION_PACKAGE_NAME="torchvision-rocm"
-
-# Tell torchvision's get_requirements() to list "torch-rocm" as its torch
-# dependency instead of "torch". torchvision's setup.py reads TORCH_PACKAGE_NAME
-# at install_requires time. Without this, pip fails to install the wheel because
-# it looks for "torch" which doesn't exist — only "torch-rocm" is installed.
-export TORCH_PACKAGE_NAME="torch-rocm"
-
-echo "Building torchvision-rocm wheel"
+echo "Building torchvision wheel"
 
 export TORCH_CMAKE_PREFIX=$($PYTHON -c 'import torch; print(torch.utils.cmake_prefix_path)')
 export CMAKE_PREFIX_PATH="${TORCH_CMAKE_PREFIX}:${ROCM_PATH}:${CMAKE_PREFIX_PATH:-}"
 
-export BUILD_VERSION="${TORCHVISION_VERSION#v}"
+export BUILD_VERSION="${TORCHVISION_VERSION#v}+rocm7.14"
 export SETUPTOOLS_SCM_PRETEND_VERSION="${BUILD_VERSION}"
 
 if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${CURRENT_DIR}"; then
@@ -359,9 +345,9 @@ if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${CURRENT_DIR}";
     exit 1
 fi
 
-TORCHVISION_WHL=$(ls "${CURRENT_DIR}"/torchvision_rocm-${BUILD_VERSION}-*.whl)
+TORCHVISION_WHL=$(ls "${CURRENT_DIR}"/torchvision-*.whl | grep -v torch- | head -1)
 echo "Built wheel: $(basename $TORCHVISION_WHL)"
-$PYTHON -m pip install --find-links "${CURRENT_DIR}" "$TORCHVISION_WHL"
+$PYTHON -m pip install "$TORCHVISION_WHL"
 mv "$TORCHVISION_WHL" "${CURRENT_DIR}/dist/"
 
 # Verify torchvision is importable
@@ -395,12 +381,7 @@ wget -q -O "${CURRENT_DIR}/${TORCHAUDIO_LICENSE_PATCH}" "${TORCHAUDIO_PATCH_BASE
 git apply "${CURRENT_DIR}/${TORCHAUDIO_LICENSE_PATCH}"
 echo "Applied torchaudio license exclusion patch"
 
-# Rename distribution to torchaudio-rocm for ROCm stack isolation.
-# torchaudio's setup.py hardcodes name="torchaudio" with no env var override,
-# so we patch it directly. The import name (torchaudio) is unchanged.
-sed -i 's/name="torchaudio"/name="torchaudio-rocm"/' setup.py
-
-export BUILD_VERSION="${TORCHAUDIO_VERSION#v}"
+export BUILD_VERSION="${TORCHAUDIO_VERSION#v}+rocm7.14"
 export SETUPTOOLS_SCM_PRETEND_VERSION="${BUILD_VERSION}"
 
 export TORCH_CMAKE_PREFIX=$($PYTHON -c 'import torch; print(torch.utils.cmake_prefix_path)')
@@ -412,9 +393,7 @@ export BUILD_SOX=OFF
 export USE_OPENMP=OFF
 export BUILD_TORCHAUDIO_PYTHON_EXTENSION=ON
 
-$PYTHON -m pip install --upgrade setuptools wheel
-
-echo "Building torchaudio-rocm wheel"
+echo "Building torchaudio wheel"
 if ! $PYTHON -m pip wheel . --no-build-isolation --no-deps -w "${CURRENT_DIR}"; then
     echo "------------------torchaudio:Install_fails-------------------------------------"
     echo "$TORCHAUDIO_URL torchaudio"
@@ -422,7 +401,7 @@ if ! $PYTHON -m pip wheel . --no-build-isolation --no-deps -w "${CURRENT_DIR}"; 
     exit 1
 fi
 
-TORCHAUDIO_WHL=$(ls "${CURRENT_DIR}"/torchaudio_rocm-${BUILD_VERSION}-*.whl)
+TORCHAUDIO_WHL=$(ls "${CURRENT_DIR}"/torchaudio-*.whl | grep -v torch- | head -1)
 echo "Built wheel: $(basename $TORCHAUDIO_WHL)"
 $PYTHON -m pip install "$TORCHAUDIO_WHL"
 mv "$TORCHAUDIO_WHL" "${CURRENT_DIR}/dist/"
@@ -460,7 +439,7 @@ git --no-pager log -1 --oneline
 # ---------------------------------------------------------------------------
 
 # use_existing_torch.py — removes vLLM's bundled torch build in favour of
-# the torch-rocm wheel already installed above
+# the torch wheel already installed above
 echo "Running vLLM use_existing_torch.py patch"
 [[ -f "use_existing_torch.py" ]] || { echo "ERROR: use_existing_torch.py not found"; exit 1; }
 $PYTHON use_existing_torch.py
@@ -468,6 +447,7 @@ $PYTHON use_existing_torch.py
 # Patch requirements/build/rocm.txt:
 #   1. Relax triton pin (==3.6.0 → >=3.6.0) for ppc64le wheel compatibility
 #   2. Remove amdsmi PyPI pin — installed from system ROCm below
+#   3. Pin apache-tvm-ffi to 0.1.10 — required by tilelang
 REQ_FILE="requirements/build/rocm.txt"
 [[ -f "$REQ_FILE" ]] || { echo "ERROR: $REQ_FILE not found"; exit 1; }
 
@@ -484,6 +464,16 @@ fi
 if grep -q '^amdsmi' "$REQ_FILE"; then
     sed -i '/^amdsmi/d' "$REQ_FILE"
     echo "Patched $REQ_FILE: removed amdsmi line (installed from system ROCm instead)"
+fi
+
+# Pin apache-tvm-ffi to 0.1.10 — required by tilelang;
+# https://github.com/tile-ai/tilelang/issues/2367
+if grep -q '^apache-tvm-ffi' "$REQ_FILE"; then
+    sed -i 's|^apache-tvm-ffi.*$|apache-tvm-ffi==0.1.10|' "$REQ_FILE"
+    echo "Patched $REQ_FILE: apache-tvm-ffi pinned to 0.1.10"
+else
+    echo "apache-tvm-ffi==0.1.10" >> "$REQ_FILE"
+    echo "Patched $REQ_FILE: appended apache-tvm-ffi==0.1.10"
 fi
 
 # Inject ROCm bitcode path into CMAKE_HIP_FLAGS in setup.py
@@ -536,7 +526,7 @@ files_to_patch = [
 old_extras = '"runai": ["runai-model-streamer[s3,gcs,azure] >= 0.15.7"],'
 new_extras = '"runai": ["runai-model-streamer[s3] >= 0.15.7"],'
 old_base   = "runai-model-streamer[s3,gcs,azure]=="
-new_base   = "runai-model-streamer[s3]=="
+new_base   = "runai-model-streamer[s3]>="
 
 patched = 0
 for fp in files_to_patch:
@@ -571,6 +561,67 @@ print(f"Patched {patched} file(s)")
 PY
 
 # ---------------------------------------------------------------------------
+# Install vLLM runtime dependencies from IBM devpi index
+#
+# Packages not available on PyPI for ppc64le are pulled from the IBM devpi
+# wheel index.  We install them before the wheel build so they are present
+# at import-test time and pip does not try to fetch them from PyPI when the
+# vllm wheel is installed later.
+# ---------------------------------------------------------------------------
+
+# Pre-built torch-family extras: triton, runai-model-streamer, z3-solver,
+# tilelang, opencv, grpcio — mirrors Daniel's script install_extra_dependencies()
+echo "Installing triton from devpi index"
+$PYTHON -m pip install --prefer-binary \
+    --extra-index-url "${DEVPI_INDEX}" \
+    "triton>=3.6.0"
+
+echo "Installing runai-model-streamer wheels from devpi index"
+$PYTHON -m pip install --prefer-binary \
+    --extra-index-url "${DEVPI_INDEX}" \
+    "runai-model-streamer" \
+    "runai-model-streamer[s3]"
+
+echo "Installing z3-solver and tilelang from devpi index"
+$PYTHON -m pip install --prefer-binary \
+    --extra-index-url "${DEVPI_INDEX}" \
+    z3-solver
+# tilelang needs build-time deps in the env; install with --no-build-isolation
+# so the already-installed torch is reused rather than a fresh copy downloaded.
+$PYTHON -m pip install cmake ninja \
+    "scikit-build-core[pyproject]>=0.10.0" \
+    "cython>=3.2.8" \
+    setuptools-scm
+$PYTHON -m pip install --prefer-binary --no-build-isolation \
+    --extra-index-url "${DEVPI_INDEX}" \
+    tilelang
+
+echo "Installing opencv-python-headless and grpcio from devpi index"
+$PYTHON -m pip install --prefer-binary \
+    --extra-index-url "${DEVPI_INDEX}" \
+    "opencv-python-headless==4.13.0.92" \
+    grpcio
+
+echo "Installing xgrammar and sentencepiece from devpi index"
+$PYTHON -m pip install --prefer-binary \
+    --extra-index-url "${DEVPI_INDEX}" \
+    xgrammar \
+    sentencepiece \
+    tiktoken \
+    pyarrow \
+    ijson \
+    llguidance \
+    msgspec \
+    cbor2 \
+    grpcio \
+    numba \
+    llvmlite \
+    onnx \
+    pandas \
+    scipy
+echo "Devpi runtime deps installed"
+
+# ---------------------------------------------------------------------------
 # Build vLLM wheel
 # ---------------------------------------------------------------------------
 cd "${CURRENT_DIR}/vllm"
@@ -578,9 +629,15 @@ cd "${CURRENT_DIR}/vllm"
 # ROCm build environment is already exported; set vLLM-specific additions
 export CMAKE_PREFIX_PATH="${ROCM_PATH}:${CMAKE_PREFIX_PATH:-}"
 
+# Must be exported (not just inline) so that vLLM's get_runtime_environment()
+# in setup.py sees VLLM_TARGET_DEVICE=rocm when it calls os.environ.get().
+# An inline-only assignment on the build command is not sufficient because
+# get_vllm_version() is invoked at module-scope before the env is propagated.
+export VLLM_TARGET_DEVICE="rocm"
+
 echo "Installing vLLM ROCm build requirements"
 [[ -f "requirements/build/rocm.txt" ]] || { echo "ERROR: requirements/build/rocm.txt not found"; exit 1; }
-$PYTHON -m pip install -r requirements/build/rocm.txt
+$PYTHON -m pip install --prefer-binary -r requirements/build/rocm.txt --extra-index-url "${DEVPI_INDEX}"
 
 # Install matching AMDSMI Python bindings from system ROCm (not PyPI)
 AMDSMI_SRC="$ROCM_PATH/share/amd_smi"
@@ -592,7 +649,12 @@ rm -rf "$AMDSMI_TMP"
 echo "Installed AMDSMI from system ROCm"
 
 echo "Building vLLM ROCm wheel (this will take a while)"
-if ! VLLM_TARGET_DEVICE="rocm" $PYTHON setup.py bdist_wheel --dist-dir "${CURRENT_DIR}"; then
+# VLLM_VERSION_OVERRIDE bypasses get_vllm_version()'s own ROCm suffix logic
+# (which would append .rocm714 on top of +rocm7.14 and produce a double suffix).
+# The override is used as-is — producing e.g. vllm-0.28.0+rocm7.14-cp312-...
+unset BUILD_VERSION SETUPTOOLS_SCM_PRETEND_VERSION
+export VLLM_VERSION_OVERRIDE="${PACKAGE_VERSION#v}+rocm7.14"
+if ! $PYTHON setup.py bdist_wheel --universal --dist-dir "${CURRENT_DIR}"; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
@@ -602,11 +664,17 @@ fi
 echo "Built vLLM wheel(s):"
 ls -lh "${CURRENT_DIR}"/vllm-*.whl
 
-$PYTHON -m pip install "${CURRENT_DIR}"/vllm-*.whl
+$PYTHON -m pip install "${CURRENT_DIR}"/vllm-*.whl --prefer-binary --extra-index-url "${DEVPI_INDEX}"
 
 # ---------------------------------------------------------------------------
 # Import test
 # ---------------------------------------------------------------------------
+echo "Installing test-stage dependencies from devpi index"
+$PYTHON -m pip install --prefer-binary \
+    --extra-index-url "${DEVPI_INDEX}" \
+    "apache-tvm-ffi==0.1.10" \
+    fastsafetensors
+
 echo "Running import test"
 cd "${CURRENT_DIR}"
 
