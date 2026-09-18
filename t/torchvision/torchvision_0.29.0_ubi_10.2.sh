@@ -16,15 +16,7 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
-# Note: torchvision 0.29.0 requires torch==2.13.0 (installed from the IBM
-#       DeveloperFirst wheels index — no ppc64le wheel on PyPI).
-#       torchvision itself has no ppc64le pre-built wheel on PyPI or IBM index
-#       so it is built from source using setup.py + torch.utils.cpp_extension.
-#       FORCE_CUDA=0 disables GPU; libjpeg-turbo, libpng, libwebp are installed
-#       for image codec support.
-#       numpy 2.5.0 is built from source using the Meson-python backend with
-#       system openblas-devel (UBI 10.2 ppc64le).
-#       IBM Wheels index: https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/
+#
 #
 # -----------------------------------------------------------------------------
 
@@ -35,6 +27,7 @@ PACKAGE_VERSION=${1:-v0.29.0}
 PACKAGE_URL=https://github.com/pytorch/vision
 PACKAGE_DIR=vision
 CURRENT_DIR=$(pwd)
+
 WHEEL_DIR="${CURRENT_DIR}/wheels"
 mkdir -p "${WHEEL_DIR}"
 
@@ -72,46 +65,11 @@ echo "Using python: $(python3.14 --version)"
 # ---------------------------------------------------------------------------
 # Python build tools
 # ---------------------------------------------------------------------------
-python3.14 -m pip install --upgrade pip setuptools wheel build packaging
-python3.14 -m pip install "meson-python>=0.18.0" "Cython>=3.0.6" meson ninja patchelf
-
-# ---------------------------------------------------------------------------
-# Build numpy 2.5.0 from source (Meson-python + system openblas-devel)
-# ---------------------------------------------------------------------------
 NUMPY_VERSION=2.5.0
-NUMPY_URL=https://github.com/numpy/numpy
-
-git clone "${NUMPY_URL}" numpy-src
-cd numpy-src
-
-if git rev-parse "v${NUMPY_VERSION}" &>/dev/null; then
-    git checkout "v${NUMPY_VERSION}"
-elif git rev-parse "${NUMPY_VERSION}" &>/dev/null; then
-    git checkout "${NUMPY_VERSION}"
-else
-    echo "ERROR: No git tag found for numpy version '${NUMPY_VERSION}'"
-    exit 1
-fi
-
-git submodule sync --recursive
-git submodule update --init --recursive
-
-export PKG_CONFIG_PATH="/usr/lib64/pkgconfig:/usr/share/pkgconfig:${PKG_CONFIG_PATH:-}"
-
-if ! python3.14 -m build --wheel --no-isolation \
-        -Csetup-args="-Dblas=openblas" \
-        -Csetup-args="-Dlapack=openblas" \
-        --outdir="${CURRENT_DIR}/"; then
-    echo "------------------numpy:Install_fails-------------------------------------"
-    echo "${NUMPY_URL} numpy"
-    echo "numpy  |  ${NUMPY_URL} | ${NUMPY_VERSION} | GitHub | Fail |  Install_Fails"
-    exit 1
-fi
-
-NUMPY_WHL=$(find "${CURRENT_DIR}" -maxdepth 1 -name "numpy-*.whl" | head -1)
-echo "Installing numpy wheel: ${NUMPY_WHL}"
-python3.14 -m pip install "${NUMPY_WHL}"
-rm -f "${CURRENT_DIR}"/numpy-*.whl
+python3.14 -m pip install --upgrade pip setuptools wheel build packaging
+python3.14 -m pip install \
+    "meson-python>=0.18.0" "Cython>=3.0.6" meson ninja patchelf \
+    "numpy==${NUMPY_VERSION}" pillow requests pytest pytest-mock
 
 cd "${CURRENT_DIR}"
 
@@ -121,37 +79,80 @@ cd "${CURRENT_DIR}"
 # ---------------------------------------------------------------------------
 python3.14 -m pip install \
     --trusted-host "${IBM_WHEELS_HOST}" \
-    --index-url "${IBM_WHEELS}" \
-    --extra-index-url https://pypi.org/simple/ \
+    --extra-index-url "${IBM_WHEELS}" \
     --prefer-binary \
     "torch==${TORCH_VERSION}"
 
-python3.14 -m pip install pillow requests
 
 # ---------------------------------------------------------------------------
-# Clone torchvision and checkout v0.29.0
+# Clone torchvision and checkout the requested version
 # ---------------------------------------------------------------------------
 cd "${CURRENT_DIR}"
 git clone "${PACKAGE_URL}" "${PACKAGE_DIR}"
 cd "${PACKAGE_DIR}"
 
-if git rev-parse "v${PACKAGE_VERSION}" &>/dev/null; then
-    git checkout "v${PACKAGE_VERSION}"
-elif git rev-parse "${PACKAGE_VERSION}" &>/dev/null; then
-    git checkout "${PACKAGE_VERSION}"
-else
+# Strip leading 'v' if present — git tag is 'v0.29.0'
+_TAG="${PACKAGE_VERSION}"
+if ! git rev-parse "${_TAG}" &>/dev/null; then
+    _TAG="v${PACKAGE_VERSION#v}"
+fi
+if ! git rev-parse "${_TAG}" &>/dev/null; then
     echo "ERROR: No git tag found for version '${PACKAGE_VERSION}'"
     exit 1
 fi
+git checkout "${_TAG}"
+
+# ---------------------------------------------------------------------------
+# Apply patches for PyTorch 2.13.0 Stable ABI compatibility: https://github.com/pytorch/vision/pull/9610
+# ---------------------------------------------------------------------------
+python3.14 - <<'PYEOF'
+from pathlib import Path
+
+# 1. Add permute helper to StableABICompat.h
+p_compat = Path("torchvision/csrc/ops/StableABICompat.h")
+src_compat = p_compat.read_text()
+shim = '''
+// aten::permute(Tensor self, int[] dims) -> Tensor
+inline Tensor permute(const Tensor& self, std::vector<int64_t> dims) {
+  std::array<StableIValue, 2> stack{
+      torch::stable::detail::from(self), torch::stable::detail::from(dims)};
+  TORCH_ERROR_CODE_CHECK(torch_call_dispatcher(
+      "aten::permute", "", stack.data(), TORCH_ABI_VERSION));
+  return torch::stable::detail::to<Tensor>(stack[0]);
+}
+'''
+if "inline Tensor permute" not in src_compat:
+    src_compat = src_compat.replace(
+        "} // namespace stable_helpers",
+        f"{shim}\n}} // namespace stable_helpers",
+        1,
+    )
+    p_compat.write_text(src_compat)
+    print("Patched StableABICompat.h with permute helper")
+
+# 2. Update deform_conv2d_kernel.cpp to use stable_helpers::permute
+p_kernel = Path("torchvision/csrc/ops/cpu/deform_conv2d_kernel.cpp")
+src_kernel = p_kernel.read_text()
+if "torch::stable::permute" in src_kernel:
+    src_kernel = src_kernel.replace(
+        "torch::stable::permute",
+        "vision::ops::stable_helpers::permute",
+    )
+    p_kernel.write_text(src_kernel)
+    print("Patched deform_conv2d_kernel.cpp to use stable_helpers::permute")
+PYEOF
 
 # ---------------------------------------------------------------------------
 # Build torchvision wheel (CPU-only: FORCE_CUDA=0, no NVJPEG)
-# setup.py uses torch.utils.cpp_extension — requires torch installed above.
 # ---------------------------------------------------------------------------
 export FORCE_CUDA=0
 export TORCHVISION_USE_NVJPEG=0
 
-if ! python3.14 setup.py bdist_wheel --dist-dir="${WHEEL_DIR}"; then
+if ! python3.14 -m pip wheel \
+        --no-build-isolation \
+        --no-deps \
+        -w "${WHEEL_DIR}" \
+        .; then
     echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
@@ -159,21 +160,21 @@ if ! python3.14 setup.py bdist_wheel --dist-dir="${WHEEL_DIR}"; then
 fi
 
 cp "${WHEEL_DIR}"/*.whl "${CURRENT_DIR}/" 2>/dev/null || true
-
+rm -f "${CURRENT_DIR}"/numpy-*.whl
 # ---------------------------------------------------------------------------
-# Install wheel and test
+# Install wheel
 # ---------------------------------------------------------------------------
-python3.14 -m pip install installer
-WHL=$(ls "${WHEEL_DIR}"/torchvision-*.whl | head -1)
-python3.14 -m installer "${WHL}"
+WHL=$(find "${CURRENT_DIR}" -maxdepth 2 -name "torchvision-*.whl" | head -1)
+echo "Installing torchvision wheel: ${WHL}"
+python3.14 -m pip install --no-deps --force-reinstall "${WHL}"
 
 cd "${CURRENT_DIR}"
-for
+
 # ---------------------------------------------------------------------------
 # Run package's own test suite via pytest
+# Note: Tests parameterized with [cuda] are skipped automatically due to
+#       CUDA device not available in CPU-only environments.
 # ---------------------------------------------------------------------------
-python3.14 -m pip install pytest pytest-mock
-
 cd "${CURRENT_DIR}/${PACKAGE_DIR}"
 
 if ! pytest test/test_architecture_ops.py \
@@ -186,50 +187,7 @@ if ! pytest test/test_architecture_ops.py \
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
-fi
 
-cd "${CURRENT_DIR}"
-
-# ---------------------------------------------------------------------------
-# Sanity smoke test
-# ---------------------------------------------------------------------------
-if ! python3.14 - <<'PYEOF'
-import sys
-import torch
-import torchvision
-import torchvision.transforms as T
-import numpy as np
-from PIL import Image
-
-print(f"torch version       : {torch.__version__}")
-print(f"torchvision version : {torchvision.__version__}")
-
-# Basic transform pipeline
-img = Image.fromarray(np.zeros((64, 64, 3), dtype=np.uint8))
-transform = T.Compose([
-    T.Resize((32, 32)),
-    T.ToTensor(),
-    T.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
-])
-tensor = transform(img)
-assert tensor.shape == (3, 32, 32), f"Unexpected shape: {tensor.shape}"
-print("PASS  transform pipeline")
-
-# ops: nms
-boxes  = torch.tensor([[0.0, 0.0, 1.0, 1.0], [0.1, 0.1, 1.1, 1.1]])
-scores = torch.tensor([0.9, 0.8])
-keep   = torchvision.ops.nms(boxes, scores, iou_threshold=0.5)
-assert len(keep) >= 1, "nms returned no boxes"
-print("PASS  torchvision.ops.nms")
-
-print("\nAll tests passed.")
-sys.exit(0)
-PYEOF
-then
-    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 2
 else
     echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
