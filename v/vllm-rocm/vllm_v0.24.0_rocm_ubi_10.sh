@@ -27,7 +27,7 @@
 # configure time.
 #
 # Usage:
-#   ./vllm_rocm_v0.24.0_ubi_10.sh [v0.24.0]
+#   ./vllm_v0.24.0_rocm_ubi_10.sh [v0.24.0]
 #
 # Environment variables honoured (can be set before running):
 #   PACKAGE_VERSION      - vLLM tag to build (default: v0.24.0)
