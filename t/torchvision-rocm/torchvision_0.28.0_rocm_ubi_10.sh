@@ -107,14 +107,21 @@ if [[ "$ROCM_INSTALL_MODE" == "rpms" ]]; then
     fi
     echo "Installing ROCm from ${ROCM_REPO_URL}"
 
+    ROCM_GPG_URL="https://public.dhe.ibm.com/software/server/POWER/Linux/AMD/RPM-GPG-KEY-PAMD"
+    ROCM_GPG_PATH="/etc/pki/rpm-gpg/RPM-GPG-KEY-PAMD"
+    echo "Importing ROCm GPG key from ${ROCM_GPG_URL}"
+    wget -q -O "${ROCM_GPG_PATH}" "${ROCM_GPG_URL}"
+    rpm --import "${ROCM_GPG_PATH}"
+
     cat > /etc/yum.repos.d/rocm.repo <<EOF
 [ROCm]
 name=ROCm
 baseurl=${ROCM_REPO_URL}
 enabled=1
-gpgcheck=0
+gpgcheck=1
+gpgkey=file://${ROCM_GPG_PATH}
 EOF
-    yum install -y rocm-complete
+    dnf install -y rocm-complete
     ROCM_PATH=/opt/rocm
 fi
 
