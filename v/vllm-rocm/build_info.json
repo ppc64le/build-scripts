@@ -26,7 +26,7 @@
     "librocm_smi64.so"
   ],
   "v0.24.0": {
-    "build_script": "vllm_rocm_v0.24.0_ubi_10.sh"
+    "build_script": "vllm_v0.24.0_rocm_ubi_10.sh"
   },
   "v0.28.0": {
     "build_script": "vllm_v0.28.0_rocm_ubi_10.sh"
