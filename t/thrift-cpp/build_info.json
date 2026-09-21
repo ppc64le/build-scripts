@@ -2,7 +2,7 @@
   "maintainer": "Nayana-ibm",
   "package_name": "thrift-cpp",
   "github_url": "https://github.com/apache/thrift",
-  "version": "0.24.0",
+  "version": "v0.24.0",
   "wheel_build" : true,
   "package_dir": "t/thrift-cpp",
   "default_branch": "master",
@@ -10,7 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "0.24.0": {
+  "v0.24.0": {
     "build_script": "thrift-cpp_ubi_10.2.sh"
   },
   "*":{
