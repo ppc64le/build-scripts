@@ -16,6 +16,11 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
+# Note: onnxruntime-extensions 0.15.2 builds a CMake-backed C++ extension
+#       that provides custom ONNX operators. No ppc64le wheel is available
+#       on PyPI. The repo has no git tag for 0.15.x so we clone the default branch and
+#       build via python setup.py bdist_wheel.
+#
 # -----------------------------------------------------------------------------
 
 set -e
@@ -40,6 +45,7 @@ yum install -y python3.14 python3.14-devel python3.14-pip \
     cmake ninja-build make \
     openssl-devel libffi-devel zlib-devel \
     libjpeg-turbo-devel libpng-devel \
+    openblas-devel \
     which curl tar patch
 
 # UBI 10 dropped SCL — guard block
@@ -55,17 +61,21 @@ fi
 
 # ---------------------------------------------------------------------------
 # Python build tools
+# setuptools<80 required — newer versions break setup.py bdist_wheel builds
 # ---------------------------------------------------------------------------
-python3.14 -m pip install --upgrade pip "setuptools<80" wheel ninja packaging pytest build
+python3.14 -m pip install --upgrade pip "setuptools<80" wheel ninja packaging pytest build installer
 
 # Install build/runtime dependencies from IBM wheels index
+# torch 2.13.0 + torchvision 0.28.0 have ppc64le cp314 wheels on IBM index
 python3.14 -m pip install \
     --trusted-host "${IBM_WHEELS_HOST}" \
     --extra-index-url "${IBM_WHEELS}" \
     --prefer-binary \
     "numpy==2.5.0" \
     "onnx==1.21.0" \
-    "onnxruntime==1.26.0"
+    "onnxruntime==1.26.0" 
+    
+    
 
 # Expose Python headers to the C/C++ compiler (required by setup.py CMake build)
 PYTHON_INCLUDE=$(python3.14 -c "from sysconfig import get_paths; print(get_paths()['include'])")
@@ -106,38 +116,42 @@ fi
 # Copy wheel to CURRENT_DIR for create_wheel_wrapper.sh compatibility
 cp "${WHEEL_DIR}"/*.whl "${CURRENT_DIR}/"
 
-# Install the built wheel (use installer to avoid pip 26 file:// restriction)
-python3.14 -m pip install installer
+# Install the built wheel 
 python3.14 -m installer "${WHEEL_DIR}"/*.whl
 
-# ---------------------------------------------------------------------------
-# Test — run the package's own test suite
-# ---------------------------------------------------------------------------
-cd "${CURRENT_DIR}"
+# Install requirements-dev.txt deps available on ppc64le. Required for running tests
+python3.14 -m pip install \
+    --trusted-host "${IBM_WHEELS_HOST}" \
+    --extra-index-url "${IBM_WHEELS}" \
+    --prefer-binary \
+    "scipy==1.18.0" \
+    sentencepiece \
+    requests \
+    Pillow \
+    safetensors \
+    "torchvision==0.28.0" \
+    "torch==2.13.0" \
+    onnxscript
 
-# Install lightweight test dependencies (no torch/transformers)
-python3.14 -m pip install Pillow requests
+# Run from the test directory. Ignore tests that need transformers (heavy package
+# requiring HF model downloads + HF_TOKEN)
+cd "${CURRENT_DIR}/${PACKAGE_DIR}/test"
 
-# Run the subset of tests that don't require torch/transformers/cv2/audio libs
-T="${PACKAGE_DIR}/test"
-TEST_FILES=(
-    "${T}/test_string_concat.py"
-    "${T}/test_string_ecma_regex.py"
-    "${T}/test_string_length.py"
-    "${T}/test_string_mapping.py"
-    "${T}/test_string_to_vector.py"
-    "${T}/test_vector_to_string.py"
-    "${T}/test_masked_fill.py"
-    "${T}/test_math_ops.py"
-    "${T}/test_segment_extraction.py"
-    "${T}/test_pyops.py"
-    "${T}/test_blingfire_sentencebreaker.py"
-    "${T}/test_audio_codec.py"
-    "${T}/test_cv2.py"
-    "${T}/test_tools_customop_template.py"
-)
-
-if ! python3.14 -m pytest "${TEST_FILES[@]}" -v; then
+if ! python3.14 -m pytest . --verbose \
+    --ignore=test_processing.py \
+    --ignore=test_autotokenizer.py \
+    --ignore=test_bert_tokenizer.py \
+    --ignore=test_bert_tokenizer_decoder.py \
+    --ignore=test_bert_tokenizer_op.py \
+    --ignore=test_bpe_tokenizer.py \
+    --ignore=test_cliptok.py \
+    --ignore=test_embedded_tokenizer.py \
+    --ignore=test_fast_tokenizer.py \
+    --ignore=test_gpt2tok.py \
+    --ignore=test_robertatok.py \
+    --ignore=test_sentencepiece_ops.py \
+    --ignore=test_whisper.py \
+    --ignore=test_pp_api.py; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
