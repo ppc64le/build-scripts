@@ -1,0 +1,42 @@
+[build-system]
+# Minimum requirements for the build system to execute.
+# Do not include sys,subprocess and os as they are default packages
+requires = [
+    "setuptools",
+    "wheel",
+]
+
+# Set build backend to setuptools
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "azure-core-cpp"
+version = "{PACKAGE_VERSION}"
+description = "Azure SDK Core library for C++ packaging"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: C++",
+  "License :: OSI Approved :: MIT License",
+]
+
+[project.urls]
+homepage = "https://github.com/Azure/azure-sdk-for-cpp"
+upstream = "https://github.com/Azure/azure-sdk-for-cpp"
+
+# Find package files in local folder — not following standard setuptools directory structure
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["local"]
+
+# Package data: shared libs, headers, cmake config
+[tool.setuptools.package-data]
+"azure_core_cpp" = [
+    "lib64/libazure-core*",
+    "include/azure/core.hpp",
+    "include/azure/core/**/*",
+    "share/azure-core-cpp/*",
+]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_ppc64le"   # Explicitly set the platform tag
+universal = false              # Disable universal wheel (forces platform-specific build)

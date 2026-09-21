@@ -1,0 +1,16 @@
+{
+   "maintainer": "bhagyashrigais",
+   "package_name": "scikit-network",
+   "github_url": " https://github.com/sknetwork-team/scikit-network.git",
+   "version": "v0.33.5",
+   "default_branch": "master",
+   "build_script": "scikit-network_ubi_9.6",
+   "package_dir": "s/scikit-network",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"scikit-network_ubi_9.6.sh"
+  }
+}

@@ -2,7 +2,7 @@
   "maintainer": "akash-kaothalkar",
   "package_name": "vllm",
   "github_url": "https://github.com/vllm-project/vllm",
-  "version": "v0.28.0",
+  "version": "v0.29.0",
   "wheel_build": true,
   "default_branch": "main",
   "build_script": "vllm_v0.27.0_ubi_9.5.sh",
@@ -63,6 +63,9 @@
     "build_script": "vllm_v0.27.0_ubi_9.5.sh"
   },
   "v0.28.0": {
+    "build_script": "vllm_v0.27.0_ubi_9.5.sh"
+  },
+  "v0.29.0": {
     "build_script": "vllm_v0.27.0_ubi_9.5.sh"
   },
   "*": {

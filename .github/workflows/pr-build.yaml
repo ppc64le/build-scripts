@@ -418,6 +418,10 @@ jobs:
           mkdir -p package-cache
 
           PACKAGE_DIR=$(jq -r '.package_dir // ""' $BUILD_INFO_FILE)
+          # Strip trailing slash to prevent double-slash in the per-job grep:
+          #   grep -E "^$PACKAGE_DIR/.*\.sh$"
+          # Without this, "n/nbconvert/" becomes "n/nbconvert//.*\.sh$" and never matches.
+          PACKAGE_DIR="${PACKAGE_DIR%/}"
           WHEEL_BUILD=$(jq -r '.wheel_build // "false"' $BUILD_INFO_FILE)
 
           # Robust docker_build extraction

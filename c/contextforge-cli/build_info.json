@@ -4,6 +4,7 @@
   "github_url": "https://github.com/contextforge-org/contextforge-cli",
   "version": "v1.0.0b4",
   "wheel_build": true,
+  "wheel_name": "cforge",
   "default_branch": "master",
   "package_dir": "c/contextforge-cli",
   "build_script": "contextforge-cli_v1.0.0b4_ubi_9.7.sh",

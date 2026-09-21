@@ -1,5 +1,5 @@
 {
-  "maintainer": "akash-kaothalkar",
+  "maintainer": "SakshiJain0302",
   "package_name": "opencv-python-headless",
   "github_url": "https://github.com/opencv/opencv-python.git",
   "version": "93",
@@ -17,9 +17,15 @@
     "build_script": "opencv-python-headless_4.13.0.92_ubi_9.5.sh"
   },
   "93": {
-    "build_script": "opencv-python-headless_5.0.0.93_ubi_9.5.sh"
+    "build_script": [
+        "opencv-python-headless_5.0.0.93_ubi_9.5.sh",
+        "opencv-python-headless_ubi_10.2.sh"
+    ]
   },
   "*": {
-    "build_script": "opencv-python-headless_5.0.0.93_ubi_9.5.sh"
+    "build_script": [
+        "opencv-python-headless_5.0.0.93_ubi_9.5.sh",
+        "opencv-python-headless_ubi_10.2.sh"
+    ]
   }
 }
