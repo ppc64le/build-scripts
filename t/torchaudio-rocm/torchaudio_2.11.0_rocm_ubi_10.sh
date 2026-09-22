@@ -4,7 +4,7 @@
 # Package       : torchaudio
 # Version       : v2.11.0
 # Source repo   : https://github.com/pytorch/audio.git
-# Tested on     : UBI:10 
+# Tested on     : UBI:10 (ppc64le)
 # Language      : Python
 # Ci-Check      : True
 # Script License: Apache License, Version 2.0
@@ -82,7 +82,7 @@ while [[ $# -gt 0 ]]; do
             # Ignore extra positional args passed by create_wheel_wrapper.sh
             # (e.g. the Python version "3.12" appended after the package version)
             shift
-            ;;
+            ;;    
         *)
             echo "Unknown argument: $1"
             echo "Usage: $0 [--rocm-install-mode rpms|path] [--version v2.11.0]"
@@ -140,14 +140,21 @@ if [[ "$ROCM_INSTALL_MODE" == "rpms" ]]; then
     fi
     echo "Installing ROCm from ${ROCM_REPO_URL}"
 
+    ROCM_GPG_URL="https://public.dhe.ibm.com/software/server/POWER/Linux/AMD/RPM-GPG-KEY-PAMD"
+    ROCM_GPG_PATH="/etc/pki/rpm-gpg/RPM-GPG-KEY-PAMD"
+    echo "Importing ROCm GPG key from ${ROCM_GPG_URL}"
+    wget -q -O "${ROCM_GPG_PATH}" "${ROCM_GPG_URL}"
+    rpm --import "${ROCM_GPG_PATH}"
+
     cat > /etc/yum.repos.d/rocm.repo <<EOF
 [ROCm]
 name=ROCm
 baseurl=${ROCM_REPO_URL}
 enabled=1
-gpgcheck=0
+gpgcheck=1
+gpgkey=file://${ROCM_GPG_PATH}
 EOF
-    yum install -y rocm-complete
+    dnf install -y rocm-complete
     ROCM_PATH=/opt/rocm
 fi
 
@@ -229,27 +236,13 @@ echo "Building PyTorch ${PYTORCH_VERSION} (this will take a while)"
 export PYTORCH_BUILD_VERSION=${PYTORCH_VERSION#v}+rocm7.14
 export PYTORCH_BUILD_NUMBER=1
 
-# Rename the pip distribution to "torch-rocm" for ROCm stack isolation on devpi.
-# The import name (torch) is unchanged — only the wheel distribution name changes.
-#
-# WHY sed on pyproject.toml:
-#   PyTorch v2.13.0 has a pyproject.toml with [project] name = "torch".
-#   setuptools>=77 (which this build requires) reads pyproject.toml as the
-#   authoritative metadata source — it takes precedence over setup.py's
-#   setup(name=...) call.  TORCH_PACKAGE_NAME env var only affects setup.py
-#   but never reaches the wheel name because setuptools overwrites it from
-#   pyproject.toml.  The only reliable fix is to patch the name in-place
-#   before the build runs, exactly as torchaudio-rocm patches setup.py.
-sed -i 's/^name = "torch"$/name = "torch-rocm"/' pyproject.toml
-echo "Patched pyproject.toml: name = torch-rocm"
-
 # Build wheel via setup.py directly.
 # pip wheel always invokes PEP 517 (even with --no-build-isolation), which
 # spawns a subprocess that does not inherit the current environment — causing
 # cmake to re-configure without PYTORCH_ROCM_ARCH and fail.
 # setup.py bdist_wheel runs in-process: all exported env vars are visible,
 # cmake skips recompilation because build/ already exists and targets are
-# up to date, and setuptools reads the patched pyproject.toml for the name.
+# up to date.
 echo "Building distribution wheel"
 if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${SCRIPT_DIR}/dist"; then
     echo "------------------pytorch:Install_fails-------------------------------------"
@@ -258,8 +251,8 @@ if ! MAX_JOBS=$(nproc) $PYTHON setup.py bdist_wheel --dist-dir "${SCRIPT_DIR}/di
     exit 1
 fi
 
-# Install from the renamed wheel so pip registers it as torch-rocm
-$PYTHON -m pip install --no-build-isolation "${SCRIPT_DIR}/dist"/torch_rocm-*.whl
+# Install the torch wheel
+$PYTHON -m pip install --no-build-isolation "${SCRIPT_DIR}/dist"/torch-*.whl
 
 # Verify torch is importable and ROCm is visible through it
 echo "Verifying torch install"
@@ -297,16 +290,11 @@ git apply "${SCRIPT_DIR}/${LICENSE_PATCH_FILE}"
 echo "Applied license exclusion patch"
 
 # ---------------------------------------------------------------------------
-# Build torchaudio-rocm wheel
+# Build torchaudio wheel
 # ---------------------------------------------------------------------------
-echo "Building torchaudio-rocm wheel"
+echo "Building torchaudio wheel"
 
-# Rename distribution to torchaudio-rocm for ROCm stack isolation.
-# torchaudio's setup.py hardcodes name="torchaudio" with no env var override,
-# so we patch it directly. The import name (torchaudio) is unchanged.
-sed -i 's/name="torchaudio"/name="torchaudio-rocm"/' setup.py
-
-export BUILD_VERSION="${PACKAGE_VERSION#v}"
+export BUILD_VERSION="${PACKAGE_VERSION#v}+rocm7.14"
 export SETUPTOOLS_SCM_PRETEND_VERSION="${BUILD_VERSION}"
 
 # Let torchaudio's CMake find the installed torch
@@ -330,9 +318,9 @@ if ! $PYTHON -m pip wheel . --no-build-isolation --no-deps -w "${SCRIPT_DIR}"; t
     exit 1
 fi
 
-ROCM_WHL=$(ls "${SCRIPT_DIR}"/torchaudio_rocm-${BUILD_VERSION}-*.whl)
-echo "Built wheel: $(basename $ROCM_WHL)"
-$PYTHON -m pip install "$ROCM_WHL"
+TORCHAUDIO_WHL=$(ls "${SCRIPT_DIR}"/torchaudio-*.whl | grep -v torch- | head -1)
+echo "Built wheel: $(basename $TORCHAUDIO_WHL)"
+$PYTHON -m pip install "$TORCHAUDIO_WHL"
 
 # ---------------------------------------------------------------------------
 # Import test

@@ -1,12 +1,12 @@
 {
-  "maintainer": "Amitkumar282",
+  "maintainer": "SakshiJain0302",
   "package_name": "numpy",
   "github_url": "https://github.com/numpy/numpy.git",
-  "version": "v1.26.4",
+  "version": "v2.5.0",
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "n/numpy",
-  "build_script": "numpy_v2.2.2_ubi_9.3.sh",
+  "build_script": "numpy_2.5.0_ubi_10.2.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
@@ -26,7 +26,10 @@
     "build_script": "numpy_v2.2.5_ubi_9.3.sh"
   },
   "*":{
-    "build_script": "numpy_v2.2.5_ubi_9.3.sh"
+    "build_script": [
+      "numpy_v2.2.5_ubi_9.3.sh",
+      "numpy_2.5.0_ubi_10.2.sh"
+    ]
   }
 }
 

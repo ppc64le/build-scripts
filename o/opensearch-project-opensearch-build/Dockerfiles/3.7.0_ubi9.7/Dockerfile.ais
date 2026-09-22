@@ -99,10 +99,10 @@ ENV OPENSEARCH_JAVA_OPTS="-Dorg.bouncycastle.fips.approved_only=false"
 # OpenShift restricted-v2 compatibility: Fix ownership and permissions for random UID
 # COPY --chown may not work correctly, so explicitly set ownership and permissions
 RUN chown -R $UID:0 $OPENSEARCH_HOME && \
-    chmod -R g=u $OPENSEARCH_HOME && \
+    chmod -R g+rwX $OPENSEARCH_HOME && \
     find $OPENSEARCH_HOME -type d -exec chmod g+x {} \; && \
-    chmod g+x $OPENSEARCH_HOME/opensearch-docker-entrypoint.sh && \
-    chmod g+x $OPENSEARCH_HOME/opensearch-onetime-setup.sh
+    chmod g+rwX $OPENSEARCH_HOME/opensearch-docker-entrypoint.sh && \
+    chmod g+rwX $OPENSEARCH_HOME/opensearch-onetime-setup.sh
 
 # Change user
 USER $UID

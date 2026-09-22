@@ -2,11 +2,11 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : ffmpeg
-# Version       : n7.1
+# Version       : n9.0
 # Source repo   : https://github.com/FFmpeg/FFmpeg
 # Tested on     : UBI:10.2
 # Language      : Python
-# Ci-Check  : True
+# Ci-Check      : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sakshi Jain <sakshi.jain16@ibm.com>
 #
@@ -22,7 +22,7 @@ set -ex
 
 # Clone the ffmpeg package
 PACKAGE_NAME=FFmpeg
-PACKAGE_VERSION=${1:-n7.1}
+PACKAGE_VERSION=${1:-n9.0}
 PACKAGE_URL=https://github.com/FFmpeg/FFmpeg
 WORK_DIR=$(pwd)
 
@@ -181,7 +181,6 @@ USE_NONFREE=no   #the options below are set for NO
         --enable-hardcoded-tables \
         --enable-libfreetype \
         --enable-pthreads \
-        --enable-postproc \
         --enable-pic \
         --enable-pthreads \
         --enable-shared \

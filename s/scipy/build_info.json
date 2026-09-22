@@ -1,5 +1,5 @@
 {
-  "maintainer": "jason.cho2",
+  "maintainer": "SakshiJain0302",
   "package_name": "scipy",
   "github_url": "https://github.com/scipy/scipy",
   "version": "v1.18.0",
@@ -20,9 +20,15 @@
     "build_script": "scipy_v1.16.1_ubi_9.3.sh"
   },
   "v1.18.0": {
-    "build_script": "scipy_v1.18.0_ubi_9.6.sh"
+    "build_script": [
+      "scipy_v1.18.0_ubi_9.6.sh",
+      "scipy_v1.18.0_ubi_10.2.sh"
+    ]
   },
   "*": {
-    "build_script": "scipy_v1.18.0_ubi_9.6.sh"
+    "build_script": [
+      "scipy_v1.18.0_ubi_9.6.sh",
+      "scipy_v1.18.0_ubi_10.2.sh"
+    ]
   }
 }
