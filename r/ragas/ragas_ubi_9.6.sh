@@ -42,7 +42,7 @@ SCIKIT_NETWORK_DIR="scikit-network"
 # Install system dependencies
 # ============================================================
 
-yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget openssl-devel bzip2-devel glibc-static libstdc++-static libffi-devel zlib-devel python3.12 python3.12-devel python3.12-pip pkg-config cmake openblas-devel rust cargo
+um install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget openssl-devel bzip2-devel glibc-static libstdc++-static libffi-devel zlib-devel libxml2-devel libxslt-devel python3.12 python3.12-devel python3.12-pip pkg-config cmake openblas-devel rust cargo
 
 source /opt/rh/gcc-toolset-13/enable
 
