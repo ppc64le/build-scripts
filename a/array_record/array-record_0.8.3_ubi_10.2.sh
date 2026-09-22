@@ -446,6 +446,20 @@ if ! bazel build //cpp/... //python/... \
     exit 1
 fi
 
+# ---------------------------------------------------------------------------
+# Run the package's own test suite — mirrors x86 CI:
+# TF/grain integration tests are skipped for Python 3.14 by upstream CI too.
+# ---------------------------------------------------------------------------
+if ! bazel test //cpp/... //python/... \
+        --verbose_failures \
+        --test_output=errors \
+        --action_env PYTHON_BIN_PATH="${PYTHON_BIN}"; then
+    echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    exit 1
+fi
+
 # Assemble the wheel from Bazel build outputs
 DEST="${CURRENT_DIR}/all_dist"
 mkdir -p "${DEST}"
@@ -483,11 +497,37 @@ auditwheel repair --plat "${AUDITWHEEL_PLATFORM}" \
 REPAIRED_WHL=$(ls "${DEST}/"*manylinux*.whl | head -1)
 python3.14 -m pip install "${REPAIRED_WHL}"
 
+# ---------------------------------------------------------------------------
+# Post-install smoke tests — mirrors x86 CI (oss/build_whl.sh) smoke checks.
+# ---------------------------------------------------------------------------
 if ! python3.14 -c "
 import array_record
 from array_record.python import array_record_data_source
+from array_record.python.array_record_module import ArrayRecordWriter, ArrayRecordReader
+import tempfile, os
+
+# Basic write/read round-trip (mirrors array_record_module_test.py logic)
+with tempfile.TemporaryDirectory() as d:
+    path = os.path.join(d, 'test.arecord')
+    w = ArrayRecordWriter(path)
+    assert w.ok() and w.is_open(), 'Writer failed to open'
+    w.write(b'record_0')
+    w.write(b'record_1')
+    w.write(b'record_2')
+    w.close()
+    assert not w.is_open(), 'Writer should be closed'
+
+    r = ArrayRecordReader(path)
+    assert r.ok(), 'Reader failed to open'
+    assert r.num_records() == 3, f'Expected 3 records, got {r.num_records()}'
+    records = list(r.read_all())
+    assert records == [b'record_0', b'record_1', b'record_2'], f'Records mismatch: {records}'
+    r.close()
+
 print('array_record import OK')
 print('array_record_data_source import OK')
+print('ArrayRecordWriter/Reader round-trip OK')
+print('num_records OK')
 "; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
