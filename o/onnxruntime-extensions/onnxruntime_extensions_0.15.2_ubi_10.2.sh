@@ -66,7 +66,6 @@ fi
 python3.14 -m pip install --upgrade pip "setuptools<80" wheel ninja packaging pytest build installer
 
 # Install build/runtime dependencies from IBM wheels index
-# torch 2.13.0 + torchvision 0.28.0 have ppc64le cp314 wheels on IBM index
 python3.14 -m pip install \
     --trusted-host "${IBM_WHEELS_HOST}" \
     --extra-index-url "${IBM_WHEELS}" \
