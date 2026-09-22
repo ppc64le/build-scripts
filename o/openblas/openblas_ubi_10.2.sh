@@ -29,8 +29,12 @@ CURRENT_DIR=$(pwd)
 PACKAGE_DIR=OpenBLAS
 
 echo "Installing dependencies..."
-yum install -y git make cmake wget python3.14 python3.14-devel python3.14-pip pkgconfig g++ gcc-c++ gcc-gfortran
+yum install -y python3.14 python3.14-devel python3.14-pip \
+    git make cmake wget pkgconfig \
+    gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ gcc-toolset-15-gcc-gfortran
 
+export PATH="/opt/rh/gcc-toolset-15/root/usr/bin:$PATH"
+export LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:$LD_LIBRARY_PATH"
 
 git clone -b $PACKAGE_VERSION $PACKAGE_URL
 cd OpenBLAS
@@ -102,7 +106,7 @@ CFLAGS="${CF}" FFLAGS="${FFLAGS}" \
 #install pyproject.toml
 wget https://raw.githubusercontent.com/i-wheels-cpd/build-scripts/refs/heads/main/o/openblas/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
-sed -i 's/plat-name = "linux_x86_64"/plat-name = "linux_ppc64le"/' pyproject.toml
+sed -i 's/plat-name = "linux_ppc64le"/' pyproject.toml
 
 # Finalize OpenBLAS package layout
 touch "${PREFIX}/__init__.py"
