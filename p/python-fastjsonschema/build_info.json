@@ -12,9 +12,6 @@
   "use_non_root_user": "false",
   "wheel_name": "fastjsonschema",
   "*": {
-    "build_script": [
-        "python-fastjsonschema_ubi_9.3.sh",
-        "python-fastjsonschema_ubi_10.2.sh"
-    ]
+    "build_script": "python-fastjsonschema_ubi_9.3.sh"
   }
 }
