@@ -71,7 +71,7 @@ python3.14 -m pip install --upgrade pip setuptools wheel build
 python3.14 -m pip install \
     "meson-python>=0.18.0" "Cython>=3.0.6" meson ninja patchelf \
     packaging pathspec pluggy trove-classifiers scikit-build-core hatchling \
-    pytest hypothesis "pandas==3.0.0" graphviz Pillow matplotlib \
+    pytest hypothesis "pandas==3.0.5" graphviz Pillow matplotlib \
     "numpy==${NUMPY_VERSION}"
 
 python3.14 -m pip install \
