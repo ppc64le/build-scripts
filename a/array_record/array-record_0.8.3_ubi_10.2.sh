@@ -54,7 +54,7 @@ echo "Using JAVA_HOME: ${JAVA_HOME}"
 echo "Using java: $(java -version 2>&1 | head -1)"
 
 # Upgrade pip and install Python build tools
-pip3.14 install --upgrade pip setuptools wheel
+pip install --upgrade pip setuptools wheel build
 
 # ---------------------------------------------------------------------------
 # Bootstrap Bazel 7.2.1 from the official dist.zip (ppc64le has no pre-built
@@ -95,7 +95,7 @@ cd "${CURRENT_DIR}"
 echo "Using Bazel: $(bazel version 2>&1 | grep -i 'build label')"
 
 # Install Python dependencies for array-record
-pip3.14 install absl-py "etils[epath]" auditwheel patchelf setuptools wheel
+pip install absl-py "etils[epath]" auditwheel patchelf setuptools wheel
 
 # Clone source
 cd "$CURRENT_DIR"
@@ -437,7 +437,7 @@ fi
 
 export USE_BAZEL_VERSION="${BAZEL_VERSION}"
 
-# Build with Bazel — target cpp and python packages explicitly
+# Build with Bazel
 if ! bazel build //cpp/... //python/... \
         --action_env PYTHON_BIN_PATH="${PYTHON_BIN}"; then
     echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
@@ -493,9 +493,8 @@ popd
 AUDITWHEEL_PLATFORM="manylinux_2_39_ppc64le"
 auditwheel repair --plat "${AUDITWHEEL_PLATFORM}" \
     -w "${DEST}" "${TMPDIR}/dist/"*.whl
-# Install from the repaired wheel — use python -m pip to avoid pip 25.x file:// bug
-REPAIRED_WHL=$(ls "${DEST}/"*manylinux*.whl | head -1)
-python3.14 -m pip install "${REPAIRED_WHL}"
+# Install from the repaired wheel
+pip install --no-index --find-links="${DEST}" array-record
 
 # ---------------------------------------------------------------------------
 # Post-install smoke tests — mirrors x86 CI (oss/build_whl.sh) smoke checks.
