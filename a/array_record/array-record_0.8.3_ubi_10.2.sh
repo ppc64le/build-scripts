@@ -53,8 +53,16 @@ export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
 echo "Using JAVA_HOME: ${JAVA_HOME}"
 echo "Using java: $(java -version 2>&1 | head -1)"
 
+# Ensure python and pip aliases exist for Python 3.14
+if ! command -v pip &>/dev/null && command -v pip3.14 &>/dev/null; then
+    ln -sf $(which pip3.14) /usr/local/bin/pip
+fi
+if ! command -v python &>/dev/null && command -v python3.14 &>/dev/null; then
+    ln -sf $(which python3.14) /usr/local/bin/python
+fi
+
 # Upgrade pip and install Python build tools
-pip install --upgrade pip setuptools wheel build
+pip3.14 install --upgrade pip setuptools wheel build
 
 # ---------------------------------------------------------------------------
 # Bootstrap Bazel 7.2.1 from the official dist.zip (ppc64le has no pre-built
