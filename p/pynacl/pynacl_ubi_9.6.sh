@@ -20,7 +20,7 @@
 set -ex
 # Variables
 PACKAGE_NAME=pynacl
-PACKAGE_VERSION=${1:-0.3.0}
+PACKAGE_VERSION=${1:-1.5.0}
 PACKAGE_URL=https://github.com/pyca/pynacl
 PACKAGE_DIR=pynacl
 
