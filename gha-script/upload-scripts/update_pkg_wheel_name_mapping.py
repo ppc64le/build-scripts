@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 update_pkg_wheel_name_mapping.py
 
@@ -31,11 +32,15 @@ def get_iam_token(api_key: str) -> str:
         "Accept": "application/json",
     }
     response = requests.post(IAM_TOKEN_URL, data=payload, headers=headers, timeout=30)
-    response.raise_for_status()
-    token_data = response.json()
-    if "access_token" not in token_data:
-        raise RuntimeError(f"Failed to obtain IAM token: {token_data}")
-    return token_data["access_token"]
+    
+    if response.status_code != 200:
+        error_msg = response.json().get("errorMessage", "Authentication failed")
+        raise RuntimeError(f"IAM Token request failed [{response.status_code}]: {error_msg}")
+
+    token = response.json().get("access_token")
+    if not token:
+        raise RuntimeError("Failed to obtain IAM access token.")
+    return token
 
 
 def get_wheel_mapping(token: str) -> dict:
