@@ -7,6 +7,7 @@
     "package_dir": "n/ninja/",
     "build_script": "ninja_ubi_9.3.sh",
     "docker_build": false,
+    "wheel_build": true,
     "validate_build_script": true,
     "use_non_root_user": false,
     "v1.12.*": {
