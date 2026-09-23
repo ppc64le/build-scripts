@@ -46,7 +46,7 @@ python3.14 -m pip config set global.index-url https://pypi.python.org/simple
 python3.14 -m pip config set global.no-index false
 
 #Install pre requisite wheels
-python3.14 -m pip install setuptools
+python3.14 -m pip install "setuptools==79.0.1"
 #Setting the env variables
 LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
 
@@ -105,11 +105,10 @@ CFLAGS="${CF}" FFLAGS="${FFLAGS}" \
 # Prepare package structure
 #install pyproject.toml
 wget https://raw.githubusercontent.com/i-wheels-cpd/build-scripts/refs/heads/main/o/openblas/pyproject.toml
-sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
-sed -i 's/plat-name = "linux_ppc64le"/' pyproject.toml
+sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
+sed -i 's/plat-name = "linux_ppc64le"//g' pyproject.toml
 
 # Finalize OpenBLAS package layout
-touch "${PREFIX}/__init__.py"
 rm -rf "${PREFIX}/bin"
 
 
