@@ -7,6 +7,7 @@
 # Tested on        : UBI 9.6
 # Language         : Java
 # Ci-Check     : True
+# Use Non-Root User: True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Ethan Choe <ethanchoe@ibm.com>
 #
