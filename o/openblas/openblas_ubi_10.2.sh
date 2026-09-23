@@ -111,6 +111,9 @@ sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
 # Finalize OpenBLAS package layout
 rm -rf "${PREFIX}/bin"
 
+cd $CURRENT_DIR
+rm -rf ./*
+
 
 #building wheel
 python3.14 -m pip wheel -v . --no-build-isolation --no-deps -w "$CURRENT_DIR/"
