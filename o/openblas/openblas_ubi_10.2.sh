@@ -106,7 +106,7 @@ CFLAGS="${CF}" FFLAGS="${FFLAGS}" \
 #install pyproject.toml
 wget https://raw.githubusercontent.com/i-wheels-cpd/build-scripts/refs/heads/main/o/openblas/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
-sed -i 's/plat-name = "linux_ppc64le"/plat-name = "manylinux_2_39_ppc64le"/g' pyproject.toml
+#sed -i 's/plat-name = "linux_ppc64le"/plat-name = "manylinux_2_39_ppc64le"/g' pyproject.toml
 
 # Finalize OpenBLAS package layout
 rm -rf "${PREFIX}/bin"
