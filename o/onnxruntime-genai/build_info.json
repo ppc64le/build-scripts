@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "onnxruntime-genai",
+   "github_url": "https://github.com/microsoft/onnxruntime-genai",
+   "version": "v0.11.4",
+   "default_branch": "main",
+   "build_script": "onnxruntime-genai_ubi_9.3.sh",
+   "package_dir": "o/onnxruntime-genai",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
