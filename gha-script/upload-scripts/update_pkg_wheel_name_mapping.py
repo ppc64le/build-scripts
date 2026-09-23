@@ -71,10 +71,8 @@ def upload_wheel_mapping(token: str, mapping_data: dict) -> None:
     }
     content = json.dumps(mapping_data, indent=2)
     response = requests.put(url, data=content.encode("utf-8"), headers=headers, timeout=30)
-    if response.status_code in (200, 204) and "<Error>" not in response.text:
-        print("Successfully uploaded updated pkg_wheel_name_mapping.json to COS.")
-    else:
-        raise RuntimeError(f"Failed to upload pkg_wheel_name_mapping.json. Status: {response.status_code}, Response: {response.text}")
+    response.raise_for_status()
+    print("Successfully uploaded updated pkg_wheel_name_mapping.json to COS.")
 
 
 def main() -> None:
