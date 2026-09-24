@@ -18,6 +18,9 @@
     "libshm.so",
     "libtorchaudio.so"
   ],
+  "v2.11.0-rocm": {
+    "build_script": "torchaudio_2.11.0_rocm_ubi_10.sh"
+  },
   "v2.9.*": {
     "build_script": "torchaudio_v2.9_ubi_9.3.sh"
   },
