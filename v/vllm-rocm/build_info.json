@@ -19,11 +19,14 @@
     "libtorch_cpu.so",
     "libtorch_hip.so",
     "libtorch_python.so",
-    "libtorchaudio.so",
-    "libtorchvision.so",
-    "libamdhip64.so",
-    "librocblas.so",
-    "librocm_smi64.so"
+    "libshm.so",
+    "libaotriton_v2.so"
+    "libhip*,"
+    "libroc*",
+    "libamd*",
+    "libMIOpen*",
+    "libhsa-runtime64*",
+    "librccl*"
   ],
   "v0.24.0": {
     "build_script": "vllm_v0.24.0_rocm_ubi_10.sh"
