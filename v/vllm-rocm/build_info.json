@@ -20,8 +20,8 @@
     "libtorch_hip.so",
     "libtorch_python.so",
     "libshm.so",
-    "libaotriton_v2.so"
-    "libhip*,"
+    "libaotriton_v2.so",
+    "libhip*",
     "libroc*",
     "libamd*",
     "libMIOpen*",
