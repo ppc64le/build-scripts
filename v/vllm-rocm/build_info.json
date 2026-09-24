@@ -12,7 +12,7 @@
   "use_non_root_user": false,
   "wheel_name": "vllm",
   "skip_python_versions": ["3.12", "3.14"],
-"auditwheel_exclude": [
+  "auditwheel_exclude": [
     "libc10.so",
     "libc10_hip.so",
     "libtorch.so",
