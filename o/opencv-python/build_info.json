@@ -11,10 +11,10 @@
   "validate_build_script": true,
   "use_non_root_user": "false",
   "required_versions": {"Releases": ["5.0.0.93", "4.0.0.84"],"Tags": ["93", "84"]},
-  "84": {
+  "4.0.0.84": {
     "build_script": "opencv-python_ubi_9.3.sh"
   },
-  "93": {
+  "5.0.0.93": {
     "build_script": "opencv-python_5.0.0.93_ubi_9.7.sh"
   },
   "*": {
