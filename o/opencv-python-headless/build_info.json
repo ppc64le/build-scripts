@@ -10,6 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "required_versions": {"Releases": ["*"],"Tags": ["5.0.0.93", "4.10.0.84","4.13.0.92"]},
   "84": {
     "build_script": "opencv-python-headless_4.10.0.84_ubi_9.3.sh"
   },
@@ -17,6 +18,18 @@
     "build_script": "opencv-python-headless_4.13.0.92_ubi_9.5.sh"
   },
   "93": {
+    "build_script": [
+        "opencv-python-headless_5.0.0.93_ubi_9.5.sh",
+        "opencv-python-headless_ubi_10.2.sh"
+    ]
+  },
+  "4.10.0.84": {
+    "build_script": "opencv-python-headless_4.10.0.84_ubi_9.3.sh"
+  },
+  "4.13.0.92": {
+    "build_script": "opencv-python-headless_4.13.0.92_ubi_9.5.sh"
+  },
+  "5.0.0.93": {
     "build_script": [
         "opencv-python-headless_5.0.0.93_ubi_9.5.sh",
         "opencv-python-headless_ubi_10.2.sh"
