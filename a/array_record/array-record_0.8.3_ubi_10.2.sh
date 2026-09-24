@@ -62,7 +62,7 @@ if ! command -v python &>/dev/null && command -v python3.14 &>/dev/null; then
 fi
 
 # Upgrade pip and install Python build tools
-pip3.14 install --upgrade pip setuptools wheel build
+pip install --upgrade pip setuptools wheel build
 
 # ---------------------------------------------------------------------------
 # Bootstrap Bazel 7.2.1 from the official dist.zip (ppc64le has no pre-built
@@ -487,8 +487,7 @@ rsync -avm -L \
     bazel-bin/python "${TMPDIR}/array_record"
 
 pushd "${TMPDIR}"
-if ! "${PYTHON_BIN}" setup.py bdist_wheel \
-        --python-tag "py3${PYTHON_MINOR_VERSION}"; then
+if ! python3.14 -m build --wheel --no-isolation --outdir dist/; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -501,8 +500,12 @@ popd
 AUDITWHEEL_PLATFORM="manylinux_2_39_ppc64le"
 auditwheel repair --plat "${AUDITWHEEL_PLATFORM}" \
     -w "${DEST}" "${TMPDIR}/dist/"*.whl
+
+# Copy the repaired manylinux wheel to CURRENT_DIR for CI / wrapper pickup
+cp "${DEST}"/*.whl "${CURRENT_DIR}/"
+
 # Install from the repaired wheel
-pip install --no-index --find-links="${DEST}" array-record
+pip install "${DEST}"/*.whl
 
 # ---------------------------------------------------------------------------
 # Post-install smoke tests — mirrors x86 CI (oss/build_whl.sh) smoke checks.
