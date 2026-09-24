@@ -2,7 +2,7 @@
   "maintainer": "vinodk99",
   "package_name": "opencv-python",
   "github_url": "https://github.com/opencv/opencv-python.git",
-  "version": "5.0.0.93",
+  "version": "93",
   "wheel_build" : true,
   "package_dir": "o/opencv-python",
   "default_branch": "5.x",
@@ -10,7 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "required_versions": {"Releases": ["5.0.0.93"],"Tags": [".93"]},
+  "required_versions": {"Releases": ["*"],"Tags": ["5.0.0.93", "4.0.0.84"]},
   "84": {
     "build_script": "opencv-python_ubi_9.3.sh"
   },
