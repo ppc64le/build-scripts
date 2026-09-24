@@ -17,10 +17,10 @@
     "libc10_hip.so",
     "libtorch.so",
     "libtorch_cpu.so",
-    "libtorch_hip.so",
+    "libtorch_hip.so",
     "libtorch_python.so",
     "libtorchaudio.so",
-    "libtorchvision.so",
+    "libtorchvision.so",
     "libhip*",
     "libroc*",
     "libamd*",
@@ -40,7 +40,7 @@
     "libfftw3*",
     "libgotcha*",
     "libOpenCL*"
-  ],
+  ],
   "v0.24.0": {
     "build_script": "vllm_v0.24.0_rocm_ubi_10.sh"
   },
