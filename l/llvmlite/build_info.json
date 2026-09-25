@@ -1,16 +1,19 @@
 {
-   "maintainer": "Siddesh-Sangodkar1",
+   "maintainer": "amitkumar282",
   "package_name": "llvmlite",
   "github_url": "https://github.com/numba/llvmlite",
-  "required_versions":{"Releases": ["*"], "Tags": ["v0.44.0rc1","v0.45.0"]},
-  "version": "v0.49.0",
+  "version": "v0.39.1",
   "default_branch": "main",
-  "build_script": "llvmlite_0.49.0_ubi_10.2.sh",
+  "build_script": "llvmlite_0.39.1_ubi_10.2.sh",
   "wheel_build" : true,
   "package_dir": "l/llvmlite",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "v0.39.1": {
+    "build_script": "llvmlite_0.39.1_ubi_10.2.sh",
+    "python_version": "3.10"
+   },
   "v0.40.0": {
        "build_script": "llvmlite_ubi_9.3.sh"
    },
