@@ -21,9 +21,25 @@
     "libtorch_python.so",
     "libtorchaudio.so",
     "libtorchvision.so",
-    "libamdhip64.so",
-    "librocblas.so",
-    "librocm_smi64.so"
+    "libhip*",
+    "libroc*",
+    "libamd*",
+    "libMIOpen*",
+    "libhsa*",
+    "librccl*",
+    "libLLVM*",
+    "libcamd*",
+    "libccolamd*",
+    "libcholmod*",
+    "libcolamd*",
+    "libsuitesparseconfig*",
+    "libgoamd*",
+    "liboam*",
+    "libclang*",
+    "libMLIR*",
+    "libfftw3*",
+    "libgotcha*",
+    "libOpenCL*"
   ],
   "v0.24.0": {
     "build_script": "vllm_v0.24.0_rocm_ubi_10.sh"
