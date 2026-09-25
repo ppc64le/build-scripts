@@ -17,7 +17,8 @@
         "build_script": [
             "numba_0.56.4_ubi_9.8.sh",
             "numba_0.56.4_ubi_10.2.sh"
-        ]
+        ],
+        "python_version": "3.10"
     },
     "0.59.0": {
         "build_script": "numba_0.59.0_ubi_9.6.sh"
