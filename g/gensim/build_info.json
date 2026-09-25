@@ -1,20 +1,26 @@
 {
-    "maintainer": "tejasBadjateIBM",
+    "maintainer": "Shivansh-ibm",
     "package_name": "gensim",
     "github_url": "https://github.com/RaRe-Technologies/gensim",
-    "required_versions":{"Releases": ["*"], "Tags": ["4.3.3"]}, 
-    "version": "4.3.3",
-    "wheel_build" : true,
+    "version": "4.4.0",
     "default_branch": "develop",
     "package_dir": "g/gensim",
-    "build_script": "gensim_4.3.3_ubi_9.5.sh",
+    "build_script": "gensim_4.4.0_ubi_10.2.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
-    "4.3.2":{
-        "build_script": "gensim_ubi_9_3.sh"
+    "wheel_build": true,
+    "4.3.2": {
+      "build_script": "gensim_ubi_9_3.sh"
+    },
+    "4.4.0": {
+      "build_script": [
+        "gensim_4.3.3_ubi_9.5.sh",
+        "gensim_4.4.0_ubi_10.2.sh"
+      ]
     },
     "*": {
-        "build_script": "gensim_4.3.3_ubi_9.5.sh"
-     }
+      "build_script": "gensim_4.4.0_ubi_10.2.sh"
+    }
 }
+
