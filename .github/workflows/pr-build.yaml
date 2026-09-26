@@ -147,14 +147,23 @@ jobs:
           fi
 
       - name: Locate and parse build_info.json
+        env:
+          # Untrusted PR data is passed through the environment, never interpolated
+          # into the run: script. `changed_files` is a list of file PATHS chosen by
+          # the PR author; a `${{ }}` expression is substituted into the script as
+          # text before bash parses it, so a filename like `p/q/x$(cmd).sh` would run
+          # `cmd` on this (self-hosted) runner. In env: the value is data, not code.
+          CHANGED_FILES_FROM_CHECK: ${{ needs.check_changes.outputs.changed_files }}
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
         run: |
           # Reuse changed files from check_changes job
-          CHANGED_FILES="${{ needs.check_changes.outputs.changed_files }}"
+          CHANGED_FILES="$CHANGED_FILES_FROM_CHECK"
 
           # If workflow_dispatch, check_changes did not compute changed_files  -  fetch them now
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            git fetch origin ${{ github.base_ref }} --depth=1
-            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          if [ "$EVENT_NAME" == "workflow_dispatch" ]; then
+            git fetch origin "$BASE_REF" --depth=1
+            CHANGED_FILES=$(git diff --name-only "origin/$BASE_REF...HEAD")
           fi
 
           BUILD_INFO_FILE=$(echo "$CHANGED_FILES" | grep 'build_info.json' | head -n 1)
