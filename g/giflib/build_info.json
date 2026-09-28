@@ -1,0 +1,19 @@
+{
+  "maintainer": "ibm",
+  "package_name": "giflib",
+  "language": "c",
+  "github_url": "https://git.code.sf.net/p/giflib/code",
+  "version": "6.1.3",
+  "wheel_build": false,
+  "package_dir": "g/giflib",
+  "default_branch": "master",
+  "build_script": "giflib.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "giflib",
+  "*": {
+    "build_script": "giflib.sh"
+  }
+}

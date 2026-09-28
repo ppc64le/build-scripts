@@ -1,28 +1,18 @@
 {
-  "maintainer": "Yogita Kulkarni <Yogita.Kulkarni1@ibm.com>",
+  "maintainer": "kiranNukal",
   "package_name": "matplotlib",
-  "github_url": "https://github.com/matplotlib/matplotlib.git",
-  "version": "v3.11.0",
-  "wheel_build" : true,
+  "github_url": "https://github.com/matplotlib/matplotlib",
+  "version": "v3.10.3",
+  "wheel_build": true,
   "default_branch": "main",
   "package_dir": "m/matplotlib",
-  "build_script": "matplotlib_3.11.0_ubi_10.2.sh",
+  "build_script": "matplotlib.sh",
+  "resource_class": "medium",
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": false,
-  "v3.7.1,v3.8.0": {
-    "build_script":"matplotlib_3.8.0_ubi_9.3.sh"
-  },
-  "v3.11.0": { 
-    "build_script": [
-        "matplotlib_3.11.0_ubi_9.6.sh",
-        "matplotlib_3.11.0_ubi_10.2.sh"
-    ]
-  },
+  "v2-enabled": true,
   "*": {
-    "build_script": [
-        "matplotlib_3.11.0_ubi_9.6.sh",
-        "matplotlib_3.11.0_ubi_10.2.sh"
-    ]   
+    "build_script": "matplotlib.sh"
   }
 }

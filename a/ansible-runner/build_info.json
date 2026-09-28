@@ -1,19 +1,19 @@
 {
-  "maintainer": "vinodk99",
+  "maintainer": "kiranNukal",
   "package_name": "ansible-runner",
   "github_url": "https://github.com/ansible/ansible-runner",
   "version": "2.4.1",
-  "wheel_build" : true,
   "package_dir": "a/ansible-runner",
   "default_branch": "devel",
-  "build_script": "ansible-runner_ubi_9.6.sh",
+  "build_script": "ansible-runner.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": "false",
-  "2.3.3": {
-    "build_script": "ansible-runner_ubi_8_7.sh"
-  },
+  "use_non_root_user": false,
+  "language": "Python",
+  "wheel_build": true,
+  "v2-enabled": true,
   "*": {
-    "build_script": "ansible-runner_ubi_9.6.sh"
+    "build_script": "ansible-runner.sh"
   }
 }
+

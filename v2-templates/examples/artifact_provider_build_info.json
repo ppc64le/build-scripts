@@ -1,0 +1,19 @@
+{
+  "maintainer": "your-github-id",
+  "package_name": "my-native-library",
+  "github_url": "https://github.com/example/my-native-library",
+  "version": "v2.0.0",
+  "default_branch": "main",
+  "build_script": "my-native-library.sh",
+  "wheel_build": false,
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+
+  "provides_artifact": "my-native-library",
+  "build_deps": ["abseil-cpp:20240116.2"],
+
+  "*": {
+    "build_script": "my-native-library.sh"
+  }
+}

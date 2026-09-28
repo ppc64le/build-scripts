@@ -1,0 +1,17 @@
+{
+  "maintainer": "rcarino",
+  "package_name": "platformdirs",
+  "github_url": "https://github.com/tox-dev/platformdirs",
+  "version": "4.3.6",
+  "default_branch": "main",
+  "package_dir": "p/platformdirs",
+  "build_script": "platformdirs.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v2-enabled": true,
+  "wheel_build": true,
+  "*": {
+    "build_script": "platformdirs.sh"
+  }
+}

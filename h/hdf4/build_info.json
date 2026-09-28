@@ -1,0 +1,19 @@
+{
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "hdf4",
+  "github_url": "https://github.com/HDFGroup/hdf4",
+  "version": "hdf4.3.0",
+  "default_branch": "master",
+  "package_dir": "h/hdf4",
+  "build_script": "hdf4.sh",
+  "validate_build_script": true,
+  "language": "C",
+  "use_non_root_user": false,
+  "docker_build": false,
+  "wheel_build": false,
+  "v2-enabled": true,
+  "provides_artifact": "hdf4",
+  "*": {
+    "build_script": "hdf4.sh"
+  }
+}

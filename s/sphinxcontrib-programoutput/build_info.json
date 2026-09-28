@@ -1,16 +1,18 @@
 {
-  "maintainer": "aastha-sharma2",
+  "maintainer": "kiranNukal",
   "package_name": "sphinxcontrib-programoutput",
-  "github_url": "https://github.com/NextThought/sphinxcontrib-programoutput.git",
+  "github_url": "https://github.com/NextThought/sphinxcontrib-programoutput",
   "version": "0.18",
   "package_dir": "s/sphinxcontrib-programoutput",
-  "wheel_build" : true,
+  "wheel_build": "true",
   "default_branch": "master",
-  "build_script": "sphinxcontrib-programoutput_ubi_9.6.sh",
-  "docker_build": false,
+  "build_script": "sphinxcontrib-programoutput.sh",
   "validate_build_script": true,
+  "v2-enabled": true,
   "use_non_root_user": "false",
+  "docker_build": false,
   "*": {
-    "build_script": "sphinxcontrib-programoutput_ubi_9.6.sh"
+    "build_script": "sphinxcontrib-programoutput.sh"
   }
 }
+

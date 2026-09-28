@@ -1,19 +1,17 @@
 {
-  "maintainer": "tejasBadjateIBM",
+  "maintainer": "aastha-sharma2",
   "package_name": "argon2-cffi-bindings",
   "github_url": "https://github.com/hynek/argon2-cffi-bindings",
-  "version": "26.1.0",
-  "wheel_build" : true,
+  "version": "21.2.0",
+  "wheel_build": true,
   "default_branch": "main",
-  "build_script": "argon2-cffi-bindings_ubi_10.2.sh",
+  "build_script": "argon2-cffi-bindings.sh",
   "package_dir": "a/argon2-cffi-bindings",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "26.1.0" : {
-    "build_script": "argon2-cffi-bindings_ubi_10.2.sh"
-  },
-  "*" : {
-     "build_script": "argon2-cffi-bindings_ubi_9.3.sh"
+  "*": {
+    "build_script": "argon2-cffi-bindings.sh"
   }
 }

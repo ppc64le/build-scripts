@@ -1,20 +1,18 @@
 {
-  "maintainer": "ramnathnayak-ibm",
+  "maintainer": "kiranNukal",
   "package_name": "ansible",
   "github_url": "https://github.com/ansible/ansible",
   "version": "v2.19.2",
   "package_dir": "a/ansible",
   "default_branch": "devel",
-  "build_script": "ansible_ubi_9.6.sh",
+  "build_script": "ansible.sh",
   "docker_build": false,
-  "wheel_build": true,
   "validate_build_script": true,
-  "use_non_root_user": "false",
-  "wheel_name": "ansible-core",
-  "v2.18.6": {
-    "build_script": "ansible_ubi_9.3.sh"
-  },
+  "use_non_root_user": false,
+  "language": "Python",
+  "v2-enabled": true,
   "*": {
-    "build_script": "ansible_ubi_9.6.sh"
+    "build_script": "ansible.sh"
   }
 }
+

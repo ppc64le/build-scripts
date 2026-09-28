@@ -1,16 +1,19 @@
 {
-    "maintainer":"aastha-sharma2",
-    "package_name" : "pyclaw", 
-    "github_url": "https://github.com/clawpack/pyclaw.git",
-    "version": "v5.12.0",
-    "default_branch": "master",
-    "package_dir": "p/pyclaw",
-    "wheel_build" : true,
-    "build_script": "pyclaw_ubi_9.3.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "false",
-    "*" : {
-       "build_script": "pyclaw_ubi_9.3.sh"
-    }
+  "maintainer": "aastha-sharma2",
+  "package_name": "pyclaw",
+  "github_url": "https://github.com/clawpack/pyclaw",
+  "version": "v5.12.0",
+  "language": "Python",
+  "default_branch": "master",
+  "package_dir": "p/pyclaw",
+  "wheel_build": true,
+  "build_script": "pyclaw.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "build_deps": ["numpy:v1.26.4","scipy:v1.14.1"],
+  "v2-enabled": true,
+  "*": {
+    "build_script": "pyclaw.sh"
+  }
 }

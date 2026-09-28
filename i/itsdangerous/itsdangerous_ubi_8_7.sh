@@ -1,68 +1,52 @@
 #!/bin/bash -e
-# ----------------------------------------------------------------------------
-#
+# -----------------------------------------------------------------------------
 # Package       : itsdangerous
 # Version       : 2.1.2
 # Source repo   : https://github.com/pallets/itsdangerous
 # Tested on     : UBI: 8.7
-# Language      : python
-# Ci-Check  : True
+# Language      : Python
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
-#
-#
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
-#
-# ----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
-set -e
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Variables
+# =============================================================================
+# REQUIRED: Package metadata
+# =============================================================================
+PACKAGE_NAME="itsdangerous"
+PACKAGE_VERSION="${1:-2.1.2}"
+PACKAGE_URL="https://github.com/pallets/itsdangerous"
+
+# =============================================================================
+# REQUIRED: Dependencies
+# =============================================================================
+RH_DEP_PKGS="gcc-c++ git python3 python3-setuptools python3-test python3-virtualenv python39-devel.ppc64le"
+DEB_DEP_PKGS=""
+SLES_DEP_PKGS=""
+
+# =============================================================================
+# OPTIONAL: Custom environment variables (from original script)
+# =============================================================================
 export PACKAGE_VERSION=${1:-"2.1.2"}
 export PACKAGE_NAME=itsdangerous
 export PACKAGE_URL=https://github.com/pallets/itsdangerous
-
-
-# Install dependencies
-yum install -y python3 git gcc-c++ python39-devel.ppc64le python3-setuptools python3-virtualenv python3-test 
-pip3 install --upgrade setuptools virtualenv mock ipython_genutils pytest traitlets
-
-# Clone the repository
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
 export TOXENV=py39
-virtualenv -p python3 --system-site-packages env2 
-/bin/bash -c "source env2/bin/activate"
-pip3 install tox 
-PATH=$PATH:/usr/local/bin/
 
+# REVIEW - following code was not auto-migrated. See PORTING-NOTES.md for details.
+# export PACKAGE_VERSION=${1:-"2.1.2"}
+# export PACKAGE_NAME=itsdangerous
+# export PACKAGE_URL=https://github.com/pallets/itsdangerous
+# pip3 install --upgrade setuptools virtualenv mock ipython_genutils pytest traitlets
+# export TOXENV=py39
+# virtualenv -p python3 --system-site-packages env2
+# /bin/bash -c "source env2/bin/activate"
+# pip3 install tox
+# PATH=$PATH:/usr/local/bin/
+# if !(python3 setup.py install) ; then
+# if !(tox); then
 
-# Build package
-if !(python3 setup.py install) ; then
-    echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
-    exit 1
-fi
-
-# Run test cases
-if !(tox); then
-    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
-    exit 2
-else
-    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
-    exit 0
-fi
-
-
-
-
+# =============================================================================
+# Execute the build (invokes the Python template)
+# =============================================================================
+source "${SCRIPT_DIR}/../../templates/python.sh"

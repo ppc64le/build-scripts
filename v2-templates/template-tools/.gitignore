@@ -1,0 +1,13 @@
+
+# Ignore all .swp files
+*.swp
+
+# Ignore temporay workflow files
+OLD
+.venv
+
+# Ignore my tracking files
+
+NOTES-feb2
+commit
+SUMMARY-FEB2.md

@@ -5,12 +5,15 @@
   "version": "v0.11.6",
   "default_branch": "master",
   "package_dir": "p/pyhdf",
-  "build_script": "pyhdf_ubi_9.3.sh",
+  "build_script": "pyhdf.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": false,
+  "language": "Python, C",
+  "v2-enabled": true,
   "wheel_build": true,
-  "v0.11.*": {
-    "build_script": "pyhdf_ubi_9.3.sh"
+  "build_deps": ["hdf4"],
+  "*": {
+    "build_script": "pyhdf.sh"
   }
 }

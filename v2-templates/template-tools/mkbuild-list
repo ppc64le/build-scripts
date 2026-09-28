@@ -1,0 +1,303 @@
+#!/usr/bin/env python3
+"""
+mkbuild-list - Generate a build list for packages and their transitive dependencies
+
+Takes one or more package names and generates a CSV inventory containing those
+packages plus all their transitive build dependencies, in topological order
+(dependencies first).
+
+Usage:
+    mkbuild-list PACKAGE [PACKAGE ...]
+    mkbuild-list -i INVENTORY PACKAGE [PACKAGE ...]
+
+Arguments:
+    PACKAGE             One or more package names to include
+
+Options:
+    -i, --inventory FILE   Use existing inventory CSV (default: generate from cwd)
+    -d, --dir DIR          Directory to scan for build_info.json (default: cwd)
+    -o, --output FILE      Output CSV file (default: stdout)
+    -q, --quiet            Suppress progress messages
+    -h, --help             Show this help
+
+Output:
+    CSV with same columns as generate_package_inventory.py, containing:
+    - All requested packages
+    - All transitive build dependencies
+    - Ordered with dependencies first (topological sort)
+
+Examples:
+    # Build list for vllm and all its dependencies
+    mkbuild-list vllm
+
+    # Build list for multiple packages
+    mkbuild-list pytorch torchvision torchaudio
+
+    # Use existing inventory file
+    mkbuild-list -i inventory.csv vllm -o vllm-build.csv
+
+    # Scan specific directory
+    mkbuild-list -d /path/to/build-scripts vllm
+"""
+
+import argparse
+import csv
+import sys
+from collections import defaultdict
+from pathlib import Path
+from typing import Optional
+
+
+def load_inventory(inventory_file: Optional[str], scan_dir: Optional[str], quiet: bool) -> dict:
+    """
+    Load package inventory from CSV file or generate from directory.
+
+    Returns dict mapping package_name -> row dict
+    """
+    packages = {}
+
+    if inventory_file:
+        # Load from existing CSV
+        if not quiet:
+            print(f"Loading inventory from {inventory_file}", file=sys.stderr)
+
+        with open(inventory_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                pkg_name = row.get('Package Name', '')
+                if pkg_name:
+                    packages[pkg_name] = row
+    else:
+        # Generate inventory using generate_package_inventory
+        import subprocess
+        import io
+
+        scan_path = scan_dir or '.'
+        if not quiet:
+            print(f"Generating inventory from {scan_path}", file=sys.stderr)
+
+        # Find the generate_package_inventory.py script
+        script_dir = Path(__file__).parent
+        gen_script = script_dir / 'generate_package_inventory.py'
+
+        if not gen_script.exists():
+            print(f"Error: Cannot find {gen_script}", file=sys.stderr)
+            sys.exit(1)
+
+        result = subprocess.run(
+            [sys.executable, str(gen_script), scan_path, '-q'],
+            capture_output=True,
+            text=True
+        )
+
+        if result.returncode != 0:
+            print(f"Error generating inventory: {result.stderr}", file=sys.stderr)
+            sys.exit(1)
+
+        reader = csv.DictReader(io.StringIO(result.stdout))
+        for row in reader:
+            pkg_name = row.get('Package Name', '')
+            if pkg_name:
+                packages[pkg_name] = row
+
+    if not quiet:
+        print(f"Loaded {len(packages)} packages", file=sys.stderr)
+
+    return packages
+
+
+def parse_build_deps(deps_str: str) -> list[str]:
+    """
+    Parse build deps string into list of package names.
+
+    Handles formats like:
+    - "pkg1,pkg2,pkg3"
+    - "pkg1:v1.0,pkg2:v2.0"  (strips version pins)
+    """
+    if not deps_str:
+        return []
+
+    deps = []
+    for dep in deps_str.split(','):
+        dep = dep.strip()
+        if not dep:
+            continue
+        # Strip version pin if present (e.g., "pytorch:v2.6.0" -> "pytorch")
+        if ':' in dep:
+            dep = dep.split(':')[0]
+        deps.append(dep)
+
+    return deps
+
+
+def resolve_transitive_deps(packages: dict, target_packages: list[str], quiet: bool) -> list[str]:
+    """
+    Resolve all transitive dependencies for target packages.
+
+    Returns list of package names in topological order (dependencies first).
+    """
+    # Build dependency graph
+    deps_graph = {}
+    for pkg_name, row in packages.items():
+        deps_str = row.get('Build Deps', '')
+        deps_graph[pkg_name] = parse_build_deps(deps_str)
+
+    # Find all packages we need (BFS)
+    needed = set()
+    queue = list(target_packages)
+    missing = []
+
+    while queue:
+        pkg = queue.pop(0)
+        if pkg in needed:
+            continue
+
+        if pkg not in packages:
+            if pkg not in missing:
+                missing.append(pkg)
+            continue
+
+        needed.add(pkg)
+
+        # Add dependencies to queue
+        for dep in deps_graph.get(pkg, []):
+            if dep not in needed:
+                queue.append(dep)
+
+    if missing and not quiet:
+        print(f"Warning: Missing packages (not in inventory): {', '.join(missing)}", file=sys.stderr)
+
+    # Topological sort (Kahn's algorithm)
+    # Build in-degree count for needed packages only
+    in_degree = defaultdict(int)
+    adj = defaultdict(list)
+
+    for pkg in needed:
+        for dep in deps_graph.get(pkg, []):
+            if dep in needed:
+                adj[dep].append(pkg)
+                in_degree[pkg] += 1
+
+    # Start with packages that have no dependencies (in needed set)
+    queue = [pkg for pkg in needed if in_degree[pkg] == 0]
+    result = []
+
+    while queue:
+        # Sort for deterministic output
+        queue.sort()
+        pkg = queue.pop(0)
+        result.append(pkg)
+
+        for dependent in adj[pkg]:
+            in_degree[dependent] -= 1
+            if in_degree[dependent] == 0:
+                queue.append(dependent)
+
+    # Check for cycles
+    if len(result) != len(needed):
+        remaining = needed - set(result)
+        if not quiet:
+            print(f"Warning: Circular dependencies detected involving: {', '.join(remaining)}", file=sys.stderr)
+        # Add remaining packages anyway
+        result.extend(sorted(remaining))
+
+    return result
+
+
+def write_build_list(packages: dict, ordered_pkgs: list[str], output_file: Optional[str]):
+    """Write the build list CSV."""
+    if not ordered_pkgs:
+        print("No packages to output", file=sys.stderr)
+        return
+
+    # Get fieldnames from first package
+    sample_row = next(iter(packages.values()))
+    fieldnames = list(sample_row.keys())
+
+    if output_file:
+        f = open(output_file, 'w', newline='', encoding='utf-8')
+    else:
+        f = sys.stdout
+
+    try:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for pkg_name in ordered_pkgs:
+            if pkg_name in packages:
+                writer.writerow(packages[pkg_name])
+    finally:
+        if output_file:
+            f.close()
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Generate build list for packages and their transitive dependencies',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+    mkbuild-list vllm
+    mkbuild-list pytorch torchvision torchaudio
+    mkbuild-list -i inventory.csv vllm -o vllm-build.csv
+    mkbuild-list -d /path/to/build-scripts arrow
+"""
+    )
+    parser.add_argument(
+        'packages',
+        nargs='+',
+        help='Package names to include in build list'
+    )
+    parser.add_argument(
+        '-i', '--inventory',
+        help='Use existing inventory CSV file'
+    )
+    parser.add_argument(
+        '-d', '--dir',
+        help='Directory to scan for build_info.json (default: cwd)'
+    )
+    parser.add_argument(
+        '-o', '--output',
+        help='Output CSV file (default: stdout)'
+    )
+    parser.add_argument(
+        '-q', '--quiet',
+        action='store_true',
+        help='Suppress progress messages'
+    )
+
+    args = parser.parse_args()
+
+    # Load inventory
+    packages = load_inventory(args.inventory, args.dir, args.quiet)
+
+    if not packages:
+        print("Error: No packages found in inventory", file=sys.stderr)
+        sys.exit(1)
+
+    # Check requested packages exist
+    missing = [p for p in args.packages if p not in packages]
+    if missing:
+        print(f"Error: Package(s) not found: {', '.join(missing)}", file=sys.stderr)
+        print(f"Hint: Use -d to specify build-scripts directory", file=sys.stderr)
+        sys.exit(1)
+
+    # Resolve dependencies
+    ordered = resolve_transitive_deps(packages, args.packages, args.quiet)
+
+    if not args.quiet:
+        print(f"Build list: {len(ordered)} packages", file=sys.stderr)
+        print(f"  Targets: {', '.join(args.packages)}", file=sys.stderr)
+        deps_only = [p for p in ordered if p not in args.packages]
+        if deps_only:
+            print(f"  Dependencies: {', '.join(deps_only)}", file=sys.stderr)
+
+    # Write output
+    write_build_list(packages, ordered, args.output)
+
+    if args.output and not args.quiet:
+        print(f"Wrote {len(ordered)} packages to {args.output}", file=sys.stderr)
+
+
+if __name__ == '__main__':
+    main()

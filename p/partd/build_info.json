@@ -5,15 +5,13 @@
   "version": "1.4.2",
   "default_branch": "main",
   "package_dir": "p/partd",
-  "build_script": "partd_ubi_9.6.sh",
+  "build_script": "partd.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": false,
+  "v2-enabled": true,
   "wheel_build": true,
-  "1.4.0": {
-    "build_script": "partd_ubi_8.7.sh"
-  },
   "*": {
-    "build_script": "partd_ubi_9.6.sh"
+    "build_script": "partd.sh"
   }
 }

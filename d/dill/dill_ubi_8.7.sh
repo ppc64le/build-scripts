@@ -1,58 +1,44 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
-#
-# Package          : dill
-# Version          : dill-0.3.7
-# Source repo      : https://github.com/uqfoundation/dill
-# Tested on        : UBI 8.7
-# Language         : Python
-# Ci-Check     : True
-# Script License   : GNU General Public License v3.0
-# Maintainer       : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
-#
-# Disclaimer       : This script has been tested in root mode on given
-# ==========         platform using the mentioned version of the package.
-#                    It may not work as expected with newer versions of the
-#                    package and/or distribution. In such case, please
-#                    contact "Maintainer" of this script.
-#
-# ----------------------------------------------------------------------------
+# Package       : dill
+# Version       : dill-0.3.7
+# Source repo   : https://github.com/uqfoundation/dill
+# Tested on     : UBI 8.7
+# Language      : Python
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
+# -----------------------------------------------------------------------------
 
-PACKAGE_NAME=dill
-PACKAGE_VERSION=${1:-dill-0.3.7}
-PACKAGE_URL=https://github.com/uqfoundation/dill
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-wrkdir=`pwd`
+# =============================================================================
+# REQUIRED: Package metadata
+# =============================================================================
+PACKAGE_NAME="dill"
+PACKAGE_VERSION="${1:-dill-0.3.7}"
+PACKAGE_URL="https://github.com/uqfoundation/dill"
 
-OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
+# =============================================================================
+# REQUIRED: Dependencies
+# =============================================================================
+RH_DEP_PKGS="gcc gcc-c++ git python39-devel.ppc64le"
+DEB_DEP_PKGS=""
+SLES_DEP_PKGS=""
 
-yum install -y python39-devel.ppc64le git gcc gcc-c++
+# Custom test command (extracted from original script)
+custom_test_command() {
+    # TODO: Review and update test commands
+    python3 -m pip install coverage numpy tox
+    if ! /usr/local/bin/tox -e py39 ; then
+}
 
+# REVIEW - following code was not auto-migrated. See PORTING-NOTES.md for details.
+# wrkdir=`pwd`
+# OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
+# python3 -m pip install coverage numpy tox
+# if ! /usr/local/bin/tox -e py39 ; then
 
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
-
-python3 -m pip install coverage numpy tox
-# python3 -m pip install numpy
-
-if ! python3 setup.py install ; then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
-fi
-
-# python3 -m pip install tox
-
-if ! /usr/local/bin/tox -e py39 ; then
-    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 2
-else
-    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
-fi
+# =============================================================================
+# Execute the build (invokes the Python template)
+# =============================================================================
+source "${SCRIPT_DIR}/../../templates/python.sh"

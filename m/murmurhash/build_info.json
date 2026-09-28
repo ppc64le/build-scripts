@@ -1,16 +1,17 @@
 {
-   "maintainer": "bhagyashrigais",
-   "package_name": "murmurhash",
-   "github_url": "https://github.com/explosion/murmurhash.git",
-   "version": "release-v1.0.15",
-   "default_branch": "master",
-   "build_script": "murmurhash_ubi_9.6.sh",
-   "package_dir": "m/murmurhash",
-   "docker_build": false,
-   "wheel_build": true,
-   "validate_build_script": true,
-   "use_non_root_user": false,
-   "*": {
-     "build_script":"murmurhash_ubi_9.6.sh"
+  "maintainer": "Bhagyashri Gaikwad",
+  "package_name": "murmurhash",
+  "github_url": "https://github.com/explosion/murmurhash",
+  "version": "release-v1.0.15",
+  "wheel_build": false,
+  "default_branch": "main",
+  "build_script": "murmurhash.sh",
+  "package_dir": "m/murmurhash",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "murmurhash.sh"
   }
 }

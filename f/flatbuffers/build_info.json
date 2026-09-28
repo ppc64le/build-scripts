@@ -3,14 +3,15 @@
   "package_name": "flatbuffers",
   "github_url": "https://github.com/google/flatbuffers.git",
   "version": "v2.0.0",
-  "wheel_build" : true,
+  "wheel_build": true,
   "default_branch": "master",
   "package_dir": "f/flatbuffers",
-  "build_script": "flatbuffers_ubi_9.6.sh",
+  "build_script": "flatbuffers.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": false,
-   "*": {
-    "build_script": "flatbuffers_ubi_9.6.sh"
+  "v2-enabled": true,
+  "*": {
+    "build_script": "flatbuffers.sh"
   }
 }

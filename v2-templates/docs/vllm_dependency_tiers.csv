@@ -1,0 +1,50 @@
+package_name,package_version,language,language_version,github_repo,status,build_deps
+# =============================================================================
+# vLLM Native Dependency Tiers - Based on vllm_ubi_9.3.sh analysis
+# =============================================================================
+# Status: script_ready = script exists with provides_artifact
+#         script_missing = no script exists
+#         needs_review = script exists but may need updates
+# =============================================================================
+# ------ Tier 0: No native dependencies (build first) ------
+openblas,v0.3.29,python,python3.12,https://github.com/OpenMathLib/OpenBLAS,script_ready,
+abseil-cpp,20240116.2,python,python3.12,https://github.com/abseil/abseil-cpp,script_ready,
+libvpx,v1.13.1,python,python3.12,https://github.com/webmproject/libvpx,script_ready,
+lame,RELEASE__3_100,python,python3.12,https://github.com/enzo1982/lame,script_ready,
+opus,v1.3.1,python,python3.12,https://github.com/xiph/opus,script_ready,
+snappy,1.2.1,python,python3.12,https://github.com/google/snappy,script_ready,
+c-ares,v1.34.4,python,python3.12,https://github.com/c-ares/c-ares,script_ready,
+hwloc,hwloc-2.9.3,python,python3.12,https://github.com/open-mpi/hwloc,script_ready,
+zstd,v1.5.6,python,python3.12,https://github.com/facebook/zstd,script_ready,
+hdf5,hdf5-1_14_3,python,python3.12,https://github.com/HDFGroup/hdf5,script_ready,
+boost,boost-1.86.0,python,python3.12,https://github.com/boostorg/boost,script_ready,
+llvm,llvmorg-18.1.8,python,python3.12,https://github.com/llvm/llvm-project,script_ready,
+utf8proc,v2.6.1,python,python3.12,https://github.com/JuliaStrings/utf8proc,script_ready,
+gflags,v2.2.2,python,python3.12,https://github.com/gflags/gflags,script_ready,
+rapidjson,v1.1.0,python,python3.12,https://github.com/Tencent/rapidjson,script_ready,
+xsimd,13.0.0,python,python3.12,https://github.com/xtensor-stack/xsimd,script_ready,
+numactl,v2.0.19,python,python3.12,https://github.com/numactl/numactl,script_ready,
+# ------ Tier 1: Depends on Tier 0 ------
+protobuf,v4.25.3,python,python3.12,https://github.com/protocolbuffers/protobuf,script_ready,abseil-cpp
+re2,2022-04-01,python,python3.12,https://github.com/google/re2,script_ready,abseil-cpp
+ffmpeg,n7.1,python,python3.12,https://github.com/FFmpeg/FFmpeg,script_ready,libvpx lame opus
+onetbb,v2021.8.0,python,python3.12,https://github.com/oneapi-src/oneTBB,script_ready,hwloc
+thrift,v0.21.0,python,python3.12,https://github.com/apache/thrift,script_ready,boost
+# ------ Tier 2: Depends on Tier 1 ------
+grpc_cpp,v1.68.0,python,python3.12,https://github.com/grpc/grpc,script_ready,c-ares re2 protobuf abseil-cpp
+orc,v2.0.3,python,python3.12,https://github.com/apache/orc,script_ready,protobuf snappy zstd
+pytorch,v2.6.0,python,python3.12,https://github.com/pytorch/pytorch,script_ready,protobuf openblas
+llvmlite,v0.44.0,python,python3.12,https://github.com/numba/llvmlite,script_ready,llvm
+# ------ Tier 3: Depends on Tier 2 ------
+arrow,apache-arrow-19.0.0,python,python3.12,https://github.com/apache/arrow,script_ready,grpc_cpp orc boost thrift utf8proc snappy zstd re2 protobuf xsimd rapidjson gflags
+torchvision,v0.21.0,python,python3.12,https://github.com/pytorch/vision,script_ready,pytorch
+torchaudio,v2.6.0,python,python3.12,https://github.com/pytorch/audio,script_ready,pytorch
+numba,0.62.0,python,python3.12,https://github.com/numba/numba,script_ready,llvmlite
+# ------ Tier 4: Python packages needing native artifacts ------
+pyarrow,19.0.0,python,python3.12,https://github.com/apache/arrow,script_ready,arrow
+h5py,3.13.0,python,python3.12,https://github.com/h5py/h5py,script_ready,hdf5
+opencv-python-headless,86,python,python3.12,https://github.com/opencv/opencv-python,script_ready,ffmpeg protobuf openblas
+pyav,v13.1.0,python,python3.12,https://github.com/PyAV-Org/PyAV,script_ready,ffmpeg
+grpcio,v1.71.0,python,python3.12,https://github.com/grpc/grpc,script_ready,grpc_cpp
+# ------ Tier 5: Final target ------
+vllm,v0.8.4,python,python3.12,https://github.com/vllm-project/vllm,script_ready,pytorch torchvision torchaudio pyarrow

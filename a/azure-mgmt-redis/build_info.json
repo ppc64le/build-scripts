@@ -3,14 +3,16 @@
   "package_name": "azure-mgmt-redis",
   "github_url": "https://github.com/Azure/azure-sdk-for-python",
   "version": "azure-mgmt-redis_14.5.0",
-  "wheel_build" : true,
+  "language": "Python",
+  "wheel_build": true,
   "package_dir": "a/azure-mgmt-redis",
   "default_branch": "main",
-  "build_script": "azure-mgmt-redis_ubi_9.3.sh",
+  "build_script": "azure-mgmt-redis.sh",
   "docker_build": false,
   "validate_build_script": true,
+  "v2-enabled": true,
   "use_non_root_user": "false",
   "azure-mgmt-redis_*": {
-    "build_script": "azure-mgmt-redis_ubi_9.3.sh"
+    "build_script": "azure-mgmt-redis.sh"
   }
 }

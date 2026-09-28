@@ -1,16 +1,18 @@
 {
    "maintainer": "bhagyashrigais",
    "package_name": "rfc3161-client",
-   "github_url": "https://github.com/trailofbits/rfc3161-client.git",
+   "github_url": "https://github.com/trailofbits/rfc3161-client",
    "version": "v1.0.6",
    "default_branch": "main",
-   "build_script": "rfc3161-client_ubi_9.6.sh",
+   "build_script": "rfc3161-client.sh",
    "package_dir": "r/rfc3161-client",
    "docker_build": false,
    "wheel_build": true,
    "validate_build_script": true,
    "use_non_root_user": false,
+   "v2-enabled": true,
    "*": {
-     "build_script":"rfc3161-client_ubi_9.6.sh"
+     "build_script":"rfc3161-client.sh"
   }
 }
+
