@@ -100,21 +100,22 @@ fi
 
 # Test py-spy record functionality with a simple Python script
 # Note: py-spy is a binary-only package (bindings = "bin"), so we use the py-spy binary directly
+# Use longer sleep and more iterations to ensure stack samples are collected (especially on faster Python versions)
 python3.12 - <<'PYEOF'
 import subprocess
 import sys
 import tempfile
 import os
 
-# Create a simple Python script to profile
+# Create a simple Python script to profile - longer runtime to ensure samples
 test_script = """
 import time
 def foo():
-    time.sleep(0.1)
+    time.sleep(0.5)
     return 42
 
 def bar():
-    for i in range(5):
+    for i in range(20):
         foo()
     return "done"
 
@@ -128,19 +129,24 @@ with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
 
 try:
     # Run py-spy record with a short duration (use binary directly, not -m py_spy)
+    # Use higher sampling rate (default is 100Hz) and longer timeout
     result = subprocess.run(
-        ['py-spy', 'record', '-o', '/tmp/profile.svg', '--', sys.executable, script_path],
+        ['py-spy', 'record', '-o', '/tmp/profile.svg', '--rate', '200', '--', sys.executable, script_path],
         capture_output=True,
         text=True,
-        timeout=30
+        timeout=60
     )
     if result.returncode != 0:
         print(f"py-spy record failed: {result.stderr}")
         sys.exit(1)
     
-    # Check if output file was created
+    # Check if output file was created and has content
     if not os.path.exists('/tmp/profile.svg'):
         print("Profile output file not created")
+        sys.exit(1)
+    
+    if os.path.getsize('/tmp/profile.svg') == 0:
+        print("Profile output file is empty")
         sys.exit(1)
     
     print("py-spy record test passed")
