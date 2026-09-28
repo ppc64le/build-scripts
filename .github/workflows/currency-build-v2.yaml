@@ -99,7 +99,11 @@ jobs:
 
       - name: Download grype
         run: |
-          GRYPE_VERSION=$(curl -s --retry 3 https://api.github.com/repos/anchore/grype/releases/latest | jq -r '.tag_name')
+          GRYPE_VERSION=$(curl -s --retry 3 -H "Accept: application/vnd.github+json" https://api.github.com/repos/anchore/grype/releases/latest | jq -r '.tag_name // empty')
+          if [[ -z "$GRYPE_VERSION" || "$GRYPE_VERSION" == "null" ]]; then
+            echo "ERROR: Failed to resolve latest grype version from GitHub API" >&2
+            exit 1
+          fi
           wget --tries=3 "https://github.com/anchore/grype/releases/download/${GRYPE_VERSION}/grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz"
           tar -xzf "grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz"
           mkdir -p scan-tools-bin
