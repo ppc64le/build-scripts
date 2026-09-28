@@ -1,0 +1,20 @@
+{
+    "maintainer": "Sharath P J",
+    "package_name": "openrag",
+    "github_url": "https://github.com/langflow-ai/openrag.git",
+    "version": "v0.6.0",
+    "wheel_build": true,
+    "package_dir": "o/openrag",
+    "default_branch": "main",
+    "build_script": "openrag_0.6.0_ubi_10.2.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": "false",
+    "skip_python_versions": ["3.10", "3.11", "3.12"],
+    "v0.6.0": {
+        "build_script": "openrag_0.6.0_ubi_10.2.sh"
+    },
+    "*": {
+        "build_script": "openrag_0.6.0_ubi_10.2.sh"
+    }
+}

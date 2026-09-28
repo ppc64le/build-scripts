@@ -10,7 +10,8 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "wheel_name": "torch-rocm",
+  "wheel_name": "torch",
+  "skip_python_versions": ["3.12", "3.14"],
   "auditwheel_exclude": [
     "libc10.so",
     "libc10_hip.so",
@@ -19,7 +20,26 @@
     "libtorch_hip.so",
     "libtorch_python.so",
     "libshm.so",
-    "libaotriton_v2.so"
+    "libaotriton_v2.so",
+    "libhip*",
+    "libroc*",
+    "libamd*",
+    "libMIOpen*",
+    "libhsa*",
+    "librccl*",
+    "libLLVM*",
+    "libcamd*",
+    "libccolamd*",
+    "libcholmod*",
+    "libcolamd*",
+    "libsuitesparseconfig*",
+    "libgoamd*",
+    "liboam*",
+    "libclang*",
+    "libMLIR*",
+    "libfftw3*",
+    "libgotcha*",
+    "libOpenCL*"
   ],
   "v2.13.0": {
     "build_script": "pytorch-rocm_2.13.0_ubi_10.sh"

@@ -1,10 +1,10 @@
 {
-	"maintainer": "vinodk99",
+	"maintainer": "tejasBadjateIBM",
 	"package_name": "markupsafe",
 	"github_url": "https://github.com/pallets/markupsafe",
-	"version": "3.0.2",
+	"version": "3.0.3",
 	"default_branch": "main",
-	"build_script": "markupsafe_3.0.2_ubi_9.3.sh",
+	"build_script": "markupsafe_3.0.3_ubi10.2.sh",
 	"package_dir": "m/markupsafe",
 	"docker_build": false,
 	"validate_build_script": true,
@@ -13,7 +13,10 @@
 	"2.1.5": {
 		"build_script": "markupsafe_ubi_9.3.sh"
 	},
-        "*": {
+	"3.0.3" : {
+		"build_script": "markupsafe_3.0.3_ubi10.2.sh"
+	},
+    "*": {
 		"build_script": "markupsafe_3.0.2_ubi_9.3.sh"
 	}
 }

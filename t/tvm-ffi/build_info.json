@@ -8,6 +8,7 @@
    "package_dir": "t/tvm-ffi",
    "docker_build": false,
    "wheel_build": true,
+   "wheel_name": "apache-tvm-ffi",
    "validate_build_script": true,
    "use_non_root_user": false,
    "v0.1.9": {

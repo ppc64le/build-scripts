@@ -4,6 +4,7 @@
   "github_url": "https://github.com/ggml-org/llama.cpp",
   "version": "Release",
   "wheel_build": true,
+  "wheel_name": "llama-cpp-python-package",
   "docker_build": false,
   "build_script": "llama_cpp_ubi_9.6.sh",
   "validate_build_script": true,

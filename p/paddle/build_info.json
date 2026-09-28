@@ -4,6 +4,7 @@
   "github_url": "https://github.com/PaddlePaddle/Paddle.git",
   "version": "v3.0.0",
   "wheel_build" : true,
+  "wheel_name": "paddlepaddle",
   "package_dir": "p/paddle",
   "default_branch": "develop",
   "build_script": "paddle_3.0.0_ubi_9.6.sh",

@@ -6,7 +6,7 @@ import subprocess
 import docker
 import json
    
-def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, version, post_process_file):
+def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, version, post_process_file, check_wheel_version_file):
     # Docker client setup
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     
@@ -41,7 +41,7 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
         command = [
             "bash",
             "-c",
-            f"{setup}cd /home/tester/ && {run_script} {python_version} {file_name} {version} {post_process_file}"
+            f"{setup}cd /home/tester/ && {run_script} {python_version} {file_name} {version} {post_process_file} {check_wheel_version_file}"
         ]
         
         # Run container
@@ -65,6 +65,10 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
                # Set to "false" by pr-build.yaml to skip the CVE scan in PR builds.
                # Defaults to "true" (scan runs) when unset (currency-build.yaml).
                "ENABLE_CVE_SCAN": os.getenv("ENABLE_CVE_SCAN", "true"),
+               # COS key prefix used by post_process_wheel.py to look up existing wheels in COS. 
+               # Passed under distinct names to avoid colliding with any PACKAGE_NAME / VERSION variables already used inside the container.
+               "COS_PACKAGE_NAME": os.getenv("PACKAGE_NAME", ""),
+               "COS_VERSION": os.getenv("VERSION", ""),
             }
         )
         
@@ -95,4 +99,4 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
 
 if __name__=="__main__":
     print("Inside python program")
-    trigger_build_wheel(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6])
+    trigger_build_wheel(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6],sys.argv[7])

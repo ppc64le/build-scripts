@@ -2,7 +2,7 @@
   "maintainer": "SakshiJain0302",
   "package_name": "pyarrow",
   "github_url": "https://github.com/apache/arrow.git",
-  "version": "apache-arrow-23.0.1",
+  "version": "apache-arrow-24.0.0",
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/pyarrow",
@@ -46,6 +46,9 @@
   "apache-arrow-23.0.1": {
     "build_script": "pyarrow_23.0.1_ubi_8.10.sh"
   },
+  "apache-arrow-24.0.0": {
+    "build_script": "pyarrow_24.0.0_ubi_9.6.sh"
+   },
   "*": {
     "build_script": "pyarrow_23.0.1_ubi_9.3.sh"
   }
