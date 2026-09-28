@@ -55,7 +55,7 @@ git submodule update --init
 
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/r/re2/pyproject.toml
-sed -i "s/{PACKAGE_VERSION}/$(echo $PACKAGE_VERSION | tr -d '-')/g" pyproject.toml
+sed -i "s/{PACKAGE_VERSION}/$(echo $PACKAGE_VERSION | tr '-' '.')/g" pyproject.toml
 echo "--------------------------replaced version in pyproject.toml--------------------------"
 
 mkdir prefix

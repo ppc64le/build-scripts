@@ -1,11 +1,11 @@
 {
-   "maintainer": "shivansh-ibm",
+   "maintainer": "shubhamgoel3",
    "package_name": "scikit-image",
    "github_url": "https://github.com/scikit-image/scikit-image",
    "version": "v0.26.0",
    "wheel_build" : true,
    "default_branch": "main",
-   "build_script": "scikit-image_ubi_9.3.sh",
+   "build_script": "scikit-image_ubi_10.2.sh",
    "package_dir": "s/scikit-image",
    "docker_build": false,
    "validate_build_script": true,
@@ -13,8 +13,8 @@
    "v0.19.3": {
       "build_script": "scikit-image_ubi_0.19.3_9.3.sh"
    },
-   "v0.2*.*": {
-      "build_script": "scikit-image_ubi_0.19.3_9.3.sh"
+   "v0.26.0": {
+      "build_script": "scikit-image_ubi_10.2.sh"
    },
    "*" : {
       "build_script": "scikit-image_ubi_9.3.sh"

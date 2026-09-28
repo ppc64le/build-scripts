@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : thrift-cpp
-# Version       : 0.24.0
+# Version       : v0.24.0
 # Source repo   : https://github.com/apache/thrift
 # Tested on     : UBI:10.2
 # Language      : Python, C++
@@ -18,7 +18,7 @@
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=thrift-cpp
 PACKAGE_DIR=thrift
-PACKAGE_VERSION=${1:-0.24.0}
+PACKAGE_VERSION=${1:-v0.24.0}
 PACKAGE_URL=https://github.com/apache/thrift
 
 yum install -y python3.14 python3.14-pip git make cmake zlib-devel libjpeg-devel gcc-toolset-15 libevent libtool wget perl-Unicode-Normalize openssl-devel
@@ -127,7 +127,7 @@ echo "------------------- thrift installing-------------------"
 # clone source repository
 git clone $PACKAGE_URL
 cd thrift
-git checkout v$PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 
 mkdir prefix
 export PREFIX=$(pwd)/prefix
