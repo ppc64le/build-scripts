@@ -1,0 +1,19 @@
+{
+    "maintainer": "Siddesh-Sangodkar1",
+    "package_name": "onnxruntime-extensions",
+    "github_url": "https://github.com/microsoft/onnxruntime-extensions",
+    "version": "v0.15.2",
+    "default_branch": "main",
+    "package_dir": "o/onnxruntime-extensions",
+    "build_script": "onnxruntime_extensions_0.15.2_ubi_10.2.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "wheel_build": true,
+    "v0.15.2": {
+        "build_script": "onnxruntime_extensions_0.15.2_ubi_10.2.sh"
+    },
+    "*": {
+        "build_script": "onnxruntime_extensions_0.15.2_ubi_10.2.sh"
+    }
+}
