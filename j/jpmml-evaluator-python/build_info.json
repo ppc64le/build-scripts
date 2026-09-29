@@ -1,0 +1,16 @@
+{
+  "maintainer": "Saloni Bhosale",
+  "package_name": "jpmml-evaluator-python",
+  "github_url": "https://github.com/jpmml/jpmml-evaluator-python",
+  "version": "0.10.5",
+  "wheel_build": true,
+  "default_branch": "master",
+  "package_dir": "j/jpmml-evaluator-python",
+  "build_script": "jpmml-evaluator-python_ubi_9_8.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "0.10.*": {
+    "build_script": "jpmml-evaluator-python_ubi_9_8.sh"
+  }
+}
