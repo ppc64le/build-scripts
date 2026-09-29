@@ -1,0 +1,50 @@
+# Minimum requirements for the build system to execute.
+# Do not include sys.subprocess and os as they are default packages
+requires = [
+    "setuptools",
+    "wheel",
+]
+
+#Set build backend to setuptools
+build-backend = "setuptools.build_meta"
+
+#Project name an version
+[project]
+name = "aws-crt-cpp"
+version = "0.40.1"
+description = "C++ wrapper around the aws-c-* libraries. Provides Cross-Platform Transport Protocols and SSL/TLS implementations for C++."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "Apache License 2.0"}
+
+#Classifiers to improve pacakage discoverability
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: C++",
+    "License :: OSI Approved :: Apache Software License 2.0",
+]
+
+#Project URLs
+[project.urls]
+homepage = "https://github.com/awslabs/aws-crt-cpp"
+upstream = "https://github.com/awslabs/aws-crt-cpp"
+
+#Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
+[tool.setuptools.packages.find]
+# scanning for namespace packages is true by default in pyproject.toml, so
+# if you do NOT need to include the following line.
+namespaces = true
+where = ["local"]
+
+#Package data to add all native files in wheel, this is needed as they are not .py files
+[tool.setuptools.package-data]
+aws_crt_cpp = [
+    "lib/**/*",           # All files in lib/ (shared and static libraries)
+    "lib64/**/*",         # All files in lib64/ (shared and static libraries)
+    "include/**/*",       # All header files
+    "cmake/**/*"          # All CMake configuration files
+]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_ppc64le"  # Explicitly set the platform tag
+universal = false  # Disable universal wheel (forces platform-specific build)
