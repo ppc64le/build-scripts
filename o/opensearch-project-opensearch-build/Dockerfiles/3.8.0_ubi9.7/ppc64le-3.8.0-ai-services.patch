@@ -1,11 +1,11 @@
-From 58d9bbadd3163fa5c3bdbe7ebd24795192b9f49f Mon Sep 17 00:00:00 2001
+From 845ac623cd4a0d542f44cb394cf63bffcd8553c1 Mon Sep 17 00:00:00 2001
 From: irapandey <ira.pandey2001@gmail.com>
 Date: Wed, 30 Sep 2026 18:30:54 +0530
 Subject: [PATCH] patch
 
 Signed-off-by: irapandey <ira.pandey2001@gmail.com>
 ---
- manifests/3.8.0/opensearch-3.8.0.yml          |  54 --
+ manifests/3.8.0/opensearch-3.8.0.yml          | 164 -----
  opensearch.patch                              | 643 ++++++++++++++++++
  .../build.pre20260429.sh                      |   8 +-
  .../components/OpenSearch-DataFusion/build.sh |   8 +-
@@ -34,17 +34,55 @@ Signed-off-by: irapandey <ira.pandey2001@gmail.com>
  .../test_ci_check_gradle_properties.py        |   6 +-
  ..._ci_check_gradle_publish_to_maven_local.py |   6 +-
  .../test_component_opensearch.py              |   6 +-
- 29 files changed, 1942 insertions(+), 105 deletions(-)
+ 29 files changed, 1942 insertions(+), 215 deletions(-)
  create mode 100644 opensearch.patch
  create mode 100644 scripts/components/k-NN/build.sh
  create mode 100755 scripts/components/opensearch-jvector/build.sh
  create mode 100644 security.patch
 
 diff --git a/manifests/3.8.0/opensearch-3.8.0.yml b/manifests/3.8.0/opensearch-3.8.0.yml
-index 74040626..5069f91d 100644
+index 74040626..765cd0a3 100644
 --- a/manifests/3.8.0/opensearch-3.8.0.yml
 +++ b/manifests/3.8.0/opensearch-3.8.0.yml
-@@ -108,24 +108,6 @@ components:
+@@ -29,14 +29,6 @@ components:
+     platforms:
+       - linux
+       - windows
+-  - name: opensearch-learning-to-rank-base
+-    repository: https://github.com/opensearch-project/opensearch-learning-to-rank-base.git
+-    ref: 8203333c611ec8fa710e52e5ec6e66960739e3c6
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - common-utils
+   - name: opensearch-remote-metadata-sdk
+     repository: https://github.com/opensearch-project/opensearch-remote-metadata-sdk.git
+     ref: 059a4254593b1736f4fc88e8cddc0e1fc69ce50d
+@@ -71,22 +63,6 @@ components:
+       - common-utils
+       - security
+       - custom-codecs
+-  - name: geospatial
+-    repository: https://github.com/opensearch-project/geospatial.git
+-    ref: 89eaddf4359adf0678d01cf1dfe586fe818a44ab
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - job-scheduler
+-  - name: cross-cluster-replication
+-    repository: https://github.com/opensearch-project/cross-cluster-replication.git
+-    ref: 284418ea65eaa236cc9ef60e7ac59bfd32a7b505
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - common-utils
+   - name: ml-commons
+     repository: https://github.com/opensearch-project/ml-commons.git
+     ref: 694e8cb9565da1439fbe26e3c9339bde2be56c09
+@@ -108,24 +84,6 @@ components:
        - ml-commons
        - k-NN
        - job-scheduler
@@ -69,10 +107,46 @@ index 74040626..5069f91d 100644
    - name: opensearch-observability
      repository: https://github.com/opensearch-project/observability.git
      ref: d9da96acd208baa4cbfeb33e18720ccbf340f80d
-@@ -170,28 +152,6 @@ components:
+@@ -134,64 +92,6 @@ components:
+       - windows
      depends_on:
        - common-utils
-       - job-scheduler
+-  - name: opensearch-reports
+-    repository: https://github.com/opensearch-project/reporting.git
+-    ref: 2262792cd3f8f7b5c615f9973d0a1288c7ea80be
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - common-utils
+-      - job-scheduler
+-  - name: sql
+-    repository: https://github.com/opensearch-project/sql.git
+-    ref: 400d1cfeb883a575987a51220d20a7dc9dc1d99c
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - ml-commons
+-      - geospatial
+-      - job-scheduler
+-  - name: asynchronous-search
+-    repository: https://github.com/opensearch-project/asynchronous-search.git
+-    ref: 8da1322ee3cd0e44402081bc58478e6326a5ea54
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - common-utils
+-  - name: anomaly-detection
+-    repository: https://github.com/opensearch-project/anomaly-detection.git
+-    ref: 49c8c2e579ec4b7abbf8e8f5ee683c5b73478b2f
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - common-utils
+-      - job-scheduler
 -  - name: alerting
 -    repository: https://github.com/opensearch-project/alerting.git
 -    ref: 7ee0c8ecccf8ac6f3689a9d8f70a167f01c97758
@@ -98,10 +172,28 @@ index 74040626..5069f91d 100644
    - name: index-management
      repository: https://github.com/opensearch-project/index-management.git
      ref: 592e20171db2d385c67abf3e4c48bcf1555c6e3c
-@@ -219,20 +179,6 @@ components:
-       - k-NN
-       - neural-search
+@@ -201,67 +101,3 @@ components:
+     depends_on:
+       - common-utils
        - job-scheduler
+-  - name: performance-analyzer
+-    repository: https://github.com/opensearch-project/performance-analyzer.git
+-    ref: 451c5c956e47182ab3b93cf3af4ad08a2e2cb0ac
+-    platforms:
+-      - linux
+-  - name: flow-framework
+-    repository: https://github.com/opensearch-project/flow-framework.git
+-    ref: 1b68374694edfe929a60ebe867a983fc5046122f
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - common-utils
+-      - opensearch-remote-metadata-sdk
+-      - ml-commons
+-      - k-NN
+-      - neural-search
+-      - job-scheduler
 -  - name: skills
 -    repository: https://github.com/opensearch-project/skills.git
 -    ref: 6a62f5584586bad8a8d55bbe3415414d5c3fda8c
@@ -116,9 +208,38 @@ index 74040626..5069f91d 100644
 -      - alerting
 -      - neural-search
 -      - k-NN
-   - name: query-insights
-     repository: https://github.com/opensearch-project/query-insights.git
-     ref: 0bbb49b991448451705f9205839440a32fe16b9c
+-  - name: query-insights
+-    repository: https://github.com/opensearch-project/query-insights.git
+-    ref: 0bbb49b991448451705f9205839440a32fe16b9c
+-    platforms:
+-      - linux
+-      - windows
+-  - name: opensearch-system-templates
+-    repository: https://github.com/opensearch-project/opensearch-system-templates.git
+-    ref: 1e91340db293826c3d1e3c1ec41841de9d589c6a
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - custom-codecs
+-  - name: user-behavior-insights
+-    repository: https://github.com/opensearch-project/user-behavior-insights.git
+-    ref: 8cf801542c1f1f74412bc9a2cbea563642cf2dc3
+-    platforms:
+-      - linux
+-      - windows
+-  - name: search-relevance
+-    repository: https://github.com/opensearch-project/search-relevance.git
+-    ref: 1f7402c43c42dea388626d995521b37092db4412
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - job-scheduler
+-      - neural-search
+-      - k-NN
+-      - ml-commons
+-      - user-behavior-insights
 diff --git a/opensearch.patch b/opensearch.patch
 new file mode 100644
 index 00000000..f22d2633
