@@ -101,23 +101,23 @@ index 00000000..de8094de
 ++                strategy.eachDependency(details -> {
 ++                    String group = details.getRequested().getGroup();
 ++                    String name = details.getRequested().getName();
-++                    // Force all com.fasterxml.jackson artifacts to 2.22.1 (CVE-2026-54512, CVE-2026-54513)
+++                    // Force all com.fasterxml.jackson artifacts to 2.22.2 (CVE-2026-68497 — CPU DoS)
 ++                    if ("com.fasterxml.jackson.core".equals(group)) {
 ++                        if ("jackson-databind".equals(name) || "jackson-core".equals(name)) {
-++                            details.useVersion("2.22.1");
+++                            details.useVersion("2.22.2");
 ++                        } else if ("jackson-annotations".equals(name)) {
 ++                            details.useVersion("2.22");
 ++                        }
 ++                    }
 ++                    if ("com.fasterxml.jackson.datatype".equals(group)
 ++                        || "com.fasterxml.jackson.dataformat".equals(group)) {
-++                        details.useVersion("2.22.1");
+++                        details.useVersion("2.22.2");
 ++                    }
-++                    // Force all tools.jackson artifacts to 3.2.1 (CVE-2026-54512, CVE-2026-54513)
+++                    // Force all tools.jackson artifacts to 3.2.2 (CVE-2026-68497 — CPU DoS)
 ++                    if ("tools.jackson.core".equals(group)
 ++                        || "tools.jackson.datatype".equals(group)
 ++                        || "tools.jackson.dataformat".equals(group)) {
-++                        details.useVersion("3.2.1");
+++                        details.useVersion("3.2.2");
 ++                    }
 ++                    // Force httpcore5 artifacts to 5.4.3 to resolve conflict with older transitive 5.4
 ++                    if ("org.apache.httpcomponents.core5".equals(group)) {

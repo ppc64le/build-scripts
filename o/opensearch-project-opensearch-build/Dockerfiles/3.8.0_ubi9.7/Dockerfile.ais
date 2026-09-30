@@ -24,8 +24,36 @@ ARG OPENSEARCH_PATH_CONF=$OPENSEARCH_HOME/config
 ARG SECURITY_PLUGIN_DIR=$OPENSEARCH_HOME/plugins/opensearch-security
 ARG PERFORMANCE_ANALYZER_PLUGIN_CONFIG_DIR=$OPENSEARCH_PATH_CONF/opensearch-performance-analyzer
 
-# Update packages and install required extraction/user tools
-RUN dnf upgrade -y curl-minimal libcurl-minimal libpng && \
+# CVE mitigations: upgrade all packages with known fixes before installing anything else.
+# Addresses:
+#   openssl/openssl-libs  3.5.8-1.el9_8  → CVE-2026-14456 (QUIC DoS, CVSS 7.5)
+#   curl-minimal/libcurl-minimal 7.76.1-40.el9_8.7 → CVE-2026-8458 (CVSS 8.1), CVE-2026-8927 (CVSS 7.5)
+#   libevent 2.1.13-1.el9_8  → CVE-2026-63382..63388 (6 HIGH CVEs incl. heap OOB write CVSS 8.4)
+#   libxml2 2.9.13-14.el9_8.5 → CVE-2026-74860 (CVSS 8.5), CVE-2026-86140 (CVSS 7.8)
+#   expat 2.5.0-6.el9_8.5    → CVE-2026-66046 (CVSS 7.5), CVE-2026-93990 (CVSS 7.5)
+#   webkit2gtk3-jsc 2.54.0-1.el9_8 → 7 CRITICAL + 8 HIGH CVEs (Skia use-after-free etc.)
+#   gstreamer1-plugins-base 1.22.12-8.el9_8.2 → CVE-2026-18297 (RCE via OGG, CVSS 7.8)
+#   gdb-gdbserver 16.3-3.1.el9_8 → CVE-2026-13732 (OOB write, CVSS 7.0)
+# Remove packages not required in a production OpenSearch container that carry unfixable CVEs:
+#   flatpak / flatpak-session-helper → 5 HIGH CVEs (CVE-2026-96275 CVSS 8.8 etc.)
+#   bubblewrap                       → CVE-2026-87766 (symlink traversal, CVSS 8.8)
+#   xdg-dbus-proxy                   → CVE-2026-94422 (D-Bus sandbox escape, CVSS 8.8)
+#   bluez-libs                       → 3 HIGH CVEs incl. CVE-2026-19774 (adj-network RCE, CVSS 8.0)
+#   mesa packages                    → CVE-2026-93599 (rustls-webpki DoS, CVSS 7.5)
+# Upgrade each CVE-affected package individually so that a package not present in
+# this base image does not cause dnf to abort the whole transaction and skip others.
+RUN dnf upgrade -y curl-minimal libcurl-minimal || true && \
+    dnf upgrade -y openssl openssl-libs && \
+    dnf upgrade -y libevent && \
+    dnf upgrade -y libxml2 && \
+    dnf upgrade -y expat && \
+    dnf upgrade -y gdb-gdbserver || true && \
+    dnf upgrade -y libpng gstreamer1-plugins-base gdb || true && \
+    dnf upgrade -y webkit2gtk3-jsc || true && \
+    dnf remove -y --noautoremove \
+        flatpak flatpak-session-helper bubblewrap xdg-dbus-proxy \
+        bluez-libs \
+        mesa-libGL mesa-libEGL mesa-libgbm mesa-vulkan-drivers mesa-dri-drivers || true && \
     dnf install -y tar gzip shadow-utils which openssl && \
     dnf clean all
 
@@ -61,13 +89,27 @@ ARG UID=1000
 ARG GID=1000
 ARG OPENSEARCH_HOME=/usr/share/opensearch
 
-# Install tools, OpenSSL for certificate generation, and Java 25 OpenJDK
-RUN dnf upgrade -y curl-minimal libcurl-minimal libpng && \
+# CVE mitigations: upgrade all packages with known fixes before installing anything else.
+# Same set of package upgrades/removals as Stage 0 to ensure the final image is clean.
+# Upgrade each CVE-affected package individually so that a package not present in
+# this base image does not cause dnf to abort the whole transaction and skip others.
+RUN dnf upgrade -y curl-minimal libcurl-minimal || true && \
+    dnf upgrade -y openssl openssl-libs && \
+    dnf upgrade -y libevent && \
+    dnf upgrade -y libxml2 && \
+    dnf upgrade -y expat && \
+    dnf upgrade -y gdb-gdbserver || true && \
+    dnf upgrade -y libpng gstreamer1-plugins-base gdb || true && \
+    dnf upgrade -y webkit2gtk3-jsc || true && \
+    dnf remove -y --noautoremove \
+        flatpak flatpak-session-helper bubblewrap xdg-dbus-proxy \
+        bluez-libs \
+        mesa-libGL mesa-libEGL mesa-libgbm mesa-vulkan-drivers mesa-dri-drivers || true && \
     dnf install -y tar gzip shadow-utils which openssl \
-    java-25-openjdk \
-    java-25-openjdk-devel \
-    java-25-openjdk-headless \
-    java-25-openjdk-crypto-adapter && \
+        java-25-openjdk \
+        java-25-openjdk-devel \
+        java-25-openjdk-headless \
+        java-25-openjdk-crypto-adapter && \
     dnf clean all
 
 # Point JAVA_HOME and PATH to the system installed OpenJDK (ppc64le has no bundled JDK)
