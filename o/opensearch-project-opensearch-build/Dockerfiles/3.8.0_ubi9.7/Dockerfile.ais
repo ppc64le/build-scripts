@@ -40,6 +40,15 @@ ARG PERFORMANCE_ANALYZER_PLUGIN_CONFIG_DIR=$OPENSEARCH_PATH_CONF/opensearch-perf
 #   xdg-dbus-proxy                   → CVE-2026-94422 (D-Bus sandbox escape, CVSS 8.8)
 #   bluez-libs                       → 3 HIGH CVEs incl. CVE-2026-19774 (adj-network RCE, CVSS 8.0)
 #   mesa packages                    → CVE-2026-93599 (rustls-webpki DoS, CVSS 7.5)
+#   webkit2gtk3-jsc                  → 31 CRITICAL + 114 HIGH CVEs (ANGLE/Chromium engine, no fix);
+#                                      orphan package: libproxy-webkitgtk4 already absent at runtime
+#   vim-minimal                      → CVE-2026-43961, CVE-2026-73073 (arbitrary code execution)
+#   librsvg2                         → CVE-2026-96889 (use-after-free); desktop rendering, not needed
+#   libosinfo / osinfo-db-tools / osinfo-db → desktop VM metadata, not needed
+#   geoclue2                         → CVE via libsoup chain; geolocation daemon, not needed
+#   xdg-desktop-portal               → desktop portal daemon, not needed
+#   tracker / tracker-miners         → desktop file indexer, not needed
+#   (removing the above orphans libsoup → also drops CVE-2026-102556, CVE-2026-102557)
 # Upgrade each CVE-affected package individually so that a package not present in
 # this base image does not cause dnf to abort the whole transaction and skip others.
 RUN dnf upgrade -y curl-minimal libcurl-minimal || true && \
@@ -49,11 +58,17 @@ RUN dnf upgrade -y curl-minimal libcurl-minimal || true && \
     dnf upgrade -y expat && \
     dnf upgrade -y gdb-gdbserver || true && \
     dnf upgrade -y libpng gstreamer1-plugins-base gdb || true && \
-    dnf upgrade -y webkit2gtk3-jsc || true && \
     dnf remove -y --noautoremove \
         flatpak flatpak-session-helper bubblewrap xdg-dbus-proxy \
         bluez-libs \
-        mesa-libGL mesa-libEGL mesa-libgbm mesa-vulkan-drivers mesa-dri-drivers || true && \
+        mesa-libGL mesa-libEGL mesa-libgbm mesa-vulkan-drivers mesa-dri-drivers \
+        webkit2gtk3-jsc libproxy-webkitgtk4 \
+        vim-minimal \
+        librsvg2 \
+        libosinfo osinfo-db-tools osinfo-db \
+        geoclue2 \
+        xdg-desktop-portal \
+        tracker tracker-miners || true && \
     dnf install -y tar gzip shadow-utils which openssl && \
     dnf clean all
 
@@ -100,11 +115,17 @@ RUN dnf upgrade -y curl-minimal libcurl-minimal || true && \
     dnf upgrade -y expat && \
     dnf upgrade -y gdb-gdbserver || true && \
     dnf upgrade -y libpng gstreamer1-plugins-base gdb || true && \
-    dnf upgrade -y webkit2gtk3-jsc || true && \
     dnf remove -y --noautoremove \
         flatpak flatpak-session-helper bubblewrap xdg-dbus-proxy \
         bluez-libs \
-        mesa-libGL mesa-libEGL mesa-libgbm mesa-vulkan-drivers mesa-dri-drivers || true && \
+        mesa-libGL mesa-libEGL mesa-libgbm mesa-vulkan-drivers mesa-dri-drivers \
+        webkit2gtk3-jsc libproxy-webkitgtk4 \
+        vim-minimal \
+        librsvg2 \
+        libosinfo osinfo-db-tools osinfo-db \
+        geoclue2 \
+        xdg-desktop-portal \
+        tracker tracker-miners || true && \
     dnf install -y tar gzip shadow-utils which openssl \
         java-25-openjdk \
         java-25-openjdk-devel \

@@ -1,11 +1,11 @@
-From 9b80e436e09a5da7f6fc9bac9ebf11847a853666 Mon Sep 17 00:00:00 2001
+From 58d9bbadd3163fa5c3bdbe7ebd24795192b9f49f Mon Sep 17 00:00:00 2001
 From: irapandey <ira.pandey2001@gmail.com>
-Date: Wed, 9 Sep 2026 22:23:43 +0530
+Date: Wed, 30 Sep 2026 18:30:54 +0530
 Subject: [PATCH] patch
 
 Signed-off-by: irapandey <ira.pandey2001@gmail.com>
 ---
- manifests/3.8.0/opensearch-3.8.0.yml          |  24 -
+ manifests/3.8.0/opensearch-3.8.0.yml          |  54 --
  opensearch.patch                              | 643 ++++++++++++++++++
  .../build.pre20260429.sh                      |   8 +-
  .../components/OpenSearch-DataFusion/build.sh |   8 +-
@@ -21,32 +21,70 @@ Signed-off-by: irapandey <ira.pandey2001@gmail.com>
  scripts/default/bwctest.sh                    |   2 +-
  scripts/default/integtest.sh                  |   2 +-
  scripts/default/opensearch/build.sh           |   6 +-
- security.patch                                | 619 +++++++++++++++++
+ security.patch                                | 623 +++++++++++++++++
  src/build_workflow/build_args.py              |   1 +
- src/build_workflow/builder_from_source.py     |  96 +++
+ src/build_workflow/builder_from_source.py     | 131 ++++
  .../ci_check_gradle_dependencies.py           |   2 +-
  src/ci_workflow/ci_check_gradle_properties.py |   2 +-
  .../ci_check_gradle_publish_to_maven_local.py |   2 +-
  .../component_opensearch.py                   |   2 +-
+ .../test_builder_from_source.py               | 104 +++
  .../test_ci_check_gradle_dependencies.py      |  10 +-
  ...ci_check_gradle_dependencies_opensearch.py |   8 +-
  .../test_ci_check_gradle_properties.py        |   6 +-
  ..._ci_check_gradle_publish_to_maven_local.py |   6 +-
  .../test_component_opensearch.py              |   6 +-
- 28 files changed, 1799 insertions(+), 75 deletions(-)
+ 29 files changed, 1942 insertions(+), 105 deletions(-)
  create mode 100644 opensearch.patch
  create mode 100644 scripts/components/k-NN/build.sh
  create mode 100755 scripts/components/opensearch-jvector/build.sh
  create mode 100644 security.patch
 
 diff --git a/manifests/3.8.0/opensearch-3.8.0.yml b/manifests/3.8.0/opensearch-3.8.0.yml
-index 74040626..43e57327 100644
+index 74040626..5069f91d 100644
 --- a/manifests/3.8.0/opensearch-3.8.0.yml
 +++ b/manifests/3.8.0/opensearch-3.8.0.yml
-@@ -182,16 +182,6 @@ components:
-       - notifications-core
-       - notifications
-       - sql
+@@ -108,24 +108,6 @@ components:
+       - ml-commons
+       - k-NN
+       - job-scheduler
+-  - name: notifications-core
+-    repository: https://github.com/opensearch-project/notifications.git
+-    ref: e6f8fa966fcd5f6ba43f60b180df91e3f9e03771
+-    working_directory: notifications
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - common-utils
+-  - name: notifications
+-    repository: https://github.com/opensearch-project/notifications.git
+-    ref: e6f8fa966fcd5f6ba43f60b180df91e3f9e03771
+-    working_directory: notifications
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - common-utils
+   - name: opensearch-observability
+     repository: https://github.com/opensearch-project/observability.git
+     ref: d9da96acd208baa4cbfeb33e18720ccbf340f80d
+@@ -170,28 +152,6 @@ components:
+     depends_on:
+       - common-utils
+       - job-scheduler
+-  - name: alerting
+-    repository: https://github.com/opensearch-project/alerting.git
+-    ref: 7ee0c8ecccf8ac6f3689a9d8f70a167f01c97758
+-    platforms:
+-      - linux
+-      - windows
+-    depends_on:
+-      - common-utils
+-      - job-scheduler
+-      - notifications-core
+-      - notifications
+-      - sql
 -  - name: security-analytics
 -    repository: https://github.com/opensearch-project/security-analytics.git
 -    ref: 9957176cf7f2c5ae67ff280ab6e6034c017e5dd7
@@ -60,7 +98,7 @@ index 74040626..43e57327 100644
    - name: index-management
      repository: https://github.com/opensearch-project/index-management.git
      ref: 592e20171db2d385c67abf3e4c48bcf1555c6e3c
-@@ -219,20 +209,6 @@ components:
+@@ -219,20 +179,6 @@ components:
        - k-NN
        - neural-search
        - job-scheduler
@@ -83,7 +121,7 @@ index 74040626..43e57327 100644
      ref: 0bbb49b991448451705f9205839440a32fe16b9c
 diff --git a/opensearch.patch b/opensearch.patch
 new file mode 100644
-index 00000000..de8094de
+index 00000000..f22d2633
 --- /dev/null
 +++ b/opensearch.patch
 @@ -0,0 +1,643 @@
@@ -1387,18 +1425,20 @@ index 518c722a..ea049ea8 100755
  cp -r ./build/local-staging-repo/org/opensearch/. $OUTPUT/maven/org/opensearch
 diff --git a/security.patch b/security.patch
 new file mode 100644
-index 00000000..ce933755
+index 00000000..73b21299
 --- /dev/null
 +++ b/security.patch
-@@ -0,0 +1,619 @@
+@@ -0,0 +1,623 @@
 +diff --git a/libs/opensaml/build.gradle b/libs/opensaml/build.gradle
 +index 96074b9d..0e322b4e 100644
 +--- a/libs/opensaml/build.gradle
 ++++ b/libs/opensaml/build.gradle
-+@@ -28,6 +28,8 @@ configurations.all {
++@@ -28,6 +28,10 @@ configurations.all {
 +         force "org.bouncycastle:bcprov-jdk18on:1.85"
 +         force "org.apache.commons:commons-lang3:${versions.commonslang}"
 +         force "tools.jackson.core:jackson-core:${versions.jackson3}"
+++        force "com.fasterxml.jackson.core:jackson-databind:2.22.2"
+++        force "com.fasterxml.jackson.core:jackson-core:2.22.2"
 ++        force "org.apache.httpcomponents.core5:httpcore5:${versions.httpcore5}"
 ++        force "org.apache.httpcomponents.core5:httpcore5-h2:${versions.httpcore5}"
 +     }
@@ -1447,17 +1487,19 @@ index 00000000..ce933755
 ++
 ++Signed-off-by: irapandey <ira.pandey2001@gmail.com>
 ++---
-++ libs/opensaml/build.gradle | 2 ++
-++ 1 file changed, 2 insertions(+)
+++ libs/opensaml/build.gradle | 4 ++++
+++ 1 file changed, 4 insertions(+)
 ++
 ++diff --git a/libs/opensaml/build.gradle b/libs/opensaml/build.gradle
 ++index 96074b9d..0e322b4e 100644
 ++--- a/libs/opensaml/build.gradle
 +++++ b/libs/opensaml/build.gradle
-++@@ -28,6 +28,8 @@ configurations.all {
+++@@ -28,6 +28,10 @@ configurations.all {
 ++         force "org.bouncycastle:bcprov-jdk18on:1.85"
 ++         force "org.apache.commons:commons-lang3:${versions.commonslang}"
 ++         force "tools.jackson.core:jackson-core:${versions.jackson3}"
++++        force "com.fasterxml.jackson.core:jackson-databind:2.22.2"
++++        force "com.fasterxml.jackson.core:jackson-core:2.22.2"
 +++        force "org.apache.httpcomponents.core5:httpcore5:${versions.httpcore5}"
 +++        force "org.apache.httpcomponents.core5:httpcore5-h2:${versions.httpcore5}"
 ++     }
@@ -2023,7 +2065,7 @@ index d67c27a7..271962ab 100644
      SUPPORTED_DISTRIBUTIONS = ["tar", "zip", "rpm", "deb"]
  
 diff --git a/src/build_workflow/builder_from_source.py b/src/build_workflow/builder_from_source.py
-index 2c77c80d..c5500c0c 100644
+index 2c77c80d..6f383c99 100644
 --- a/src/build_workflow/builder_from_source.py
 +++ b/src/build_workflow/builder_from_source.py
 @@ -6,6 +6,7 @@
@@ -2043,7 +2085,7 @@ index 2c77c80d..c5500c0c 100644
  
  class BuilderFromSource(Builder):
      def checkout(self, work_dir: str) -> None:
-@@ -28,6 +31,99 @@ class BuilderFromSource(Builder):
+@@ -28,6 +31,134 @@ class BuilderFromSource(Builder):
              self.component.working_directory,
          )
  
@@ -2066,6 +2108,7 @@ index 2c77c80d..c5500c0c 100644
 +                logging.warning(f"Patch file not found: {SECURITY_PATCH_FILE}")
 +
 +        self._apply_ppc64le_gradle_fix()
++        self._apply_jline_fix()
 +        self._apply_kotlin_version_fix()
 +
 +    def _apply_ppc64le_gradle_fix(self) -> None:
@@ -2102,6 +2145,40 @@ index 2c77c80d..c5500c0c 100644
 +            logging.info(f"Creating gradle.properties with ppc64le fix for {self.component.name}")
 +            with open(gradle_properties_path, 'w') as f:
 +                f.write(gradle_properties_content)
++
++    def _apply_jline_fix(self) -> None:
++        """
++        CVE-2026-77422: Force org.jline:jline-builtins to 3.30.15.
++        Applied to ml-commons whose shipped plugin bundles jline-builtins 3.21.0.
++        Injects an allprojects resolutionStrategy block into the root build.gradle.
++        """
++        JLINE_PLUGINS = ['ml-commons']
++
++        if self.component.name not in JLINE_PLUGINS:
++            logging.debug(f"Skipping jline fix for {self.component.name} - not in list")
++            return
++
++        build_gradle_path = os.path.join(self.git_repo.working_directory, "build.gradle")
++        if not os.path.isfile(build_gradle_path):
++            logging.warning(f"build.gradle not found for {self.component.name} at {build_gradle_path}")
++            return
++
++        force_block = (
++            "\n// CVE-2026-77422: force org.jline:jline-builtins to 3.30.15\n"
++            "allprojects {\n"
++            "    configurations.all {\n"
++            "        resolutionStrategy {\n"
++            "            force \"org.jline:jline-builtins:3.30.15\"\n"
++            "            force \"org.jline:jline-reader:3.30.15\"\n"
++            "            force \"org.jline:jline-terminal:3.30.15\"\n"
++            "        }\n"
++            "    }\n"
++            "}\n"
++        )
++
++        with open(build_gradle_path, 'a') as f:
++            f.write(force_block)
++        logging.info(f"Appended jline CVE-2026-77422 force block to build.gradle for {self.component.name}")
 +
 +    def _apply_kotlin_version_fix(self) -> None:
 +        """
@@ -2194,6 +2271,125 @@ index c382e106..71d5e2af 100644
 +        cmd = [f"./gradlew --console=plain {target}"]
          cmd.extend([f"-D{k}={v}" for k, v in props.items()])
          return " ".join(cmd)
+diff --git a/tests/tests_build_workflow/test_builder_from_source.py b/tests/tests_build_workflow/test_builder_from_source.py
+index cbae7b40..49c237e0 100644
+--- a/tests/tests_build_workflow/test_builder_from_source.py
++++ b/tests/tests_build_workflow/test_builder_from_source.py
+@@ -6,6 +6,7 @@
+ # compatible open source license.
+ 
+ import os
++import tempfile
+ import unittest
+ from typing import Any, List
+ from unittest.mock import MagicMock, Mock, call, patch
+@@ -279,3 +280,106 @@ class TestBuilderFromSource(unittest.TestCase):
+                 ),
+             ]
+         )
++
++    def _make_builder(self, component_name: str) -> "BuilderFromSource":
++        """Helper to create a BuilderFromSource for a given component name."""
++        from build_workflow.build_target import BuildTarget
++        from manifests.input_manifest import InputComponentFromSource
++        return BuilderFromSource(
++            InputComponentFromSource({"name": component_name, "repository": "url", "ref": "ref"}),
++            BuildTarget(name="OpenSearch", version="1.1.0", platform="linux", architecture="x64", snapshot=False),
++        )
++
++    @patch("build_workflow.builder_from_source.GitRepository")
++    def test_jackson_databind_fix_applied_to_notifications(self, mock_git_repo: Mock) -> None:
++        with tempfile.TemporaryDirectory() as tmpdir:
++            build_gradle = os.path.join(tmpdir, "build.gradle")
++            with open(build_gradle, "w") as f:
++                f.write("// original content\n")
++            mock_git_repo.return_value = MagicMock(working_directory=tmpdir)
++            builder = self._make_builder("notifications")
++            builder.checkout(tmpdir)
++            with open(build_gradle) as f:
++                content = f.read()
++            self.assertIn("CVE-2026-68497", content)
++            self.assertIn("com.fasterxml.jackson.core:jackson-databind:2.22.2", content)
++
++    @patch("build_workflow.builder_from_source.GitRepository")
++    def test_jackson_databind_fix_applied_to_notifications_core(self, mock_git_repo: Mock) -> None:
++        with tempfile.TemporaryDirectory() as tmpdir:
++            build_gradle = os.path.join(tmpdir, "build.gradle")
++            with open(build_gradle, "w") as f:
++                f.write("// original content\n")
++            mock_git_repo.return_value = MagicMock(working_directory=tmpdir)
++            builder = self._make_builder("notifications-core")
++            builder.checkout(tmpdir)
++            with open(build_gradle) as f:
++                content = f.read()
++            self.assertIn("com.fasterxml.jackson.core:jackson-databind:2.22.2", content)
++
++    @patch("build_workflow.builder_from_source.GitRepository")
++    def test_jackson_databind_fix_not_applied_to_other_components(self, mock_git_repo: Mock) -> None:
++        with tempfile.TemporaryDirectory() as tmpdir:
++            build_gradle = os.path.join(tmpdir, "build.gradle")
++            with open(build_gradle, "w") as f:
++                f.write("// original content\n")
++            mock_git_repo.return_value = MagicMock(working_directory=tmpdir)
++            builder = self._make_builder("sample_component")
++            builder.checkout(tmpdir)
++            with open(build_gradle) as f:
++                content = f.read()
++            self.assertNotIn("com.fasterxml.jackson.core:jackson-databind:2.22.2", content)
++
++    @patch("build_workflow.builder_from_source.GitRepository")
++    def test_tools_jackson_databind_fix_applied_to_alerting(self, mock_git_repo: Mock) -> None:
++        with tempfile.TemporaryDirectory() as tmpdir:
++            build_gradle = os.path.join(tmpdir, "build.gradle")
++            with open(build_gradle, "w") as f:
++                f.write("// original content\n")
++            mock_git_repo.return_value = MagicMock(working_directory=tmpdir)
++            builder = self._make_builder("alerting")
++            builder.checkout(tmpdir)
++            with open(build_gradle) as f:
++                content = f.read()
++            self.assertIn("CVE-2026-68497", content)
++            self.assertIn("tools.jackson.core:jackson-databind:3.2.2", content)
++
++    @patch("build_workflow.builder_from_source.GitRepository")
++    def test_tools_jackson_databind_fix_not_applied_to_other_components(self, mock_git_repo: Mock) -> None:
++        with tempfile.TemporaryDirectory() as tmpdir:
++            build_gradle = os.path.join(tmpdir, "build.gradle")
++            with open(build_gradle, "w") as f:
++                f.write("// original content\n")
++            mock_git_repo.return_value = MagicMock(working_directory=tmpdir)
++            builder = self._make_builder("sample_component")
++            builder.checkout(tmpdir)
++            with open(build_gradle) as f:
++                content = f.read()
++            self.assertNotIn("tools.jackson.core:jackson-databind:3.2.2", content)
++
++    @patch("build_workflow.builder_from_source.GitRepository")
++    def test_jline_fix_applied_to_ml_commons(self, mock_git_repo: Mock) -> None:
++        with tempfile.TemporaryDirectory() as tmpdir:
++            build_gradle = os.path.join(tmpdir, "build.gradle")
++            with open(build_gradle, "w") as f:
++                f.write("// original content\n")
++            mock_git_repo.return_value = MagicMock(working_directory=tmpdir)
++            builder = self._make_builder("ml-commons")
++            builder.checkout(tmpdir)
++            with open(build_gradle) as f:
++                content = f.read()
++            self.assertIn("CVE-2026-77422", content)
++            self.assertIn("org.jline:jline-builtins:3.30.15", content)
++
++    @patch("build_workflow.builder_from_source.GitRepository")
++    def test_jline_fix_not_applied_to_other_components(self, mock_git_repo: Mock) -> None:
++        with tempfile.TemporaryDirectory() as tmpdir:
++            build_gradle = os.path.join(tmpdir, "build.gradle")
++            with open(build_gradle, "w") as f:
++                f.write("// original content\n")
++            mock_git_repo.return_value = MagicMock(working_directory=tmpdir)
++            builder = self._make_builder("sample_component")
++            builder.checkout(tmpdir)
++            with open(build_gradle) as f:
++                content = f.read()
++            self.assertNotIn("org.jline:jline-builtins:3.30.15", content)
 diff --git a/tests/tests_ci_workflow/test_ci_check_gradle_dependencies.py b/tests/tests_ci_workflow/test_ci_check_gradle_dependencies.py
 index 808fbd38..ed4d0f4e 100644
 --- a/tests/tests_ci_workflow/test_ci_check_gradle_dependencies.py
