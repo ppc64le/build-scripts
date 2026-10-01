@@ -1650,6 +1650,7 @@ jobs:
       - name: Download and extract license results from COS
         env:
           GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_RUN_ID: ${{ github.run_id }}
           PACKAGE_NAME: ${{ fromJson(inputs.package_json).package_name }}
           PACKAGE_VERSION: ${{ fromJson(inputs.package_json).package_version }}
         run: |

@@ -8,8 +8,11 @@
 #   GHA_CURRENCY_SERVICE_ID_API_KEY  — IBM Cloud IAM API key
 #   PACKAGE_NAME                     — package name (path prefix in bucket)
 #   PACKAGE_VERSION                  — package version (path prefix in bucket)
+#   GHA_RUN_ID                       — (optional) GitHub Actions run ID; when set,
+#                                      scopes the path to match upload_to_cos.sh:
+#                                      <package>/<version>/<run_id>/<file>
 #
-# Downloads: <PACKAGE_NAME>/<PACKAGE_VERSION>/<filename>  →  ./<filename>
+# Downloads: <PACKAGE_NAME>/<PACKAGE_VERSION>/[<GHA_RUN_ID>/]<filename>  →  ./<filename>
 # Exits 0 on success, 1 on failure.
 # Pass --optional as second argument to exit 0 (with a warning) when the
 # object does not exist — useful for skipped parallel jobs.
@@ -24,7 +27,11 @@ OPTIONAL="${2:-}"
 
 BUCKET="powercore-builds"
 BUCKET_URL="https://s3.us.cloud-object-storage.appdomain.cloud/${BUCKET}"
-OBJECT_KEY="${PACKAGE_NAME}/${PACKAGE_VERSION}/${FILE}"
+if [[ -n "${GHA_RUN_ID:-}" ]]; then
+  OBJECT_KEY="${PACKAGE_NAME}/${PACKAGE_VERSION}/${GHA_RUN_ID}/${FILE}"
+else
+  OBJECT_KEY="${PACKAGE_NAME}/${PACKAGE_VERSION}/${FILE}"
+fi
 
 echo "--- Downloading from COS ---"
 echo "  Bucket     : ${BUCKET}"
