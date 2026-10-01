@@ -124,8 +124,9 @@ if not kv_data or not isinstance(kv_data, dict):
     sys.stderr.write('ERROR: Could not parse key-value data from Secrets Manager response\n')
     sys.exit(1)
 
-api_key_input   = sys.argv[3] if len(sys.argv) > 3 else ''
-image_tag_input = sys.argv[4] if len(sys.argv) > 4 else ''
+api_key_input       = sys.argv[3] if len(sys.argv) > 3 else ''
+image_tag_input     = sys.argv[4] if len(sys.argv) > 4 else ''
+couchdb_iam_api_key = api_key_input
 
 # Inject / override version and token
 kv_data['POWERCORE_WHEEL_VERSION'] = version_input
@@ -142,6 +143,9 @@ if api_key_input:
 # Inject image tag if provided
 if image_tag_input:
     kv_data['ICR_IMAGE_TAG'] = image_tag_input
+
+# Set COUCHDB_IAM_API_KEY
+kv_data['COUCHDB_IAM_API_KEY'] = couchdb_iam_api_key
 
 with open('powercore-config.env', 'w') as f:
     for k, v in kv_data.items():
