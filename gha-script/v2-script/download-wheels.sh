@@ -29,15 +29,15 @@ for attempt in $(seq 1 $MAX_ATTEMPTS); do
     -H "accept: application/json" \
     -d "grant_type=urn%3Aibm%3Aparams%3Aoauth%3Agrant-type%3Aapikey&apikey=${API_KEY}")
 
-  if [[ $(echo "$token_request" | jq -r '.errorCode') != "null" ]]; then
-    echo "ERROR: IAM token request failed. Response: $token_request"
+  if [[ $(echo "$token_request" | jq -r '.errorCode // empty') != "" ]]; then
+    echo "ERROR: IAM token request failed."
     [[ $attempt -lt $MAX_ATTEMPTS ]] && { echo "Retrying in ${RETRY_DELAY}s..."; sleep $RETRY_DELAY; continue; }
     exit 1
   fi
 
-  token=$(echo "$token_request" | jq -r '.access_token')
-  if [[ -z "$token" || "$token" == "null" ]]; then
-    echo "ERROR: IAM token missing from response: $token_request"
+  token=$(echo "$token_request" | jq -r '.access_token // empty')
+  if [[ -z "$token" ]]; then
+    echo "ERROR: IAM access token could not be retrieved."
     [[ $attempt -lt $MAX_ATTEMPTS ]] && { echo "Retrying in ${RETRY_DELAY}s..."; sleep $RETRY_DELAY; continue; }
     exit 1
   fi

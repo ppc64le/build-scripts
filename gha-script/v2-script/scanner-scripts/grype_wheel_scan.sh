@@ -7,8 +7,6 @@ if [ -z "$GRYPE_BIN" ]; then
   exit 1
 fi
 
-sudo apt update -y && sudo apt install -y jq
-
 echo "------------- Using cached grype ---------------"
 $GRYPE_BIN version
 

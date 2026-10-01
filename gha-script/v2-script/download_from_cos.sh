@@ -43,14 +43,14 @@ token_request=$(curl -sS -X POST https://iam.cloud.ibm.com/identity/token \
   -H "accept: application/json" \
   -d "grant_type=urn%3Aibm%3Aparams%3Aoauth%3Agrant-type%3Aapikey&apikey=${GHA_CURRENCY_SERVICE_ID_API_KEY}")
 
-if [[ $(echo "${token_request}" | jq -r '.errorCode') != "null" ]]; then
-  echo "ERROR: IAM token request failed. Response: ${token_request}"
+if [[ $(echo "${token_request}" | jq -r '.errorCode // empty') != "" ]]; then
+  echo "ERROR: IAM token request failed."
   exit 1
 fi
 
-token=$(echo "${token_request}" | jq -r '.access_token')
-if [[ -z "${token}" || "${token}" == "null" ]]; then
-  echo "ERROR: IAM token missing from response."
+token=$(echo "${token_request}" | jq -r '.access_token // empty')
+if [[ -z "${token}" ]]; then
+  echo "ERROR: IAM access token could not be retrieved."
   exit 1
 fi
 echo "OK: IAM token obtained"
