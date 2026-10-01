@@ -1,46 +1,44 @@
 # Minimum requirements for the build system to execute.
-# Do not include sys,subprocess and os as they are default packages
 [build-system]
 requires = [
     "setuptools",
     "wheel",
-    "auditwheel>=5.0.0",
-
 ]
 
-#Set build backend to setuptools
+# Set build backend to setuptools
 build-backend = "setuptools.build_meta"
 
-#Project name an version
+# Project name and version
 [project]
-name = "thrift-cpp"
+name = "thriftcpp"
 version = "{PACKAGE_VERSION}"
 
-#One line description
-description = "Compiler and C++ libraries and headers for the Apache Thrift RPC system"
+# One line description
+description = "Provides thrift-cpp for C++ packaging"
 
-#Classifiers to improve pacakage discoverability
+# License declaration for PEP 621 / SBOM compliance
+license = { text = "Apache-2.0" }
+
+# Classifiers to improve package discoverability
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: C++",
-  "License :: Apache-2.0",
+  "License :: OSI Approved :: Apache Software License",
 ]
 
-#Project URLs
+# Project URLs
 [project.urls]
 homepage = "https://github.com/apache/thrift"
 upstream = "https://github.com/apache/thrift"
 
-#Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
+# Find package files in local folder
 [tool.setuptools.packages.find]
-# scanning for namespace packages is true by default in pyproject.toml, so
-# # you do NOT need to include the following line.
 namespaces = true
 where = ["local"]
 
-#Package data to add bazel in wheel, this is needed as its not a .py file
+# Package data to include headers, libs, and cmake/pkgconfig files
 [tool.setuptools.package-data]
-thriftcpp = ["bin/*", "lib/*", "lib/**/*", "include/**/*"]
+thriftcpp = ["*/*", "*/*/*", "*/*/*/*"]
 
 [tool.distutils.bdist_wheel]
 plat-name = "linux_ppc64le"  # Explicitly set the platform tag

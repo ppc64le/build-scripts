@@ -1,16 +1,19 @@
 {
-  "maintainer": "aastha-sharma2",
+  "maintainer": "kiranNukal",
   "package_name": "hdijupyterutils",
-  "github_url": "https://github.com/jupyter-incubator/sparkmagic.git",
+  "github_url": "https://github.com/jupyter-incubator/sparkmagic",
   "version": "0.20.0",
-  "wheel_build" : true,
-  "package_dir": "h/hdijupyterutils",
   "default_branch": "master",
-  "build_script": "hdijupyterutils_ubi_9.3.sh",
+  "build_script": "hdijupyterutils.sh",
+  "package_dir": "h/hdijupyterutils",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": "false",
+  "use_non_root_user": false,
+  "wheel_build": true,
+  "language": "Python",
+  "v2-enabled": true,
   "*": {
-    "build_script": "hdijupyterutils_ubi_9.3.sh"
+    "build_script": "hdijupyterutils.sh"
   }
 }
+

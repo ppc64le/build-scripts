@@ -1,0 +1,17 @@
+{
+  "maintainer": "rcarino",
+  "package_name": "async-timeout",
+  "github_url": "https://github.com/aio-libs/async-timeout",
+  "version": "v5.0.1",
+  "default_branch": "master",
+  "package_dir": "a/async-timeout",
+  "build_script": "async-timeout.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "wheel_build": true,
+  "*": {
+    "build_script": "async-timeout.sh"
+  }
+}

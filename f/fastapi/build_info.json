@@ -1,16 +1,9 @@
 {
-  "maintainer": "amit.kumar282",
+  "maintainer": "Build Scripts Team <build-scripts@ibm.com>",
   "package_name": "fastapi",
-  "github_url": "https://github.com/fastapi/fastapi.git",
-  "version": "0.135.1",
-  "wheel_build": true,
+  "github_url": "https://github.com/fastapi/fastapi",
+  "version": "0.115.0",
   "default_branch": "master",
-  "package_dir": "f/fastapi",
-  "build_script": "fastapi_v0.135.1_ubi_9.7.sh",
-  "docker_build": false,
-  "validate_build_script": true,
-  "use_non_root_user": false,
-  "*": {
-     "build_script":"fastapi_v0.135.1_ubi_9.7.sh"
-  }
+  "build_script": "fastapi.sh",
+  "v2-enabled": true
 }

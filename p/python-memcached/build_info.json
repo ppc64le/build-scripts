@@ -1,16 +1,17 @@
 {
-  "maintainer": "Harithanagothu2",
+  "maintainer": "kiranNukal",
   "package_name": "python-memcached",
   "github_url": "https://github.com/linsomniac/python-memcached",
   "version": "1.62",
-  "wheel_build" : true,
+  "v2-enabled": true,
+  "wheel_build": true,
   "package_dir": "p/python-memcached",
   "default_branch": "master",
-  "build_script": "python-memcached_ubi_9.3.sh",
+  "build_script": "python-memcached.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "*":{
-    "build_script":"python-memcached_ubi_9.3.sh"
+  "*": {
+    "build_script": "python-memcached.sh"
   }
 }

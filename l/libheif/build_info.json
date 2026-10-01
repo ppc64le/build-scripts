@@ -1,0 +1,25 @@
+{
+  "maintainer": "ibm",
+  "package_name": "libheif",
+  "language": "c++",
+  "github_url": "https://github.com/strukturag/libheif",
+  "version": "v1.23.0",
+  "wheel_build": false,
+  "package_dir": "l/libheif",
+  "default_branch": "master",
+  "build_script": "libheif.sh",
+  "resource_class": "medium",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "libheif",
+  "build_deps": [
+    "libde265:v1.1.1",
+    "libtiff:v4.7.1",
+    "x265:4.2"
+  ],
+  "*": {
+    "build_script": "libheif.sh"
+  }
+}

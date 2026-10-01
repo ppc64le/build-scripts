@@ -1,19 +1,18 @@
 {
-  "maintainer": "Ryder Salinas <rbsalinas@ibm.com>",
+  "maintainer": "IBM <open-source-automation@ibm.com>",
   "package_name": "crc32c",
-  "github_url": "https://github.com/ICRAR/crc32c.git",
-  "version": "v2.8",
-  "wheel_build" : true,
-  "default_branch": "main",
+  "github_url": "https://github.com/ICRAR/crc32c",
+  "version": "2.8",
+  "language": "Python",
+  "default_branch": "master",
   "package_dir": "c/crc32c",
-  "build_script": "crc32c_2.8_ubi_9.6.sh",
+  "build_script": "crc32c.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
+  "wheel_build": true,
   "docker_build": false,
-  "v2.8":{
-    "build_script":"crc32c_2.8_ubi_9.6.sh"
-  },
+  "v2-enabled": true,
   "*": {
-    "build_script":"crc32c_2.8_ubi_9.6.sh"
+    "build_script": "crc32c.sh"
   }
 }

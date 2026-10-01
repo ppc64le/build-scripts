@@ -1,0 +1,19 @@
+{
+  "maintainer": "ibm",
+  "package_name": "jxrlib",
+  "language": "c",
+  "github_url": "https://github.com/cgohlke/jxrlib",
+  "version": "main",
+  "wheel_build": false,
+  "package_dir": "j/jxrlib",
+  "default_branch": "main",
+  "build_script": "jxrlib.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "jxrlib",
+  "*": {
+    "build_script": "jxrlib.sh"
+  }
+}

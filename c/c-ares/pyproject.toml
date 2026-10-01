@@ -1,6 +1,8 @@
 # Minimum requirements for the build system to execute.
 # Do not include sys,subprocess and os as they are default packages
+[build-system]
 requires = [
+    "setuptools",
     "wheel",
 ]
 
@@ -13,19 +15,19 @@ name = "c-ares"
 version = "{PACKAGE_VERSION}"
 
 #One line description
-description = "This is c-ares, an asynchronous resolver library, c-ares is a C library for asynchronous DNS requests (including name resolves)."
+description = "Provides c-ares for cpp packaging"
 
 #Classifiers to improve pacakage discoverability
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: C",
-  "License :: MIT license",
+  "License :: OSI Approved :: MIT License",
 ]
 
 #Project URLs
 [project.urls]
-homepage = "https://c-ares.org/"
-upstream = "https://github.com/c-ares/c-ares/releases/download/cares-1_19_1/c-ares-1.19.1.tar.gz"
+homepage = "https://github.com/c-ares/c-ares"
+upstream = "https://github.com/c-ares/c-ares"
 
 #Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
 [tool.setuptools.packages.find]

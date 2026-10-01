@@ -3,14 +3,15 @@
   "package_name": "seaborn",
   "github_url": "https://github.com/mwaskom/seaborn.git",
   "version": "v0.13.2",
-  "wheel_build" : true,
+  "wheel_build": true,
   "package_dir": "s/seaborn",
   "default_branch": "master",
-  "build_script": "seaborn_ubi_9.3.sh",
+  "build_script": "seaborn.sh",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
   "use_non_root_user": "false",
   "v0.*.*": {
-    "build_script": "seaborn_ubi_9.3.sh"
+    "build_script": "seaborn.sh"
   }
 }

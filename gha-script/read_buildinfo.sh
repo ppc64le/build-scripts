@@ -26,6 +26,10 @@ config_file='build_info.json'
 if [ -f $config_file ]; then
   jsonObj=$config_file
   build_script=$(jq .build_script $jsonObj)
+  wheel_name=""
+  if $(jq 'has("wheel_name")' $jsonObj); then
+    wheel_name=$(jq -r .wheel_name $jsonObj)
+  fi
 
   if $(jq 'has("use_non_root_user")' $jsonObj); then
     nonRootBuild=$(jq .use_non_root_user $jsonObj)
@@ -59,6 +63,11 @@ if [ -f $config_file ]; then
     # version-specific build_script (may be a string or a list)
     if [[ $(jq -r "$version_block.build_script" $config_file) != "null" ]]; then
       build_script=$(jq -c "$version_block.build_script" $config_file)
+    fi
+
+    # version-specific wheel_name
+    if [[ $(jq -r "$version_block.wheel_name" $config_file) != "null" ]]; then
+      wheel_name=$(jq -r "$version_block.wheel_name" $config_file)
     fi
 
     # version-specific base_docker_image
@@ -299,6 +308,7 @@ echo "export NON_ROOT_BUILD=\"$nonRootBuild\""                   >> $CUR_DIR/var
 echo "export TESTED_ON=\"$tested_on\""                           >> $CUR_DIR/variable.sh
 echo "export AUDITWHEEL_EXCLUDE=\"$AUDITWHEEL_EXCLUDE\""         >> $CUR_DIR/variable.sh
 echo "export SKIP_PYTHON_VERSIONS=\"$SKIP_PYTHON_VERSIONS\""     >> $CUR_DIR/variable.sh
+echo "export WHEEL_NAME=\"$wheel_name\""                         >> $CUR_DIR/variable.sh
 # Full array  -  kept for any downstream consumer that still needs it
 echo "export BUILD_SCRIPTS_JSON='$BUILD_SCRIPTS_JSON'"       >> $CUR_DIR/variable.sh
 # Per-UBI-major named exports  -  empty string when that UBI version has no script

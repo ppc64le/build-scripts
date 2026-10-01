@@ -3,19 +3,15 @@
   "package_name": "dill",
   "github_url": "https://github.com/uqfoundation/dill",
   "version": "0.3.8",
-  "wheel_build" : true,
+  "wheel_build": true,
   "default_branch": "master",
   "package_dir": "d/dill",
-  "build_script": "dill_ubi_9.3.sh",
+  "build_script": "dill.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": "true",
-  "dill-0.3.*": {
-    "dir": "ubi8.7",
-    "build_script": "dill_ubi_8.7.sh"
-  },
+  "v2-enabled": true,
   "*": {
-    "dir": "ubi9.3",
-    "build_script": "dill_ubi_9.3.sh"
+    "build_script": "dill.sh"
   }
 }

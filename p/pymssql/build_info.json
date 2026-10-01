@@ -1,34 +1,43 @@
 {
-  "maintainer": "Yogita Kulkarni",
+  "maintainer": "Shivansh-ibm",
   "package_name": "pymssql",
-  "github_url": "https://github.com/pymssql/pymssql.git",
+  "github_url": "https://github.com/pymssql/pymssql",
   "version": "v2.3.13",
-  "wheel_build" : true,
-  "package_dir": "p/pymssql",
   "default_branch": "master",
-  "build_script": "pymssql_2.3.13_ubi_10.2.sh",
+  "package_dir": "p/pymssql",
+  "build_script": "pymssql.sh",
+  "language": "Python",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": "false",
-  "v2.2.5":{
-    "build_script":"pymssql_ubi_9.3.sh"
+  "v2-enabled": true,
+  "v2.2.5": {
+    "build_script": "pymssql.sh",
+    "patches": {
+      "PYMSSQL_PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/pymssql/patches/pymssql_v2.2.5.patch"
+    }
   },
-  "v2.3.2":{
-    "build_script":"pymssql_2.3.2_ubi_9.3.sh"
+  "v2.3.2": {
+    "build_script": "pymssql.sh",
+    "patches": {
+      "PYMSSQL_PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/pymssql/patches/pymssql_v2.3.2.patch"
+    }
   },
-  "v2.3.4":{
-    "build_script":"pymssql_2.3.2_ubi_9.3.sh"
+  "v2.3.4": {
+    "build_script": "pymssql.sh",
+    "patches": {
+      "PYMSSQL_PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/pymssql/patches/pymssql_v2.3.4.patch"
+    }
   },
-  "v2.3.11":{
-    "build_script":"pymssql_2.3.11_ubi_9.6.sh"
+  "v2.3.5 | v2.3.6 | v2.3.7 | v2.3.8": {
+    "build_script": "pymssql.sh",
+    "patches": {
+      "PYMSSQL_PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/pymssql/patches/pymssql_v2.3.5_to_v2.3.8.patch"
+    }
   },
-  "v2.3.13":{
-    "build_script":"pymssql_2.3.13_ubi_10.2.sh"
+  "v2.3.13": {
+    "build_script": "pymssql.sh"
   },
-  "*":{
-    "build_script": [
-      "pymssql_2.3.13_ubi_10.2.sh",
-      "pymssql_2.3.11_ubi_9.6.sh"
-    ]
+  "*": {
+    "build_script": "pymssql.sh"
   }
 }

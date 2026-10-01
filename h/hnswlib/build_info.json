@@ -1,0 +1,17 @@
+{
+  "maintainer": "vivek8123",
+  "package_name": "chroma-hnswlib",
+  "github_url": "https://github.com/nmslib/hnswlib",
+  "version": "v0.8.0",
+  "default_branch": "master",
+  "build_script": "hnswlib.sh",
+  "package_dir": "h/hnswlib",
+  "docker_build": false,
+  "wheel_build": true,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "hnswlib.sh"
+  }
+}

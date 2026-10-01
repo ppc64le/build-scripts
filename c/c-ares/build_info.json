@@ -1,22 +1,19 @@
 {
-  "maintainer": "tejasBadjateIBM",
+  "maintainer": "ibm",
   "package_name": "c-ares",
-  "github_url": "https://github.com/c-ares/c-ares.git",
-  "version": "cares-1_19_1",
-  "wheel_build" : true,
+  "language": "c",
+  "github_url": "https://github.com/c-ares/c-ares",
+  "version": "v1.34.4",
+  "wheel_build": false,
   "package_dir": "c/c-ares",
   "default_branch": "main",
-  "build_script": "cares_ubi_10.2.sh",
+  "build_script": "c-ares.sh",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
-  "use_non_root_user": "false",
-  "auditwheel_exclude": [
-    "libcares.*"
-  ],
+  "use_non_root_user": false,
+  "provides_artifact": "c-ares",
   "*": {
-    "build_script": [ 
-      "cares_ubi_9.3.sh",
-      "cares_ubi_10.2.sh"
-    ]
+    "build_script": "c-ares.sh"
   }
 }

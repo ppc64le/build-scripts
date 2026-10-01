@@ -1,17 +1,18 @@
 {
-  "maintainer": "amit.kumar282",
+  "maintainer": "kiranNukal",
   "package_name": "contextforge-cli",
   "github_url": "https://github.com/contextforge-org/contextforge-cli",
   "version": "v1.0.0b4",
-  "wheel_build": true,
-  "wheel_name": "cforge",
-  "default_branch": "master",
+  "default_branch": "main",
+  "build_script": "contextforge-cli.sh",
   "package_dir": "c/contextforge-cli",
-  "build_script": "contextforge-cli_v1.0.0b4_ubi_9.7.sh",
   "docker_build": false,
+  "wheel_build": true,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "v2-enabled": true,
   "*": {
-     "build_script":"contextforge-cli_v1.0.0b4_ubi_9.7.sh"
+    "build_script": "contextforge-cli.sh"
   }
 }
+

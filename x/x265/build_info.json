@@ -1,0 +1,20 @@
+{
+  "maintainer": "ibm",
+  "package_name": "x265",
+  "language": "c++",
+  "github_url": "https://github.com/Multicorewareinc/x265",
+  "version": "4.2",
+  "wheel_build": false,
+  "package_dir": "x/x265",
+  "default_branch": "master",
+  "build_script": "x265.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "x265",
+  "*": {
+    "build_script": "x265.sh"
+  }
+}
+

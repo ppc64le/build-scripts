@@ -1,0 +1,33 @@
+diff --git a/scipy/meson.build b/scipy/meson.build
+index 7d79abf..64d2521 100644
+--- a/scipy/meson.build
++++ b/scipy/meson.build
+@@ -201,16 +201,18 @@ fortranobject_dep = declare_dependency(
+   compile_args: _f2py_c_args,
+ )
+ 
+-f2py = find_program('f2py')
+-# It should be quite rare for the `f2py` executable to not be the one from
+-# `numpy` installed in the Python env we are building for (unless we are
+-# cross-compiling). If it is from a different env, that is still fine as long
+-# as it's not too old. We are only using f2py as a code generator, and the
+-# output is not dependent on platform or Python version (see gh-20612 for more
+-# details).
+-# This should be robust enough. If not, we can make this more complex, using
+-# a fallback to `python -m f2py` rather than erroring out.
+-f2py_version = run_command([f2py, '-v'], check: true).stdout().strip()
++_python_safe_path_args = []
++if run_command(py3, ['-c', 'import sys; print(int(sys.version_info >= (3, 11)))'], check: true).stdout().strip() == '1'
++  _python_safe_path_args = ['-P']
++endif
++f2py = [py3] + _python_safe_path_args + ['-m', 'numpy.f2py']
++# Work around SciPy issue #24744 by avoiding the fragile f2py CLI version
++# probe. f2py ships with NumPy, so NumPy's version is the f2py version here.
++f2py_version = run_command(
++  py3,
++  _python_safe_path_args + ['-c', 'import os; os.chdir(os.path.join("..", "tools")); import numpy; print(numpy.__version__)'],
++  check: true
++).stdout().strip()
+ if f2py_version.version_compare('<'+min_numpy_version)
+   error(f'Found f2py executable is too old: @f2py_version@')
+ endif

@@ -1,0 +1,19 @@
+{
+  "maintainer": "ibm",
+  "package_name": "charls",
+  "language": "c++",
+  "github_url": "https://github.com/team-charls/charls",
+  "version": "2.4.2",
+  "wheel_build": false,
+  "package_dir": "c/charls",
+  "default_branch": "master",
+  "build_script": "charls.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "charls",
+  "*": {
+    "build_script": "charls.sh"
+  }
+}

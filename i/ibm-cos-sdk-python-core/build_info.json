@@ -1,0 +1,19 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "ibm-cos-sdk-python-core",
+  "github_url": "https://github.com/ibm/ibm-cos-sdk-python-core",
+  "version": "2.13.4",
+  "default_branch": "master",
+  "build_script": "ibm-cos-sdk-python-core.sh",
+  "package_dir": "i/ibm-cos-sdk-python-core",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v2-enabled": true,
+  "language": "Python",
+  "wheel_build": true,
+  "*": {
+    "build_script": "ibm-cos-sdk-python-core.sh"
+  }
+}
+

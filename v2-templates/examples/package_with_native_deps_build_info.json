@@ -1,0 +1,18 @@
+{
+  "maintainer": "your-github-id",
+  "package_name": "example-package",
+  "github_url": "https://github.com/example/package",
+  "version": "1.0.0",
+  "default_branch": "main",
+  "build_script": "package_with_native_deps.sh",
+  "wheel_build": true,
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+
+  "build_deps": ["protobuf:v25.3"],
+
+  "*": {
+    "build_script": "package_with_native_deps.sh"
+  }
+}

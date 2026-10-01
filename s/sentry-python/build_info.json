@@ -1,26 +1,18 @@
 {
-  "maintainer": "ramnathnayak-ibm",
+  "maintainer": "kiranNukal",
   "package_name": "sentry-python",
   "github_url": "https://github.com/getsentry/sentry-python",
-  "version": "2.29.1",
+  "version": "2.33.2",
+  "language": "Python",
   "default_branch": "master",
-  "package_dir": "s/sentry-python/",
-  "build_script": "sentry-python_ubi_9.3.sh",
+  "package_dir": "s/sentry-python",
+  "build_script": "sentry-python.sh",
   "docker_build": false,
-  "wheel_build": true,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "wheel_name": "sentry-sdk",
-  "2.*": {
-      "build_script": "sentry-python_ubi_9.3.sh"
-   },
-   "1.12.*, 1.11.*": {
-    "build_script": "sentry-python_1.12.1_ubi_8.7.sh"
-   },
-   "0.*.*": {
-    "build_script": "sentry-python_ubi_8.4.sh"
-   }
+  "v2-enabled": true,
+  "*": {
+    "build_script": "sentry-python.sh"
+  }
 }
-
-
 

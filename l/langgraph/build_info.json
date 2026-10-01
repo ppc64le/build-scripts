@@ -1,16 +1,19 @@
 {
-  "maintainer": "amit.kumar282",
+  "maintainer": "IBM <ppc64le@lists.ibm.com>",
   "package_name": "langgraph",
+  "language": "Python",
   "github_url": "https://github.com/langchain-ai/langgraph",
-  "version": "1.0.9",
-  "wheel_build": true,
-  "default_branch": "master",
+  "version": "0.4.8",
+  "default_branch": "main",
+  "build_script": "langgraph.sh",
   "package_dir": "l/langgraph",
-  "build_script": "langgraph_v1.0.9_ubi_9.7.sh",
   "docker_build": false,
+  "wheel_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "1.0.9*": {
-     "build_script":"langgraph_v1.0.9_ubi_9.7.sh"
+  "v2-enabled": true,
+  "*": {
+    "build_script": "langgraph.sh"
   }
 }
+

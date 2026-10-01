@@ -1,0 +1,24 @@
+# Database Migration Scripts Requirements
+# Python 3.12+ recommended
+
+# Core dependencies
+requests>=2.31.0          # HTTP client for API calls
+ibmcloudant>=0.10.5       # Cloudant database client
+python-dotenv>=1.0.0      # Environment variable management
+
+# Version handling
+packaging>=23.0           # Version parsing and comparison
+semantic-version>=2.10.0  # Semantic versioning
+
+# Performance
+orjson>=3.9.0            # Fast JSON parsing (optional but recommended)
+
+# Development/Testing
+pytest>=7.4.0            # Testing framework
+pytest-cov>=4.1.0        # Coverage reporting
+pytest-mock>=3.11.0      # Mocking support
+responses>=0.23.0        # HTTP request mocking
+
+# Type checking (optional)
+mypy>=1.5.0              # Static type checker
+types-requests>=2.31.0   # Type stubs for requests
