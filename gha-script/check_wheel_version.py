@@ -129,7 +129,9 @@ def main() -> None:
     norm = _normalize_version(github_package_version)
 
     # Check 1: version match
-    if version_matches(ver, norm):
+    if not any(c.isdigit() for c in github_package_version):
+        print(f"  SKIP [1] Version match  ('{github_package_version}' is a string/symbolic name, skipping check)")
+    elif version_matches(ver, norm):
         print(f"  PASS [1] Version match  ({ver.base_version} matches {github_package_version})")
     else:
         print("  FAIL [1] Version mismatch!")
