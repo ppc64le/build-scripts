@@ -1,7 +1,5 @@
 #!/bin/bash -e
 
-cloned_package=$CLONED_PACKAGE
-
 # Use pre-installed grype from the cached artifact
 # $GRYPE_BIN is set by the workflow (points to scan-tools-bin/grype)
 if [ -z "$GRYPE_BIN" ]; then

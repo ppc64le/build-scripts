@@ -1,7 +1,5 @@
 #!/bin/bash -e
 
-cloned_package=$CLONED_PACKAGE
-
 echo "----------Installing dependencies -----------------"
 sudo apt update -y && sudo apt install -y file git python3.12 python3.12-venv python3-pip python3.12-dev build-essential unzip patch wget tar libffi-dev zlib1g-dev libssl-dev libxml2-dev libxslt1-dev libicu-dev pkg-config
 
