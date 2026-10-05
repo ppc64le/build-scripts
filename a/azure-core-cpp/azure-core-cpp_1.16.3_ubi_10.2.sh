@@ -21,6 +21,7 @@
 PACKAGE_NAME=azure-core-cpp
 PACKAGE_DIR=azure-sdk-for-cpp
 PACKAGE_VERSION=${1:-"1.16.3"}
+PACKAGE_VERSION=${PACKAGE_VERSION#azure-core_}
 PACKAGE_URL=https://github.com/Azure/azure-sdk-for-cpp
 WORKING_DIR=$(pwd)
 
