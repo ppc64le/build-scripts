@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : azure-core-cpp
-# Version       : 1.16.3
+# Version       : azure-core_1.16.3
 # Source repo   : https://github.com/Azure/azure-sdk-for-cpp
 # Tested on     : UBI:8.10
 # Language      : C++
