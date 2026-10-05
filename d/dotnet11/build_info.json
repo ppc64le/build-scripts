@@ -1,0 +1,12 @@
+{
+    "maintainer": "shrinivas-sidral",
+    "package_name": "dotnet",
+    "github_url": "https://github.com/dotnet/dotnet",
+    "version": "11.0.100",
+    "package_dir": "d/dotnet11",
+    "default_branch": "v11.0.0",
+    "docker_build": false,
+    "build_script": "[\"dotnet-cross-build.sh\", \"dotnet-source-build.sh\"]",
+    "validate_build_script": false,
+    "use_non_root_user": false
+  }

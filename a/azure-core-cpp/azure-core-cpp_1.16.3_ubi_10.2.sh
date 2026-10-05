@@ -4,7 +4,7 @@
 # Package       : azure-core-cpp
 # Version       : azure-core_1.16.3
 # Source repo   : https://github.com/Azure/azure-sdk-for-cpp
-# Tested on     : UBI:8.10
+# Tested on     : UBI:10.2
 # Language      : C++
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
@@ -19,6 +19,7 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=azure-core-cpp
+PACKAGE_DIR=azure-sdk-for-cpp
 PACKAGE_VERSION=${1:-"azure-core_1.16.3"}
 PACKAGE_URL=https://github.com/Azure/azure-sdk-for-cpp
 WORKING_DIR=$(pwd)
@@ -33,9 +34,6 @@ else
 fi
 
 # Install dependencies
-# Enable the default perl module stream so perl sub-packages resolve correctly
-yum module enable -y perl:5.26 2>/dev/null || true
-
 yum install -y --allowerasing \
     wget \
     git \
@@ -44,8 +42,6 @@ yum install -y --allowerasing \
     make \
     gcc \
     gcc-c++ \
-    gcc-toolset-12-gcc \
-    gcc-toolset-12-gcc-c++ \
     openssl \
     openssl-devel \
     libcurl \
@@ -55,17 +51,11 @@ yum install -y --allowerasing \
     zlib \
     zlib-devel \
     pkg-config \
-    perl \
-    python39 \
-    python39-pip \
+    perl-FindBin \
+    perl-File-Compare \
+    python3-pip \
+    python3-devel \
     ca-certificates
-
-# Activate GCC Toolset 12
-export PATH=/opt/rh/gcc-toolset-12/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-12/root/usr/lib64:$LD_LIBRARY_PATH
-export LIBRARY_PATH=/opt/rh/gcc-toolset-12/root/usr/lib/gcc/ppc64le-redhat-linux/12:$LIBRARY_PATH
-export CPATH=/opt/rh/gcc-toolset-12/root/usr/include:$CPATH
-. /opt/rh/gcc-toolset-12/enable
 
 # Apply CPU optimization flags
 export CFLAGS="${CPU_FLAGS}"
@@ -79,9 +69,14 @@ g++ --version
 cmake --version
 
 # Clone source
-rm -rf azure-sdk-for-cpp
-git clone $PACKAGE_URL
-cd azure-sdk-for-cpp
+rm -rf $PACKAGE_DIR
+if ! git clone $PACKAGE_URL $PACKAGE_DIR; then
+    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Clone_Fails"
+    exit 1
+fi
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 SOURCE_DIR=$(pwd)
 
@@ -92,7 +87,7 @@ PREFIX="${SOURCE_DIR}/local/azure_core_cpp"
 # --- Release build (no tests) — installed to local prefix for wheel packaging ---
 mkdir -p build_release && cd build_release
 
-cmake \
+if ! cmake \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_C_FLAGS="${CPU_FLAGS}" \
     -DCMAKE_CXX_FLAGS="${CPU_FLAGS}" \
@@ -101,17 +96,30 @@ cmake \
     -DBUILD_SHARED_LIBS=ON \
     -DBUILD_TRANSPORT_CURL=ON \
     -GNinja \
-    ../sdk/core/azure-core
+    ../sdk/core/azure-core; then
+    echo "------------------$PACKAGE_NAME:cmake_release_fails---------------------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fails"
+    exit 1
+fi
 
-ninja -j"$(nproc)"
-ninja install
+if ! ninja -j"$(nproc)"; then
+    echo "------------------$PACKAGE_NAME:build_release_fails---------------------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fails"
+    exit 1
+fi
+
+if ! ninja install; then
+    echo "------------------$PACKAGE_NAME:install_release_fails-------------------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
+    exit 1
+fi
 
 cd ..
 
 # --- Test build — installed to /usr/local for ctest ---
 mkdir -p build_test && cd build_test
 
-cmake \
+if ! cmake \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_C_FLAGS="${CPU_FLAGS}" \
     -DCMAKE_CXX_FLAGS="${CPU_FLAGS}" \
@@ -120,10 +128,23 @@ cmake \
     -DBUILD_SHARED_LIBS=ON \
     -DBUILD_TRANSPORT_CURL=ON \
     -GNinja \
-    ../sdk/core/azure-core
+    ../sdk/core/azure-core; then
+    echo "------------------$PACKAGE_NAME:cmake_test_fails------------------------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fails"
+    exit 1
+fi
 
-ninja -j"$(nproc)"
-DESTDIR="" ninja install
+if ! ninja -j"$(nproc)"; then
+    echo "------------------$PACKAGE_NAME:build_test_fails------------------------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fails"
+    exit 1
+fi
+
+if ! DESTDIR="" ninja install; then
+    echo "------------------$PACKAGE_NAME:install_test_fails----------------------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
+    exit 1
+fi
 
 cd ..
 
@@ -158,7 +179,7 @@ fi
 
 # Build Python wheel
 cd "$SOURCE_DIR"
-python3.9 -m pip install --upgrade pip setuptools wheel build
+python3 -m pip install --upgrade pip setuptools wheel build
 
 # Locate pyproject.toml — try two known repo-relative paths before wget:
 #   1. BUILD_SCRIPT_PATH set by create_wheel_wrapper.sh (wheel CI, sourced)
@@ -177,7 +198,7 @@ else
 fi
 sed -i "s/{PACKAGE_VERSION}/${PACKAGE_VERSION#azure-core_}/g" pyproject.toml
 
-if ! python3.9 -m pip install . --no-build-isolation; then
+if ! python3 -m pip install . --no-build-isolation; then
     echo "------------------$PACKAGE_NAME:Wheel_build_fails-------------------------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Wheel_Build_Fails"
     exit 1

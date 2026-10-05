@@ -1,0 +1,20 @@
+{
+    "maintainer": "Sharath P J",
+    "package_name": "py-spy",
+    "github_url": "https://github.com/benfred/py-spy.git",
+    "version": "v0.4.2",
+    "wheel_build": true,
+    "package_dir": "p/py-spy",
+    "default_branch": "master",
+    "build_script": "py-spy_0.4.2_ubi_10.2.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": "false",
+    "skip_python_versions": ["3.10", "3.11"],
+    "v0.4.2": {
+        "build_script": "py-spy_0.4.2_ubi_10.2.sh"
+    },
+    "*": {
+        "build_script": "py-spy_0.4.2_ubi_10.2.sh"
+    }
+}
