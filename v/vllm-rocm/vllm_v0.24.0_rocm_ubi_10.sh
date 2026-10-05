@@ -45,6 +45,8 @@
 #                          (default: "gfx90a;gfx950")
 #   DEVPI_INDEX          - IBM ppc64le devpi wheel index URL
 #                          (default: https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple)
+#   DEVPI_ROCM_INDEX     - IBM ppc64le ROCm-specific devpi wheel index URL
+#                          (default: https://wheels.developerfirst.ibm.com/ppc64le/rocm/+simple)
 #
 # ---------------------------------------------------------------------------
 
@@ -70,6 +72,7 @@ ROCM_REPO_URL=${ROCM_REPO_URL:-"https://public.dhe.ibm.com/software/server/POWER
 ROCM_PATH=${ROCM_PATH:-/opt/rocm}
 
 DEVPI_INDEX=${DEVPI_INDEX:-"https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple"}
+DEVPI_ROCM_INDEX=${DEVPI_ROCM_INDEX:-"https://wheels.developerfirst.ibm.com/ppc64le/rocm/+simple"}
 
 # GPU architecture targets — override via env var
 PYTORCH_ROCM_ARCH=${PYTORCH_ROCM_ARCH:-"gfx90a;gfx950"}
@@ -88,6 +91,7 @@ echo "  ROCM_INSTALL_MODE    : $ROCM_INSTALL_MODE"
 echo "  ROCM_PATH            : $ROCM_PATH"
 echo "  PYTORCH_ROCM_ARCH    : $PYTORCH_ROCM_ARCH"
 echo "  DEVPI_INDEX          : $DEVPI_INDEX"
+echo "  DEVPI_ROCM_INDEX     : $DEVPI_ROCM_INDEX"
 echo "==================================================================="
 
 # ---------------------------------------------------------------------------
@@ -589,18 +593,19 @@ $PYTHON -m pip install --prefer-binary \
     "runai-model-streamer" \
     "runai-model-streamer[s3]"
 
-echo "Installing z3-solver and tilelang from devpi index"
+echo "Installing z3-solver from devpi index"
 $PYTHON -m pip install --prefer-binary \
     --extra-index-url "${DEVPI_INDEX}" \
     z3-solver
-# tilelang needs build-time deps in the env; install with --no-build-isolation
+# tilelang has moved to the ROCm-specific index; install with --no-build-isolation
 # so the already-installed torch is reused rather than a fresh copy downloaded.
 $PYTHON -m pip install cmake ninja \
     "scikit-build-core[pyproject]>=0.10.0" \
     "cython>=3.2.8" \
     setuptools-scm
+echo "Installing tilelang from ROCm devpi index"
 $PYTHON -m pip install --prefer-binary --no-build-isolation \
-    --extra-index-url "${DEVPI_INDEX}" \
+    --extra-index-url "${DEVPI_ROCM_INDEX}" \
     tilelang
 
 echo "Installing opencv-python-headless and grpcio from devpi index"
