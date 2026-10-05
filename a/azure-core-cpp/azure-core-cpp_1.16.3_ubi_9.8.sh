@@ -172,7 +172,7 @@ if [ -n "${_PYPROJECT_SRC}" ]; then
 else
     wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/azure-core-cpp/pyproject.toml
 fi
-sed -i "s/{PACKAGE_VERSION}/${PACKAGE_VERSION}/g" pyproject.toml
+sed -i "s/{PACKAGE_VERSION}/${PACKAGE_VERSION#azure-core_}/g" pyproject.toml
 
 if ! python3 -m pip install . --no-build-isolation; then
     echo "------------------$PACKAGE_NAME:Wheel_build_fails-------------------------------------"
