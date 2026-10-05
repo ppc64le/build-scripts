@@ -19,8 +19,7 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=azure-core-cpp
-PACKAGE_VERSION=${1:-"1.16.3"}
-PACKAGE_VERSION=${PACKAGE_VERSION#azure-core_}
+PACKAGE_VERSION=${1:-"azure-core_1.16.3"}
 PACKAGE_URL=https://github.com/Azure/azure-sdk-for-cpp
 WORKING_DIR=$(pwd)
 
@@ -83,7 +82,7 @@ cmake --version
 rm -rf azure-sdk-for-cpp
 git clone $PACKAGE_URL
 cd azure-sdk-for-cpp
-git checkout azure-core_$PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 SOURCE_DIR=$(pwd)
 
 # Build azure-core only — install into a local prefix for wheel packaging
