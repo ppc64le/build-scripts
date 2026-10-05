@@ -147,6 +147,9 @@ PYEOF
 # ---------------------------------------------------------------------------
 export FORCE_CUDA=0
 export TORCHVISION_USE_NVJPEG=0
+# Pin the version string so the wheel name is torchvision-0.29.0-* instead of torchvision-0.29.0a0+<githash>-*
+export BUILD_VERSION="${PACKAGE_VERSION#v}"
+export PYTORCH_VERSION="${TORCH_VERSION}"
 
 if ! python3.14 -m pip wheel \
         --no-build-isolation \
