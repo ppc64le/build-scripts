@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : azure-core-cpp
-# Version       : 1.16.3
+# Version       : azure-core_1.16.3
 # Source repo   : https://github.com/Azure/azure-sdk-for-cpp
 # Tested on     : UBI:10.2
 # Language      : C++
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=azure-core-cpp
 PACKAGE_DIR=azure-sdk-for-cpp
-PACKAGE_VERSION=${1:-"1.16.3"}
+PACKAGE_VERSION=${1:-"azure-core_1.16.3"}
 PACKAGE_URL=https://github.com/Azure/azure-sdk-for-cpp
 WORKING_DIR=$(pwd)
 
@@ -77,7 +77,7 @@ if ! git clone $PACKAGE_URL $PACKAGE_DIR; then
     exit 1
 fi
 cd $PACKAGE_DIR
-git checkout azure-core_$PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 SOURCE_DIR=$(pwd)
 
 # Build azure-core only — install into a local prefix for wheel packaging
@@ -196,7 +196,7 @@ if [ -n "${_PYPROJECT_SRC}" ]; then
 else
     wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/azure-core-cpp/pyproject.toml
 fi
-sed -i "s/{PACKAGE_VERSION}/${PACKAGE_VERSION}/g" pyproject.toml
+sed -i "s/{PACKAGE_VERSION}/${PACKAGE_VERSION#azure-core_}/g" pyproject.toml
 
 if ! python3 -m pip install . --no-build-isolation; then
     echo "------------------$PACKAGE_NAME:Wheel_build_fails-------------------------------------"
