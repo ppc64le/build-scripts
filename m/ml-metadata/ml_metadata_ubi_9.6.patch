@@ -1,0 +1,80 @@
+diff --git a/WORKSPACE b/WORKSPACE
+index 683cc7e..f66294d 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -8,6 +8,7 @@ http_archive(
+     build_file = "//ml_metadata:postgresql.BUILD",
+     workspace_file_content = "//ml_metadata:postgresql.WORKSPACE",
+     sha256 = "9868c1149a04bae1131533c5cbd1c46f9c077f834f6147abaef8791a7c91b1a1",
++    patches = ["//ml_metadata/third_party:postgresql.patch",],
+     strip_prefix = "postgresql-12.1",
+     urls = [
+         "https://ftp.postgresql.org/pub/source/v12.1/postgresql-12.1.tar.gz",
+@@ -38,17 +39,17 @@ rules_foreign_cc_dependencies()
+
+ http_archive(
+     name = "com_google_absl",
+-    urls = ["https://github.com/abseil/abseil-cpp/archive/refs/tags/20230802.1.tar.gz"],
+-    strip_prefix = "abseil-cpp-20230802.1",
+-    sha256 = "987ce98f02eefbaf930d6e38ab16aa05737234d7afbab2d5c4ea7adbe50c28ed",
++    urls = ["https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.2.zip"],
++    strip_prefix = "abseil-cpp-20230125.2",
++    sha256 = "2d40102022a01c6f3dddd23ec9ddafff49697a2e4bd09af68bccb74d26ecf64a",
+ )
+
+ http_archive(
+     name = "boringssl",
+-    sha256 = "1188e29000013ed6517168600fc35a010d58c5d321846d6a6dfee74e4c788b45",
+-    strip_prefix = "boringssl-7f634429a04abc48e2eb041c81c5235816c96514",
++    sha256 = "579cb415458e9f3642da0a39a72f79fdfe6dc9c1713b3a823f1e276681b9703e",
++    strip_prefix = "boringssl-648cbaf033401b7fe7acdce02f275b06a88aab5c",
+     urls = [
+-        "https://github.com/google/boringssl/archive/7f634429a04abc48e2eb041c81c5235816c96514.tar.gz",
++         "https://github.com/google/boringssl/archive/648cbaf033401b7fe7acdce02f275b06a88aab5c.tar.gz",
+     ],
+ )
+
+diff --git a/ml_metadata/third_party/postgresql.patch b/ml_metadata/third_party/postgresql.patch
+new file mode 100644
+index 0000000..351b306
+--- /dev/null
++++ b/ml_metadata/third_party/postgresql.patch
+@@ -0,0 +1,37 @@
+++diff --git src/port/pg_bitutils.c src/port/pg_bitutils.c
+++index 7847e8a..17714af 100644
+++--- src/port/pg_bitutils.c
++++++ src/port/pg_bitutils.c
+++@@ -12,12 +12,14 @@
+++  */
+++ #include "c.h"
+++
++++#if !defined(__ppc__) && !defined(__PPC__) && !defined(__ppc64__) && !defined(__PPC64__)
+++ #ifdef HAVE__GET_CPUID
+++ #include <cpuid.h>
+++ #endif
+++ #ifdef HAVE__CPUID
+++ #include <intrin.h>
+++ #endif
++++#endif
+++
+++ #include "port/pg_bitutils.h"
+++
+++@@ -141,6 +143,7 @@ int                       (*pg_popcount64) (uint64 word) = pg_popcount64_slow;
+++ static bool
+++ pg_popcount_available(void)
+++ {
++++#if !defined(__ppc__) && !defined(__PPC__) && !defined(__ppc64__) && !defined(__PPC64__)
+++      unsigned int exx[4] = {0, 0, 0, 0};
+++
+++ #if defined(HAVE__GET_CPUID)
+++@@ -152,6 +155,9 @@ pg_popcount_available(void)
+++ #endif
+++
+++      return (exx[2] & (1 << 23)) != 0;       /* POPCNT */
++++#else
++++     return false;
++++#endif
+++ }
+++
+++ /*
+
