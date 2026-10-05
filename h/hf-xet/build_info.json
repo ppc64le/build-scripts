@@ -2,15 +2,21 @@
   "maintainer": "vinodk99",
   "package_name": "hf-xet",
   "github_url": "https://github.com/huggingface/xet-core",
-  "version": "v1.1.0",
+  "version": "v1.5.0",
   "default_branch": "main",
   "package_dir": "h/hf-xet",
-  "build_script": "hf-xet_ubi_9.3.sh",
+  "build_script": "hf-xet.sh",
+  "language": "python",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false,
-  "wheel_build": true,
-  "v*.*.*": {
-    "build_script": "hf-xet_ubi_9.3.sh"
+  "v2-enabled": true,
+  "v1.1.0 | v1.1.1": {
+    "build_script": "hf-xet.sh",
+    "patches": {
+      "HF_XET_PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/h/hf-xet/patches/hf_xet.patch"
+    }
+  },
+  "*": {
+    "build_script": "hf-xet.sh"
   }
 }

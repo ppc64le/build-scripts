@@ -3,14 +3,15 @@
   "package_name": "azure-mgmt-resource",
   "github_url": "https://github.com/Azure/azure-sdk-for-python",
   "version": "azure-mgmt-resource_23.4.0",
-  "wheel_build" : true,
+  "wheel_build": true,
   "package_dir": "a/azure-mgmt-resource",
   "default_branch": "main",
-  "build_script": "azure-mgmt-resource_ubi_9.3.sh",
+  "build_script": "azure-mgmt-resource.sh",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
   "use_non_root_user": "false",
   "azure-mgmt-resource_*": {
-    "build_script": "azure-mgmt-resource_ubi_9.3.sh"
+    "build_script": "azure-mgmt-resource.sh"
   }
 }

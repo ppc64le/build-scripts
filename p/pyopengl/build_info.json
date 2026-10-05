@@ -1,0 +1,18 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "pyopengl",
+  "language": "python",
+  "github_url": "https://github.com/mcfletch/pyopengl",
+  "version": "3.1.10",
+  "wheel_build": false,
+  "default_branch": "master",
+  "package_dir": "p/pyopengl",
+  "build_script": "pyopengl.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "pyopengl.sh"
+  }
+}

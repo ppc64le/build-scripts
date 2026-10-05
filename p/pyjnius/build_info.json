@@ -1,16 +1,18 @@
 {
-  "maintainer": "PrernaKumbhar20",
+  "maintainer": "Prerna Kumbhar",
   "package_name": "pyjnius",
-  "github_url": "https://github.com/kivy/pyjnius.git",
+  "language": "Python",
+  "github_url": "https://github.com/kivy/pyjnius",
   "version": "1.6.1",
-  "wheel_build" : true,
-  "package_dir": "p/pyjnius",
   "default_branch": "master",
-  "build_script": "pyjnius_ubi_9.6.sh",
+  "build_script": "pyjnius.sh",
+  "package_dir": "p/pyjnius",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
-  "use_non_root_user": "false",
-  "*":{
-    "build_script":"pyjnius_ubi_9.6.sh"
+  "use_non_root_user": false,
+  "wheel_build": false,
+  "*": {
+    "build_script": "pyjnius.sh"
   }
 }

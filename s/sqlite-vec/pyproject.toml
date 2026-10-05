@@ -1,0 +1,43 @@
+# Minimum requirements for the build system to execute.
+[build-system]
+requires = [
+    "setuptools",
+    "wheel",
+]
+
+# Set build backend to setuptools
+build-backend = "setuptools.build_meta"
+
+# Project name and version
+[project]
+name = "sqlite-vec"
+version = "{PACKAGE_VERSION}"
+
+# One line description
+description = "A vector search SQLite extension."
+
+# Classifiers to improve package discoverability
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: C",
+  "License :: OSI Approved :: MIT License",
+]
+
+# Project URLs
+[project.urls]
+homepage = "https://github.com/asg017/sqlite-vec"
+upstream = "https://github.com/asg017/sqlite-vec"
+
+# Find package files in local folder
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["local"]
+
+# Package data to include vec0.so in the wheel
+[tool.setuptools.package-data]
+sqlite_vec = ["__init__.py", "vec0.so"]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_ppc64le"  # Explicitly set the platform tag
+universal = false             # Disable universal wheel (forces platform-specific build)
+

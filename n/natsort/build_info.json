@@ -5,12 +5,13 @@
   "version": "8.4.0",
   "default_branch": "main",
   "package_dir": "n/natsort",
-  "build_script": "natsort_ubi_9.6.sh",
+  "build_script": "natsort.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": false,
+  "v2-enabled": true,
   "wheel_build": true,
   "8.*.*": {
-    "build_script": "natsort_ubi_9.6.sh"
+    "build_script": "natsort.sh"
   }
 }

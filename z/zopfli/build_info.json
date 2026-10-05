@@ -1,0 +1,20 @@
+{
+  "maintainer": "ibm",
+  "package_name": "zopfli",
+  "language": "c++",
+  "github_url": "https://github.com/google/zopfli",
+  "version": "zopfli-1.0.3",
+  "wheel_build": false,
+  "package_dir": "z/zopfli",
+  "default_branch": "master",
+  "build_script": "zopfli.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "zopfli",
+  "*": {
+    "build_script": "zopfli.sh"
+  }
+}
+

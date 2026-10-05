@@ -1,13 +1,14 @@
 {
-   "maintainer": "shubham-dayma-ibm",
-   "package_name": "simplejson",
-   "github_url": "https://github.com/simplejson/simplejson",
-   "version": "v3.17.6",
-   "default_branch": "master",
-   "build_script": "simplejson_ubi_9.3.sh",
-   "package_dir": "s/simplejson",
-   "docker_build": false,
-   "wheel_build": true,
-   "validate_build_script": true,
-   "use_non_root_user": false
+  "maintainer": "shubham-dayma-ibm",
+  "package_name": "simplejson",
+  "github_url": "https://github.com/simplejson/simplejson",
+  "version": "v3.17.6",
+  "default_branch": "master",
+  "build_script": "simplejson.sh",
+  "package_dir": "s/simplejson",
+  "docker_build": false,
+  "v2-enabled": true,
+  "wheel_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false
 }
