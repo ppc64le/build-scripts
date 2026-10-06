@@ -46,7 +46,7 @@ yum install -y python3.14 python3.14-devel python3.14-pip \
     pkg-config \
     libjpeg-turbo-devel libpng-devel libwebp-devel \
     zlib-devel openssl-devel libffi-devel \
-    which curl tar
+    which curl wget tar
 
 # UBI 10 dropped SCL — guard block
 if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
@@ -101,6 +101,12 @@ if ! git rev-parse "${_TAG}" &>/dev/null; then
     exit 1
 fi
 git checkout "${_TAG}"
+
+# ---------------------------------------------------------------------------
+# Apply patch to exclude SWAG models (CC-BY-NC-4.0 license)
+# ---------------------------------------------------------------------------
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license_v0.29.0.patch
+git apply 0001-Exclude-source-that-has-commercial-license_v0.29.0.patch
 
 # ---------------------------------------------------------------------------
 # Apply patches for PyTorch 2.13.0 Stable ABI compatibility: https://github.com/pytorch/vision/pull/9610
