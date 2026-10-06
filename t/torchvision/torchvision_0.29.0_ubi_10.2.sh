@@ -46,7 +46,7 @@ yum install -y python3.14 python3.14-devel python3.14-pip \
     pkg-config \
     libjpeg-turbo-devel libpng-devel libwebp-devel \
     zlib-devel openssl-devel libffi-devel \
-    which curl tar
+    which curl wget tar
 
 # UBI 10 dropped SCL — guard block
 if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
