@@ -1,20 +1,21 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: ppc64le build-scripts maintainers
-Date: Mon, 01 Jan 2024 00:00:00 +0000
-Subject: [PATCH] Exclude source that has commercial license (CC-BY-NC-4.0)
-
-Remove SWAG model references (CC-BY-NC 4.0 license) from README, delete
-regnet.py and vision_transformer.py which contain SWAG pre-trained weights,
-and remove their imports from models/__init__.py.
-
 diff --git a/README.md b/README.md
-index 1234567..abcdefg 100644
+index e09345e6d4..cad0a576d4 100644
 --- a/README.md
 +++ b/README.md
-@@ -94,9 +94,6 @@ The pre-trained models provided in this library may have their own licenses or t
+@@ -25,8 +25,6 @@ versions.
+ | `2.12`             | `0.27`             | `>=3.10`, `<=3.14`  |
+ | `2.11`             | `0.26`             | `>=3.10`, `<=3.14`  |
+ | `2.10`             | `0.25`             | `>=3.10`, `<=3.14`  |
+-
+-
+ <details>
+     <summary>older versions</summary>
+ 
+@@ -93,10 +91,6 @@ community!
+ The pre-trained models provided in this library may have their own licenses or terms and conditions derived from the
  dataset used for training. It is your responsibility to determine whether you have permission to use the models for your
  use case.
- 
+-
 -More specifically, SWAG models are released under the CC-BY-NC 4.0 license. See
 -[SWAG LICENSE](https://github.com/facebookresearch/SWAG/blob/main/LICENSE) for additional details.
 -
@@ -22,7 +23,7 @@ index 1234567..abcdefg 100644
  
  If you find TorchVision useful in your work, please consider citing the following BibTeX entry:
 diff --git a/torchvision/models/__init__.py b/torchvision/models/__init__.py
-index 1234567..abcdefg 100644
+index 6ea0a1f717..cca06bfcaf 100644
 --- a/torchvision/models/__init__.py
 +++ b/torchvision/models/__init__.py
 @@ -6,12 +6,10 @@ from .googlenet import *
@@ -40,10 +41,10 @@ index 1234567..abcdefg 100644
  from . import detection, optical_flow, quantization, segmentation, video
 diff --git a/torchvision/models/regnet.py b/torchvision/models/regnet.py
 deleted file mode 100644
-index 1234567..0000000
+index 915ef22bf3..0000000000
 --- a/torchvision/models/regnet.py
 +++ /dev/null
-@@ -1,1572 +0,0 @@
+@@ -1,1571 +0,0 @@
 -import math
 -from collections import OrderedDict
 -from functools import partial
@@ -1615,13 +1616,12 @@ index 1234567..0000000
 -
 -    params = BlockParams.from_init_params(depth=23, w_0=320, w_a=69.86, w_m=2.0, group_width=168, **kwargs)
 -    return _regnet(params, weights, progress, **kwargs)
--
 diff --git a/torchvision/models/vision_transformer.py b/torchvision/models/vision_transformer.py
 deleted file mode 100644
-index 1234567..0000000
+index 4ec3a5c59f..0000000000
 --- a/torchvision/models/vision_transformer.py
 +++ /dev/null
-@@ -1,865 +0,0 @@
+@@ -1,864 +0,0 @@
 -import math
 -from collections import OrderedDict
 -from functools import partial
@@ -2486,4 +2486,3 @@ index 1234567..0000000
 -            model_state = model_state_copy
 -
 -    return model_state
--
