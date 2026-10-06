@@ -106,7 +106,7 @@ git checkout "${_TAG}"
 # Apply patch to exclude SWAG models (CC-BY-NC-4.0 license)
 # ---------------------------------------------------------------------------
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license_v0.29.0.patch
-git apply 0001-Exclude-source-that-has-commercial-license_v0.29.0.patch
+git apply --ignore-whitespace 0001-Exclude-source-that-has-commercial-license_v0.29.0.patch
 
 # ---------------------------------------------------------------------------
 # Apply patches for PyTorch 2.13.0 Stable ABI compatibility: https://github.com/pytorch/vision/pull/9610
@@ -153,7 +153,8 @@ PYEOF
 # ---------------------------------------------------------------------------
 export FORCE_CUDA=0
 export TORCHVISION_USE_NVJPEG=0
-# Pin the version string so the wheel name is torchvision-0.29.0-* instead of torchvision-0.29.0a0+<githash>-*
+# Pin the version string so the wheel name is torchvision-0.29.0-* instead
+# of torchvision-0.29.0a0+<githash>-*
 export BUILD_VERSION="${PACKAGE_VERSION#v}"
 export PYTORCH_VERSION="${TORCH_VERSION}"
 
