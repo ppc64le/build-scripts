@@ -273,12 +273,14 @@ git --no-pager log -1 --oneline
 # Install Python build dependencies
 # ---------------------------------------------------------------------------
 $PYTHON -m pip install --upgrade pip
-$PYTHON -m pip install --upgrade \
+# Use --ignore-installed to avoid conflicts with RPM-managed packages
+# (e.g. setuptools installed by the system python3.12 RPM has no RECORD file
+# and pip cannot uninstall it — ignore-installed overlays our versions on top).
+$PYTHON -m pip install --upgrade --ignore-installed \
     "scikit-build-core>=1.0" \
     "pybind11>=2.13" \
     "numpy>=1.24" \
     "setuptools>=61" \
-    "pip>=23" \
     wheel
 
 # ---------------------------------------------------------------------------
