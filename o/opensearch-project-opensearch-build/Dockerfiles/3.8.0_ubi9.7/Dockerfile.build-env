@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/ubi
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
 # Set working directory
 WORKDIR /opensearch-build
@@ -22,22 +22,24 @@ WORKDIR /opensearch-build
 # Upgrade each CVE-affected package individually so that a package not present in
 # this base image (e.g. libpng, gstreamer1-plugins-base, gdb) does not cause yum
 # to abort the whole transaction and silently skip the others.
-RUN yum upgrade -y curl-minimal libcurl-minimal || true && \
-    yum upgrade -y openssl openssl-libs && \
-    yum upgrade -y libevent && \
-    yum upgrade -y libxml2 && \
-    yum upgrade -y expat && \
-    yum upgrade -y gdb-gdbserver || true && \
-    yum upgrade -y libpng gstreamer1-plugins-base gdb || true && \
-    yum upgrade -y webkit2gtk3-jsc || true && \
-    yum remove -y --noautoremove \
+RUN microdnf upgrade -y curl-minimal libcurl-minimal || true && \
+    microdnf upgrade -y openssl openssl-libs && \
+    microdnf upgrade -y libevent && \
+    microdnf upgrade -y libxml2 && \
+    microdnf upgrade -y expat && \
+    microdnf upgrade -y gdb-gdbserver || true && \
+    microdnf upgrade -y libpng gstreamer1-plugins-base gdb || true && \
+    microdnf upgrade -y webkit2gtk3-jsc || true && \
+    microdnf remove -y \
         flatpak flatpak-session-helper bubblewrap xdg-dbus-proxy \
         bluez-libs \
         mesa-libGL mesa-libEGL mesa-libgbm mesa-vulkan-drivers mesa-dri-drivers || true && \
-    yum clean all
+    microdnf clean all
 
 # Install system dependencies
-RUN yum install -y --allowerasing \
+# curl-minimal is pre-installed in ubi9-minimal and conflicts with the full curl package.
+# It provides the curl binary and is sufficient for all download steps in this image.
+RUN microdnf install -y \
     git \
     gcc \
     gcc-c++ \
@@ -48,7 +50,6 @@ RUN yum install -y --allowerasing \
     unzip \
     zip \
     which \
-    curl \
     jq \
     python3 \
     python3-devel \
@@ -59,7 +60,7 @@ RUN yum install -y --allowerasing \
     libffi-devel \
     xz-devel \
     rpm-build \
-    && yum clean all
+    && microdnf clean all
 
 # Install yq v4 (required by assemble scripts)
 RUN curl -fsSL "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_ppc64le" \
@@ -68,11 +69,12 @@ RUN curl -fsSL "https://github.com/mikefarah/yq/releases/latest/download/yq_linu
 # Install JDK 25 — only -devel is needed in the build environment (provides javac/jar/jlink).
 # java-25-openjdk and java-25-openjdk-headless are pulled in automatically as dependencies.
 # java-25-openjdk-crypto-adapter is a runtime FIPS bridge for the final container, not needed here.
-RUN yum install -y java-25-openjdk-devel && \
-    yum clean all
+RUN microdnf install -y java-25-openjdk-devel && \
+    microdnf clean all
 
 # Set Java environment
-ENV JAVA_HOME=/usr/lib/jvm/java-25-openjdk
+# java-25-openjdk-devel pulls in java-25-openjdk-headless; use the headless jre symlink
+ENV JAVA_HOME=/usr/lib/jvm/jre-25-openjdk
 ENV PATH=$JAVA_HOME/bin:$PATH
 ENV GRADLE_USER_HOME=/root/.gradle
 

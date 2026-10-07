@@ -1,12 +1,12 @@
-From e7aef55924ec470d87da9b6bacd632643c6539db Mon Sep 17 00:00:00 2001
+From 68414543380546e59170786f3018d071a84353cd Mon Sep 17 00:00:00 2001
 From: irapandey <ira.pandey2001@gmail.com>
-Date: Wed, 30 Sep 2026 18:30:54 +0530
+Date: Thu, 8 Oct 2026 10:51:21 +0530
 Subject: [PATCH] patch
 
 Signed-off-by: irapandey <ira.pandey2001@gmail.com>
 ---
  manifests/3.8.0/opensearch-3.8.0.yml          | 164 -----
- opensearch.patch                              | 645 ++++++++++++++++++
+ opensearch.patch                              | 676 ++++++++++++++++++
  .../build.pre20260429.sh                      |   8 +-
  .../components/OpenSearch-DataFusion/build.sh |   8 +-
  scripts/components/OpenSearch/build.sh        |   8 +-
@@ -21,7 +21,7 @@ Signed-off-by: irapandey <ira.pandey2001@gmail.com>
  scripts/default/bwctest.sh                    |   2 +-
  scripts/default/integtest.sh                  |   2 +-
  scripts/default/opensearch/build.sh           |   6 +-
- security.patch                                | 623 +++++++++++++++++
+ security.patch                                | 623 ++++++++++++++++
  src/build_workflow/build_args.py              |   1 +
  src/build_workflow/builder_from_source.py     | 131 ++++
  .../ci_check_gradle_dependencies.py           |   2 +-
@@ -34,7 +34,7 @@ Signed-off-by: irapandey <ira.pandey2001@gmail.com>
  .../test_ci_check_gradle_properties.py        |   6 +-
  ..._ci_check_gradle_publish_to_maven_local.py |   6 +-
  .../test_component_opensearch.py              |   6 +-
- 29 files changed, 1944 insertions(+), 215 deletions(-)
+ 29 files changed, 1975 insertions(+), 215 deletions(-)
  create mode 100644 opensearch.patch
  create mode 100644 scripts/components/k-NN/build.sh
  create mode 100755 scripts/components/opensearch-jvector/build.sh
@@ -242,15 +242,15 @@ index 74040626..765cd0a3 100644
 -      - user-behavior-insights
 diff --git a/opensearch.patch b/opensearch.patch
 new file mode 100644
-index 00000000..426d24ff
+index 00000000..45bf00dc
 --- /dev/null
 +++ b/opensearch.patch
-@@ -0,0 +1,645 @@
+@@ -0,0 +1,680 @@
 +diff --git a/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java b/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java
-+index baeaeb72b24..c6fcf190d18 100644
++index baeaeb72b24..abd45298a72 100644
 +--- a/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java
 ++++ b/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java
-+@@ -127,7 +127,35 @@ public class OpenSearchJavaPlugin implements Plugin<Project> {
++@@ -127,7 +127,55 @@ public class OpenSearchJavaPlugin implements Plugin<Project> {
 +                 // just a self contained test-fixture configuration, likely transitive and hellacious
 +                 return;
 +             }
@@ -260,30 +260,30 @@ index 00000000..426d24ff
 ++                strategy.eachDependency(details -> {
 ++                    String group = details.getRequested().getGroup();
 ++                    String name = details.getRequested().getName();
-++                    // Force all com.fasterxml.jackson artifacts to 2.22.2 (CVE-2026-68497 — CPU DoS)
+++                    // Force all com.fasterxml.jackson artifacts to 2.22.3 (CVE-2026-68497 — CPU DoS)
 ++                    if ("com.fasterxml.jackson.core".equals(group)) {
 ++                        if ("jackson-databind".equals(name) || "jackson-core".equals(name)) {
-++                            details.useVersion("2.22.2");
+++                            details.useVersion("2.22.3");
 ++                        } else if ("jackson-annotations".equals(name)) {
 ++                            details.useVersion("2.22");
 ++                        }
 ++                    }
 ++                    if ("com.fasterxml.jackson.datatype".equals(group)
 ++                        || "com.fasterxml.jackson.dataformat".equals(group)) {
-++                        details.useVersion("2.22.2");
+++                        details.useVersion("2.22.3");
 ++                    }
-++                    // Force all tools.jackson artifacts to 3.2.2 (CVE-2026-68497 — CPU DoS)
+++                    // Force all tools.jackson artifacts to 3.2.3 (CVE-2026-68497 — CPU DoS)
 ++                    if ("tools.jackson.core".equals(group)
 ++                        || "tools.jackson.datatype".equals(group)
 ++                        || "tools.jackson.dataformat".equals(group)) {
-++                        details.useVersion("3.2.2");
+++                        details.useVersion("3.2.3");
 ++                    }
 ++                    // Force httpcore5 artifacts to 5.4.3 to resolve conflict with older transitive 5.4
 ++                    if ("org.apache.httpcomponents.core5".equals(group)) {
 ++                        details.useVersion("5.4.3");
 ++                    }
 ++                    // Force all io.netty artifacts to 4.2.17.Final (CVE-2026-75595, CVE-2026-75596, CVE-2026-59903)
-++                    if ("io.netty".equals(group)) {
+++                    if ("io.netty".equals(group) && !name.startsWith("netty-tcnative")) {
 ++                        details.useVersion("4.2.17.Final");
 ++                    }
 ++                    // Force httpclient5 to 5.6.3 (CVE-2026-64607)
@@ -297,6 +297,10 @@ index 00000000..426d24ff
 ++                    // Force jsoup to 1.23.1 (CVE-2026-71497)
 ++                    if ("org.jsoup".equals(group) && "jsoup".equals(name)) {
 ++                        details.useVersion("1.23.1");
+++                    }
+++                    // Force lz4-java to 1.11.4 (CVE-2026-106451 — arbitrary code execution via insecure temp file)
+++                    if ("at.yawk.lz4".equals(group) && "lz4-java".equals(name)) {
+++                        details.useVersion("1.11.4");
 ++                    }
 ++                });
 ++            });
@@ -526,9 +530,24 @@ index 00000000..426d24ff
 +     }
 + 
 +diff --git a/gradle/libs.versions.toml b/gradle/libs.versions.toml
-+index 3bf10a02ced..484c31264bf 100644
++index 3bf10a02ced..a7864260685 100644
 +--- a/gradle/libs.versions.toml
 ++++ b/gradle/libs.versions.toml
++@@ -9,10 +9,10 @@ bundled_jdk = "25.0.4+7"
++ spatial4j               = "0.7"
++ jts                     = "1.15.0"
++ jackson_annotations     = "2.22"
++-jackson                 = "2.22.1"
++-jackson_databind        = "2.22.1"
++-jackson3                = "3.2.1"
++-jackson3_databind       = "3.2.1"
+++jackson                 = "2.22.3"
+++jackson_databind        = "2.22.3"
+++jackson3                = "3.2.3"
+++jackson3_databind       = "3.2.3"
++ snakeyaml               = "2.6"
++ snakeyaml_engine        = "3.0.1"
++ icu4j                   = "77.1"
 +@@ -40,7 +40,7 @@ json_smart              = "2.5.2"
 + # when updating the JNA version, also update the version in buildSrc/build.gradle
 + jna               = "5.16.0"
@@ -1564,7 +1583,7 @@ index 518c722a..ea049ea8 100755
  cp -r ./build/local-staging-repo/org/opensearch/. $OUTPUT/maven/org/opensearch
 diff --git a/security.patch b/security.patch
 new file mode 100644
-index 00000000..73b21299
+index 00000000..8fb3aa64
 --- /dev/null
 +++ b/security.patch
 @@ -0,0 +1,623 @@
@@ -1576,8 +1595,8 @@ index 00000000..73b21299
 +         force "org.bouncycastle:bcprov-jdk18on:1.85"
 +         force "org.apache.commons:commons-lang3:${versions.commonslang}"
 +         force "tools.jackson.core:jackson-core:${versions.jackson3}"
-++        force "com.fasterxml.jackson.core:jackson-databind:2.22.2"
-++        force "com.fasterxml.jackson.core:jackson-core:2.22.2"
+++        force "com.fasterxml.jackson.core:jackson-databind:2.22.3"
+++        force "com.fasterxml.jackson.core:jackson-core:2.22.3"
 ++        force "org.apache.httpcomponents.core5:httpcore5:${versions.httpcore5}"
 ++        force "org.apache.httpcomponents.core5:httpcore5-h2:${versions.httpcore5}"
 +     }
@@ -1637,8 +1656,8 @@ index 00000000..73b21299
 ++         force "org.bouncycastle:bcprov-jdk18on:1.85"
 ++         force "org.apache.commons:commons-lang3:${versions.commonslang}"
 ++         force "tools.jackson.core:jackson-core:${versions.jackson3}"
-+++        force "com.fasterxml.jackson.core:jackson-databind:2.22.2"
-+++        force "com.fasterxml.jackson.core:jackson-core:2.22.2"
++++        force "com.fasterxml.jackson.core:jackson-databind:2.22.3"
++++        force "com.fasterxml.jackson.core:jackson-core:2.22.3"
 +++        force "org.apache.httpcomponents.core5:httpcore5:${versions.httpcore5}"
 +++        force "org.apache.httpcomponents.core5:httpcore5-h2:${versions.httpcore5}"
 ++     }
