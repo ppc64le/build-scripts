@@ -305,7 +305,6 @@ print("Patched pyproject.toml: version -> 0.3.13.post1")
 
 p.write_text(text)
 PY
-cd "${CURRENT_DIR}"
 
 # ---------------------------------------------------------------------------
 # Install Python build dependencies
@@ -356,6 +355,7 @@ SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DSTORE_USE_K8S_LEASE=OFF"
 SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DCMAKE_BUILD_TYPE=Release"
 export SKBUILD_CMAKE_ARGS
 
+cd "${CURRENT_DIR}/Mooncake"
 echo "Building mooncake-transfer-engine-rocm wheel (this will take a while)"
 if ! MAX_JOBS=$(nproc) $PYTHON -m pip wheel . \
         --no-build-isolation \
