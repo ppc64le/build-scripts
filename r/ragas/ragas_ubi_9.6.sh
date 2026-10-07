@@ -18,6 +18,7 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 set -ex
+
 PACKAGE_NAME=ragas
 PACKAGE_VERSION=${1:-v0.4.3}
 PACKAGE_URL=https://github.com/vibrantlabsai/ragas
@@ -41,23 +42,53 @@ SCIKIT_NETWORK_DIR="scikit-network"
 # ============================================================
 # Install system dependencies
 # ============================================================
-
-yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget openssl-devel bzip2-devel glibc-static libstdc++-static libffi-devel zlib-devel libxml2-devel libxslt-devel python3.12 python3.12-devel python3.12-pip pkg-config cmake openblas-devel rust cargo
+yum install -y \
+    git \
+    gcc-toolset-13-gcc \
+    gcc-toolset-13-gcc-c++ \
+    gcc-toolset-13-gcc-gfortran \
+    make \
+    wget \
+    curl \
+    openssl-devel \
+    bzip2-devel \
+    glibc-static \
+    libstdc++-static \
+    libffi-devel \
+    zlib-devel \
+    libxml2-devel \
+    libxslt-devel \
+    python3.12 \
+    python3.12-devel \
+    python3.12-pip \
+    pkg-config \
+    cmake \
+    openblas-devel
 
 source /opt/rh/gcc-toolset-13/enable
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:/opt/rh/gcc-toolset-13/root/usr/lib:$LD_LIBRARY_PATH
-
 export LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:/usr/lib64:/usr/local/lib64:$LIBRARY_PATH
-
 export PKG_CONFIG_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64/pkgconfig:/usr/lib64/pkgconfig:/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH
+
+# ============================================================
+# Install Rust 1.95 required by orjson 3.12.0
+# ============================================================
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+source "$HOME/.cargo/env"
+
+rustup toolchain install 1.95.0
+rustup default 1.95.0
+
+# Verify Rust version
+rustc --version
+cargo --version
 
 # ============================================================
 # Clone Ragas
 # ============================================================
-
 git clone "${PACKAGE_URL}"
 
 cd "${PACKAGE_NAME}"
@@ -70,7 +101,6 @@ git describe --tags --always
 # ============================================================
 # Upgrade pip/setuptools/wheel
 # ============================================================
-
 python3.12 -m pip install --upgrade \
     pip \
     setuptools \
@@ -79,7 +109,6 @@ python3.12 -m pip install --upgrade \
 # ============================================================
 # Install Python build/test dependencies
 # ============================================================
-
 python3.12 -m pip install \
     packaging \
     pytest \
@@ -93,7 +122,9 @@ python3.12 -m pip install \
     hatch-vcs \
     "langchain-community==0.3.31"
 
-
+# ============================================================
+# Install Python dependencies
+# ============================================================
 python3.12 -m pip install \
     --trusted-host wheels.developerfirst.ibm.com \
     --extra-index-url "${IBM_WHEELS}" \
@@ -110,7 +141,6 @@ python3.12 -m pip install \
 # ============================================================
 # Build scikit-network v0.33.5 from source
 # ============================================================
-
 cd "${CURRENT_DIR}"
 
 git clone "${SCIKIT_NETWORK_URL}" "${SCIKIT_NETWORK_DIR}"
@@ -122,7 +152,6 @@ git checkout "${SCIKIT_NETWORK_VERSION}"
 # Verify source version
 git describe --tags --always
 
-
 python3.12 -m pip install --no-build-isolation .
 
 cd "${CURRENT_DIR}"
@@ -130,13 +159,11 @@ cd "${CURRENT_DIR}"
 # ============================================================
 # Verify scikit-network
 # ============================================================
-
 python3.12 -c "import sknetwork; print('scikit-network:', sknetwork.__version__)"
 
 # ============================================================
 # Ragas: Generate version file
 # ============================================================
-
 cd "${CURRENT_DIR}/${PACKAGE_DIR}"
 
 python3.12 -m hatch build --hooks-only
@@ -149,7 +176,6 @@ cat src/ragas/_version.py
 # ============================================================
 # Install Ragas
 # ============================================================
-
 if ! python3.12 -m pip install --no-build-isolation -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -160,7 +186,6 @@ fi
 # ============================================================
 # Verify Ragas
 # ============================================================
-
 python3.12 -c "import ragas; print('Ragas:', ragas.__version__)"
 
 # ============================================================
