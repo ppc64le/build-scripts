@@ -270,6 +270,44 @@ echo "Current Mooncake commit:"
 git --no-pager log -1 --oneline
 
 # ---------------------------------------------------------------------------
+# Patch pyproject.toml: fix package name and version
+#
+# Mooncake's upstream pyproject.toml has two problems for our use case:
+#   1. name = "mooncake-transfer-engine" — but vLLM v0.31.0 requires
+#      "mooncake-transfer-engine-rocm >= 0.3.13" in requirements/rocm.txt.
+#      The -rocm suffix distinguishes this ROCm wheel from a hypothetical
+#      CPU-only or CUDA build on PyPI.
+#   2. version = "0.3.12.post1" — the upstream forgot to bump pyproject.toml
+#      when tagging v0.3.13.post1.  We set it to match the tag we are building.
+# ---------------------------------------------------------------------------
+cd "${CURRENT_DIR}/Mooncake"
+$PYTHON - <<'PY'
+from pathlib import Path
+import re
+
+p = Path("pyproject.toml")
+text = p.read_text()
+
+# Fix name
+old_name = 'name = "mooncake-transfer-engine"'
+new_name = 'name = "mooncake-transfer-engine-rocm"'
+if old_name in text:
+    text = text.replace(old_name, new_name, 1)
+    print(f"Patched pyproject.toml: name -> mooncake-transfer-engine-rocm")
+elif new_name in text:
+    print("pyproject.toml name already correct")
+else:
+    raise SystemExit("ERROR: could not find expected name field in pyproject.toml")
+
+# Fix version — replace whatever version is there with the tag version
+text = re.sub(r'^version = "[^"]+"', 'version = "0.3.13.post1"', text, count=1, flags=re.MULTILINE)
+print("Patched pyproject.toml: version -> 0.3.13.post1")
+
+p.write_text(text)
+PY
+cd "${CURRENT_DIR}"
+
+# ---------------------------------------------------------------------------
 # Install Python build dependencies
 # ---------------------------------------------------------------------------
 $PYTHON -m pip install --upgrade pip
@@ -348,7 +386,17 @@ $PYTHON -m pip install "${CURRENT_DIR}/dist"/mooncake*.whl
 echo "Running import test"
 cd "${CURRENT_DIR}"
 
-if ! $PYTHON -c "import mooncake; print('mooncake version:', mooncake.__version__)"; then
+# mooncake does not expose __version__ on the package.
+# Import mooncake.engine (the pybind11 C extension) to confirm the native .so
+# loaded cleanly, then report the installed wheel version via importlib.
+if ! $PYTHON -c "
+import mooncake
+import mooncake.engine
+import importlib.metadata
+ver = importlib.metadata.version('mooncake-transfer-engine-rocm')
+print('mooncake-transfer-engine version:', ver)
+print('mooncake.engine loaded:', mooncake.engine)
+"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
