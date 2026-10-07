@@ -71,22 +71,25 @@ echo "==========================================="
 # ---------------------------------------------------------------------------
 
 # Python packages must appear first (wrapper script requirement).
-# Note: libdrm is not available in the UBI 10 repo — it is built from source below.
+# Notes on unavailable packages:
+#   libdrm       - not in UBI 10 repo; built from source below
+#   jsoncpp-devel - not in any RHEL 10 / EPEL 10 repo; built from source below
+#   boost-devel  - not needed: boost is not linked by the transfer engine when
+#                  store/etcd/redis components are disabled
+#   protobuf-devel - not in RHEL 10; only needed for USE_ETCD_LEGACY (disabled)
+#   liburing-devel - only needed for USE_TENT (disabled)
 yum install -y python3.12 python3.12-devel python3.12-pip \
     gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ \
     git make wget cmake ninja-build \
     rdma-core-devel \
     glog-devel \
-    jsoncpp-devel \
+    gflags-devel \
     libunwind-devel \
     numactl-devel \
-    boost1.78-devel \
     openssl-devel \
-    protobuf-devel \
     yaml-cpp-devel \
     libcurl-devel \
     hiredis-devel \
-    liburing-devel \
     jemalloc-devel \
     msgpack-devel \
     libzstd-devel \
@@ -152,6 +155,42 @@ ninja -C build install
 export PKG_CONFIG_PATH="/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
 export LD_LIBRARY_PATH="/usr/local/lib64:/usr/local/lib:${LD_LIBRARY_PATH:-}"
 echo "libdrm installed: $(pkg-config --modversion libdrm)"
+
+cd "${CURRENT_DIR}"
+
+# ---------------------------------------------------------------------------
+# Build jsoncpp from source
+# jsoncpp-devel is not available in any RHEL 10 / EPEL 10 repository.
+# The Mooncake CMake build requires JsonCpp headers and library at configure
+# time (FindJsonCpp.cmake).  We build the upstream release and install it into
+# /usr/local so CMake can find it via find_package / pkg-config.
+# ---------------------------------------------------------------------------
+JSONCPP_VERSION=${JSONCPP_VERSION:-"1.9.6"}
+JSONCPP_URL="https://github.com/open-source-parsers/jsoncpp.git"
+
+echo "Building jsoncpp ${JSONCPP_VERSION} from source"
+if [ -d "${CURRENT_DIR}/jsoncpp" ]; then
+    echo "jsoncpp directory already exists, reusing."
+    cd "${CURRENT_DIR}/jsoncpp"
+    git checkout "$JSONCPP_VERSION"
+else
+    if ! git clone --branch "$JSONCPP_VERSION" --depth 1 "$JSONCPP_URL" "${CURRENT_DIR}/jsoncpp"; then
+        echo "ERROR: Failed to clone jsoncpp ${JSONCPP_VERSION}"
+        exit 1
+    fi
+    cd "${CURRENT_DIR}/jsoncpp"
+fi
+
+cmake -S . -B build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DBUILD_SHARED_LIBS=ON \
+    -DJSONCPP_WITH_TESTS=OFF \
+    -DJSONCPP_WITH_POST_BUILD_UNITTEST=OFF
+cmake --build build --parallel "$(nproc)"
+cmake --install build
+
+echo "jsoncpp installed: $(pkg-config --modversion jsoncpp)"
 
 cd "${CURRENT_DIR}"
 
