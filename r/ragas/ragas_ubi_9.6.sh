@@ -49,7 +49,6 @@ yum install -y \
     gcc-toolset-13-gcc-gfortran \
     make \
     wget \
-    curl \
     openssl-devel \
     bzip2-devel \
     glibc-static \
