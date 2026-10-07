@@ -293,18 +293,22 @@ $PYTHON -m pip install --upgrade --ignore-installed \
 #
 # USE_CUDA is explicitly disabled (default OFF in pyproject.toml but set here
 # for clarity) so cmake does not auto-enable it when USE_HIP is found.
-# WITH_STORE_GO / WITH_P2P_STORE / WITH_STORE_RUST are disabled because they
-# require Go and are not needed by the transfer-engine Python bindings.
+# WITH_STORE=OFF disables the mooncake-store C++ library, which requires Boost
+# headers (boost/functional/hash.hpp, boost/uuid/uuid.hpp) that are not
+# available in RHEL 10.  The transfer engine itself does not need the store.
+# WITH_STORE_RUST=OFF must accompany WITH_STORE=OFF (CMake enforces this).
+# WITH_STORE_GO / WITH_P2P_STORE are also disabled for completeness.
 # ---------------------------------------------------------------------------
 
 export CMAKE_PREFIX_PATH="${ROCM_PATH}/lib/cmake:${ROCM_PATH}:${CMAKE_PREFIX_PATH:-}"
 
 SKBUILD_CMAKE_ARGS="-DUSE_HIP=ON"
 SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DUSE_CUDA=OFF"
-SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DWITH_EP=OFF"
-SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DWITH_P2P_STORE=OFF"
-SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DWITH_STORE_GO=OFF"
+SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DWITH_STORE=OFF"
 SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DWITH_STORE_RUST=OFF"
+SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DWITH_STORE_GO=OFF"
+SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DWITH_P2P_STORE=OFF"
+SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DWITH_EP=OFF"
 SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DBUILD_BENCHMARK=OFF"
 SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DBUILD_UNIT_TESTS=OFF"
 SKBUILD_CMAKE_ARGS="${SKBUILD_CMAKE_ARGS};-DBUILD_EXAMPLES=OFF"
