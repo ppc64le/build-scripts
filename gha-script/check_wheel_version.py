@@ -45,6 +45,10 @@ _RE_PREFIX = re.compile(r"^(?:release-v|release[-_]|rel_|version_|v|n(?=\d))", r
 # To add a new package-name pattern, extend this regex.
 _RE_PKG_PREFIX = re.compile(r"^[a-zA-Z][\w-]*?[-_]v?(\d[^\n]*)")
 
+# Converts date-style or digit-delimited hyphens — e.g. 2022-04-01 → 2022.04.01
+# Preserves pre-release/build identifiers such as 2.5.0-rc1 or v0.1.13-post3.
+_RE_DIGIT_HYPHEN = re.compile(r"(?<=\d)-(?=\d)")
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -57,11 +61,12 @@ def _is_dirty_local(local: str) -> bool:
 def _normalize_version(github_package_version: str) -> str:
     """Return a bare version number from any common tagging convention.
 
-    Strips (in order):
+    Strips / converts (in order):
       1. Operator separators  pkg==1.2.3  pkg@1.2.3
       2. Textual prefixes     v  release-v  rel_  version_  n (ffmpeg)
       3. Package-name prefix  azure-mgmt-batch_18.0.0  jaxlib-v0.4.7
-      4. Underscore → dot     1_4_39 → 1.4.39
+      4. Date-style hyphens   2022-04-01 → 2022.04.01
+      5. Underscore → dot     1_4_39 → 1.4.39
 
     Returns the input unchanged when no rule matches — the caller can detect
     this (norm == github_package_version) and hint that a new regex rule may
@@ -75,6 +80,7 @@ def _normalize_version(github_package_version: str) -> str:
     m = _RE_PKG_PREFIX.match(s)
     if m:
         s = m.group(1)
+    s = _RE_DIGIT_HYPHEN.sub(".", s)
     return s.replace("_", ".")
 
 
