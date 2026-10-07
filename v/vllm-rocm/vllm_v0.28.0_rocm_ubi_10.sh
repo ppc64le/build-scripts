@@ -676,7 +676,7 @@ fi
 echo "Built vLLM wheel(s):"
 ls -lh "${CURRENT_DIR}"/vllm-*.whl
 
-$PYTHON -m pip install "${CURRENT_DIR}"/vllm-*.whl pyarrow==23.0.1 --prefer-binary --extra-index-url "${DEVPI_INDEX}"
+$PYTHON -m pip install --prefer-binary "${CURRENT_DIR}"/vllm-*.whl pyarrow==23.0.1 --extra-index-url "${DEVPI_INDEX}"
 
 # ---------------------------------------------------------------------------
 # Import test
