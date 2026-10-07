@@ -28,6 +28,9 @@ PACKAGE_URL=https://github.com/vllm-project/compressed-tensors.git
 PACKAGE_DIR=compressed-tensors
 CURRENT_DIR="${PWD}"
 
+IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
+
+
 # Install dependencies
 yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran \
     cmake make wget openssl-devel bzip2-devel glibc-static libstdc++-static libffi-devel \
