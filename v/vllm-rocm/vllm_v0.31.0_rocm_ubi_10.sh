@@ -37,6 +37,8 @@
 #   ROCM_INSTALL_MODE    - rpms (default) or path
 #   ROCM_PATH            - Path to ROCm installation (default: /opt/rocm)
 #   ROCM_REPO_URL        - RPM repo baseurl for ROCm
+#   MOONCAKE_WHEEL       - Path to a local mooncake-transfer-engine-rocm wheel.
+#                          Required until the wheel is published to DEVPI_ROCM_INDEX.
 #   DEVPI_INDEX          - IBM ppc64le devpi wheel index URL
 #                          (default: https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple)
 #   DEVPI_ROCM_INDEX     - IBM ppc64le ROCm-specific devpi wheel index URL
@@ -58,6 +60,7 @@ ROCM_PATH=${ROCM_PATH:-/opt/rocm}
 
 DEVPI_INDEX=${DEVPI_INDEX:-"https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple"}
 DEVPI_ROCM_INDEX=${DEVPI_ROCM_INDEX:-"https://wheels.developerfirst.ibm.com/ppc64le/rocm/+simple"}
+MOONCAKE_WHEEL=${MOONCAKE_WHEEL:-""}
 
 if [[ "$ROCM_INSTALL_MODE" != "rpms" && "$ROCM_INSTALL_MODE" != "path" ]]; then
     echo "ERROR: ROCM_INSTALL_MODE must be one of: rpms, path"
@@ -68,6 +71,7 @@ echo "=== vLLM ROCm Build ==="
 echo "  PACKAGE_VERSION  : $PACKAGE_VERSION"
 echo "  ROCM_INSTALL_MODE: $ROCM_INSTALL_MODE"
 echo "  ROCM_PATH        : $ROCM_PATH"
+echo "  MOONCAKE_WHEEL   : ${MOONCAKE_WHEEL:-"(not set — will install from DEVPI_ROCM_INDEX)"}"
 echo "  DEVPI_INDEX      : $DEVPI_INDEX"
 echo "  DEVPI_ROCM_INDEX : $DEVPI_ROCM_INDEX"
 echo "======================="
@@ -435,6 +439,29 @@ $PYTHON -m pip install --prefer-binary \
     pandas \
     scipy
 echo "Devpi runtime deps installed"
+
+# ---------------------------------------------------------------------------
+# Install mooncake-transfer-engine-rocm
+#
+# vLLM v0.31.0 requires mooncake-transfer-engine-rocm >= 0.3.13 in
+# requirements/rocm.txt.  The wheel is not yet on the IBM devpi index so it
+# is installed from a local path supplied via MOONCAKE_WHEEL.
+#
+# TODO: once the wheel is published to DEVPI_ROCM_INDEX, remove the
+# MOONCAKE_WHEEL local-path branch and the env var.
+# ---------------------------------------------------------------------------
+if [[ -n "$MOONCAKE_WHEEL" ]]; then
+    [[ -f "$MOONCAKE_WHEEL" ]] || { echo "ERROR: MOONCAKE_WHEEL file not found: ${MOONCAKE_WHEEL}"; exit 1; }
+    echo "Installing mooncake-transfer-engine-rocm from local wheel: ${MOONCAKE_WHEEL}"
+    $PYTHON -m pip install --prefer-binary \
+        --extra-index-url "${DEVPI_INDEX}" \
+        "${MOONCAKE_WHEEL}"
+else
+    echo "Installing mooncake-transfer-engine-rocm from ROCm devpi index"
+    $PYTHON -m pip install --prefer-binary \
+        --extra-index-url "${DEVPI_ROCM_INDEX}" \
+        "mooncake-transfer-engine-rocm>=0.3.13"
+fi
 
 # ---------------------------------------------------------------------------
 # Build vLLM wheel
