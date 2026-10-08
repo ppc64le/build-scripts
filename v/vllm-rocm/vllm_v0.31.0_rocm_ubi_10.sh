@@ -428,7 +428,6 @@ $PYTHON -m pip install --prefer-binary \
     xgrammar \
     sentencepiece \
     tiktoken \
-    pyarrow \
     ijson \
     llguidance \
     msgspec \
@@ -439,6 +438,16 @@ $PYTHON -m pip install --prefer-binary \
     onnx \
     pandas \
     scipy
+
+# Install pyarrow separately with an explicit upgrade flag so that the devpi
+# binary is used even if a lower version is already present, and the newer
+# version required by datasets (>=24.0.0) is satisfied from devpi rather than
+# built from source off PyPI.
+echo "Installing pyarrow from devpi index"
+$PYTHON -m pip install --prefer-binary \
+    --extra-index-url "${DEVPI_INDEX}" \
+    --upgrade \
+    pyarrow
 echo "Devpi runtime deps installed"
 
 # ---------------------------------------------------------------------------
@@ -509,7 +518,10 @@ fi
 echo "Built vLLM wheel(s):"
 ls -lh "${CURRENT_DIR}"/vllm-*.whl
 
-$PYTHON -m pip install "${CURRENT_DIR}"/vllm-*.whl --prefer-binary --extra-index-url "${DEVPI_INDEX}"
+$PYTHON -m pip install "${CURRENT_DIR}"/vllm-*.whl \
+    --prefer-binary \
+    --extra-index-url "${DEVPI_INDEX}" \
+    --extra-index-url "${DEVPI_ROCM_INDEX}"
 
 # ---------------------------------------------------------------------------
 # Import test
