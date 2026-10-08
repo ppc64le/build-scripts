@@ -439,15 +439,17 @@ $PYTHON -m pip install --prefer-binary \
     pandas \
     scipy
 
-# Install pyarrow separately with an explicit upgrade flag so that the devpi
-# binary is used even if a lower version is already present, and the newer
-# version required by datasets (>=24.0.0) is satisfied from devpi rather than
-# built from source off PyPI.
-echo "Installing pyarrow from devpi index"
+# Install pyarrow and datasets with explicit version caps:
+#   - datasets>=5.1.0 requires pyarrow>=24.0.0 which has no ppc64le binary on
+#     PyPI and is not yet on the IBM devpi index (highest available: 23.0.1).
+#     Pin datasets<5.1.0 so pip never needs pyarrow>=24.
+#   - Pre-install pyarrow from devpi so it is already present and resolved
+#     before the vLLM wheel install triggers datasets' dependency.
+echo "Installing pyarrow and datasets from devpi index"
 $PYTHON -m pip install --prefer-binary \
     --extra-index-url "${DEVPI_INDEX}" \
-    --upgrade \
-    pyarrow
+    "pyarrow>=21.0.0" \
+    "datasets<5.1.0"
 echo "Devpi runtime deps installed"
 
 # ---------------------------------------------------------------------------
