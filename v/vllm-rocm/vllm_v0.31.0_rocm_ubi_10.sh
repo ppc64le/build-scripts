@@ -220,6 +220,7 @@ $PYTHON -m pip install --upgrade pip setuptools wheel
 echo "Installing torch, torchvision, and torchaudio from ROCm devpi index"
 $PYTHON -m pip install --prefer-binary \
     --extra-index-url "${DEVPI_ROCM_INDEX}" \
+    --extra-index-url "${DEVPI_INDEX}" \
     torch torchvision torchaudio
 
 # Verify torch is importable and ROCm is visible through it
