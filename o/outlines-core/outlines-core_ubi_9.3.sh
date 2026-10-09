@@ -114,14 +114,14 @@ cd ..
 export PROTOC=$LIBPROTO_DIR/build/protoc
 export LD_LIBRARY_PATH=$SCRIPT_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
-export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
-export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
+# export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
+# export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
-git apply set_cpp_to_17_v4.25.3.patch
-cd python
-python3.12 -m pip install . --no-build-isolation
-cd ../..
+# wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
+# git apply set_cpp_to_17_v4.25.3.patch
+# cd python
+# python3.12 -m pip install . --no-build-isolation
+# cd ../..
 
 # --------------------- Install Rust ---------------------
 curl https://sh.rustup.rs -sSf | sh -s -- -y
