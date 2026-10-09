@@ -82,7 +82,7 @@ echo "======================="
 
 # Python packages must appear first (wrapper script requirement).
 # Note: libdrm is not available in the UBI 10 repo — it is built from source below.
-yum install -y python3.13 python3.13-devel python3.13-pip \
+yum install -y python3.12 python3.12-devel python3.12-pip \
     gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ \
     git make wget patch cmake ninja-build \
     zlib-devel curl \
@@ -101,9 +101,8 @@ fi
 
 echo "Using gcc: $(gcc --version | head -1)"
 
-# Use Python 3.13 for the build so all produced wheels are cp313
-# NOTE: change back to python3.12 / cp312 before opening the PR
-PYTHON=python3.13
+# Use Python 3.12 for the build so all produced wheels are cp312
+PYTHON=python3.12
 
 # ---------------------------------------------------------------------------
 # Build libdrm from source
