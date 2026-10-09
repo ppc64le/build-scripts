@@ -707,7 +707,14 @@ cd $PACKAGE_NAME
 export LD_LIBRARY_PATH="${RE2_PREFIX}/lib:$LD_LIBRARY_PATH"
 
 python3.12 -m pip install setuptools pytest pydantic pytest-cov pandas
-python3.12 -m pip install sentencepiece --no-build-isolation
+# Patch sentencepiece pyproject.toml to fix license field (PEP 621 compliance)
+python3.12 -m pip download sentencepiece --no-deps --no-binary sentencepiece -d /tmp/sentencepiece_patch
+cd /tmp/sentencepiece_patch
+tar -xzf sentencepiece-*.tar.gz
+cd sentencepiece-*
+sed -i 's/license = "Apache-2.0"/license = {text = "Apache-2.0"}/' pyproject.toml
+python3.12 -m pip install . --no-build-isolation
+cd $CURRENT_DIR
 python3.12 -m pip install datasets==2.14.7 --no-build-isolation --no-deps
 python3.12 -m pip install "multiprocess==0.70.15"
 python3.12 -m pip install "xxhash==3.4.1"
