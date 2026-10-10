@@ -6,8 +6,15 @@ cd package-cache
 
 if [ "$validate_build_script" == true ]; then
 
+    echo "[INFO] Generating GitHub App token..."
+    GITHUB_TOKEN=$(python3 "$(dirname "$0")/generate_github_token.py")
+
     echo "[INFO] Fetching latest Trivy version..."
-    TRIVY_VERSION=$(curl -s https://api.github.com/repos/aquasecurity/trivy/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
+    TRIVY_VERSION=$(curl -fsSL \
+      -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+      -H "Accept: application/vnd.github+json" \
+      https://api.github.com/repos/aquasecurity/trivy/releases/latest \
+      | grep -Po '"tag_name": "\K.*?(?=")')
     FILE_NAME="trivy_${TRIVY_VERSION#v}_Linux-PPC64LE.tar.gz"
     CHECKSUM_FILE="trivy_${TRIVY_VERSION#v}_checksums.txt"
 
