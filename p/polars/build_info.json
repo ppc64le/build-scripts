@@ -3,7 +3,7 @@
   "package_name": "polars",
   "github_url": "https://github.com/pola-rs/polars",
   "version": "py-1.38.1",
-  "wheel_build" : true,
+  "wheel_build" : "true",
   "default_branch": "main",
   "package_dir": "p/polars",
   "build_script": "polars_py-1.38.1_ubi_9.7.sh",
