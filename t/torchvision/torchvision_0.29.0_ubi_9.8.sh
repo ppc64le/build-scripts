@@ -4,11 +4,11 @@
 # Package          : torchvision
 # Version          : v0.29.0
 # Source repo      : https://github.com/pytorch/vision
-# Tested on        : UBI:9.6
+# Tested on        : UBI:9.8
 # Language         : Python
 # Ci-Check         : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Siddesh Sangodkar <siddesh.sangodkar1@ibm.com>
+# Maintainer       : Ira <ira.pandey1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -29,14 +29,14 @@ CURRENT_DIR=$(pwd)
 WHEEL_DIR="${CURRENT_DIR}/wheels"
 mkdir -p "${WHEEL_DIR}"
 
-IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
-IBM_WHEELS_HOST="wheels.developerfirst.ibm.com"
-TORCH_VERSION="2.13.0"
+TORCH_VERSION="2.14.0"
+TORCH_URL=https://github.com/pytorch/pytorch
+TORCH_PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.12.0.patch"
 
 # ---------------------------------------------------------------------------
 # System dependencies
 # ---------------------------------------------------------------------------
-yum install -y python3.12 python3.12-devel python3.12-pip \
+yum install -y python3.11 python3.11-devel python3.11-pip \
     git gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ \
     gcc-toolset-13-gcc-gfortran gcc-toolset-13-libatomic-devel \
     make cmake ninja-build \
@@ -44,33 +44,70 @@ yum install -y python3.12 python3.12-devel python3.12-pip \
     pkg-config \
     libjpeg-turbo-devel libpng-devel libwebp-devel \
     zlib-devel openssl-devel libffi-devel \
-    which curl tar
+    which tar
 
 source /opt/rh/gcc-toolset-13/enable
 
 echo "Using gcc: $(gcc --version | head -1)"
-echo "Using python: $(python3.12 --version)"
+echo "Using python: $(python3.11 --version)"
 
 # ---------------------------------------------------------------------------
 # Python build tools
 # ---------------------------------------------------------------------------
 NUMPY_VERSION=2.2.6
-python3.12 -m pip install --upgrade pip setuptools wheel build packaging
-python3.12 -m pip install \
+python3.11 -m pip install --upgrade pip setuptools wheel build packaging
+python3.11 -m pip install \
     "meson-python>=0.15.0" "Cython>=3.0.6" meson ninja patchelf \
     "numpy==${NUMPY_VERSION}" pillow requests pytest pytest-mock
 
 cd "${CURRENT_DIR}"
 
 # ---------------------------------------------------------------------------
-# Install torch 2.13.0 from IBM DeveloperFirst index
-# torchvision setup.py imports torch at build time — must be installed first.
+# Build torch 2.14.0 from source (CPU-only) so the script works for every
+# Python version. torchvision setup.py imports torch at build time — must be
+# installed first. The torch wheel is kept out of WHEEL_DIR/CURRENT_DIR so
+# only the torchvision wheel is picked up.
 # ---------------------------------------------------------------------------
-python3.12 -m pip install \
-    --trusted-host "${IBM_WHEELS_HOST}" \
-    --extra-index-url "${IBM_WHEELS}" \
-    --prefer-binary \
-    "torch==${TORCH_VERSION}"
+TORCH_WHEEL_DIR="${CURRENT_DIR}/torch_wheels"
+mkdir -p "${TORCH_WHEEL_DIR}"
+
+git clone "${TORCH_URL}" pytorch
+cd pytorch
+git checkout "v${TORCH_VERSION}"
+git submodule sync
+git submodule update --init --recursive
+
+# ppc64le patch (tensorpipe SHM/CMA off, protobuf env passthrough)
+curl -fsSL "${TORCH_PATCH_URL}" -o pytorch_ppc64le.patch && git apply pytorch_ppc64le.patch || echo "Patch not applied, continuing"
+
+# lintrunner has no ppc64le wheel and is not needed to build
+sed -i '/lintrunner ;/s/$/ and platform_machine != "ppc64le"/' requirements.txt
+
+python3.11 -m pip install -r requirements.txt
+
+export USE_CUDA=0
+export USE_CUDNN=0
+export USE_MKLDNN=0
+export USE_FBGEMM=0
+export USE_NNPACK=0
+export USE_QNNPACK=0
+export USE_XNNPACK=0
+export USE_PYTORCH_QNNPACK=0
+export BLAS=OpenBLAS
+export USE_OPENMP=1
+export BUILD_TEST=0
+export MAX_JOBS=$(nproc)
+export PYTORCH_BUILD_VERSION="${TORCH_VERSION}"
+export PYTORCH_BUILD_NUMBER=1
+
+if ! python3.11 -m pip wheel --no-build-isolation --no-deps -w "${TORCH_WHEEL_DIR}" .; then
+    echo "------------------$PACKAGE_NAME:Build_fails (torch ${TORCH_VERSION} dependency)----------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    exit 1
+fi
+python3.11 -m pip install "${TORCH_WHEEL_DIR}"/torch-*.whl
+python3.11 -c "import torch; print('torch', torch.__version__)"
 
 
 # ---------------------------------------------------------------------------
@@ -92,9 +129,9 @@ fi
 git checkout "${_TAG}"
 
 # ---------------------------------------------------------------------------
-# Apply patches for PyTorch 2.13.0 Stable ABI compatibility: https://github.com/pytorch/vision/pull/9610
+# Apply patches for PyTorch 2.14.0 Stable ABI compatibility: https://github.com/pytorch/vision/pull/9610
 # ---------------------------------------------------------------------------
-python3.12 - <<'PYEOF'
+python3.11 - <<'PYEOF'
 from pathlib import Path
 
 # 1. Add permute helper to StableABICompat.h
@@ -137,7 +174,7 @@ PYEOF
 export FORCE_CUDA=0
 export TORCHVISION_USE_NVJPEG=0
 
-if ! python3.12 -m pip wheel \
+if ! python3.11 -m pip wheel \
         --no-build-isolation \
         --no-deps \
         -w "${WHEEL_DIR}" \
@@ -155,7 +192,7 @@ rm -f "${CURRENT_DIR}"/numpy-*.whl
 # ---------------------------------------------------------------------------
 WHL=$(find "${CURRENT_DIR}" -maxdepth 2 -name "torchvision-*.whl" | head -1)
 echo "Installing torchvision wheel: ${WHL}"
-python3.12 -m pip install --no-deps --force-reinstall "${WHL}"
+python3.11 -m pip install --no-deps --force-reinstall "${WHL}"
 
 cd "${CURRENT_DIR}"
 

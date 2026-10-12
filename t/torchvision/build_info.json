@@ -37,7 +37,7 @@
   },
   "v0.29.0": {
     "build_script": [
-      "torchvision_0.29.0_ubi_9.6.sh",
+      "torchvision_0.29.0_ubi_9.8.sh",
       "torchvision_0.29.0_ubi_10.2.sh"
     ]
   }
