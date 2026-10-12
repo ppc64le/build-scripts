@@ -714,7 +714,7 @@ python3.12 -m pip install setuptools pytest pydantic pytest-cov pandas
 python3.12 -m pip download sentencepiece --no-deps --no-binary sentencepiece -d /tmp/sentencepiece_patch
 cd /tmp/sentencepiece_patch
 tar -xzf sentencepiece-*.tar.gz
-cd sentencepiece-*
+cd $(ls -d sentencepiece-* | head -1)
 sed -i 's/license = "Apache-2.0"/license = {text = "Apache-2.0"}/' pyproject.toml
 python3.12 -m pip install . --no-build-isolation
 cd $CURRENT_DIR
