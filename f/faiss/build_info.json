@@ -12,6 +12,6 @@
     "wheel_build": true,
 
     "*": {
-        "build_script": "faiss_v1.9.0_ubi10.2.sh"
+        "build_script": "faiss_v1.9.0_ubi_10.2.sh"
     }
 }
