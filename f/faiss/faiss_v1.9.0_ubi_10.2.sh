@@ -14,9 +14,9 @@
 #                  versions of the package or OS is not guaranteed.
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME="faiss"
-PACKAGE_ORG="facebookresearch"
-PACKAGE_VERSION="v1.9.0"
+PACKAGE_NAME=faiss
+PACKAGE_ORG=facebookresearch
+PACKAGE_VERSION=${1:-v1.9.0}
 PACKAGE_URL="https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}.git"
 PACKAGE_DIR=faiss
 BUILD_HOME="${HOME:-/root}"
