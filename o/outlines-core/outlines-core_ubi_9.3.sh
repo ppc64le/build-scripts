@@ -114,9 +114,12 @@ cd ..
 export PROTOC=$LIBPROTO_DIR/build/protoc
 export LD_LIBRARY_PATH=$SCRIPT_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
-# export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
-# export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
+# NOTE: Skip protobuf Python package installation as it creates namespace package
+# conflicts that corrupt the Python environment. The C++ libraries are sufficient
+# for PyTorch build.
 # wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
 # git apply set_cpp_to_17_v4.25.3.patch
 # cd python
