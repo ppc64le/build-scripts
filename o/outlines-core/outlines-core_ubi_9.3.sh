@@ -117,11 +117,14 @@ export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
-git apply set_cpp_to_17_v4.25.3.patch
-cd python
-python3.12 -m pip install . --no-build-isolation
-cd ../..
+# NOTE: Skip protobuf Python package installation as it creates namespace package
+# conflicts that corrupt the Python environment. The C++ libraries are sufficient
+# for PyTorch build.
+# wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
+# git apply set_cpp_to_17_v4.25.3.patch
+# cd python
+# python3.12 -m pip install . --no-build-isolation
+# cd ../..
 
 # --------------------- Install Rust ---------------------
 curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -707,7 +710,14 @@ cd $PACKAGE_NAME
 export LD_LIBRARY_PATH="${RE2_PREFIX}/lib:$LD_LIBRARY_PATH"
 
 python3.12 -m pip install setuptools pytest pydantic pytest-cov pandas
-python3.12 -m pip install sentencepiece --no-build-isolation
+# Patch sentencepiece pyproject.toml to fix license field (PEP 621 compliance)
+python3.12 -m pip download sentencepiece --no-deps --no-binary sentencepiece -d /tmp/sentencepiece_patch
+cd /tmp/sentencepiece_patch
+tar -xzf sentencepiece-*.tar.gz
+cd $(ls -d sentencepiece-* | head -1)
+sed -i 's/license = "Apache-2.0"/license = {text = "Apache-2.0"}/' pyproject.toml
+python3.12 -m pip install . --no-build-isolation
+cd $CURRENT_DIR/$PACKAGE_NAME
 python3.12 -m pip install datasets==2.14.7 --no-build-isolation --no-deps
 python3.12 -m pip install "multiprocess==0.70.15"
 python3.12 -m pip install "xxhash==3.4.1"
