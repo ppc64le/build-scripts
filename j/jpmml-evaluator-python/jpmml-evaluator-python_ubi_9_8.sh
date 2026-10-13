@@ -42,17 +42,15 @@ dnf install -y \
 export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
 export PATH=$JAVA_HOME/bin:$PATH
 
+
+
 # Install Apache Ant
 mkdir -p /opt/ant
-cd /opt/ant
-
-curl -L https://dlcdn.apache.org/ant/binaries/apache-ant-1.10.18-bin.tar.gz | tar -xz
+curl -L https://dlcdn.apache.org/ant/binaries/apache-ant-1.10.18-bin.tar.gz | tar -xz -C /opt/ant
 
 export ANT_HOME=/opt/ant/apache-ant-1.10.18
 export PATH=$PATH:$ANT_HOME/bin
 
-# Clone package repository
-cd /root
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -60,7 +58,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Upgrade packaging tools
-pip3 install --upgrade pip setuptools wheel
+pip3 install --upgrade pip setuptools wheel pytest pytest-forked
 
 # Build wheel
 if ! pip3 wheel .; then
@@ -78,8 +76,10 @@ if ! pip3 install .; then
     exit 1
 fi
 
+sed -i 's/targetFieldName = targetField.getName()/targetFieldName = str(targetField.getName())/g' jpmml_evaluator/tests/__init__.py
+
 # Validation
-if ! python3 -c "import jpmml_evaluator"; then
+if ! python3 -m pytest --forked; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_VERSION | GitHub | Fail | Install_success_but_test_Fails"
