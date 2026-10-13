@@ -299,8 +299,23 @@ sed -i "s/cmake/cmake==3.*/g" requirements.txt
 python3 -m pip install -r requirements.txt
 
 echo "----------Installing pytorch------------"
-MAX_JOBS=$(nproc) python3 setup.py install
-MAX_JOBS=$(nproc) python3 setup.py bdist_wheel
+if [[ "$(printf '%s\n' "$ver" "2.14.0" | sort -V | tail -n1)" == "$ver" ]]; then
+    # PyTorch >= 2.14: setup.py bdist_wheel is removed in favour of the PEP 517 build (scikit-build-core).
+    # Install build requirements (except cmake, already pinned above), then build and install the wheel.
+    python3 -m pip install build
+    python3 - <<'EOF' | xargs -r -d '\n' python3 -m pip install
+import tomllib
+with open("pyproject.toml", "rb") as f:
+    for req in tomllib.load(f)["build-system"]["requires"]:
+        if not req.lower().startswith("cmake"):
+            print(req)
+EOF
+    MAX_JOBS=$(nproc) python3 -m build --wheel --no-isolation
+    python3 -m pip install --no-deps --force-reinstall dist/torch-*.whl
+else
+    MAX_JOBS=$(nproc) python3 setup.py install
+    MAX_JOBS=$(nproc) python3 setup.py bdist_wheel
+fi
 cd $CURRENT_DIR
 
 echo "--------------------------------- Installing Opus ---------------------------------"
