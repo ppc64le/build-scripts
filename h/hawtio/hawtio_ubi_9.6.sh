@@ -24,13 +24,13 @@ PACKAGE_NAME=hawtio
 PACKAGE_URL=https://github.com/hawtio/hawtio
 PACKAGE_VERSION=4.x
 MAVEN_VERSION=3.9.16
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+wdir=`pwd`
 
 yum install git wget jq -y
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+git clone "$PACKAGE_URL"
+cd "$wdir/${PACKAGE_NAME}"
 git checkout $PACKAGE_VERSION
-git apply --ignore-whitespace "$SCRIPT_DIR/hawtio.patch"
+git apply --ignore-whitespace "$wdir/h/hawtio/hawtio.patch"
 #install JAVA17
 yum install java-17-openjdk java-17-openjdk-devel -y
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
