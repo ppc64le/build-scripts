@@ -1,9 +1,9 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : scikit-network
-# Version          : v0.33.5
-# Source repo      : https://github.com/sknetwork-team/scikit-network.git
+# Package          : opentelemetry-semantic-conventions
+# Version          : v1.44.0
+# Source repo      : https://github.com/open-telemetry/opentelemetry-python.git
 # Tested on        : UBI:9.6
 # Language         : Python
 # Ci-Check         : True
