@@ -1,0 +1,16 @@
+{
+   "maintainer": "bhagyashrigais",
+   "package_name": "opentelemetry-semantic-conventions",
+   "github_url": " https://github.com/open-telemetry/opentelemetry-python.git",
+   "version": "v1.44.0",
+   "default_branch": "main",
+   "build_script": "opentelemetry-semantic-conventions_ubi_9.6",
+   "package_dir": "o/opentelemetry-semantic-conventions",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"opentelemetry-semantic-conventions_ubi_9.6.sh"
+  }
+}
