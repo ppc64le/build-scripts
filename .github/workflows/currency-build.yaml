@@ -124,6 +124,13 @@ jobs:
             echo "__EOF__"
           } >> $GITHUB_OUTPUT
 
+      - name: Update wheel mapping in COS
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+        run: |
+          source variable.sh
+          python3 ./gha-script/upload-scripts/update_pkg_wheel_name_mapping.py
+          
       - name: Create scanner-env.sh
         run: |
           mkdir package-cache

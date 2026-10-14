@@ -97,7 +97,10 @@ WHEEL_SCRIPT=gha-script/create_wheel_wrapper.sh
 # path to post_process_wheel script (suffix addition, license addition, metadata addition)
 POST_PROCESS_SCRIPT_PATH=gha-script/post_process_wheel.py
 
-python3 gha-script/build_wheels.py "$WHEEL_SCRIPT" "$PYTHON_VERSION" "$docker_image" "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "$POST_PROCESS_SCRIPT_PATH" 2>&1 | tee wheel_build_log
+# path to check_wheel_version script (version match + clean version validation)
+CHECK_WHEEL_VERSION_SCRIPT=gha-script/check_wheel_version.py
+
+python3 gha-script/build_wheels.py "$WHEEL_SCRIPT" "$PYTHON_VERSION" "$docker_image" "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "$POST_PROCESS_SCRIPT_PATH" "$CHECK_WHEEL_VERSION_SCRIPT" 2>&1 | tee wheel_build_log
 wheel_status=${PIPESTATUS[0]}
 
 log_size=$(stat -c %s wheel_build_log)
