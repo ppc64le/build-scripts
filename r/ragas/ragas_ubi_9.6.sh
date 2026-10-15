@@ -32,7 +32,7 @@ IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 NUMPY_VERSION="2.2.6"
 SCIPY_VERSION="1.17.0"
 PILLOW_VERSION="12.1.1+ppc64le1"
-PYARROW_VERSION="22.0.0"
+PYARROW_VERSION="24.0.0"
 SCIKIT_NETWORK_VERSION="v0.33.5"
 
 # scikit-network source
