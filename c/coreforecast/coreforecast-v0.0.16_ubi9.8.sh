@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : coreforecast
-# Version          : 0.0.16
+# Version          : v0.0.16
 # Source repo      : https://github.com/Nixtla/coreforecast
 # Tested on        : UBI:9.8
 # Language         : Python, C++

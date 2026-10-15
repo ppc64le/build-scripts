@@ -2,7 +2,7 @@
   "maintainer": "Mohammed Sheikh",
   "package_name": "coreforecast",
   "github_url": "https://github.com/Nixtla/coreforecast",
-  "version": "0.0.16",
+  "version": "v0.0.16",
   "wheel_build": true,
   "default_branch": "master",
   "package_dir": "c/coreforecast",
