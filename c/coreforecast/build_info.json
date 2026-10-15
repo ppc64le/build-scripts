@@ -10,7 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "0.0.16": {
+  "v0.0.16": {
     "build_script": "coreforecast-v0.0.16_ubi9.8.sh"
   }
 }
