@@ -130,10 +130,8 @@ fi
 
 cd "$SOURCE_DIR"
 
-# Build Python wheel in an isolated staging directory so the cmake build/lib/
-# tree (which contains libgtest/libgmock) is never seen by setuptools.
-WHEEL_STAGING="${WORKING_DIR}/wheel_staging"
-LOCAL_PKG="${WHEEL_STAGING}/local/azure_storage_blobs_cpp"
+# Build Python wheel
+LOCAL_PKG="${SOURCE_DIR}/local/azure_storage_blobs_cpp"
 mkdir -p "${LOCAL_PKG}/lib64" \
          "${LOCAL_PKG}/include/azure/storage/blobs" \
          "${LOCAL_PKG}/share/azure-storage-blobs-cpp"
@@ -163,15 +161,15 @@ elif [ -f "${WORKING_DIR}/a/azure-storage-blobs/pyproject.toml" ]; then
 fi
 
 if [ -n "${_PYPROJECT_SRC}" ]; then
-    cp "${_PYPROJECT_SRC}" "${WHEEL_STAGING}/pyproject.toml"
+    cp "${_PYPROJECT_SRC}" "${SOURCE_DIR}/pyproject.toml"
 else
-    wget -O "${WHEEL_STAGING}/pyproject.toml" \
+    wget -O "${SOURCE_DIR}/pyproject.toml" \
         https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/azure-storage-blobs/pyproject.toml
 fi
-sed -i "s/{PACKAGE_VERSION}/${PACKAGE_VERSION#azure-storage-blobs_}/g" "${WHEEL_STAGING}/pyproject.toml"
+sed -i "s/{PACKAGE_VERSION}/${PACKAGE_VERSION#azure-storage-blobs_}/g" "${SOURCE_DIR}/pyproject.toml"
 
 mkdir -p "${WORKING_DIR}/dist"
-if ! python3 -m build --wheel --outdir "${WORKING_DIR}/dist" "${WHEEL_STAGING}"; then
+if ! python3 -m build --wheel --outdir "${WORKING_DIR}/dist" "${SOURCE_DIR}"; then
     echo "------------------$PACKAGE_NAME:Wheel_build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Wheel_Build_Fails"
