@@ -19,10 +19,11 @@ classifiers = [
 homepage = "https://github.com/Azure/azure-sdk-for-cpp"
 upstream = "https://github.com/Azure/azure-sdk-for-cpp"
 
-# Find package files in local folder
-[tool.setuptools.packages.find]
-namespaces = true
-where = ["local"]
+# Explicitly list only our package — prevents setuptools flat-layout
+# discovery from scanning the whole repo root (eng/, sdk/, samples/, etc.)
+[tool.setuptools]
+packages = ["azure_storage_blobs_cpp"]
+package-dir = {"" = "local"}
 
 # Package data: shared libs, headers, cmake config
 [tool.setuptools.package-data]

@@ -1,4 +1,4 @@
-﻿{
+{
     "maintainer": "prachi.gaonkar@ibm.com",
     "package_name": "azure-storage-blobs",
     "github_url": "https://github.com/Azure/azure-sdk-for-cpp",
