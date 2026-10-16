@@ -48,6 +48,23 @@ yum install -y wget git cmake ninja-build make gcc gcc-c++ \
     libffi-devel openssl-devel bzip2-devel xz-devel zlib-devel \
     "python${PYTHON_VERSION}" "python${PYTHON_VERSION}-devel" "python${PYTHON_VERSION}-pip" || true
 
+# Verify critical build tools are present; install ninja from upstream if yum missed it.
+if ! command -v ninja &>/dev/null; then
+    echo "ninja not found via yum — installing from upstream release..."
+    NINJA_BIN=$(mktemp -d)/ninja
+    wget -qO "$NINJA_BIN" \
+        https://github.com/ninja-build/ninja/releases/latest/download/ninja-linux.zip \
+        && unzip -p "$NINJA_BIN" ninja > /usr/local/bin/ninja \
+        && chmod +x /usr/local/bin/ninja \
+        || { echo "ERROR: Failed to install ninja"; exit 1; }
+    unset NINJA_BIN
+fi
+ninja --version
+
+if ! command -v gcc &>/dev/null || ! command -v g++ &>/dev/null; then
+    echo "ERROR: gcc/g++ not found. Ensure gcc and gcc-c++ are installed."
+    exit 1
+fi
 gcc --version
 g++ --version
 
