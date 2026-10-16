@@ -42,8 +42,6 @@ dnf install -y \
 export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
 export PATH=$JAVA_HOME/bin:$PATH
 
-
-
 # Install Apache Ant
 mkdir -p /opt/ant
 curl -L https://dlcdn.apache.org/ant/binaries/apache-ant-1.10.18-bin.tar.gz | tar -xz -C /opt/ant
@@ -51,25 +49,19 @@ curl -L https://dlcdn.apache.org/ant/binaries/apache-ant-1.10.18-bin.tar.gz | ta
 export ANT_HOME=/opt/ant/apache-ant-1.10.18
 export PATH=$PATH:$ANT_HOME/bin
 
-
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 
 git checkout $PACKAGE_VERSION
 
-# Upgrade packaging tools
-pip3 install --upgrade pip setuptools wheel pytest pytest-forked
+# Pin setuptools to keep pkg_resources available
+python3 -m pip install --upgrade pip "setuptools<81" wheel pytest pytest-forked
 
-# Build wheel
-if ! pip3 wheel .; then
-    echo "------------------$PACKAGE_NAME:wheel_build_fails---------------------"
-    echo "$PACKAGE_VERSION $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_VERSION | GitHub | Fail | Wheel_Build_Fails"
-    exit 1
-fi
+# Install runtime dependencies first
+python3 -m pip install jpype1 pandas py4j "pyjnius>=1.2.1"
 
-# Install package
-if ! pip3 install .; then
+# Use pinned setuptools during package build
+if ! python3 -m pip install --no-build-isolation .; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_VERSION | GitHub | Fail | Build_Fails"
