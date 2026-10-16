@@ -1,0 +1,21 @@
+{
+    "maintainer": "prachi.gaonkar@ibm.com",
+    "package_name": "azure-storage-common",
+    "github_url": "https://github.com/Azure/azure-sdk-for-cpp",
+    "version": "azure-storage-common_12.14.0",
+    "default_branch": "main",
+    "build_script": "azure-storage-common_12.14.0_ubi_10.2.sh",
+    "package_dir": "a/azure-storage-common",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "wheel_build": true,
+    "azure-storage-common_12.14.0": {
+        "build_script": [
+            "azure-storage-common_12.14.0_ubi_10.2.sh"
+        ]
+    },
+    "*": {
+        "build_script": "azure-storage-common_12.14.0_ubi_10.2.sh"
+    }
+}
