@@ -177,7 +177,8 @@ echo "-------------------Installing and testing numba----------------------"
 VENV_DIR="$WORKING_DIR/test_env"
 rm -rf "$VENV_DIR"
 "$PYTHON_CMD" -m venv "$VENV_DIR"
-"$VENV_DIR/bin/python" -m pip install --upgrade pip
+VENV_PYTHON="$VENV_DIR/bin/python3"
+"$VENV_PYTHON" -m pip install --upgrade pip
 
 # Same NumPy CFLAGS/CXXFLAGS guard as above.
 if ! (unset CFLAGS CXXFLAGS; "$VENV_DIR/bin/pip" install \
@@ -189,7 +190,7 @@ if ! (unset CFLAGS CXXFLAGS; "$VENV_DIR/bin/pip" install \
     exit 1
 fi
 
-if ! "$VENV_DIR/bin/python" <<EOF
+if ! "$VENV_PYTHON" <<EOF
 import numpy as np
 import numba
 import llvmlite
