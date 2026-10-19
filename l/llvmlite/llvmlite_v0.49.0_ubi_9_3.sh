@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : llvmlite
-# Version          : v0.49.0
+# Version          : 0.49.0
 # Source repo      : https://github.com/numba/llvmlite
 # Tested on        : UBI:9.6
 # Language         : Python
