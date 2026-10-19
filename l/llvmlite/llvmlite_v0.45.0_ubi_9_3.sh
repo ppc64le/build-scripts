@@ -4,7 +4,7 @@
 # Package          : llvmlite
 # Version          : 0.45.0
 # Source repo      : https://github.com/numba/llvmlite
-# Tested on        : UBI:9.6
+# Tested on        : UBI:9.3
 # Language         : Python
 # Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
