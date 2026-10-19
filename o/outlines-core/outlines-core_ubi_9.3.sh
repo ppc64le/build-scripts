@@ -120,12 +120,14 @@ export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
-# Apply patch and install protobuf Python package
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
-git apply set_cpp_to_17_v4.25.3.patch
-cd python
-python3.12 -m pip install --no-build-isolation .
-cd $CURRENT_DIR
+# NOTE: Skip protobuf Python package installation — the protobuf-4.25.x nspkg.pth
+# hook corrupts the Python stdlib (breaks 'json', 'traceback', etc.).
+# The C++ libraries built above are sufficient for PyTorch.
+# wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
+# git apply set_cpp_to_17_v4.25.3.patch
+# cd python
+# python3.12 -m pip install --no-build-isolation .
+# cd $CURRENT_DIR
 
 # --------------------- Install Rust ---------------------
 curl https://sh.rustup.rs -sSf | sh -s -- -y
