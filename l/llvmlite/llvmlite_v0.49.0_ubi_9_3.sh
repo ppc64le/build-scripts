@@ -38,7 +38,7 @@ LLVM_SHORT=22
 # ---------------------------------------------------------------------------
 # System dependencies
 # ---------------------------------------------------------------------------
-yum install -y git wget cmake ninja-build make \
+yum install -y --allowerasing git wget cmake ninja-build make \
                openssl-devel bzip2-devel libffi-devel zlib-devel \
                python3.12 python3.12-devel python3.12-pip \
                gcc-toolset-13 curl tar xz pkg-config
