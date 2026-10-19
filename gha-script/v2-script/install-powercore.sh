@@ -37,16 +37,6 @@ sudo "${PY_CMD}" -m pip install "$installer_wheel" --force-reinstall
 echo "--- Installed powercore packages ---"
 "${PY_CMD}" -m pip list | grep -i powercore || true
 
-echo "--- Configuring Git credentials for github.ibm.com ---"
-GH_TOKEN_VAL=$(grep -E '^GITHUB_TOKEN=' "${CONFIG_ENV}" | cut -d= -f2- | tr -d '"'\''')
-if [ -n "${GH_TOKEN_VAL}" ]; then
-  git config --global url."https://${GH_TOKEN_VAL}@github.ibm.com/".insteadOf "https://github.ibm.com/"
-  git config --global url."https://${GH_TOKEN_VAL}@github.ibm.com/".insteadOf "git@github.ibm.com:"
-  sudo git config --system url."https://${GH_TOKEN_VAL}@github.ibm.com/".insteadOf "https://github.ibm.com/"
-  sudo git config --system url."https://${GH_TOKEN_VAL}@github.ibm.com/".insteadOf "git@github.ibm.com:"
-  echo "  Git insteadOf rules configured."
-fi
-
 echo "--- Running powercore-install ---"
 echo "  Config: ${CONFIG_ENV}"
 echo "--- powercore-config.env (safe view — keys only) ---"
