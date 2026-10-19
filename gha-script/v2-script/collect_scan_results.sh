@@ -7,7 +7,7 @@
 #   collect_scan_results.sh <package_name> <package_version> <workspace_dir> <run_id>
 #
 # Required env vars:
-#   GHA_CURRENCY_SERVICE_ID_API_KEY  — IBM Cloud IAM API key
+#   GHA_CURRENCY_SERVICE_ID_API_KEY_V2  — IBM Cloud IAM API key
 #
 # For each UBI × Python version combination it tries to download:
 #   powercore-builds/<package_name>/<package_version>/<run_id>/<package_name>-<package_version>-v2-scan-result-<ubi_ver>-<py_ver>.tar.gz
@@ -28,7 +28,7 @@ PACKAGE_VERSION="${2:?package_version required}"
 WORKSPACE_DIR="${3:-v2-scan-workspace}"
 RUN_ID="${4:?run_id required}"
 
-: "${GHA_CURRENCY_SERVICE_ID_API_KEY:?GHA_CURRENCY_SERVICE_ID_API_KEY is required}"
+: "${GHA_CURRENCY_SERVICE_ID_API_KEY_V2:?GHA_CURRENCY_SERVICE_ID_API_KEY_V2 is required}"
 
 mkdir -p "${WORKSPACE_DIR}/wheel"
 
@@ -45,7 +45,7 @@ echo "--- Fetching IAM token ---"
 token_request=$(curl -sS -X POST https://iam.cloud.ibm.com/identity/token \
   -H "content-type: application/x-www-form-urlencoded" \
   -H "accept: application/json" \
-  -d "grant_type=urn%3Aibm%3Aparams%3Aoauth%3Agrant-type%3Aapikey&apikey=${GHA_CURRENCY_SERVICE_ID_API_KEY}")
+  -d "grant_type=urn%3Aibm%3Aparams%3Aoauth%3Agrant-type%3Aapikey&apikey=${GHA_CURRENCY_SERVICE_ID_API_KEY_V2}")
 
 if [[ $(echo "${token_request}" | jq -r '.errorCode // empty') != "" ]]; then
   echo "ERROR: IAM token request failed."

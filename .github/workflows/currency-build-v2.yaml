@@ -117,22 +117,22 @@ jobs:
 
       - name: Download PowerCore wheels from COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
         run: |
           chmod +x ./gha-script/v2-script/download-wheels.sh
           bash ./gha-script/v2-script/download-wheels.sh \
-            "$GHA_CURRENCY_SERVICE_ID_API_KEY" \
+            "$GHA_CURRENCY_SERVICE_ID_API_KEY_V2" \
             "${{ inputs.powercore_version }}"
 
       - name: Generate powercore-config.env from Secrets Manager
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
           SM_INSTANCE_ID: ${{ secrets.SM_INSTANCE_ID }}
           SM_SECRET_ID: ${{ secrets.SM_SECRET_ID }}
         run: |
           chmod +x ./gha-script/v2-script/generate-powercore-config.sh
           bash ./gha-script/v2-script/generate-powercore-config.sh \
-            --api-key   "$GHA_CURRENCY_SERVICE_ID_API_KEY" \
+            --api-key   "$GHA_CURRENCY_SERVICE_ID_API_KEY_V2" \
             --version   "${{ inputs.powercore_version }}" \
             --gh-token  "${{ secrets.GH_TOKEN }}" \
             --image-tag "${{ secrets.ICR_IMAGE_TAG }}"
@@ -322,7 +322,7 @@ jobs:
 
       - name: Archive and upload V2 scan results to COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
           GHA_RUN_ID: ${{ github.run_id }}
         run: |
           ARTIFACT_NAME="${PACKAGE_NAME}-${PACKAGE_VERSION}-v2-scan-result-${{ env.UBI_VERSION }}-${{ env.PYTHON_VERSION }}"
@@ -496,7 +496,7 @@ jobs:
 
       - name: Archive and upload V2 scan results to COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
           GHA_RUN_ID: ${{ github.run_id }}
         run: |
           ARTIFACT_NAME="${PACKAGE_NAME}-${PACKAGE_VERSION}-v2-scan-result-${{ env.UBI_VERSION }}-${{ env.PYTHON_VERSION }}"
@@ -670,7 +670,7 @@ jobs:
 
       - name: Archive and upload V2 scan results to COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
           GHA_RUN_ID: ${{ github.run_id }}
         run: |
           ARTIFACT_NAME="${PACKAGE_NAME}-${PACKAGE_VERSION}-v2-scan-result-${{ env.UBI_VERSION }}-${{ env.PYTHON_VERSION }}"
@@ -844,7 +844,7 @@ jobs:
 
       - name: Archive and upload V2 scan results to COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
           GHA_RUN_ID: ${{ github.run_id }}
         run: |
           ARTIFACT_NAME="${PACKAGE_NAME}-${PACKAGE_VERSION}-v2-scan-result-${{ env.UBI_VERSION }}-${{ env.PYTHON_VERSION }}"
@@ -1018,7 +1018,7 @@ jobs:
 
       - name: Archive and upload V2 scan results to COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
           GHA_RUN_ID: ${{ github.run_id }}
         run: |
           ARTIFACT_NAME="${PACKAGE_NAME}-${PACKAGE_VERSION}-v2-scan-result-${{ env.UBI_VERSION }}-${{ env.PYTHON_VERSION }}"
@@ -1197,7 +1197,7 @@ jobs:
 
       - name: Archive and upload V2 scan results to COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
           GHA_RUN_ID: ${{ github.run_id }}
         run: |
           ARTIFACT_NAME="${PACKAGE_NAME}-${PACKAGE_VERSION}-v2-scan-result-${{ env.UBI_VERSION }}-${{ env.PYTHON_VERSION }}"
@@ -1371,7 +1371,7 @@ jobs:
 
       - name: Archive and upload V2 scan results to COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
           GHA_RUN_ID: ${{ github.run_id }}
         run: |
           ARTIFACT_NAME="${PACKAGE_NAME}-${PACKAGE_VERSION}-v2-scan-result-${{ env.UBI_VERSION }}-${{ env.PYTHON_VERSION }}"
@@ -1545,7 +1545,7 @@ jobs:
 
       - name: Archive and upload V2 scan results to COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
           GHA_RUN_ID: ${{ github.run_id }}
         run: |
           ARTIFACT_NAME="${PACKAGE_NAME}-${PACKAGE_VERSION}-v2-scan-result-${{ env.UBI_VERSION }}-${{ env.PYTHON_VERSION }}"
@@ -1591,7 +1591,7 @@ jobs:
 
       - name: Collect scan results from COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
         run: |
           chmod +x ./gha-script/v2-script/collect_scan_results.sh
           bash ./gha-script/v2-script/collect_scan_results.sh \
@@ -1637,7 +1637,7 @@ jobs:
 
       - name: Archive and upload license results to COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
           GHA_RUN_ID: ${{ github.run_id }}
           PACKAGE_NAME: ${{ fromJson(inputs.package_json).package_name }}
           PACKAGE_VERSION: ${{ fromJson(inputs.package_json).package_version }}
@@ -1692,7 +1692,7 @@ jobs:
 
       - name: Collect scan results from COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
           PACKAGE_NAME: ${{ fromJson(inputs.package_json).package_name }}
           PACKAGE_VERSION: ${{ fromJson(inputs.package_json).package_version }}
         run: |
@@ -1705,7 +1705,7 @@ jobs:
 
       - name: Download and extract license results from COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
           GHA_RUN_ID: ${{ github.run_id }}
           PACKAGE_NAME: ${{ fromJson(inputs.package_json).package_name }}
           PACKAGE_VERSION: ${{ fromJson(inputs.package_json).package_version }}
@@ -1731,7 +1731,7 @@ jobs:
 
       - name: Archive and upload final V2 summary to COS
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
           GHA_RUN_ID: ${{ github.run_id }}
           PACKAGE_NAME: ${{ fromJson(inputs.package_json).package_name }}
           PACKAGE_VERSION: ${{ fromJson(inputs.package_json).package_version }}
