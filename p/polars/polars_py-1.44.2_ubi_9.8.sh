@@ -68,7 +68,7 @@ export LD_LIBRARY_PATH=/usr/lib:$LD_LIBRARY_PATH
 cd "${BUILD_HOME}"
 
 # Install Python build tools
-pip3.12 install numpy wheel build maturin pytest setuptools
+python3.12 -m pip install numpy wheel build maturin pytest setuptools
 
 # ---------------------------
 # Install Rust
