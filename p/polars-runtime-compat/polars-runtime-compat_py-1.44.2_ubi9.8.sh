@@ -105,7 +105,7 @@ fi
 
 export POLARSCOMPAT_WHEEL=${BUILD_HOME}/${PACKAGE_NAME}/target/wheels/polars_runtime_compat-1.44.2-cp310-abi3-manylinux_2_34_ppc64le.whl
 test -f ${POLARSCOMPAT_WHEEL}
-cp "$POLARSCOMPAT_WHEEL_WHEEL" "$BUILD_HOME/"
+cp "$POLARSCOMPAT_WHEEL" "$BUILD_HOME/"
 
 echo "polars_runtime_compat wheel available at [$POLARSCOMPAT_WHEEL]"
 
