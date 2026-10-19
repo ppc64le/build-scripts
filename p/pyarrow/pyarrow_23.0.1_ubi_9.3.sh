@@ -763,19 +763,8 @@ PY_VER=$(python3.11 -c 'import sys;print(f"{sys.version_info.major}.{sys.version
 python3.11 -m pip install -U pip
 python3.11 -m pip install setuptools-scm
 
-if python3 - <<'PY'
-import sys
-raise SystemExit(0 if sys.version_info >= (3,13) else 1)
-PY
-then
-  # Python ≥ 3.13
-  python3.11 -m pip install "cython>=3.2"
-  python3.11 -m pip install "numpy>=2.0" "pandas>=2.2.3"
-else
-  # Python < 3.13
-  python3.11 -m pip install "cython>=3.1"
-  python3.11 -m pip install "numpy==1.26.4" "pandas>=2.1"
-fi
+python3.11 -m pip install "cython>=3.2"
+python3.11 -m pip install "numpy>=2.0" "pandas>=2.2.3"
 
 # pip install setuptools-scm "cython<3"
 # pip install numpy==1.26.4 pandas==2.0.3
