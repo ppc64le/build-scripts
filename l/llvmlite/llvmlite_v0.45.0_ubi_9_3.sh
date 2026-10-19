@@ -1,9 +1,8 @@
 #!/bin/bash -e
-
 # -----------------------------------------------------------------------------
 #
 # Package          : llvmlite
-# Version          : v0.45.0
+# Version          : 0.45.0
 # Source repo      : https://github.com/numba/llvmlite
 # Tested on        : UBI:9.3
 # Language         : Python
