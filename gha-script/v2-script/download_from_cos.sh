@@ -5,7 +5,7 @@
 #   download_from_cos.sh <filename>
 #
 # Required env vars:
-#   GHA_CURRENCY_SERVICE_ID_API_KEY  — IBM Cloud IAM API key
+#   GHA_CURRENCY_SERVICE_ID_API_KEY_V2  — IBM Cloud IAM API key
 #   PACKAGE_NAME                     — package name (path prefix in bucket)
 #   PACKAGE_VERSION                  — package version (path prefix in bucket)
 #   GHA_RUN_ID                       — (optional) GitHub Actions run ID; when set,
@@ -21,7 +21,7 @@ set -euo pipefail
 FILE="${1:?filename argument required}"
 OPTIONAL="${2:-}"
 
-: "${GHA_CURRENCY_SERVICE_ID_API_KEY:?GHA_CURRENCY_SERVICE_ID_API_KEY is required}"
+: "${GHA_CURRENCY_SERVICE_ID_API_KEY_V2:?GHA_CURRENCY_SERVICE_ID_API_KEY_V2 is required}"
 : "${PACKAGE_NAME:?PACKAGE_NAME is required}"
 : "${PACKAGE_VERSION:?PACKAGE_VERSION is required}"
 
@@ -41,7 +41,7 @@ echo "--- Fetching IAM token ---"
 token_request=$(curl -sS -X POST https://iam.cloud.ibm.com/identity/token \
   -H "content-type: application/x-www-form-urlencoded" \
   -H "accept: application/json" \
-  -d "grant_type=urn%3Aibm%3Aparams%3Aoauth%3Agrant-type%3Aapikey&apikey=${GHA_CURRENCY_SERVICE_ID_API_KEY}")
+  -d "grant_type=urn%3Aibm%3Aparams%3Aoauth%3Agrant-type%3Aapikey&apikey=${GHA_CURRENCY_SERVICE_ID_API_KEY_V2}")
 
 if [[ $(echo "${token_request}" | jq -r '.errorCode // empty') != "" ]]; then
   echo "ERROR: IAM token request failed."
