@@ -36,7 +36,7 @@ yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/p
 rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
 
 yum install -y python3.12 python3.12-pip python3.12-devel make
-yum install -y \ 
+yum install -y \
     binutils cmake git wget curl-minimal \
 	gcc gcc-c++ openblas-devel openssl-devel protobuf-devel clang-libs clang-devel \
 	perl-IPC-Cmd perl-FindBin perl-File-Compare perl-File-Copy \
