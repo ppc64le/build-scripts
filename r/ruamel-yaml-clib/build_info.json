@@ -1,0 +1,18 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "ruamel-yaml-clib",
+  "github_url": "https://github.com/ruamel/yaml.clib",
+  "version": "0.2.11",
+  "default_branch": "master",
+  "build_script": "ruamel-yaml-clib.sh",
+  "package_dir": "r/ruamel-yaml-clib",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v2-enabled": true,
+  "language": "Python",
+  "wheel_build": true,
+  "*": {
+    "build_script": "ruamel-yaml-clib.sh"
+  }
+}

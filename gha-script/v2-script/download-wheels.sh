@@ -54,7 +54,7 @@ for attempt in $(seq 1 $MAX_ATTEMPTS); do
     exit 1
   fi
 
-  if echo "$list_response" | grep -q "<Error>"; then
+  if grep -q "<Error>" <<< "$list_response"; then
     echo "ERROR: COS list request returned an error response:"
     echo "$list_response"
     [[ $attempt -lt $MAX_ATTEMPTS ]] && { echo "Retrying in ${RETRY_DELAY}s..."; sleep $RETRY_DELAY; continue; }
@@ -63,8 +63,7 @@ for attempt in $(seq 1 $MAX_ATTEMPTS); do
 
   echo "  POWERCORE_WHEEL_VERSION: ${POWERCORE_VERSION}"
 
-  listed_keys=$(printf '%s\n' "$list_response" \
-    | grep -oE '<Key>[^<]+</Key>' \
+  listed_keys=$(grep -oE '<Key>[^<]+</Key>' <<< "$list_response" \
     | sed -e 's#<Key>##' -e 's#</Key>##')
 
   required_wheels=(
@@ -83,7 +82,7 @@ for attempt in $(seq 1 $MAX_ATTEMPTS); do
   missing_wheel=false
   for wheel_name in "${required_wheels[@]}"; do
     wheel_key="${wheel_name}-${POWERCORE_VERSION}-py3-none-any.whl"
-    if ! printf '%s\n' "$listed_keys" | grep -Fxq "$wheel_key"; then
+    if ! grep -Fxq "$wheel_key" <<< "$listed_keys"; then
       echo "ERROR: Required PowerCore wheel was not found in COS: ${wheel_key}"
       missing_wheel=true
       break
