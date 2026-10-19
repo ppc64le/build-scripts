@@ -4,7 +4,7 @@
 # Package       : pyarrow
 # Version       : apache-arrow-23.0.1
 # Source repo   : https://github.com/apache/arrow
-# Tested on     : UBI:9.3
+# Tested on     : UBI:9.8
 # Language      : Python, C
 # Ci-Check  : True
 # Script License: Apache License, Version 2 or later
