@@ -40,6 +40,11 @@ on:
         description: 'Unique ID for the build'
         required: false
         default: 'None'
+      icr_image_tag:
+        description: 'ICR image tag to use for the PowerCore container image'
+        required: false
+        default: ''
+        type: string
       large-runner-label:
         description: 'Larger runner to use for resource-heavy builds'
         required: false
@@ -135,7 +140,7 @@ jobs:
             --api-key   "$GHA_CURRENCY_SERVICE_ID_API_KEY_V2" \
             --version   "${{ inputs.powercore_version }}" \
             --gh-token  "${{ secrets.GH_TOKEN }}" \
-            --image-tag "${{ secrets.ICR_IMAGE_TAG }}"
+            --image-tag "${{ inputs.icr_image_tag }}"
 
       - name: Upload scan-tools artifact
         uses: actions/upload-artifact@v4
