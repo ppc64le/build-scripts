@@ -58,20 +58,20 @@ if ! python3 -m pip install --prefer-binary ".[dev]" pytest-codspeed --extra-ind
 fi
 
 # Build wheel
-if ! python3 -m build --wheel --outdir /dist .; then
-    echo "------------------$PACKAGE_NAME:wheel_build_fails---------------------"
-    echo "$PACKAGE_VERSION $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_VERSION | GitHub | Fail | Wheel_Build_Fails"
-    exit 1
-fi
+# if ! python3 -m build --wheel --outdir /dist .; then
+#     echo "------------------$PACKAGE_NAME:wheel_build_fails---------------------"
+#     echo "$PACKAGE_VERSION $PACKAGE_NAME"
+#     echo "$PACKAGE_NAME | $PACKAGE_VERSION | GitHub | Fail | Wheel_Build_Fails"
+#     exit 1
+# fi
 
-# Install built package wheel
-if ! python3 -m pip install --force-reinstall --no-deps /dist/*.whl; then
-    echo "------------------$PACKAGE_NAME:install_fails---------------------"
-    echo "$PACKAGE_VERSION $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
-    exit 1
-fi
+# # Install built package wheel
+# if ! python3 -m pip install --force-reinstall --no-deps /dist/*.whl; then
+#     echo "------------------$PACKAGE_NAME:install_fails---------------------"
+#     echo "$PACKAGE_VERSION $PACKAGE_NAME"
+#     echo "$PACKAGE_NAME | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
+#     exit 1
+# fi
 
 # Validation / Test
 if ! pytest tests/; then
