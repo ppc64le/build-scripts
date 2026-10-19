@@ -86,9 +86,9 @@ if [ -z "$(ls -A $BUILD_HOME/${PACKAGE_NAME})" ]; then
     git clone "${PACKAGE_URL}"
     cd "${PACKAGE_NAME}"
     git checkout "${PACKAGE_VERSION}"
-    git apply $SCRIPT_PATH/polars_py-1.44.2.patch
-#   wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/polars/polars_py-1.44.2.patch
-#   git apply polars_py-1.44.2.patch
+#    git apply $SCRIPT_PATH/polars_py-1.44.2.patch
+    wget https://github.com/ppc64le/build-scripts/blob/master/p/polars/polars_py-1.44.2.patch
+    git apply polars_py-1.44.2.patch
 else
     cd "${PACKAGE_NAME}"
 fi
