@@ -605,7 +605,8 @@ $PYTHON -m pip install cmake ninja \
     setuptools-scm
 echo "Installing tilelang from ROCm devpi index"
 $PYTHON -m pip install --prefer-binary --no-build-isolation \
-    --extra-index-url "${DEVPI_ROCM_INDEX}" \
+    --extra-index-url "${DEVPI_ROCM_INDEX}" \ 
+    --extra-index-url "${DEVPI_INDEX}" \
     tilelang
 
 echo "Installing opencv-python-headless and grpcio from devpi index"
@@ -658,7 +659,7 @@ fi
 echo "Built vLLM wheel(s):"
 ls -lh "${CURRENT_DIR}"/vllm-*.whl
 
-$PYTHON -m pip install "${CURRENT_DIR}"/vllm-*.whl --prefer-binary --extra-index-url "${DEVPI_INDEX}"
+$PYTHON -m pip install --prefer-binary "${CURRENT_DIR}"/vllm-*.whl pyarrow==23.0.1  --extra-index-url "${DEVPI_INDEX}"
 
 # ---------------------------------------------------------------------------
 # Import test
