@@ -4,16 +4,16 @@
 #
 # Usage:
 #   ./generate-powercore-config.sh \
-#       --api-key    <IAM_API_KEY> \
-#       --version    <POWERCORE_WHEEL_VERSION> \
-#       --gh-token   <GITHUB_TOKEN> \
-#       --image-tag  <ICR_IMAGE_TAG>
+#       --api-key            <IAM_API_KEY> \
+#       --version            <POWERCORE_WHEEL_VERSION> \
+#       --image-tag          <ICR_IMAGE_TAG> \
+#       --build-scripts-path <PATH>
 #
 # Environment variable equivalents:
 #   IAM_API_KEY / IBMCLOUD_API_KEY / GHA_CURRENCY_SERVICE_ID_API_KEY_V2
 #   POWERCORE_WHEEL_VERSION / POWERCORE_VERSION
-#   GITHUB_TOKEN / GH_TOKEN
 #   ICR_IMAGE_TAG
+#   POWERCORE_BUILD_SCRIPTS
 #
 # Outputs:
 #   powercore-config.env   written to the current working directory
@@ -28,18 +28,18 @@ SM_REGION="us-east"
 # ── Defaults from environment ─────────────────────────────────────────────────
 API_KEY="${IBMCLOUD_API_KEY:-${IAM_API_KEY:-${GHA_CURRENCY_SERVICE_ID_API_KEY_V2:-}}}"
 POWERCORE_VERSION_INPUT="${POWERCORE_VERSION:-${POWERCORE_WHEEL_VERSION:-}}"
-GITHUB_TOKEN_INPUT="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
 ICR_IMAGE_TAG_INPUT="${ICR_IMAGE_TAG:-}"
+BUILD_SCRIPTS_PATH_INPUT="${POWERCORE_BUILD_SCRIPTS:-}"
 
 # ── Argument parsing ──────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --api-key)    API_KEY="$2";                  shift 2 ;;
-    --version)    POWERCORE_VERSION_INPUT="$2";  shift 2 ;;
-    --gh-token)   GITHUB_TOKEN_INPUT="$2";       shift 2 ;;
-    --image-tag)  ICR_IMAGE_TAG_INPUT="$2";      shift 2 ;;
+    --api-key)             API_KEY="$2";                   shift 2 ;;
+    --version)             POWERCORE_VERSION_INPUT="$2";   shift 2 ;;
+    --image-tag)           ICR_IMAGE_TAG_INPUT="$2";       shift 2 ;;
+    --build-scripts-path)  BUILD_SCRIPTS_PATH_INPUT="$2";  shift 2 ;;
     -h|--help)
-      echo "Usage: $0 --api-key <KEY> --version <VERSION> --gh-token <TOKEN> [--image-tag <TAG>]"
+      echo "Usage: $0 --api-key <KEY> --version <VERSION> [--image-tag <TAG>] [--build-scripts-path <PATH>]"
       exit 0
       ;;
     *)
@@ -56,10 +56,6 @@ if [[ -z "${API_KEY}" ]]; then
 fi
 if [[ -z "${POWERCORE_VERSION_INPUT}" ]]; then
   echo "ERROR: PowerCore version is required (--version or set POWERCORE_WHEEL_VERSION)"
-  exit 1
-fi
-if [[ -z "${GITHUB_TOKEN_INPUT}" ]]; then
-  echo "ERROR: GitHub token is required (--gh-token or set GITHUB_TOKEN)"
   exit 1
 fi
 
@@ -85,7 +81,7 @@ echo "OK: IAM access token obtained"
 # ── Step 2: Fetch secret ──────────────────────────────────────────────────────
 echo "=== 2. Fetching secret from Secrets Manager ==="
 SM_API_URL="https://${SM_INSTANCE_ID}.${SM_REGION}.secrets-manager.appdomain.cloud/api/v2/secrets/${SM_SECRET_ID}"
-echo "  Secret ID : ${SM_SECRET_ID} (powercore-config-secrets-staging)"
+echo "  Secret ID : ${SM_SECRET_ID} (powercore-config-secrets-gha)"
 echo "  Instance  : ${SM_INSTANCE_ID} (${SM_REGION})"
 
 secret_response=$(curl -sS -X GET "${SM_API_URL}" \
@@ -124,14 +120,13 @@ if not kv_data or not isinstance(kv_data, dict):
     sys.stderr.write('ERROR: Could not parse key-value data from Secrets Manager response\n')
     sys.exit(1)
 
-api_key_input       = sys.argv[3] if len(sys.argv) > 3 else ''
-image_tag_input     = sys.argv[4] if len(sys.argv) > 4 else ''
-couchdb_iam_api_key = api_key_input
+api_key_input            = sys.argv[2] if len(sys.argv) > 2 else ''
+image_tag_input          = sys.argv[3] if len(sys.argv) > 3 else ''
+build_scripts_path_input = sys.argv[4] if len(sys.argv) > 4 else ''
+couchdb_iam_api_key      = api_key_input
 
-# Inject / override version and token
+# Inject / override version
 kv_data['POWERCORE_WHEEL_VERSION'] = version_input
-if len(sys.argv) > 2 and sys.argv[2]:
-    kv_data['GITHUB_TOKEN'] = sys.argv[2]
 
 # Map the caller's API key to all downstream service key variables
 if api_key_input:
@@ -144,13 +139,17 @@ if api_key_input:
 if image_tag_input:
     kv_data['ICR_IMAGE_TAG'] = image_tag_input
 
+# Inject build scripts path if provided (e.g. github.workspace in GHA)
+if build_scripts_path_input:
+    kv_data['POWERCORE_BUILD_SCRIPTS'] = build_scripts_path_input
+
 # Set COUCHDB_IAM_API_KEY
 kv_data['COUCHDB_IAM_API_KEY'] = couchdb_iam_api_key
 
 with open('powercore-config.env', 'w') as f:
     for k, v in kv_data.items():
         f.write(f'{k}={v}\n')
-" "${POWERCORE_VERSION_INPUT}" "${GITHUB_TOKEN_INPUT}" "${API_KEY}" "${ICR_IMAGE_TAG_INPUT}" <<< "${secret_response}"
+" "${POWERCORE_VERSION_INPUT}" "${API_KEY}" "${ICR_IMAGE_TAG_INPUT}" "${BUILD_SCRIPTS_PATH_INPUT}" <<< "${secret_response}"
 
 if [[ ! -f powercore-config.env ]]; then
   echo "ERROR: powercore-config.env was not generated"

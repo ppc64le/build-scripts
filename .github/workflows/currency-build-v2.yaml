@@ -137,10 +137,10 @@ jobs:
         run: |
           chmod +x ./gha-script/v2-script/generate-powercore-config.sh
           bash ./gha-script/v2-script/generate-powercore-config.sh \
-            --api-key   "$GHA_CURRENCY_SERVICE_ID_API_KEY_V2" \
-            --version   "${{ inputs.powercore_version }}" \
-            --gh-token  "${{ secrets.GH_TOKEN }}" \
-            --image-tag "${{ inputs.icr_image_tag }}"
+            --api-key            "$GHA_CURRENCY_SERVICE_ID_API_KEY_V2" \
+            --version            "${{ inputs.powercore_version }}" \
+            --image-tag          "${{ inputs.icr_image_tag }}" \
+            --build-scripts-path "${{ github.workspace }}"
 
       - name: Upload scan-tools artifact
         uses: actions/upload-artifact@v4
