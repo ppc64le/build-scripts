@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : outlines-core
-# Version          : 0.1.26
+# Version          : 0.2.14
 # Source repo      : https://github.com/dottxt-ai/outlines-core
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -21,7 +21,7 @@
 
 # Variables
 PACKAGE_NAME=outlines-core
-PACKAGE_VERSION=${1:-0.1.26}
+PACKAGE_VERSION=${1:-0.2.14}
 PACKAGE_URL=https://github.com/dottxt-ai/outlines-core
 PACKAGE_DIR=outlines-core
 CURRENT_DIR=$(pwd)
@@ -53,9 +53,12 @@ cd $CURRENT_DIR
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.32
-make -j${MAX_JOBS} TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=120 DYNAMIC_ARCH=1 INTERFACE64=0
-make install
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib
+make -j$(nproc) TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=120 DYNAMIC_ARCH=1 INTERFACE64=0
+make install PREFIX=/usr/local
+export OpenBLASInstallPATH=/usr/local
+export OPENBLAS_HOME=/usr/local
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:${LD_LIBRARY_PATH}
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
 cd $CURRENT_DIR
 
 
@@ -67,10 +70,10 @@ python3.12 -m pip install beniget==0.4.2.post1 Cython==3.0.11 gast==0.6.0 meson=
 # --------------------- Build SciPy ---------------------
 git clone https://github.com/scipy/scipy
 cd scipy
-git checkout v1.15.2
+git checkout v1.13.0
 git submodule update --init
 python3.12 -m pip install .
-cd ..
+cd $CURRENT_DIR
 
 # --------------------- Build Abseil-cpp ---------------------
 git clone https://github.com/abseil/abseil-cpp -b 20240116.2
@@ -78,10 +81,10 @@ git clone https://github.com/abseil/abseil-cpp -b 20240116.2
 # --------------------- Build Protobuf ---------------------
 git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
-git checkout v4.25.3
+git checkout v4.25.8
 git submodule update --init --recursive
 rm -rf ./third_party/googletest ./third_party/abseil-cpp || true
-cp -r ../abseil-cpp ./third_party/
+cp -r $CURRENT_DIR/abseil-cpp ./third_party/
 
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
@@ -112,16 +115,19 @@ cmake --install .
 cd ..
 
 export PROTOC=$LIBPROTO_DIR/build/protoc
-export LD_LIBRARY_PATH=$SCRIPT_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$CURRENT_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
-git apply set_cpp_to_17_v4.25.3.patch
-cd python
-python3.12 -m pip install . --no-build-isolation
-cd ../..
+# NOTE: Skip protobuf Python package installation — the protobuf-4.25.x nspkg.pth
+# hook corrupts the Python stdlib (breaks 'json', 'traceback', etc.).
+# The C++ libraries built above are sufficient for PyTorch.
+# wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
+# git apply set_cpp_to_17_v4.25.3.patch
+# cd python
+# python3.12 -m pip install --no-build-isolation .
+# cd $CURRENT_DIR
 
 # --------------------- Install Rust ---------------------
 curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -130,11 +136,16 @@ source "$HOME/.cargo/env"
 # --------------------- Build PyTorch ---------------------
 git clone https://github.com/pytorch/pytorch.git
 cd pytorch
-git checkout v2.6.0
+git checkout v2.9.1
 git submodule sync
 git submodule update --init --recursive
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.6.0.patch
-git apply pytorch_v2.6.0.patch
+
+# Fix for ppc64le: lintrunner is not available on ppc64le
+sed -i '/lintrunner ;/s/$/ and platform_machine != "ppc64le"/' requirements.txt
+
+# Apply ppc64le patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch
+git apply pytorch_v2.9.1.patch
 
 # Set environment variables
 ARCH=`uname -p`
@@ -143,11 +154,16 @@ export build_type="cpu"
 export cpu_opt_arch="power9"
 export cpu_opt_tune="power10"
 export CPU_COUNT=$(nproc --all)
-export CXXFLAGS="${CXXFLAGS} -D__STDC_FORMAT_MACROS"
+export OPENBLAS_INCLUDE=${OpenBLASInstallPATH}/include
+export OpenBLAS_HOME=${OpenBLASInstallPATH}
+export C_INCLUDE_DIR="${OpenBLASInstallPATH}/include"
+export CPLUS_INCLUDE_DIR="${OpenBLASInstallPATH}/include"
+export BLAS=OpenBLAS
+export _GLIBCXX_USE_CXX11_ABI=1
+export CXXFLAGS="${CXXFLAGS} -mcpu=power9 -mtune=power10 -fplt"
+export CFLAGS="${CFLAGS} -mcpu=power9 -mtune=power10 -fplt"
 export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl\,--as-needed//')"
-export LDFLAGS="${LDFLAGS} -Wl,-rpath-link,${VIRTUAL_ENV}/lib"
-export CXXFLAGS="${CXXFLAGS} -fplt"
-export CFLAGS="${CFLAGS} -fplt"
+export LDFLAGS="${LDFLAGS} -Wl,-rpath-link,${LIBPROTO_INSTALL}/lib64 -Wl,-rpath-link,${OpenBLASInstallPATH}/lib"
 export USE_FBGEMM=0
 export USE_SYSTEM_NCCL=1
 export USE_MKLDNN=0
@@ -164,7 +180,7 @@ export USE_OPENMP=1
 export USE_TBB=0
 export BUILD_CUSTOM_PROTOBUF=OFF
 export BUILD_CAFFE2=1
-export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION}
+export PYTORCH_BUILD_VERSION=2.9.1
 export PYTORCH_BUILD_NUMBER=${BUILD_NUM}
 export USE_CUDA=0
 export USE_CUDNN=0
@@ -174,15 +190,15 @@ export Protobuf_LIBRARIES=${LIBPROTO_INSTALL}/lib64
 export Protobuf_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf.so
 export Protobuf_LITE_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf-lite.so
 export Protobuf_PROTOC_EXECUTABLE=${LIBPROTO_INSTALL}/bin/protoc
-export LD_LIBRARY_PATH=/pytorch/torch/lib64/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/pytorch/build/lib/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PATH
-export PATH="/protobuf/local/libprotobuf/bin/protoc:${PATH}"
-export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
-export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
+export PATH="${LIBPROTO_INSTALL}/bin:${PATH}"
+export LD_LIBRARY_PATH="${LIBPROTO_INSTALL}/lib64:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="${CURRENT_DIR}/pytorch/torch/lib/:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="${CURRENT_DIR}/pytorch/torch/lib64/:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="${CURRENT_DIR}/protobuf/local/libprotobuf/lib64/:${LD_LIBRARY_PATH}"
 
 
 # Fix CMake version requirement
-sed -i "s/cmake/cmake==3.31.6/g" requirements.txt
+sed -i "s/cmake/cmake==3.*/g" requirements.txt
 python3.12 -m pip install -r requirements.txt
 
 MAX_JOBS=$(nproc) python3.12 setup.py install
@@ -707,7 +723,14 @@ cd $PACKAGE_NAME
 export LD_LIBRARY_PATH="${RE2_PREFIX}/lib:$LD_LIBRARY_PATH"
 
 python3.12 -m pip install setuptools pytest pydantic pytest-cov pandas
-python3.12 -m pip install sentencepiece --no-build-isolation
+# Patch sentencepiece pyproject.toml to fix license field (PEP 621 compliance)
+python3.12 -m pip download sentencepiece --no-deps --no-binary sentencepiece -d /tmp/sentencepiece_patch
+cd /tmp/sentencepiece_patch
+tar -xzf sentencepiece-*.tar.gz
+cd $(ls -d sentencepiece-* | head -1)
+sed -i 's/license = "Apache-2.0"/license = {text = "Apache-2.0"}/' pyproject.toml
+python3.12 -m pip install . --no-build-isolation
+cd $CURRENT_DIR/$PACKAGE_NAME
 python3.12 -m pip install datasets==2.14.7 --no-build-isolation --no-deps
 python3.12 -m pip install "multiprocess==0.70.15"
 python3.12 -m pip install "xxhash==3.4.1"
