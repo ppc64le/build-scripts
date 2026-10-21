@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "google-cloud-cpp"
+version = "{PACKAGE_VERSION}"
+description = "C++ client libraries for Google Cloud Platform services with Python bindings for ppc64le"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "Apache-2.0"
+authors = [
+    { name = "IBM Power Ecosystem" }
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: C++",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Libraries",
+]
+
+[tool.setuptools]
+package-dir = {"" = "local"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["local"]
+
+[tool.setuptools.package-data]
+google_cloud_cpp = [
+    "include/**/*",
+    "lib/**/*.so*",
+    "lib64/**/*.so*",
+    "lib/**/*.a",
+    "lib64/**/*.a",
+    "share/**/*",
+]
