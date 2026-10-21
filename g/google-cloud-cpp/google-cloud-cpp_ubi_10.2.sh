@@ -152,6 +152,11 @@ fi
 
 if [ ! -f "${OTEL_DIR}/build/.stl_built" ]; then
     cd "${OTEL_DIR}"
+    # Ensure <cstdint> is included for GCC 14/15 compatibility
+    if [ -f "api/include/opentelemetry/logs/severity.h" ]; then
+        grep -q "<cstdint>" api/include/opentelemetry/logs/severity.h || sed -i '1i #include <cstdint>' api/include/opentelemetry/logs/severity.h
+    fi
+    find api/include/ -type f -name "*.h" -exec sed -i '1{/^#include <cstdint>/!s/^/#include <cstdint>\n/}' {} + 2>/dev/null || true
     rm -rf build
     mkdir -p build && cd build
     cmake \
