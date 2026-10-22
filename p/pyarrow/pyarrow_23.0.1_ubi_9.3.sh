@@ -204,7 +204,7 @@ cd $SCRIPT_DIR
 #re2 install from sosurce
 echo "------------ re2 installing-------------------"
 
-git clone http://github.com/google/re2
+git clone https://github.com/google/re2.git
 cd re2
 git checkout 2022-04-01
 
