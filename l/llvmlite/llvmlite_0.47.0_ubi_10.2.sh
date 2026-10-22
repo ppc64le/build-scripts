@@ -19,8 +19,7 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=llvmlite
-PACKAGE_VERSION=${1:-"v0.47.0"}
-PACKAGE_VERSION_NUM=${PACKAGE_VERSION#v}
+PACKAGE_VERSION=${1:-v0.47.0}
 PACKAGE_URL=https://github.com/numba/llvmlite
 PACKAGE_DIR=llvmlite
 WORKING_DIR=$(pwd)
@@ -125,13 +124,23 @@ echo "-------------------LLVM ${LLVM_VERSION} installation completed------------
 echo "-------------------Building llvmlite ${PACKAGE_VERSION} wheel----------------------"
 
 rm -rf "$PACKAGE_DIR"
-if ! git clone --depth 1 --branch "${PACKAGE_VERSION}" "$PACKAGE_URL" "$PACKAGE_DIR"; then
+if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | ${PACKAGE_VERSION} | $OS_NAME | GitHub | Fail | Clone_Fails"
     exit 1
 fi
 
 cd "$PACKAGE_DIR"
+if git rev-parse "v${PACKAGE_VERSION}" &>/dev/null; then
+    git checkout "v${PACKAGE_VERSION}"
+elif git rev-parse "${PACKAGE_VERSION}" &>/dev/null; then
+    git checkout "${PACKAGE_VERSION}"
+else
+    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | ${PACKAGE_VERSION} | $OS_NAME | GitHub | Fail | Tag_Not_Found"
+    exit 1
+fi
+
 if ! python3 -m build --wheel --no-isolation; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | ${PACKAGE_VERSION} | $OS_NAME | GitHub | Fail | Build_Fails"
@@ -182,7 +191,7 @@ cd /tmp
 if ! python3 -c "
 import llvmlite, llvmlite.binding as llvm
 print('llvmlite', llvmlite.__version__, '| LLVM', llvm.llvm_version_info, '|', llvm.get_default_triple())
-assert llvmlite.__version__ == '${PACKAGE_VERSION_NUM}'
+assert llvmlite.__version__ == '${PACKAGE_VERSION#v}'
 assert llvm.llvm_version_info[0] == 20
 assert 'powerpc64le' in llvm.get_default_triple()
 "; then
