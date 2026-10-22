@@ -5,7 +5,7 @@
 # Source repo    : https://github.com/sfu-db/connector-x.git
 # Tested on      : UBI 9.8
 # Language       : Python, Rust
-# Ci-Check       : false
+# Ci-Check       : True
 # Maintainer     : Pratik Tonage <Pratik.Tonage@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #
