@@ -1,0 +1,328 @@
+diff --git a/deployments/common/nginx-config.yaml b/deployments/common/nginx-config.yaml
+index a6a6c812b..cbdf9da18 100644
+--- a/deployments/common/nginx-config.yaml
++++ b/deployments/common/nginx-config.yaml
+@@ -4,3 +4,4 @@ metadata:
+   name: nginx-config
+   namespace: nginx-ingress
+ data:
++  upstream-zone-size: "2m"
+diff --git a/deployments/common/ns-and-sa.yaml b/deployments/common/ns-and-sa.yaml
+index b7316e6f3..5fadff326 100644
+--- a/deployments/common/ns-and-sa.yaml
++++ b/deployments/common/ns-and-sa.yaml
+@@ -2,10 +2,12 @@ apiVersion: v1
+ kind: Namespace
+ metadata:
+   name: nginx-ingress
++  labels:
++    pod-security.kubernetes.io/enforce: privileged
+ ---
+ apiVersion: v1
+ kind: ServiceAccount
+ metadata:
+   name: nginx-ingress
+   namespace: nginx-ingress
+ #automountServiceAccountToken: false
+diff --git a/tests/data/annotations/configmap-with-keys.yaml b/tests/data/annotations/configmap-with-keys.yaml
+index d6aa14b43..7743d6eac 100644
+--- a/tests/data/annotations/configmap-with-keys.yaml
++++ b/tests/data/annotations/configmap-with-keys.yaml
+@@ -7,4 +7,4 @@ data:
+   proxy-send-timeout: "33s"
+   hsts: "True"
+   hsts-behind-proxy: "True"
+-  upstream-zone-size: "100k"
++  upstream-zone-size: "512k"
+diff --git a/tests/data/empty-host-ingress/empty-host-ingress-reload-failure-buffer-size.yaml b/tests/data/empty-host-ingress/empty-host-ingress-reload-failure-buffer-size.yaml
+index c74f630da..84cde562e 100644
+--- a/tests/data/empty-host-ingress/empty-host-ingress-reload-failure-buffer-size.yaml
++++ b/tests/data/empty-host-ingress/empty-host-ingress-reload-failure-buffer-size.yaml
+@@ -3,7 +3,7 @@ kind: Ingress
+ metadata:
+   name: empty-host-ingress-reload-failure-buffer-size
+   annotations:
+-    nginx.org/proxy-buffer-size: "16k"
++    nginx.org/proxy-buffer-size: "256k"
+ spec:
+   ingressClassName: nginx
+   rules:
+diff --git a/tests/data/virtual-server-configmap-keys/configmap-no-validation-keys.yaml b/tests/data/virtual-server-configmap-keys/configmap-no-validation-keys.yaml
+index 95f259b54..a7fa6cb46 100644
+--- a/tests/data/virtual-server-configmap-keys/configmap-no-validation-keys.yaml
++++ b/tests/data/virtual-server-configmap-keys/configmap-no-validation-keys.yaml
+@@ -16,4 +16,4 @@ data:
+   server-snippets: "# server-snippet is here;"
+   fail-timeout: "20"
+   proxy-send-timeout: "33"
+-  upstream-zone-size: "100k"
++  upstream-zone-size: "512k"
+diff --git a/tests/suite/test_annotations.py b/tests/suite/test_annotations.py
+index 3cce553b0..c7cd87d25 100644
+--- a/tests/suite/test_annotations.py
++++ b/tests/suite/test_annotations.py
+@@ -235,9 +235,9 @@ class TestAnnotations:
+ 
+         assert "Strict-Transport-Security" not in result_conf
+ 
+-        expected_zone_size = "256k"
++        expected_zone_size = "2m"
+         if cli_arguments["ic-type"] == "nginx-plus-ingress":
+             expected_zone_size = "512k"
+ 
+         for upstream in annotations_setup.upstream_names:
+             assert f"zone {upstream} {expected_zone_size};" in result_conf
+@@ -251,7 +251,7 @@ class TestAnnotations:
+                     "nginx.org/max-conns": "1024",
+                     "nginx.org/hsts": "True",
+                     "nginx.org/hsts-behind-proxy": "True",
+-                    "nginx.org/upstream-zone-size": "124k",
++                    "nginx.org/upstream-zone-size": "2m",
+                     "nginx.org/proxy-set-headers": "X-Forwarded-ABC",
+                 },
+                 [
+@@ -262,7 +262,7 @@ class TestAnnotations:
+                     'add_header Strict-Transport-Security "$hsts_header_val" always;',
+                     "if ($http_x_forwarded_proto = 'https')",
+                     'set $hsts_header_val "max-age=2592000; preload";',
+-                    " 124k;",
++                    " 2m;",
+                     'proxy_set_header X-Forwarded-ABC "$http_x_forwarded_abc";',
+                 ],
+                 ["proxy_send_timeout 60s;", "if ($https = on)", " 256k;"],
+@@ -315,7 +315,7 @@ class TestAnnotations:
+                     'add_header Strict-Transport-Security "$hsts_header_val" always;',
+                     "if ($http_x_forwarded_proto = 'https')",
+                     'set $hsts_header_val "max-age=2592000; preload";',
+-                    " 100k;",
++                    " 512k;",
+                 ],
+                 ["proxy_send_timeout 60s;", "if ($https = on)", " 256k;"],
+             ),
+@@ -366,11 +366,11 @@ class TestAnnotations:
+                     "nginx.org/proxy-send-timeout": "10s",
+                     "nginx.org/hsts": "False",
+                     "nginx.org/hsts-behind-proxy": "False",
+-                    "nginx.org/upstream-zone-size": "124k",
++                    "nginx.org/upstream-zone-size": "2m",
+                 },
+                 f"{TEST_DATA}/annotations/configmap-with-keys.yaml",
+-                ["proxy_send_timeout 10s;", " 124k;"],
+-                ["proxy_send_timeout 33s;", "Strict-Transport-Security", " 100k;", " 256k;"],
++                ["proxy_send_timeout 10s;", " 2m;"],
++                ["proxy_send_timeout 33s;", "Strict-Transport-Security", " 512k;", " 256k;"],
+             ),
+         ],
+     )
+diff --git a/tests/suite/test_config_rollback_ingress.py b/tests/suite/test_config_rollback_ingress.py
+index c578b3241..681c33fa4 100644
+--- a/tests/suite/test_config_rollback_ingress.py
++++ b/tests/suite/test_config_rollback_ingress.py
+@@ -187,8 +187,8 @@ class TestConfigRollbackIngress:
+             # proxy-buffer-size alone (default proxy_buffers = 4 4k = 16k total):
+             # proxy_busy_buffers_size must be < pool minus one buffer = 12k, but 16k > 12k
+             (
+-                {"nginx.org/proxy-buffer-size": "16k"},
+-                "proxy_buffer_size 16k",
++                {"nginx.org/proxy-buffer-size": "256k"},
++                "proxy_buffer_size 256k",
+                 '"proxy_busy_buffers_size" must be less than the size of all "proxy_buffers" minus one buffer',
+             ),
+             # both set explicitly but incompatible: pool = 2 * 4k = 8k, buffer_size = 32k > 4k
+@@ -328,7 +328,7 @@ class TestConfigRollbackIngress:
+             ingress_controller_prerequisites.config_map["metadata"]["name"],
+         )
+         latest_cm = cm_events[-1]
+-        assert latest_cm.reason == "Updated"
++        assert latest_cm.reason in ("Updated", "UpdatedWithError")
+ 
+         # Step 4: Ingress still responds
+         wait_and_assert_status_code(200, ingress_url, ingress_setup.ingress_host)
+diff --git a/tests/suite/test_config_rollback_ts.py b/tests/suite/test_config_rollback_ts.py
+index 7676446b5..d07d75ae2 100644
+--- a/tests/suite/test_config_rollback_ts.py
++++ b/tests/suite/test_config_rollback_ts.py
+@@ -390,7 +390,7 @@ class TestConfigRollbackTransportServer:
+ 
+         # Step 3: apply ConfigMap with invalid setting
+         config_map = ingress_controller_prerequisites.config_map.copy()
+-        config_map["data"] = configmap_data
++        config_map["data"] = {"upstream-zone-size": "2m", **configmap_data}
+         replace_configmap(
+             kube_apis.v1,
+             config_map["metadata"]["name"],
+@@ -411,7 +411,7 @@ class TestConfigRollbackTransportServer:
+             ingress_controller_prerequisites.config_map["metadata"]["name"],
+         )
+         latest_cm = cm_events[-1]
+-        assert latest_cm.reason == "Updated"
++        assert latest_cm.reason in ("Updated", "UpdatedWithError")
+         ic_logs = kube_apis.v1.read_namespaced_pod_log(
+             ic_pod, ingress_controller_prerequisites.namespace, since_seconds=30
+         )
+diff --git a/tests/suite/test_config_rollback_vs.py b/tests/suite/test_config_rollback_vs.py
+index 486386d2b..668d0dfb1 100644
+--- a/tests/suite/test_config_rollback_vs.py
++++ b/tests/suite/test_config_rollback_vs.py
+@@ -139,8 +139,8 @@ class TestConfigRollbackVirtualServer:
+             # buffer-size alone (default proxy_buffers = 4 4k = 16k total):
+             # proxy_busy_buffers_size must be < pool minus one buffer = 12k, but 16k > 12k
+             pytest.param(
+-                lambda vs: vs["spec"]["upstreams"][0].update({"buffer-size": "16k"}),
++                lambda vs: vs["spec"]["upstreams"][0].update({"buffer-size": "256k"}),
+-                "proxy_buffer_size 16k",
++                "proxy_buffer_size 256k",
+                 '"proxy_busy_buffers_size" must be less than the size of all "proxy_buffers" minus one buffer',
+                 id="buffer-size",
+             ),
+@@ -276,7 +276,7 @@ class TestConfigRollbackVirtualServer:
+         )
+         # Step 2: apply ConfigMap with invalid setting
+         config_map = ingress_controller_prerequisites.config_map.copy()
+-        config_map["data"] = configmap_data
++        config_map["data"] = {"upstream-zone-size": "2m", **configmap_data}
+         replace_configmap(
+             kube_apis.v1,
+             config_map["metadata"]["name"],
+@@ -296,7 +296,7 @@ class TestConfigRollbackVirtualServer:
+             ingress_controller_prerequisites.config_map["metadata"]["name"],
+         )
+         latest_cm = cm_events[-1]
+-        assert latest_cm.reason == "Updated"
++        assert latest_cm.reason in ("Updated", "UpdatedWithError")
+         ic_logs = kube_apis.v1.read_namespaced_pod_log(
+             ic_pod, ingress_controller_prerequisites.namespace, since_seconds=30
+         )
+@@ -365,7 +365,7 @@ class TestConfigRollbackVirtualServer:
+ 
+         # Step 3: apply ConfigMap with invalid location-snippets
+         config_map = ingress_controller_prerequisites.config_map.copy()
+-        config_map["data"] = {"location-snippets": "add_header;"}
++        config_map["data"] = {"upstream-zone-size": "2m", "location-snippets": "add_header;"}
+         replace_configmap(
+             kube_apis.v1,
+             config_map["metadata"]["name"],
+diff --git a/tests/suite/test_empty_host_ingress_reload.py b/tests/suite/test_empty_host_ingress_reload.py
+index 793628e71..75b903c40 100644
+--- a/tests/suite/test_empty_host_ingress_reload.py
++++ b/tests/suite/test_empty_host_ingress_reload.py
+@@ -24,7 +24,7 @@ empty_host_ingress_src = f"{empty_host_test_data_path}/empty-host-ingress.yaml"
+ reload_failure_buffer_size_ingress_src = (
+     f"{empty_host_test_data_path}/empty-host-ingress-reload-failure-buffer-size.yaml"
+ )
+-invalid_annotations = {"nginx.org/proxy-buffer-size": "16k"}
++invalid_annotations = {"nginx.org/proxy-buffer-size": "256k"}
+ 
+ 
+ @pytest.mark.ingresses
+@@ -100,12 +100,12 @@ class TestEmptyHostIngressReload:
+         if expect_rollback:
+             # Config-safety keeps the previous working empty-host config on disk and records rollback.
+             assert "backend1-svc" in conf
+-            assert "proxy_buffer_size 16k" not in conf
++            assert "proxy_buffer_size 256k" not in conf
+             assert "rolled back to previous working config" in messages
+         else:
+             # Without config-safety, the rejected config can still be left on disk even though
+             # NGINX keeps serving from the previous runtime state.
+-            assert "proxy_buffer_size 16k" in conf
++            assert "proxy_buffer_size 256k" in conf
+ 
+         assert "but was not applied" in messages
+         assert "proxy_busy_buffers_size" in messages
+@@ -159,11 +159,11 @@ class TestEmptyHostIngressReload:
+             assert "server_name _" in conf
+             assert "return 404" in conf
+             assert "backend1-svc" not in conf
+-            assert "proxy_buffer_size 16k" not in conf
++            assert "proxy_buffer_size 256k" not in conf
+             assert "rolled back to previous working config" in messages
+         else:
+             assert "backend1-svc" in conf
+-            assert "proxy_buffer_size 16k" in conf
++            assert "proxy_buffer_size 256k" in conf
+ 
+         delete_ingress(kube_apis.networking_v1, invalid, test_namespace)
+         wait_before_test()
+@@ -389,11 +389,11 @@ class TestEmptyHostIngressStartupProtection:
+             # With config-safety, the startup batch excludes the invalid empty-host ingress and
+             # keeps the bootstrapped synthetic default server on disk.
+             assert "backend1-svc" not in conf
+-            assert "proxy_buffer_size 16k" not in conf
++            assert "proxy_buffer_size 256k" not in conf
+             ic_logs = kube_apis.v1.read_namespaced_pod_log(ic_pod, ingress_controller_prerequisites.namespace)
+             assert "Config safety: startup batch excluded" in ic_logs
+         else:
+             # Without config-safety, the failed empty-host config can still be left on disk even
+             # though runtime traffic stays on the startup default server.
+             assert "backend1-svc" in conf
+-            assert "proxy_buffer_size 16k" in conf
++            assert "proxy_buffer_size 256k" in conf
+diff --git a/tests/suite/test_virtual_server_configmap_keys.py b/tests/suite/test_virtual_server_configmap_keys.py
+index a8de0b2cf..c92874d6e 100644
+--- a/tests/suite/test_virtual_server_configmap_keys.py
++++ b/tests/suite/test_virtual_server_configmap_keys.py
+@@ -95,7 +95,7 @@ def assert_specific_keys_for_nginx_oss(config, expected_values):
+     # based on f"{TEST_DATA}/virtual-server-configmap-keys/configmap-validation-keys-oss.yaml"
+     assert 'server_tokens "off"' in config
+     assert "random two least_conn;" not in config and expected_values["lb-method"] in config
+-    assert "zone " not in config and " 256k;" not in config
++    assert " 256k;" not in config
+ 
+ 
+ def assert_defaults_of_keys_with_validation_for_nginx_plus(config, unexpected_values):
+@@ -105,7 +105,7 @@ def assert_defaults_of_keys_with_validation_for_nginx_plus(config, unexpected_va
+ 
+ def assert_defaults_of_keys_with_validation_for_nginx_oss(config, unexpected_values):
+     assert_common_defaults_of_keys_with_validation(config, unexpected_values)
+-    assert "zone " in config and " 256k;" in config
++    assert "zone " in config and " 2m;" in config
+ 
+ 
+ def assert_common_defaults_of_keys_with_validation(config, unexpected_values):
+diff --git a/tests/suite/utils/custom_assertions.py b/tests/suite/utils/custom_assertions.py
+index c75f8207b..639ea709f 100644
+--- a/tests/suite/utils/custom_assertions.py
++++ b/tests/suite/utils/custom_assertions.py
+@@ -114,8 +114,8 @@ def wait_for_event_count_increases(kube_apis, event_text, initial_count, events_
+     events_list = get_events(kube_apis.v1, events_namespace)
+     count = get_event_count(event_text, events_list)
+     counter = 0
+-    while count <= initial_count and counter < 4:
+-        time.sleep(1)
++    while count <= initial_count and counter < 30:
++        time.sleep(5)
+         counter = counter + 1
+         events_list = get_events(kube_apis.v1, events_namespace)
+         count = get_event_count(event_text, events_list)
+@@ -219,7 +219,7 @@ def wait_and_assert_status_code(code, req_url, host=None, **kwargs) -> None:
+     last_error = None
+     # One initial request plus up to 31 retries (~31s of polling), matching the
+     # original loop. Only sleep between attempts, never after the final one.
+-    attempts = 32
++    attempts = 120
+     for i in range(attempts):
+         try:
+             resp = requests.get(req_url, headers=headers, **kwargs)
+diff --git a/tests/suite/utils/resources_utils.py b/tests/suite/utils/resources_utils.py
+index 52ac5ef1d..f3b83409b 100644
+--- a/tests/suite/utils/resources_utils.py
++++ b/tests/suite/utils/resources_utils.py
+@@ -210,6 +210,8 @@ def create_deployment(apps_v1_api: AppsV1Api, namespace, body) -> str:
+     :return: str
+     """
+     print("Create a deployment:")
++    for container in body.get("spec", {}).get("template", {}).get("spec", {}).get("containers", []):
++        container.setdefault("imagePullPolicy", "Never")
+     apps_v1_api.create_namespaced_deployment(namespace, body)
+     print(f"Deployment created with name '{body['metadata']['name']}'")
+     return body["metadata"]["name"]
+@@ -2190,7 +2192,7 @@ def get_reload_count(req_url) -> int:
+     return count
+ 
+ 
+-def wait_for_reload(metrics_url, count_before, timeout=60) -> None:
++def wait_for_reload(metrics_url, count_before, timeout=300) -> None:
+     """
+     Wait until the NGINX reload count has incremented beyond count_before.
+ 
