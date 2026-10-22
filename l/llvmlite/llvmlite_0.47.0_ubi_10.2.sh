@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : llvmlite
-# Version       : 0.47.0
+# Version       : v0.47.0
 # Source repo   : https://github.com/numba/llvmlite
 # Tested on     : UBI 10.2
 # Language      : Python
@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=llvmlite
-PACKAGE_VERSION=${1:-"0.47.0"}
+PACKAGE_VERSION=${1:-"v0.47.0"}
 PACKAGE_URL=https://github.com/numba/llvmlite
 PACKAGE_DIR=llvmlite
 WORKING_DIR=$(pwd)
@@ -124,7 +124,7 @@ echo "-------------------LLVM ${LLVM_VERSION} installation completed------------
 echo "-------------------Building llvmlite ${PACKAGE_VERSION} wheel----------------------"
 
 rm -rf "$PACKAGE_DIR"
-if ! git clone --depth 1 --branch "v${PACKAGE_VERSION}" "$PACKAGE_URL" "$PACKAGE_DIR"; then
+if ! git clone --depth 1 --branch "${PACKAGE_VERSION}" "$PACKAGE_URL" "$PACKAGE_DIR"; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | v${PACKAGE_VERSION} | $OS_NAME | GitHub | Fail | Clone_Fails"
     exit 1
