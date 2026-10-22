@@ -143,6 +143,15 @@ if image_tag_input:
 if build_scripts_path_input:
     kv_data['POWERCORE_BUILD_SCRIPTS'] = build_scripts_path_input
 
+# Inject GHA context variables so they survive sudo and su - transitions
+import os
+github_actions   = os.environ.get('GITHUB_ACTIONS', '')
+github_workspace = os.environ.get('GITHUB_WORKSPACE', '')
+if github_actions:
+    kv_data['GITHUB_ACTIONS']   = github_actions
+if github_workspace:
+    kv_data['GITHUB_WORKSPACE'] = github_workspace
+    
 # Set COUCHDB_IAM_API_KEY
 kv_data['COUCHDB_IAM_API_KEY'] = couchdb_iam_api_key
 
