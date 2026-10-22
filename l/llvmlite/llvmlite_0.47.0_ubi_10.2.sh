@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : llvmlite
-# Version       : v0.47.0
+# Version       : 0.47.0
 # Source repo   : https://github.com/numba/llvmlite
-# Tested on     : UBI 10.2
+# Tested on     : UBI:10.2
 # Language      : Python
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
@@ -20,6 +20,7 @@
 
 PACKAGE_NAME=llvmlite
 PACKAGE_VERSION=${1:-"v0.47.0"}
+PACKAGE_VERSION_NUM=${PACKAGE_VERSION#v}
 PACKAGE_URL=https://github.com/numba/llvmlite
 PACKAGE_DIR=llvmlite
 WORKING_DIR=$(pwd)
@@ -126,14 +127,14 @@ echo "-------------------Building llvmlite ${PACKAGE_VERSION} wheel-------------
 rm -rf "$PACKAGE_DIR"
 if ! git clone --depth 1 --branch "${PACKAGE_VERSION}" "$PACKAGE_URL" "$PACKAGE_DIR"; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | v${PACKAGE_VERSION} | $OS_NAME | GitHub | Fail | Clone_Fails"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | ${PACKAGE_VERSION} | $OS_NAME | GitHub | Fail | Clone_Fails"
     exit 1
 fi
 
 cd "$PACKAGE_DIR"
 if ! python3 -m build --wheel --no-isolation; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------------------------"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | v${PACKAGE_VERSION} | $OS_NAME | GitHub | Fail | Build_Fails"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | ${PACKAGE_VERSION} | $OS_NAME | GitHub | Fail | Build_Fails"
     exit 1
 fi
 cd "$WORKING_DIR"
@@ -155,7 +156,7 @@ if ! python3 -m auditwheel repair \
         --wheel-dir "$REPAIRED_DIR" \
         "$WHEEL_DIR"/*.whl; then
     echo "------------------$PACKAGE_NAME:auditwheel_fails---------------------------------------"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | v${PACKAGE_VERSION} | $OS_NAME | GitHub | Fail | Auditwheel_Fails"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | ${PACKAGE_VERSION} | $OS_NAME | GitHub | Fail | Auditwheel_Fails"
     exit 1
 fi
 echo "-------------------auditwheel repair completed----------------------"
@@ -169,7 +170,7 @@ echo "-------------------Installing and testing llvmlite----------------------"
 
 if ! python3 -m pip install "$REPAIRED_DIR"/*.whl; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------------------------"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | ${PACKAGE_VERSION} | $OS_NAME | GitHub | Fail | Install_Fails"
     exit 1
 fi
 
@@ -181,7 +182,7 @@ cd /tmp
 if ! python3 -c "
 import llvmlite, llvmlite.binding as llvm
 print('llvmlite', llvmlite.__version__, '| LLVM', llvm.llvm_version_info, '|', llvm.get_default_triple())
-assert llvmlite.__version__ == '${PACKAGE_VERSION}'
+assert llvmlite.__version__ == '${PACKAGE_VERSION_NUM}'
 assert llvm.llvm_version_info[0] == 20
 assert 'powerpc64le' in llvm.get_default_triple()
 "; then
