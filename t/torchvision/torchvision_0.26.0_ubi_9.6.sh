@@ -27,16 +27,20 @@ PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
 VERSION=${PACKAGE_VERSION#v}
+# The wrapper (create_wheel_wrapper.sh) passes the Python version (eg: 3.12) as $2.
+# Accept $2 as the PyTorch tag only if it looks like one (eg: v2.14.0).
+PYTORCH_VERSION_ARG=${2:-}
+[[ "$PYTORCH_VERSION_ARG" =~ ^v[0-9]+\.[0-9]+(\.[0-9]+)?$ ]] || PYTORCH_VERSION_ARG=""
 if [[ "$PACKAGE_VERSION" == "v0.29.0" ]]; then
-    PYTORCH_VERSION=${2:-v2.14.0}
+    PYTORCH_VERSION=${PYTORCH_VERSION_ARG:-v2.14.0}
 elif [[ "$PACKAGE_VERSION" == "v0.28.0" ]]; then
-    PYTORCH_VERSION=${2:-v2.13.0}
+    PYTORCH_VERSION=${PYTORCH_VERSION_ARG:-v2.13.0}
 elif [[ "$PACKAGE_VERSION" == "v0.27.1" ]]; then
-    PYTORCH_VERSION=${2:-v2.12.1}
+    PYTORCH_VERSION=${PYTORCH_VERSION_ARG:-v2.12.1}
 elif [[ "$PACKAGE_VERSION" == "v0.27.0" ]]; then
-    PYTORCH_VERSION=${2:-v2.12.0}
+    PYTORCH_VERSION=${PYTORCH_VERSION_ARG:-v2.12.0}
 else
-    PYTORCH_VERSION=${2:-v2.11.0}
+    PYTORCH_VERSION=${PYTORCH_VERSION_ARG:-v2.11.0}
 fi
 
 CURRENT_DIR=$(pwd)
