@@ -4,7 +4,7 @@
 # Package       : libgoogle-cloud-storage
 # Version       : v3.6.0
 # Source repo   : https://github.com/googleapis/google-cloud-cpp
-# Tested on     : UBI:10.2
+# Tested on UBI:10.2
 # Language      : C++
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
