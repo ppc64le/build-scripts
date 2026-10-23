@@ -49,9 +49,6 @@ yum install -y \
 curl --proto '=https' --tlsv1.3 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
 source "$HOME/.cargo/env"
 rustc --version && cargo --version
-
-ln -sf "$(command -v python3.12)" /usr/bin/python3
-ln -sf "$(command -v pip3.12)" /usr/bin/pip3
 	  
 # ---------------------------
 # Clone Repository
@@ -68,7 +65,7 @@ python3.12 -m pip install maturin pytest setuptools wheel build
 # ---------------------------
 # Build
 # ---------------------------
-if ! maturin build --release; then
+if ! maturin build --release  --interpreter "$(command -v python3.12)"; then
     echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
