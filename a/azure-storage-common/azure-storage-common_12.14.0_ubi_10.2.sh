@@ -19,6 +19,7 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=azure-storage-common
+PACKAGE_DIR=azure-sdk-for-cpp
 PACKAGE_VERSION=${1:-"azure-storage-common_12.14.0"}
 PACKAGE_URL=https://github.com/Azure/azure-sdk-for-cpp
 WORKING_DIR=$(pwd)
@@ -71,14 +72,14 @@ g++ --version
 cmake --version
 
 # Clone source
-rm -rf azure-sdk-for-cpp
-if ! git clone "$PACKAGE_URL"; then
+rm -rf "$PACKAGE_DIR"
+if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Clone_Fails"
     exit 1
 fi
-cd azure-sdk-for-cpp
+cd "$PACKAGE_DIR"
 git checkout $PACKAGE_VERSION
 SOURCE_DIR=$(pwd)
 
