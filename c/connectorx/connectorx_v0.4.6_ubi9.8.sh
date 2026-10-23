@@ -82,8 +82,8 @@ cp "$CONNECTORX_WHEEL" "$BUILD_HOME/"
 python3.12 -m pip install "$CONNECTORX_WHEEL"
 python3.12 -m pip install pandas numpy "poetry==2.4.1"
 python3.12 -m pip install --prefer-binary --no-cache-dir polars==1.44.2 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
-maturin develop --release
-
+python3.12 -m pip install --prefer-binary --no-cache-dir pyarrow==24.0.0 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+unzip -o "$CONNECTORX_WHEEL" 'connectorx/*.so' 'connectorx.libs/*' -d .
 # ---------------------------
 # Test
 # ---------------------------
