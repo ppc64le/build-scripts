@@ -86,7 +86,7 @@ python3.12 -m pip install --prefer-binary --no-cache-dir polars==1.44.2 --extra-
 # ---------------------------
 # Test
 # ---------------------------
-if ! poetry run pytest connectorx/tests -v -s; then
+if ! python3.12 -m pytest connectorx/tests -v -s; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
