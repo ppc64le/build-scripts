@@ -1,7 +1,7 @@
-#!/bin/bash -e
+﻿#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : google-cloud-cpp
+# Package       : libgoogle-cloud-storage
 # Version       : v3.6.0
 # Source repo   : https://github.com/googleapis/google-cloud-cpp
 # Tested on     : UBI 10.2
@@ -18,7 +18,7 @@
 #
 # -----------------------------------------------------------------------------
 
-PACKAGE_NAME=google-cloud-cpp
+PACKAGE_NAME=libgoogle-cloud-storage
 SCRIPT_PACKAGE_VERSION="v3.6.0"
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL="https://github.com/googleapis/google-cloud-cpp"
@@ -90,21 +90,24 @@ cmake --version
 python3 --version
 
 # --- Step 0: Install Abseil-cpp, nlohmann_json, OpenTelemetry, GoogleTest, and Google Benchmark ---
-# 0.1 Abseil-cpp (use wheel if available, else build from source)
-if ls "${SCRIPT_PATH}"/abseil_cpp*.whl >/dev/null 2>&1 || ls "${WORKING_DIR}"/abseil_cpp*.whl >/dev/null 2>&1; then
-    echo "Found abseil_cpp wheel - installing and extracting C++ libraries"
-    python3 -m pip install "${SCRIPT_PATH}"/abseil_cpp*.whl 2>/dev/null || python3 -m pip install "${WORKING_DIR}"/abseil_cpp*.whl 2>/dev/null || true
+# 0.1 Abseil-cpp (prefer wheel; fallback to source build)
+ABSEIL_WHEEL=$(find "${SCRIPT_PATH}" "${WORKING_DIR}" -maxdepth 1 -name 'abseil_cpp*.whl' 2>/dev/null | head -1)
+
+if [ -n "${ABSEIL_WHEEL}" ]; then
+    echo "Using Abseil wheel: ${ABSEIL_WHEEL}"
+    python3 -m pip install "${ABSEIL_WHEEL}"
 fi
 
 ABSL_PKG_DIR=$(python3 -c "import abseil_cpp, os; print(os.path.dirname(abseil_cpp.__file__))" 2>/dev/null || true)
 if [ -n "${ABSL_PKG_DIR}" ] && [ -d "${ABSL_PKG_DIR}/include/absl" ]; then
-    echo "Using C++ headers and libraries from abseil_cpp wheel (${ABSL_PKG_DIR})"
-    mkdir -p /usr/local/include /usr/local/lib64 /usr/local/lib
+    echo "Extracted Abseil C++ headers and libraries from wheel (${ABSL_PKG_DIR}) to /usr/local"
+    mkdir -p /usr/local/include /usr/local/lib64 /usr/local/lib /usr/local/share
     cp -rf "${ABSL_PKG_DIR}/include/absl" /usr/local/include/ 2>/dev/null || true
     cp -rf "${ABSL_PKG_DIR}/lib64/"* /usr/local/lib64/ 2>/dev/null || true
     cp -rf "${ABSL_PKG_DIR}/lib/"* /usr/local/lib/ 2>/dev/null || true
     cp -rf "${ABSL_PKG_DIR}/share/"* /usr/local/share/ 2>/dev/null || true
 elif [ ! -f "/usr/local/lib64/libabsl_base.so" ] && [ ! -f "/usr/local/lib/libabsl_base.a" ] && [ ! -f "/usr/local/lib64/cmake/absl/abslConfig.cmake" ]; then
+    echo "Abseil wheel not found. Building from source..."
     ABSL_DIR="${WORKING_DIR}/abseil-cpp"
     if [ ! -d "${ABSL_DIR}" ]; then
         git clone https://github.com/abseil/abseil-cpp.git "${ABSL_DIR}"
@@ -234,29 +237,12 @@ SOURCE_DIR=$(pwd)
 # Patch google_cloud_cpp_common.cmake to always link opentelemetry-cpp::api when available
 sed -i 's/if (opentelemetry IN_LIST GOOGLE_CLOUD_CPP_ENABLE)/if (TRUE)/g' google/cloud/google_cloud_cpp_common.cmake
 
-# Define local prefix for wheel packaging
-mkdir -p local/google_cloud_cpp
-PREFIX="${SOURCE_DIR}/local/google_cloud_cpp"
-
-# Copy installed dependency headers and shared libraries to PREFIX for wheel packaging
-for dep in absl nlohmann opentelemetry; do
-    if [ -d "/usr/local/include/${dep}" ]; then
-        mkdir -p "${PREFIX}/include"
-        cp -rf "/usr/local/include/${dep}" "${PREFIX}/include/" 2>/dev/null || true
-    fi
-done
-mkdir -p "${PREFIX}/lib" "${PREFIX}/lib64"
-cp -d /usr/local/lib64/libabsl*.so* "${PREFIX}/lib64/" 2>/dev/null || true
-cp -d /usr/local/lib/libabsl*.so* "${PREFIX}/lib/" 2>/dev/null || true
-cp -d /usr/local/lib64/libopentelemetry*.so* "${PREFIX}/lib64/" 2>/dev/null || true
-cp -d /usr/local/lib/libopentelemetry*.so* "${PREFIX}/lib/" 2>/dev/null || true
-
 # Ensure working directory is SOURCE_DIR and clean existing build directory
 cd "$SOURCE_DIR"
 rm -rf build
 mkdir -p build && cd build
 
-# Single unified build with testing enabled
+# Build google-cloud-cpp with Storage component enabled
 if ! cmake \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_C_FLAGS="${CPU_FLAGS}" \
@@ -294,10 +280,30 @@ if ! DESTDIR="" ninja install; then
     exit 1
 fi
 
-# Also install into local PREFIX for Python wheel packaging
-DESTDIR="" cmake --install . --prefix "${PREFIX}" 2>/dev/null || true
-
 cd "$SOURCE_DIR"
+
+# Define local prefix for wheel packaging
+mkdir -p local/libgoogle_cloud_storage
+PREFIX="${SOURCE_DIR}/local/libgoogle_cloud_storage"
+mkdir -p "${PREFIX}/include" "${PREFIX}/lib" "${PREFIX}/lib64" "${PREFIX}/share"
+
+# Copy all Google Cloud C++ headers and libraries from /usr/local into PREFIX
+if [ -d "/usr/local/include/google" ]; then
+    cp -rf /usr/local/include/google "${PREFIX}/include/" 2>/dev/null || true
+fi
+cp -d /usr/local/lib64/libgoogle_cloud_cpp*.so* "${PREFIX}/lib64/" 2>/dev/null || true
+cp -d /usr/local/lib/libgoogle_cloud_cpp*.so* "${PREFIX}/lib/" 2>/dev/null || true
+
+# Copy all dependency headers and libraries (Abseil, JSON, OpenTelemetry, etc.) into PREFIX
+for dep in absl nlohmann opentelemetry; do
+    if [ -d "/usr/local/include/${dep}" ]; then
+        cp -rf "/usr/local/include/${dep}" "${PREFIX}/include/" 2>/dev/null || true
+    fi
+done
+cp -d /usr/local/lib64/libabsl*.so* "${PREFIX}/lib64/" 2>/dev/null || true
+cp -d /usr/local/lib/libabsl*.so* "${PREFIX}/lib/" 2>/dev/null || true
+cp -d /usr/local/lib64/libopentelemetry*.so* "${PREFIX}/lib64/" 2>/dev/null || true
+cp -d /usr/local/lib/libopentelemetry*.so* "${PREFIX}/lib/" 2>/dev/null || true
 
 # Patch RPATH/RUNPATH on all shared libraries inside wheel prefix so dependencies resolve via $ORIGIN
 if ! command -v patchelf >/dev/null 2>&1; then
@@ -308,13 +314,15 @@ find "${PREFIX}" -type f -name "*.so*" | while read -r so_file; do
 done
 
 # Create Python package init file
-touch local/google_cloud_cpp/__init__.py
+touch "${PREFIX}/__init__.py"
 
-# Smoke-test: verify shared libraries and headers for both libgoogle-cloud and libgoogle-cloud-storage
+# Verify content of packaging directory before wheel creation
+echo "=== CONTENT OF PACKAGE DIRECTORY (${PREFIX}) ==="
+find "${PREFIX}" -type f | sort
+
+# Smoke-test: verify shared libraries and headers for libgoogle-cloud-storage
 ldconfig /usr/local/lib64 /usr/local/lib 2>/dev/null || true
-if ! ls /usr/local/include/google/cloud/version.h > /dev/null 2>&1 || \
-   ! ls /usr/local/include/google/cloud/storage/client.h > /dev/null 2>&1 || \
-   ! ls /usr/local/lib*/libgoogle_cloud_cpp_common.so* > /dev/null 2>&1 || \
+if ! ls /usr/local/include/google/cloud/storage/client.h > /dev/null 2>&1 || \
    ! ls /usr/local/lib*/libgoogle_cloud_cpp_storage.so* > /dev/null 2>&1; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -322,11 +330,11 @@ if ! ls /usr/local/include/google/cloud/version.h > /dev/null 2>&1 || \
     exit 1
 fi
 
-# Run C++ Unit Tests (excluding network / live credential / integration / emulator tests)
+# Run C++ unit tests excluding integration, emulator and sample tests
 cd "$SOURCE_DIR/build"
 export LD_LIBRARY_PATH="/usr/local/lib64:/usr/local/lib:${LD_LIBRARY_PATH:-}"
 if ! ctest --output-on-failure -j"$(nproc)" \
-    --exclude-regex 'integration|network|production|benchmarks|emulator|samples|storage_object_file_multi_threaded_test'; then
+    --exclude-regex 'integration|emulator|samples|storage_object_file_multi_threaded_test'; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_success_but_test_Fails"
@@ -342,14 +350,14 @@ if [ -f "${SCRIPT_PATH}/pyproject.toml" ]; then
     cp "${SCRIPT_PATH}/pyproject.toml" pyproject.toml
 elif [ -n "${BUILD_SCRIPT_PATH:-}" ] && [ -f "$(dirname "$BUILD_SCRIPT_PATH")/pyproject.toml" ]; then
     cp "$(dirname "$BUILD_SCRIPT_PATH")/pyproject.toml" pyproject.toml
-elif [ -f "${WORKING_DIR}/google/pyproject.toml" ]; then
-    cp "${WORKING_DIR}/google/pyproject.toml" pyproject.toml
-elif [ -f "${WORKING_DIR}/g/google-cloud-cpp/pyproject.toml" ]; then
-    cp "${WORKING_DIR}/g/google-cloud-cpp/pyproject.toml" pyproject.toml
+elif [ -f "${WORKING_DIR}/l/libgoogle-cloud-storage/pyproject.toml" ]; then
+    cp "${WORKING_DIR}/l/libgoogle-cloud-storage/pyproject.toml" pyproject.toml
+elif [ -f "${WORKING_DIR}/libgoogle-cloud-storage/pyproject.toml" ]; then
+    cp "${WORKING_DIR}/libgoogle-cloud-storage/pyproject.toml" pyproject.toml
 elif [ -f "${WORKING_DIR}/pyproject.toml" ]; then
     cp "${WORKING_DIR}/pyproject.toml" pyproject.toml
 else
-    wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/g/google-cloud-cpp/pyproject.toml || true
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/l/libgoogle-cloud-storage/pyproject.toml || true
 fi
 
 # Sanitize version string (e.g. v3.6.0 -> 3.6.0)
@@ -363,7 +371,7 @@ if ! python3 -m pip install . --no-build-isolation; then
     exit 1
 fi
 
-# Produce binary wheel artifact
+# Produce libgoogle-cloud-storage wheel artifact
 python3 -m build --wheel --no-isolation
 
 cd "$WORKING_DIR"

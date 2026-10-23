@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "google-cloud-cpp"
+name = "libgoogle-cloud-storage"
 version = "{PACKAGE_VERSION}"
-description = "C++ client libraries for Google Cloud Platform services with Python bindings for ppc64le"
+description = "C++ client library for Google Cloud Storage with Python bindings for ppc64le"
 readme = "README.md"
 requires-python = ">=3.8"
 license = "Apache-2.0"
@@ -30,7 +30,7 @@ include-package-data = true
 where = ["local"]
 
 [tool.setuptools.package-data]
-google_cloud_cpp = [
+libgoogle_cloud_storage = [
     "include/**/*",
     "lib/**/*.so*",
     "lib64/**/*.so*",
