@@ -1,4 +1,4 @@
-﻿{
+{
     "maintainer": "Shivender-Singh",
     "package_name": "libgoogle-cloud-storage",
     "github_url": "https://github.com/googleapis/google-cloud-cpp",
@@ -17,4 +17,3 @@
         "build_script": "libgoogle-cloud-storage_ubi_10.2.sh"
     }
 }
-
