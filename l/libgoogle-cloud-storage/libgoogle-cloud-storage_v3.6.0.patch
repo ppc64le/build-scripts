@@ -1,0 +1,14 @@
+diff --git a/google/cloud/google_cloud_cpp_common.cmake b/google/cloud/google_cloud_cpp_common.cmake
+index 8b3601db39..1d213cc207 100644
+--- a/google/cloud/google_cloud_cpp_common.cmake
++++ b/google/cloud/google_cloud_cpp_common.cmake
+@@ -197,7 +197,8 @@ else ()
+     target_link_libraries(google_cloud_cpp_common PUBLIC OpenSSL::Crypto)
+ endif ()
+ 
+-if (opentelemetry IN_LIST GOOGLE_CLOUD_CPP_ENABLE)
++find_package(opentelemetry-cpp CONFIG REQUIRED)
++if (TARGET opentelemetry-cpp::api)
+     find_package(opentelemetry-cpp CONFIG)
+     if (opentelemetry-cpp_FOUND)
+         target_link_libraries(google_cloud_cpp_common
