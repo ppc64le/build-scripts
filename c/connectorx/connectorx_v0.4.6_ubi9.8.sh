@@ -49,6 +49,9 @@ yum install -y \
 curl --proto '=https' --tlsv1.3 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
 source "$HOME/.cargo/env"
 rustc --version && cargo --version
+
+ln -sf "$(command -v python3.12)" /usr/bin/python3
+ln -sf "$(command -v pip3.12)" /usr/bin/pip3
 	  
 # ---------------------------
 # Clone Repository
