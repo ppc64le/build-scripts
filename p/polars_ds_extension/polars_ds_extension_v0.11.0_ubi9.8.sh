@@ -69,14 +69,14 @@ cp "$POLARSDS_WHEEL" "$BUILD_HOME/"
 # Install package and runtime/test dependencies
 # ----------------------------------------------
 python3.12 -m pip install "$POLARSDS_WHEEL" 
-python3.12 -m pip install --prefer-binary --no-cache-dir --extra-index-url=${WHEEL_INDEX} numpy pandas scipy scikit-learn pyarrow statsmodels polars
+python3.12 -m pip install --prefer-binary --no-cache-dir --extra-index-url=${WHEEL_INDEX} numpy pandas scipy scikit-learn pyarrow statsmodels "polars==1.44.2"
 python3.12 -m pip install jupyter ipython ipykernel nbconvert typing_extensions pytest-benchmark category_encoders copent altair great-tables astropy scikit-survival
 python3.12 -m pip install -r docs/requirements-docs.txt
 
 # ---------------------------
 # Test
 # ---------------------------
-# tests/test_many.py::test_random_functions_in_streaming is deselected because it's in parity with x86.
+# 1 test (test_random_functions_in_streaming) is deselected because it's in parity with x86.
 
 if ! python3.12 -m pytest tests/test_* -v --deselect tests/test_many.py::test_random_functions_in_streaming; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
