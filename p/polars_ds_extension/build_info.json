@@ -1,0 +1,16 @@
+{
+  "maintainer": "Pratik Tonage",
+  "package_name": "polars_ds_extension",
+  "github_url": "https://github.com/abstractqqq/polars_ds_extension.git",
+  "version": "v0.11.0",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "package_dir": "p/polars_ds_extension",
+  "build_script": "polars_ds_extension_v0.11.0_ubi9.8.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "*": {
+    "build_script": "polars_ds_extension_v0.11.0_ubi9.8.sh"
+  }
+}
