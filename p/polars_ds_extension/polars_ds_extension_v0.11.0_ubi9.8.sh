@@ -20,7 +20,6 @@
 PACKAGE_NAME="polars_ds_extension"
 PACKAGE_VERSION=${1:-v0.11.0}
 PACKAGE_URL="https://github.com/abstractqqq/polars_ds_extension.git"
-SCRIPT_PATH=$(dirname $(realpath $0))
 BUILD_HOME="$(pwd)"
 DEVPI_INDEX="https://wheels.developerfirst.ibm.com/ppc64le/linux"
 
