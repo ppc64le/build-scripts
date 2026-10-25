@@ -22,7 +22,7 @@ PACKAGE_VERSION=${1:-v0.11.0}
 PACKAGE_URL="https://github.com/abstractqqq/polars_ds_extension.git"
 SCRIPT_PATH=$(dirname $(realpath $0))
 BUILD_HOME="$(pwd)"
-WHEEL_INDEX="https://wheels.developerfirst.ibm.com/ppc64le/linux"
+DEVPI_INDEX="https://wheels.developerfirst.ibm.com/ppc64le/linux"
 
 # ---------------------------
 # Dependency Installation
@@ -69,7 +69,7 @@ cp "$POLARSDS_WHEEL" "$BUILD_HOME/"
 # Install package and runtime/test dependencies
 # ----------------------------------------------
 python3.12 -m pip install "$POLARSDS_WHEEL" 
-python3.12 -m pip install --prefer-binary --no-cache-dir --extra-index-url=${WHEEL_INDEX} numpy pandas scipy scikit-learn pyarrow statsmodels "polars==1.44.2"
+python3.12 -m pip install --prefer-binary --no-cache-dir --extra-index-url=${DEVPI_INDEX} numpy pandas scipy scikit-learn pyarrow statsmodels "polars==1.44.2"
 python3.12 -m pip install jupyter ipython ipykernel nbconvert typing_extensions pytest-benchmark category_encoders copent altair great-tables astropy scikit-survival
 python3.12 -m pip install -r docs/requirements-docs.txt
 
