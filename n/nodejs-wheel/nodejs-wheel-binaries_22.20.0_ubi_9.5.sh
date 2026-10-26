@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : nodejs-wheel-binaries / nodejs-wheel
-# Version       : 22.20.0
+# Version       : 24.19.0
 # Source repo   : https://github.com/njzjz/nodejs-wheel.git
 # Tested on     : UBI:9.5
 # Language      : Python
@@ -24,12 +24,18 @@
 set -e
 # Variables
 PACKAGE_NAME=nodejs-wheel
-PACKAGE_VERSION=${1:-v22.20.0}
+PACKAGE_VERSION=${1:-v24.19.0}
 PACKAGE_URL=https://github.com/njzjz/nodejs-wheel.git
 
 # Install dependencies and tools.
 yum update -y
-yum install -y git gcc-c++  gcc make python3-pip
+yum install -y git make python3-pip gcc-toolset-13
+
+# Enable GCC toolset 13
+source /opt/rh/gcc-toolset-13/enable
+export CC=/opt/rh/gcc-toolset-13/root/usr/bin/gcc
+export CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
+
 pip install --upgrade pip setuptools wheel
 
 #clone repository
