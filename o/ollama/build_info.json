@@ -2,7 +2,11 @@
   "maintainer": "ethanchoe-3",
   "package_name": "ollama",
   "github_url": "https://github.com/ollama/ollama",
-  "version": "v0.33.3",
+  "version": "v0.40.11",
+  "required_versions": {
+    "Releases": ["*"],
+    "Tags": ["*"]
+  },
   "wheel_build": true,
   "wheel_name": "ollama-python-package",
   "package_dir": "o/ollama",
