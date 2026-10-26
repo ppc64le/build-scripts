@@ -30,6 +30,15 @@
        "build_script": "llvmlite_v0.45.0_ubi_9_3.sh"
    },
   "v0.49.0": {
-    "build_script": "llvmlite_0.49.0_ubi_10.2.sh"
-  }
+    "build_script": [
+       "llvmlite_0.49.0_ubi_10.2.sh",
+       "llvmlite_v0.49.0_ubi_9_3.sh"
+    ]
+   },
+   "*": {
+     "build_script": [
+       "llvmlite_0.49.0_ubi_10.2.sh",
+       "llvmlite_v0.49.0_ubi_9_3.sh"
+    ]
+   }
 }
