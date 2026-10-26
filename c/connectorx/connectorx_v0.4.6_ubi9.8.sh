@@ -17,10 +17,10 @@
 # ---------------------------
 # Configuration
 # ---------------------------
-PACKAGE_NAME="connectorx"
+PACKAGE_NAME=connectorx
 PACKAGE_VERSION=${1:-v0.4.6}
 PACKAGE_URL="https://github.com/sfu-db/connector-x.git"
-SCRIPT_PATH=$(dirname $(realpath $0))
+PACKAGE_DIR=connector-x/connectorx-python
 BUILD_HOME="$(pwd)"
 
 # ----------------------
@@ -55,7 +55,7 @@ rustc --version && cargo --version
 # --------------------------- 
 cd "${BUILD_HOME}"
 git clone $PACKAGE_URL
-cd connector-x/connectorx-python
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 # Install Python build tools
