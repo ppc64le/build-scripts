@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : nodejs-wheel-binaries / nodejs-wheel
-# Version       : 24.19.0
+# Version       : 24.22.1
 # Source repo   : https://github.com/njzjz/nodejs-wheel.git
 # Tested on     : UBI:9.5
 # Language      : Python
@@ -24,7 +24,7 @@
 set -e
 # Variables
 PACKAGE_NAME=nodejs-wheel
-PACKAGE_VERSION=${1:-v24.19.0}
+PACKAGE_VERSION=${1:-v24.22.1}
 PACKAGE_URL=https://github.com/njzjz/nodejs-wheel.git
 
 # Install dependencies and tools.
