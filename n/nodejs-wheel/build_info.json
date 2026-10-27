@@ -2,7 +2,7 @@
   "maintainer": "SohamBadjateIBM",
   "package_name": "nodejs-wheel",
   "github_url": "https://github.com/njzjz/nodejs-wheel.git",
-  "version": "v24.22.1",
+  "version": "v24.19.0",
   "required_versions": {
     "Releases": ["*"],
     "Tags": ["*"]
