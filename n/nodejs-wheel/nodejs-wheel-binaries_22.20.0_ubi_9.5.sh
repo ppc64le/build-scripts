@@ -24,7 +24,7 @@
 set -e
 # Variables
 PACKAGE_NAME=nodejs-wheel
-PACKAGE_VERSION=${1:-24.19.0}
+PACKAGE_VERSION=${1:-v24.19.0}
 PACKAGE_URL=https://github.com/njzjz/nodejs-wheel.git
 
 # Install dependencies and tools.
@@ -41,7 +41,7 @@ pip install --upgrade pip setuptools wheel
 #clone repository
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+git checkout $PACKAGE_VERSION || git checkout v$PACKAGE_VERSION
 
 #install
 if ! pip install . ; then
