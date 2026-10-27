@@ -172,30 +172,48 @@ sed -i "s/{PACKAGE_VERSION}/${PACKAGE_VERSION#azure-storage-blobs_}/g" "${SOURCE
 mkdir -p "${WORKING_DIR}/dist"
 if ! python3 -m build --wheel --outdir "${WORKING_DIR}/dist" "${SOURCE_DIR}"; then
     echo "------------------$PACKAGE_NAME:Wheel_build_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Wheel_Build_Fails"
     exit 1
 fi
 
 cd "${WORKING_DIR}"
 
-# Install the built wheel and validate the package is importable
 WHEEL_FILE=$(find "${WORKING_DIR}/dist" -name "azure_storage_blobs_cpp-*.whl" | head -1)
 if [ -z "${WHEEL_FILE}" ]; then
     echo "------------------$PACKAGE_NAME:Wheel_build_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Wheel_Build_Fails"
     exit 1
 fi
+# Install the wheel in a clean venv
+python3 -m venv /tmp/azure-storage-blobs-test-env
+source /tmp/azure-storage-blobs-test-env/bin/activate
+if ! pip install --force-reinstall "${WHEEL_FILE}"; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
+    deactivate
+    exit 1
+fi
 
-python3 -m pip install --force-reinstall "${WHEEL_FILE}"
-
-if ! python3 -c "import azure_storage_blobs_cpp; print('azure_storage_blobs_cpp import OK')"; then
+# Smoke test - run from /tmp so Python imports the installed wheel, not the
+# source tree.
+cd /tmp
+if ! python3 -c "
+import glob, os
+from importlib.metadata import version
+import azure_storage_blobs_cpp as p
+d = os.path.dirname(p.__file__)
+print('azure-storage-blobs-cpp', version('azure-storage-blobs-cpp'), '|', d)
+assert version('azure-storage-blobs-cpp') == '${PACKAGE_VERSION#azure-storage-blobs_}'
+assert glob.glob(d + '/lib64/libazure-storage-blobs.so*')
+assert os.path.isfile(d + '/include/azure/storage/blobs.hpp')
+"; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_success_but_test_Fails"
+    cd "$WORKING_DIR"
     exit 2
 fi
+cd "$WORKING_DIR"
+deactivate
 
 echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 echo "$PACKAGE_URL $PACKAGE_NAME"
