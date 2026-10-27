@@ -168,7 +168,44 @@ fi
 
 cd "${WORKING_DIR}"
 
+WHEEL_FILE=$(find "${WORKING_DIR}/dist" -name "azure_storage_common_cpp-*.whl" | head -1)
+if [ -z "${WHEEL_FILE}" ]; then
+    echo "------------------$PACKAGE_NAME:Wheel_build_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Wheel_Build_Fails"
+    exit 1
+fi
+
+# Install the wheel in a clean venv
+python3 -m venv /tmp/azure-storage-common-test-env
+source /tmp/azure-storage-common-test-env/bin/activate
+if ! pip install --force-reinstall "${WHEEL_FILE}"; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
+    deactivate
+    exit 1
+fi
+
+# Smoke test - run from /tmp so Python imports the installed wheel, not the
+# source tree.
+cd /tmp
+if ! python3 -c "
+import glob, os
+from importlib.metadata import version
+import azure_storage_common_cpp as p
+d = os.path.dirname(p.__file__)
+print('azure-storage-common-cpp', version('azure-storage-common-cpp'), '|', d)
+assert version('azure-storage-common-cpp') == '${PACKAGE_VERSION#azure-storage-common_}'
+assert glob.glob(d + '/lib64/libazure-storage-common.so*')
+assert os.listdir(d + '/include/azure/storage/common')
+"; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    cd "$WORKING_DIR"
+    exit 2
+fi
+cd "$WORKING_DIR"
+deactivate
+
 echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-echo "$PACKAGE_URL $PACKAGE_NAME"
 echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"
 exit 0
