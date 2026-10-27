@@ -1,0 +1,15 @@
+{
+  "maintainer": "ibm",
+  "package_name": "pymongo",
+  "github_url": "https://github.com/mongodb/mongo-python-driver",
+  "version": "4.17.0",
+  "default_branch": "master",
+  "package_dir": "p/pymongo",
+  "build_script": "pymongo.sh",
+  "language": "Python",
+  "validate_build_script": true,
+  "v2-enabled": true,
+  "*": {
+    "build_script": "pymongo.sh"
+  }
+}

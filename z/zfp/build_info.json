@@ -1,26 +1,19 @@
 {
-  "maintainer": "tejasBadjateIBM",
+  "maintainer": "vinodk99",
   "package_name": "zfp",
+  "language": "c",
   "github_url": "https://github.com/LLNL/zfp",
   "version": "1.0.1",
-  "wheel_build" : true,
+  "wheel_build": true,
   "default_branch": "develop",
-  "build_script": "zfp_1.0.1_ubi_10.2.sh",
+  "build_script": "zfp.sh",
   "package_dir": "z/zfp",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "wheel_name": "zfpy",
-  "1.0.0": {
-   "build_script": "zfp_ubi_9.5.sh",
-   "patches": {
-      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/z/zfp/zfp_1.0.0.patch"
-    }
- },
- "*" : {
-    "build_script": [ 
-      "zfp_1.0.1_ubi_9.5.sh",
-      "zfp_1.0.1_ubi_10.2.sh"
-      ]
-   }
+  "provides_artifact": "zfp",
+  "*": {
+    "build_script": "zfp.sh"
+  }
 }

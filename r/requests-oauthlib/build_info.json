@@ -1,17 +1,18 @@
-
 {
   "maintainer": "kiranNukal",
   "package_name": "requests-oauthlib",
   "github_url": "https://github.com/requests/requests-oauthlib",
   "version": "v2.0.0",
-  "wheel_build" : true,
+  "wheel_build": true,
+  "language": "Python",
   "default_branch": "main",
-  "build_script": "requests-oauthlib_ubi_9.3.sh",
+  "build_script": "requests-oauthlib.sh",
   "package_dir": "r/requests-oauthlib",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "v2-enabled": true,
   "*": {
-   "build_script": "requests-oauthlib_ubi_9.3.sh"
- }
+    "build_script": "requests-oauthlib.sh"
+  }
 }

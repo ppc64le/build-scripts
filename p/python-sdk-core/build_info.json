@@ -1,0 +1,19 @@
+{
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "python-sdk-core",
+  "github_url": "https://github.com/IBM/python-sdk-core",
+  "version": "v3.22.1",
+  "default_branch": "main",
+  "build_script": "python-sdk-core.sh",
+  "package_dir": "p/python-sdk-core",
+  "docker_build": false,
+  "wheel_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "language": "Python",
+  "v2-enabled": true,
+  "*": {
+    "build_script": "python-sdk-core.sh"
+  }
+}
+

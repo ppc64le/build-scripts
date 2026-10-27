@@ -1,0 +1,20 @@
+{
+  "maintainer": "Autonomous AI pipeline",
+  "package_name": "pyramid-debugtoolbar",
+  "language": "pyramid-debugtoolbar",
+  "github_url": "https://github.com/Pylons/pyramid_debugtoolbar",
+  "version": "12.0.0",
+  "wheel_build": true,
+  "resource_class": "light",
+  "default_branch": "main",
+  "build_script": "pyramid-debugtoolbar.sh",
+  "package_dir": "p/pyramid-debugtoolbar",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "pyramid-debugtoolbar",
+  "*": {
+    "build_script": "pyramid-debugtoolbar.sh"
+  }
+}

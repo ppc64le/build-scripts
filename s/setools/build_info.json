@@ -1,16 +1,18 @@
 {
-   "maintainer": "bhagyashrigais",
-   "package_name": "setools",
-   "github_url": "https://github.com/SELinuxProject/setools.git",
-   "version": "4.4.4",
-   "default_branch": "main",
-   "build_script": "setools_ubi_9.6.sh",
-   "package_dir": "s/setools",
-   "docker_build": false,
-   "wheel_build": true,
-   "validate_build_script": true,
-   "use_non_root_user": false,
-   "*": {
-     "build_script":"setools_ubi_9.6.sh"
+  "maintainer": "bhagyashrigais",
+  "package_name": "setools",
+  "github_url": "https://github.com/SELinuxProject/setools.git",
+  "version": "4.4.4",
+  "wheel_build": true,
+  "package_dir": "s/setools",
+  "default_branch": "main",
+  "build_script": "setools.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "v2-enabled": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "sphinx.sh"
   }
 }
+

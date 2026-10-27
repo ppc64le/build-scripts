@@ -2,24 +2,16 @@
   "maintainer": "ramnathnayak-ibm",
   "package_name": "cryptography",
   "github_url": "https://github.com/pyca/cryptography",
-  "version": "50.0.0",
-  "wheel_build" : true,
+  "version": "48.0.0",
+  "wheel_build": true,
   "default_branch": "main",
   "package_dir": "c/cryptography",
-  "build_script": "cryptography_43.0.1_ubi_9.3.sh",
+  "build_script": "cryptography.sh",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "39.0.1": {
-    "build_script": "cryptography_39.0.1_ubi_9.3.sh"
-  },
-  "43.0.1": {
-    "build_script": "cryptography_43.0.1_ubi_9.3.sh"
-  },
-  "50.0.0": {
-    "build_script": [
-      "cryptography_50.0.0_ubi_10.2.sh",
-      "cryptography_43.0.1_ubi_9.3.sh"
-    ]
+  "*": {
+    "build_script": "cryptography.sh"
   }
 }

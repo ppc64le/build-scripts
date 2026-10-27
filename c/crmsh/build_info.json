@@ -1,16 +1,18 @@
 {
   "maintainer": "Vipul-Ajmera",
   "package_name": "crmsh",
-  "github_url": "https://github.com/ClusterLabs/crmsh.git",
+  "github_url": "https://github.com/ClusterLabs/crmsh",
   "version": "4.6.0",
   "default_branch": "master",
   "package_dir": "c/crmsh",
-  "build_script": "crmsh_ubi_9.6.sh",
+  "build_script": "crmsh.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": false,
+  "v2-enabled": true,
+  "language": "Python",
   "wheel_build": true,
   "*": {
-    "build_script": "crmsh_ubi_9.6.sh"
+    "build_script": "crmsh.sh"
   }
 }

@@ -1,68 +1,71 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
-#
-# Package          : tvm-ffi
-# Version          : v0.1.13-post3
-# Source repo      : https://github.com/apache/tvm-ffi.git
-# Tested on        : UBI:9.6
-# Language         : Python
-# Ci-Check         : True
-# Script License   : Apache License, Version 2 or later
-# Maintainer       : Prerna Kumbhar <Prerna.Kumbhar@ibm.com>
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
-#
-# ----------------------------------------------------------------------------
-#!/bin/bash
-set -ex
+# Package       : tvm-ffi
+# Version       : v0.1.13-post3
+# Source repo   : https://github.com/apache/tvm-ffi
+# Tested on     : UBI:9.6
+# Language      : Python
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Prerna Kumbhar <Prerna.Kumbhar@ibm.com>
+# -----------------------------------------------------------------------------
 
-# Variables
-PACKAGE_NAME=tvm-ffi
-PACKAGE_VERSION=${1:-"v0.1.13-post3"}
-PACKAGE_URL=https://github.com/apache/tvm-ffi.git
-PACKAGE_DIR=tvm-ffi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Install dependencies
-yum install -y git gcc gcc-c++ make cmake ninja-build python3.11 python3.11-devel python3.11-pip python3.11-setuptools
+# =============================================================================
+# REQUIRED: Package metadata
+# =============================================================================
+PACKAGE_NAME="tvm-ffi"
+PACKAGE_VERSION="${1:-v0.1.13-post3}"
+PACKAGE_URL="https://github.com/apache/tvm-ffi"
 
-ln -sf /usr/bin/python3.11 /usr/bin/python3
-ln -sf /usr/bin/pip3.11 /usr/bin/pip
-ln -sf /usr/bin/pip3.11 /usr/bin/pip3
+# =============================================================================
+# REQUIRED: Dependencies
+# =============================================================================
+RH_DEP_PKGS="git gcc gcc-c++ make cmake ninja-build python3-devel"
+DEB_DEP_PKGS=""
+SLES_DEP_PKGS=""
 
-# Upgrade pip and install build/test tools
-python3 -m pip install --upgrade pip setuptools wheel pytest numpy pytest-xdist
+# =============================================================================
+# CALLBACK: post_clone — exclude .venv-build from the sdist
+# scikit-build-core uses 'git ls-files' to collect sdist sources; the template
+# creates .venv-build inside the repo dir which contains absolute symlinks.
+# Python 3.10 tarfile's security filter raises AbsoluteLinkError on those symlinks.
+# Adding .venv-build to .gitignore makes git ls-files skip it entirely.
+# =============================================================================
+post_clone() {
+    log_info "Excluding .venv-build from git-tracked files to prevent tarfile AbsoluteLinkError"
+    echo '.venv-build' >> .gitignore
+    echo '.venv-test'  >> .gitignore
+}
 
-# Clone repository
-git clone $PACKAGE_URL
-cd $PACKAGE_DIR
+# =============================================================================
+# CALLBACK: pre_build — upgrade setuptools so scikit-build-core>=0.10.0 can install,
+# then install the build backend, cython, setuptools-scm, and numpy
+# scikit-build-core requires setuptools>=70; template default pins setuptools<70
+# =============================================================================
+pre_build() {
+    log_info "Upgrading pip and setuptools to satisfy scikit-build-core>=0.10.0 requirement"
+    python -m pip install --upgrade pip "setuptools>=70" wheel
+    log_info "Installing build-system requirements: scikit-build-core, cython, setuptools-scm, ninja, cmake"
+    python -m pip install "scikit-build-core>=0.10.0" "cython>=3.2.8" setuptools-scm "ninja>=1.11" cmake
+    log_info "Installing runtime build dependency: numpy"
+    python -m pip install numpy
+}
 
-git checkout $PACKAGE_VERSION
+# =============================================================================
+# CALLBACK: pre_test — mirror build deps and install extra test dependencies
+# scikit-build-core requires setuptools>=70; must upgrade before installing it
+# =============================================================================
+pre_test() {
+    log_info "Upgrading pip and setuptools in test venv"
+    python -m pip install --upgrade pip "setuptools>=70" wheel
+    log_info "Mirroring build deps into test venv: scikit-build-core, cython, setuptools-scm, ninja, cmake"
+    python -m pip install "scikit-build-core>=0.10.0" "cython>=3.2.8" setuptools-scm "ninja>=1.11" cmake
+    log_info "Installing numpy and pytest-xdist into test venv"
+    python -m pip install numpy pytest-xdist
+}
 
-git submodule update --init --recursive
-
-# Install package
-if ! python3 -m pip install -v .; then
-    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
-    exit 1
-fi
-
-
-# Run tests if available
-if [ -d "tests" ]; then
-    if ! python3 -m pytest -v; then
-        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_success_but_test_Fails"
-        exit 2
-    fi
-fi
-
-echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-echo "$PACKAGE_URL $PACKAGE_NAME"
-echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"
-exit 0
+# =============================================================================
+# Execute the build (invokes the Python template)
+# =============================================================================
+source "${SCRIPT_DIR}/../../v2-templates/python.sh"

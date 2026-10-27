@@ -4,9 +4,10 @@
   "github_url": "https://github.com/zopefoundation/persistent",
   "version": "6.1.1",
   "default_branch": "master",
-  "build_script": "persistent_ubi_9.3.sh",
+  "build_script": "persistent.sh",
   "package_dir": "p/persistent",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
   "wheel_build": true,
   "use_non_root_user": false

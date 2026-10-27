@@ -1,23 +1,30 @@
 {
    "maintainer": "bhagyashrigais",
    "package_name": "tvm-ffi",
-   "github_url": "https://github.com/apache/tvm-ffi.git",
+   "github_url": "https://github.com/apache/tvm-ffi",
    "version": "v0.1.13-post3",
    "default_branch": "main",
    "build_script": "tvm_ffi_v0.1.13-post3_ubi_9.6.sh",
    "package_dir": "t/tvm-ffi",
    "docker_build": false,
    "wheel_build": true,
-   "wheel_name": "apache-tvm-ffi",
    "validate_build_script": true,
    "use_non_root_user": false,
-   "v0.1.9": {
-     "build_script":"tvm_ffi_ubi_9.6.sh"
+   "v2-enabled": true,
+   "0.1.9": {
+     "build_script": "tvm_ffi_ubi_9.6.sh",
+     "v2-enabled": true
    },
-   "v0.1.13-post3": {
-     "build_script":"tvm_ffi_v0.1.13-post3_ubi_9.6.sh"
+   "0.1.11": {
+     "build_script": "tvm_ffi_v0.1.13-post3_ubi_9.6.sh",
+     "v2-enabled": true
+   },
+   "0.1.13-post3": {
+     "build_script": "tvm_ffi_v0.1.13-post3_ubi_9.6.sh",
+     "v2-enabled": true
    },
    "*": {
-     "build_script":"tvm_ffi_v0.1.13-post3_ubi_9.6.sh"
+     "build_script": "tvm_ffi_v0.1.13-post3_ubi_9.6.sh",
+     "v2-enabled": true
    }
 }

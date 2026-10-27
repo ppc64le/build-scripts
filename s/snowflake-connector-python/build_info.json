@@ -3,14 +3,16 @@
   "package_name": "snowflake-connector-python",
   "github_url": "https://github.com/snowflakedb/snowflake-connector-python",
   "version": "v4.3.0",
-  "wheel_build" : true,
-  "package_dir": "s/snowflake-connector-python",
+  "language": "Python",
+  "v2-enabled": true,
+  "wheel_build": true,
   "default_branch": "master",
-  "build_script": "snowflake-connector-python_ubi_9.6.sh",
-  "docker_build": false,
+  "package_dir": "s/snowflake-connector-python",
+  "build_script": "snowflake-connector-python.sh",
   "validate_build_script": true,
-  "use_non_root_user": "false",
-  "*":{
-    "build_script":"snowflake-connector-python_ubi_9.6.sh"
+  "use_non_root_user": false,
+  "docker_build": false,
+  "*": {
+    "build_script": "snowflake-connector-python.sh"
   }
 }

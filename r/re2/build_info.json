@@ -1,19 +1,52 @@
 {
-  "maintainer": "SakshiJain0302",
+  "maintainer": "stutiibm",
   "package_name": "re2",
   "github_url": "https://github.com/google/re2",
-  "version": "2022-04-01",
-  "wheel_build" : true,
+  "version": "2024-07-02",
+  "wheel_build": false,
+  "resource_class": "medium",
   "package_dir": "r/re2",
   "default_branch": "main",
-  "build_script": "re2_ubi_9.3.sh",
+  "build_script": "re2.sh",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
-  "use_non_root_user": "false",
+  "use_non_root_user": false,
+  "provides_artifact": "re2",
+  "build_deps": [
+    "abseil-cpp"
+  ],
+  "2024-07-02": {
+    "build_deps": [
+      "abseil-cpp:20240722.0"
+    ],
+    "build_script": "re2.sh"
+  },
+  "2024-02-01": {
+    "build_deps": [
+      "abseil-cpp:20240116.2"
+    ],
+    "build_script": "re2.sh"
+  },
+  "2023-09-01": {
+    "build_deps": [
+      "abseil-cpp:20240116.1"
+    ],
+    "build_script": "re2.sh"
+  },
+  "2023-03-01": {
+    "build_deps": [
+      "abseil-cpp:20230802.1"
+    ],
+    "build_script": "re2.sh"
+  },
+  "2022-04-01": {
+    "build_deps": [
+      "abseil-cpp:20230125.3"
+    ],
+    "build_script": "re2.sh"
+  },
   "*": {
-    "build_script": [
-      "re2_ubi_9.3.sh",
-      "re2_ubi_10.2.sh"
-    ]
+    "build_script": "re2.sh"
   }
 }

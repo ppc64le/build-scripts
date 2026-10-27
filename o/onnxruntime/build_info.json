@@ -1,43 +1,72 @@
 {
-    "maintainer": "sanskarnema10",
-    "package_name": "onnxruntime",
-    "github_url": "https://github.com/microsoft/onnxruntime",
-    "version": "v1.29.0",
-    "default_branch": "main",
-    "package_dir": "o/onnxruntime",
-    "build_script": "onnxruntime_1.29.0_ubi_9.6.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    "wheel_build": true,
-    "v1.18.1": {
-        "build_script": "onnxruntime_ubi_9_3.sh"
-     },
-    "v1.20.1": {
-        "build_script": "onnxruntime_1.20.1_ubi_9.3.sh"
-     },
-    "v1.21.0": {
-        "build_script": "onnxruntime_1.21.0_ubi_9.3.sh"
-     },
-    "v1.22.0": {
-        "build_script": "onnxruntime_1.22.0_ubi_9.3.sh"
-     },
-    "v1.24.1": {
-	"build_script": "onnxruntime_1.24.1_ubi_9.6.sh"
-     },
-    "v1.23.2": {
-	"build_script": "onnxruntime_1.23.2_ubi_9.6.sh"
-    },
-    "v1.25.1": {
-        "build_script": "onnxruntime_1.25.1_ubi_9.6.sh"
-    },
-    "v1.27.1": {
-        "build_script": "onnxruntime_1.27.1_ubi_9.6.sh"
-    },
-    "v1.28.0": {
-        "build_script": "onnxruntime_1.27.1_ubi_9.6.sh"
-    },
-    "*": {
-	"build_script": "onnxruntime_1.29.0_ubi_9.6.sh"
-    }
+  "maintainer": "Build Scripts Team",
+  "v2-enabled": true,
+  "package_name": "onnxruntime",
+  "language": "Python",
+  "github_url": "https://github.com/microsoft/onnxruntime",
+  "version": "v1.22.0",
+  "wheel_build": true,
+  "resource_class": "heavy",
+  "default_branch": "main",
+  "package_dir": "o/onnxruntime",
+  "build_script": "onnxruntime.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "onnxruntime",
+  "build_deps": ["openblas", "numpy:v2.2.5", "protobuf:v25.3", "abseil-cpp:20240722.0"],
+  "v1.20.1": {
+    "build_deps": [
+      "openblas",
+      "numpy:v2.2.5",
+      "protobuf:v25.3",
+      "abseil-cpp:20240722.0"
+    ],
+    "build_script": "onnxruntime.sh"
+  },
+  "v1.21.*": {
+    "build_deps": [
+      "openblas",
+      "numpy:v2.2.5",
+      "protobuf:v25.3",
+      "abseil-cpp:20240722.0"
+    ],
+    "build_script": "onnxruntime.sh"
+  },
+  "v1.22.*": {
+    "build_deps": [
+      "openblas",
+      "numpy:v2.2.5",
+      "protobuf:v25.3",
+      "abseil-cpp:20240722.0"
+    ],
+    "build_script": "onnxruntime.sh"
+  },
+  "v1.23.*": {
+    "build_deps": [
+      "openblas",
+      "numpy:v2.2.5",
+      "protobuf:v25.3",
+      "abseil-cpp:20240722.0"
+    ],
+    "build_script": "onnxruntime.sh"
+  },
+  "v1.25.1": {
+    "build_deps": [
+      "openblas",
+      "numpy:v2.2.5",
+      "protobuf:v25.3",
+      "abseil-cpp:20240722.0"
+    ],
+    "build_script": "onnxruntime.sh"
+  },
+  "*": {
+    "build_deps": [
+      "openblas",
+      "numpy",
+      "protobuf",
+      "abseil-cpp:20240722.0"
+    ],
+    "build_script": "onnxruntime.sh"
+  }
 }

@@ -1,18 +1,18 @@
 {
   "maintainer": "Anumala Rajesh",
   "package_name": "python-oracledb",
-  "github_url": "https://github.com/oracle/python-oracledb.git",
+  "github_url": "https://github.com/oracle/python-oracledb",
   "version": "v2.5.1",
-  "wheel_build" : true,
+  "language": "Python",
+  "wheel_build": true,
   "default_branch": "main",
   "package_dir": "p/python-oracledb",
-  "build_script": "python_oracledb_ubi_9.3.sh",
+  "build_script": "python_oracledb.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
-  "wheel_name": "oracledb",
-  "docker_build": false, 
+  "docker_build": false,
+  "v2-enabled": true,
   "*": {
-      "build_script": "python_oracledb_ubi_9.3.sh"
-    }
+    "build_script": "python_oracledb.sh"
+  }
 }
-

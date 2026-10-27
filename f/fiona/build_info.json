@@ -1,19 +1,18 @@
 {
-    "maintainer": "Anumala Rajesh",
-    "package_name": "fiona",
-    "github_url": "https://github.com/Toblerity/Fiona",
-    "version": "1.10.1",
-    "wheel_build" : true,
-    "default_branch": "master",
-    "package_dir": "f/fiona",
-    "build_script": "fiona_ubi_9.6.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": false,
-    "1.9.5": {
-      "build_script": "fiona_ubi_8.7.sh"
-    },
-    "*": {
-      "build_script": "fiona_ubi_9.6.sh"
-    }
+  "maintainer": "Anumala Rajesh",
+  "package_name": "fiona",
+  "github_url": "https://github.com/Toblerity/Fiona",
+  "version": "1.10.1",
+  "wheel_build": true,
+  "default_branch": "master",
+  "package_dir": "f/fiona",
+  "build_script": "fiona.sh",
+  "validate_build_script": "true",
+  "resource_class": "heavy",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "v2-enabled": true,
+  "*": {
+    "build_script": "fiona.sh"
+  }
 }

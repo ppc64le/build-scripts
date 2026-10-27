@@ -1,22 +1,18 @@
 {
-    "maintainer":"aastha-sharma2",
-    "package_name" : "luigi",
-    "github_url": "https://github.com/spotify/luigi.git",
-    "version": "3.6.0",
-    "default_branch": "master",
-    "package_dir": "l/luigi",
-    "wheel_build" : true,
-    "build_script": "luigi_ubi_9.3.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "true",
-    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "3.4.0." : {
-       "dir": "3.4.0_ubi8",
-       "build_script": "luigi_ubi_8.7.sh"
-    },
-     "*" : {
-       "dir": "3.6.0_ubi9",
-       "build_script": "luigi_ubi_9.3.sh"
-    }
+  "maintainer": "kiranNukal",
+  "package_name": "luigi",
+  "github_url": "https://github.com/spotify/luigi",
+  "version": "v3.6.0",
+  "default_branch": "master",
+  "build_script": "luigi.sh",
+  "package_dir": "l/luigi",
+  "language": "Python",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v2-enabled": true,
+  "*": {
+    "build_script": "luigi.sh"
+  }
 }
+

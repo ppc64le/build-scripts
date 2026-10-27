@@ -1,0 +1,19 @@
+{
+  "maintainer": "ibm",
+  "package_name": "libdeflate",
+  "language": "c",
+  "github_url": "https://github.com/ebiggers/libdeflate",
+  "version": "v1.20",
+  "wheel_build": false,
+  "package_dir": "l/libdeflate",
+  "default_branch": "master",
+  "build_script": "libdeflate.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "libdeflate",
+  "*": {
+    "build_script": "libdeflate.sh"
+  }
+}

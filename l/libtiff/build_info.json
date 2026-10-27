@@ -1,0 +1,19 @@
+{
+  "maintainer": "ibm",
+  "package_name": "libtiff",
+  "language": "c",
+  "github_url": "https://github.com/libsdl-org/libtiff",
+  "version": "v4.7.1",
+  "wheel_build": false,
+  "package_dir": "l/libtiff",
+  "default_branch": "master",
+  "build_script": "libtiff.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "libtiff",
+  "*": {
+    "build_script": "libtiff.sh"
+  }
+}

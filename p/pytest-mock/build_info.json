@@ -1,16 +1,17 @@
 {
-  "maintainer": "aastha-sharma2",
+  "maintainer": "kiranNukal",
   "package_name": "pytest-mock",
-  "github_url": "https://github.com/pytest-dev/pytest-mock.git",
-  "version": "v3.14.1",
-  "wheel_build" : true,
+  "github_url": "https://github.com/pytest-dev/pytest-mock",
+  "version": "v3.15.1",
+  "wheel_build": true,
   "package_dir": "p/pytest-mock",
   "default_branch": "main",
-  "build_script": "pytest-mock_ubi_9.6.sh",
+  "build_script": "pytest-mock.sh",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "*":{
-    "build_script":"pytest-mock_ubi_9.6.sh"
+  "*": {
+    "build_script": "pytest-mock.sh"
   }
 }

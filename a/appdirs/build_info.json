@@ -1,16 +1,19 @@
 {
-    "maintainer": "robin-ibm",
-    "package_name": "appdirs",
-    "github_url": "https://github.com/ActiveState/appdirs",
-    "version": "1.4.4",
-    "wheel_build" : true,
-    "default_branch": "master",
-    "build_script": "appdirs_ubi_9.3.sh",
-    "package_dir": "a/appdirs",
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    "docker_build": false,
-    "*.*.*": {
-      "build_script": "appdirs_ubi_9.3.sh"
-    }
+  "maintainer": "kiranNukal",
+  "package_name": "appdirs",
+  "github_url": "https://github.com/ActiveState/appdirs",
+  "version": "1.4.4",
+  "default_branch": "master",
+  "build_script": "appdirs.sh",
+  "package_dir": "a/appdirs",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v2-enabled": true,
+  "wheel_build": true,
+  "language": "Python",
+  "*": {
+    "build_script": "appdirs.sh"
+  }
 }
+

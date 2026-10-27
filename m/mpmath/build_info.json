@@ -2,15 +2,16 @@
   "maintainer": "aastha-sharma2",
   "package_name": "mpmath",
   "github_url": "https://github.com/mpmath/mpmath.git",
-  "version": "1.1.0",
-  "wheel_build" : true,
+  "version": "1.3.0",
+  "wheel_build": true,
   "default_branch": "master",
   "package_dir": "m/mpmath",
-  "build_script": "mpmath_ubi_9.3.sh",
+  "build_script": "mpmath.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": false,
+  "v2-enabled": true,
   "*": {
-    "build_script": "mpmath_ubi_9.3.sh"
+    "build_script": "mpmath.sh"
   }
 }

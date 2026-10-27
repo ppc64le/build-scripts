@@ -1,16 +1,17 @@
 {
   "maintainer": "Harithanagothu2",
   "package_name": "ansible-rulebook",
-  "github_url": "https://github.com/ansible/ansible-rulebook.git",
+  "github_url": "https://github.com/ansible/ansible-rulebook",
   "version": "v1.1.2",
-  "wheel_build" : true,
+  "wheel_build": true,
   "default_branch": "main",
   "package_dir": "a/ansible-rulebook",
-  "build_script": "ansible-rulebook_ubi_9_3.sh",
+  "build_script": "ansible-rulebook.sh",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
   "use_non_root_user": false,
   "*": {
-    "build_script": "ansible-rulebook_ubi_9_3.sh"
+    "build_script": "ansible-rulebook.sh"
   }
 }

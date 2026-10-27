@@ -1,31 +1,18 @@
 {
-  "maintainer": "shivansh-ibm",
+  "maintainer": "vinodk99",
   "package_name": "numexpr",
-  "github_url": "https://github.com/pydata/numexpr.git",
-  "version": "v2.14.2",
-  "wheel_build" : true,
+  "language": "Python",
+  "github_url": "https://github.com/pydata/numexpr",
+  "version": "v2.10.2",
+  "v2-enabled": true,
+  "wheel_build": true,
   "package_dir": "n/numexpr",
   "default_branch": "master",
-  "build_script": "numexpr_2.14.1_ubi_9.6.sh",
+  "build_script": "numexpr.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "v2.14.2": {
-    "build_script": [
-      "numexpr_2.14.2_ubi_10.2.sh",
-      "numexpr_2.14.1_ubi_9.6.sh"
-    ]
-  },
-  "v2.14.1": {
-    "build_script":"numexpr_2.14.1_ubi_9.6.sh"
-  },
-  "v2.8.2": {
-    "build_script":"numexpr_ubi_9.3.sh"
-  },
-  "v2.8.7": {
-     "build_script": "numexpr_2.8.7_ubi_9.3.sh"
-  },
   "*": {
-     "build_script": "numexpr_2.10.2_ubi_9.3.sh"
+    "build_script": "numexpr.sh"
   }
 }

@@ -1,17 +1,20 @@
 {
-   "maintainer": "Vipul-Ajmera",
-   "package_name": "bazel",
-   "github_url": "https://github.com/bazelbuild/bazel.git",
-   "version": "7.3.1",
-   "default_branch": "master",
-   "package_dir": "b/bazel",
-   "build_script": "bazel_ubi_9.3.sh",
-   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-   "docker_build": "true",
-   "validate_build_script": "true",
-   "use_non_root_user": "false",
-   "*.*.*": {
-      "dir": "7.3.1_ubi9",
-      "build_script": "bazel_ubi_9.3.sh"
-   }
+  "maintainer": "Vipul-Ajmera",
+  "package_name": "bazel",
+  "github_url": "https://github.com/bazelbuild/bazel",
+  "version": "5.3.2",
+  "default_branch": "master",
+  "package_dir": "b/bazel",
+  "build_script": "bazel.sh",
+  "provides_artifact": "bazel",
+  "language": "Java",
+  "resource_class": "medium",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "docker_build": "true",
+  "validate_build_script": "true",
+  "v2-enabled": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "bazel.sh"
+  }
 }

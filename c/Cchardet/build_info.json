@@ -2,15 +2,16 @@
   "maintainer": "ramnathnayak-ibm",
   "package_name": "cChardet",
   "github_url": "https://github.com/PyYoshi/cChardet",
-  "version": "master",
+  "version": "2.2.0-alpha.2",
   "default_branch": "master",
-  "build_script": "Cchardet_ubi_9.6.sh",
-  "package_dir": "c/Cchardet",
+  "build_script": "cChardet.sh",
+  "package_dir": "c/cChardet",
   "use_non_root_user": "false",
   "docker_build": false,
+  "v2-enabled": true,
   "wheel_build": true,
   "validate_build_script": true,
   "*": {
-    "build_script": "Cchardet_ubi_9.6.sh"
+    "build_script": "cChardet.sh"
   }
 }

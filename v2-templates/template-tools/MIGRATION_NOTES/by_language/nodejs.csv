@@ -1,0 +1,2 @@
+package_name,package_version,language,language_version,script_path,package_url,download_url,status,complexity,priority
+node-red,3.0.2,nodejs,,n/node-red/node-red_ubi_8.5.sh,https://github.com/node-red/node-red.git,,migrated,,

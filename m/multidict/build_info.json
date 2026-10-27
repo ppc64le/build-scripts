@@ -1,16 +1,18 @@
 {
   "maintainer": "aastha-sharma2",
   "package_name": "multidict",
-  "github_url": "https://github.com/aio-libs/multidict.git",
-  "version": "v6.0.2",
-  "wheel_build" : true,
+  "github_url": "https://github.com/aio-libs/multidict",
+  "version": "v6.7.1",
+  "wheel_build": true,
   "package_dir": "m/multidict",
   "default_branch": "master",
-  "build_script": "multidict_ubi_9.3.sh",
+  "build_script": "multidict.sh",
   "docker_build": false,
+  "language": "Python",
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "v2-enabled": true,
   "*": {
-    "build_script": "multidict_ubi_9.3.sh"
+    "build_script": "multidict.sh"
   }
 }

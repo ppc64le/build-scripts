@@ -1,17 +1,19 @@
 {
-  "maintainer": "PrernaKumbhar20",
-  "package_name": "Paddle",
-  "github_url": "https://github.com/PaddlePaddle/Paddle.git",
+  "maintainer": "Prerna.Kumbhar",
+  "package_name": "paddle",
+  "github_url": "https://github.com/PaddlePaddle/Paddle",
   "version": "v3.0.0",
-  "wheel_build" : true,
-  "wheel_name": "paddlepaddle",
   "package_dir": "p/paddle",
   "default_branch": "develop",
-  "build_script": "paddle_3.0.0_ubi_9.6.sh",
+  "build_script": "paddle.sh",
+  "language": "Python, C++",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
+  "resource_class": "heavy",
+  "wheel_build": true,
   "use_non_root_user": "false",
-  "*":{
-    "build_script":"paddle_3.0.0_ubi_9.6.sh"
+  "*": {
+    "build_script": "paddle.sh"
   }
 }

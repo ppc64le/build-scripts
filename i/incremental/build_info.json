@@ -5,12 +5,13 @@
   "version": "incremental-24.7.2",
   "default_branch": "trunk",
   "package_dir": "i/incremental",
-  "build_script": "incremental_ubi_9.3.sh",
+  "build_script": "incremental.sh",
   "docker_build": false,
+  "v2-enabled": true,
   "wheel_build": true,
   "validate_build_script": true,
   "use_non_root_user": false,
   "*": {
-    "build_script": "incremental_ubi_9.3.sh"
+    "build_script": "incremental.sh"
   }
 }

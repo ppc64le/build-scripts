@@ -1,16 +1,14 @@
 {
-  "maintainer": "vrushanaik",
+  "maintainer": "ethan.silverthorne",
   "package_name": "cysignals",
   "github_url": "https://github.com/sagemath/cysignals",
   "version": "1.11.4",
-  "default_branch": "main",
-  "build_script": "cysignals_ubi_9.6.sh",
+  "default_branch": "master",
+  "build_script": "cysignals.sh",
   "package_dir": "c/cysignals",
   "docker_build": false,
+  "v2-enabled": true,
   "wheel_build": true,
   "validate_build_script": true,
-  "use_non_root_user": false,
-  "*": {
-    "build_script": "cysignals_ubi_9.6.sh"
-  }
+  "use_non_root_user": false
 }

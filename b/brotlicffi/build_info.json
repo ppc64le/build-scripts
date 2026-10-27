@@ -1,0 +1,18 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "brotlicffi",
+  "github_url": "https://github.com/python-hyper/brotlicffi",
+  "version": "v1.2.0.0",
+  "wheel_build": true,
+  "package_dir": "b/brotlicffi",
+  "default_branch": "main",
+  "language": "Python",
+  "build_script": "brotlicffi.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "brotlicffi.sh"
+  }
+}

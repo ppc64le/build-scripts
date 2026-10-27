@@ -1,19 +1,19 @@
 {
-    "maintainer": "Harithanagothu2",
-    "package_name": "Pyphen",
-    "github_url": "https://github.com/Kozea/Pyphen",
-    "version": "0.17.2",
-    "wheel_build" : true,
-    "default_branch": "main",
-    "package_dir": "p/Pyphen",
-    "build_script": "Pyphen_ubi_9.3.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    "0.14.0": {
-        "build_script": "Pyphen_ubi_9.6.sh"
-     },
-    "*":{
-        "build_script": "Pyphen_ubi_9.3.sh"
-    }
+  "maintainer": "Autonomous AI pipeline",
+  "package_name": "pyphen",
+  "language": "pyphen",
+  "github_url": "https://github.com/Kozea/Pyphen",
+  "version": "0.14.0",
+  "wheel_build": true,
+  "resource_class": "light",
+  "default_branch": "main",
+  "build_script": "pyphen.sh",
+  "package_dir": "p/pyphen",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "pyphen.sh"
+  }
 }

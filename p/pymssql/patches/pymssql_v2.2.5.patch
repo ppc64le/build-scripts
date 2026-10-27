@@ -1,0 +1,113 @@
+# =============================================================================
+# Patch: pymssql Python 3 / Cython 3 Compatibility (versions < v2.3.4)
+# =============================================================================
+# This patch fixes build failures in pymssql versions below v2.3.4
+# (e.g. v2.2.x, v2.3.0, v2.3.1, v2.3.2, v2.3.3) when built with Cython 3.
+#
+# Changes:
+# 1. pyproject.toml: pin setuptools_scm to <9.0 (single-line requires format)
+#
+# 2. src/pymssql/_mssql.pyx (6 changes):
+#    a. Line 248: Add `noexcept` to err_handler — Cython 3 requires this when
+#       assigning to a C function pointer type declared noexcept (EHANDLEFUNC)
+#    b. Line 321: Add `noexcept` to msg_handler — same reason (MHANDLEFUNC)
+#    c. Line 846: Replace Python 2 built-in `long` with `int` (removed in Py3)
+#    d. Line 1012: Remove `long` from type-membership tuple
+#    e. Line 1926: Remove `long` from isinstance() check
+#    f. Line 2018: Remove `long` from _substitute_params type check
+#
+# 3. setup.py: add -lgssapi_krb5 to Linux extension link args
+#    dev/build.py builds FreeTDS with --enable-krb5, which causes the compiled
+#    .so to reference gss_release_name and other GSSAPI symbols from
+#    libgssapi_krb5.so.  The v2.2.x setup.py only adds -lssl and -lcrypto for
+#    Linux, leaving gssapi_krb5 unresolved at import time (Python 3.11+).
+#    Fix: extend extra_link_args to also include -lgssapi_krb5.
+#
+# Note: The TDS_ENCRYPTION_LEVEL f-string bug (unclosed brace) does not exist
+#       in versions below v2.3.4 — that was introduced in v2.3.x.
+#
+# Generated against: v2.2.5
+# =============================================================================
+
+diff --git a/pyproject.toml b/pyproject.toml
+index 02cc365..c17b502 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -1,5 +1,5 @@
+ [build-system]
+-requires = ["setuptools>=54.0", "setuptools_scm[toml]>=5.0", "wheel>=0.36.2", "Cython>=0.29.22"]
++requires = ["setuptools>=54.0", "setuptools_scm[toml]>=5.0,<9.0", "wheel>=0.36.2", "Cython>=0.29.22"]
+ 
+ [tool.setuptools_scm]
+ write_to = "src/pymssql/version.h"
+diff --git a/src/pymssql/_mssql.pyx b/src/pymssql/_mssql.pyx
+index 808c3d7..26fc220 100644
+--- a/src/pymssql/_mssql.pyx
++++ b/src/pymssql/_mssql.pyx
+@@ -245,7 +245,7 @@ cdef void log(char * message, ...):
+ ## Error Handler ##
+ ###################
+ cdef int err_handler(DBPROCESS *dbproc, int severity, int dberr, int oserr,
+-        char *dberrstr, char *oserrstr) with gil:
++        char *dberrstr, char *oserrstr) noexcept with gil:
+     cdef char *mssql_lastmsgstr
+     cdef int *mssql_lastmsgno
+     cdef int *mssql_lastmsgseverity
+@@ -318,7 +318,7 @@ cdef int err_handler(DBPROCESS *dbproc, int severity, int dberr, int oserr,
+ #####################
+ cdef int msg_handler(DBPROCESS *dbproc, DBINT msgno, int msgstate,
+         int severity, char *msgtext, char *srvname, char *procname,
+-        LINE_T line) with gil:
++        LINE_T line) noexcept with gil:
+ 
+     cdef int *mssql_lastmsgno
+     cdef int *mssql_lastmsgseverity
+@@ -843,7 +843,7 @@ cdef class MSSQLConnection:
+             return int(<int>(<DBINT *>data)[0])
+ 
+         elif dbtype == SQLINT8:
+-            return long(<PY_LONG_LONG>(<PY_LONG_LONG *>data)[0])
++            return int(<PY_LONG_LONG>(<PY_LONG_LONG *>data)[0])
+ 
+         elif dbtype == SQLFLT4:
+             return float(<float>(<DBREAL *>data)[0])
+@@ -1009,7 +1009,7 @@ cdef class MSSQLConnection:
+             return 0
+ 
+         if dbtype[0] in (SQLMONEY, SQLMONEY4, SQLNUMERIC, SQLDECIMAL):
+-            if type(value) in (int, long, bytes):
++            if type(value) in (int, bytes):
+                 value = decimal.Decimal(value)
+ 
+             if type(value) not in (decimal.Decimal, float):
+@@ -1923,7 +1923,7 @@ cdef _quote_simple_value(value, charset='utf8'):
+     if isinstance(value, float):
+         return repr(value).encode(charset)
+ 
+-    if isinstance(value, (int, long, decimal.Decimal)):
++    if isinstance(value, (int, decimal.Decimal)):
+         return str(value).encode(charset)
+ 
+     if isinstance(value, uuid.UUID):
+@@ -2015,7 +2015,7 @@ cdef _substitute_params(toformat, params, charset):
+         return toformat
+ 
+     if not issubclass(type(params),
+-            (bool, int, long, float, unicode, str, bytes, bytearray, dict, tuple,
++            (bool, int, float, unicode, str, bytes, bytearray, dict, tuple,
+              datetime.datetime, datetime.date, dict, decimal.Decimal, uuid.UUID)):
+         raise ValueError("'params' arg (%r) can be only a tuple or a dictionary." % type(params))
+ 
+diff --git a/setup.py b/setup.py
+index d316d84..c3cc543 100644
+--- a/setup.py
++++ b/setup.py
+@@ -171,7 +171,7 @@ class build_ext(_build_ext):
+ 
+         else:
+             if LINK_OPENSSL and LINK_FREETDS_STATICALLY:
+-                libraries.extend([ 'ssl', 'crypto' ])
++                libraries.extend([ 'ssl', 'crypto', 'gssapi_krb5' ])
+ 
+             for e in self.extensions:
+                 e.libraries.extend(libraries)

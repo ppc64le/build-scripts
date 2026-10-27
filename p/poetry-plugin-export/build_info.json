@@ -1,16 +1,17 @@
 {
-  "maintainer": "aastha-sharma2",
+  "maintainer": "kiranNukal",
   "package_name": "poetry-plugin-export",
-  "github_url": "https://github.com/python-poetry/poetry-plugin-export.git",
+  "github_url": "https://github.com/python-poetry/poetry-plugin-export",
   "version": "1.8.0",
-  "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/poetry-plugin-export",
-  "build_script": "poetry-plugin-export_ubi_9.3.sh",
-  "validate_build_script": "true",
-  "use_non_root_user": "false",
+  "build_script": "poetry-plugin-export.sh",
   "docker_build": false,
-  "*.*.*": {
-    "build_script": "poetry-plugin-export_ubi_9.3.sh"
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v2-enabled": true,
+  "*": {
+    "build_script": "poetry-plugin-export.sh"
   }
 }
+

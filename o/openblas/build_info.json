@@ -1,16 +1,20 @@
 {
-  "maintainer": "stutiibm",
-  "package_name": "OpenBLAS",
+  "maintainer": "ibm",
+  "package_name": "openblas",
+  "language": "C",
   "github_url": "https://github.com/OpenMathLib/OpenBLAS",
   "version": "v0.3.29",
-  "wheel_build" : true,
+  "wheel_build": false,
+  "resource_class": "heavy",
   "package_dir": "o/openblas",
   "default_branch": "develop",
-  "build_script": "openblas_ubi_9.3.sh",
+  "build_script": "openblas.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": "false",
+  "v2-enabled": true,
+  "use_non_root_user": false,
+  "provides_artifact": "openblas",
   "*": {
-    "build_script": "openblas_ubi_9.3.sh"
+    "build_script": "openblas.sh"
   }
 }

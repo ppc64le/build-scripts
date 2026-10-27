@@ -1,0 +1,12 @@
+diff --git a/src/pymssql/_mssql.pyx b/src/pymssql/_mssql.pyx
+--- a/src/pymssql/_mssql.pyx
++++ b/src/pymssql/_mssql.pyx
+@@ -668,7 +668,7 @@ cdef class MSSQLConnection:
+             if encryption in TDS_ENCRYPTION_LEVEL:
+                 DBSETLENCRYPT(login, TDS_ENCRYPTION_LEVEL[encryption])
+             else:
+-                raise ValueError(f"'encryption' option should be {TDS_ENCRYPTION_LEVEL.keys())} or None.")
++                raise ValueError(f"'encryption' option should be {list(TDS_ENCRYPTION_LEVEL.keys())} or None.")
+ 
+         cdef bytes charset_bytes
+         cdef char *_charset

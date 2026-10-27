@@ -1,5 +1,6 @@
 # Minimum requirements for the build system to execute.
 # Do not include sys,subprocess and os as they are default packages
+[build-system]
 requires = [
     "setuptools",
     "wheel",

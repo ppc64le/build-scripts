@@ -1,22 +1,17 @@
 {
-  "maintainer": "shivansh-ibm",
+  "maintainer": "Harithanagothu2",
   "package_name": "gmpy2",
-  "github_url": "https://github.com/aleaxit/gmpy.git",
-  "version": "v2.3.1",
-  "wheel_build" : true,
+  "github_url": "https://github.com/gmpy2/gmpy2",
+  "version": "gmpy2-2.1.2",
+  "wheel_build": true,
   "package_dir": "g/gmpy2",
   "default_branch": "master",
-  "build_script": "gmpy2_ubi_9.3.sh",
+  "build_script": "gmpy2.sh",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "v2.3.1": {
-  	"build_script": [
-  		"gmpy2_ubi_9.3.sh",
-  		"gmpy2_ubi_10.2.sh"
-  	]
-  },
-  "gmpy2-*.*.*": {
-    "build_script": "gmpy2_ubi_9.3.sh"
+  "*": {
+    "build_script": "gmpy2.sh"
   }
 }

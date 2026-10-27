@@ -1,34 +1,33 @@
 {
-  "maintainer": "SakshiJain0302",
+  "maintainer": "Build Scripts Team",
   "package_name": "scipy",
+  "language": "Python",
   "github_url": "https://github.com/scipy/scipy",
-  "version": "v1.18.0",
-  "wheel_build" : true,
+  "version": "v1.17.1",
+  "wheel_build": true,
+  "resource_class": "heavy",
   "default_branch": "main",
-  "build_script": "scipy_v1.18.0_ubi_9.6.sh",
+  "build_script": "scipy.sh",
   "package_dir": "s/scipy",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "v1.10.1": {
-    "build_script": "scipy_v1.10.1_ubi_9.3.sh"
+  "provides_artifact": "scipy",
+  "v2-enabled": true,
+  "build_deps": ["openblas", "numpy:v2.2.5"],
+  "v1.13.*": {
+    "build_deps": ["openblas", "numpy:v2.2.5"],
+    "build_script": "scipy.sh"
   },
-  "v1.11.3": {
-    "build_script": "scipy_v1.11.3_ubi_9.3.sh"
-  },
-  "v1.15.*, v1.16.*": {
-    "build_script": "scipy_v1.16.1_ubi_9.3.sh"
-  },
-  "v1.18.0": {
-    "build_script": [
-      "scipy_v1.18.0_ubi_9.6.sh",
-      "scipy_v1.18.0_ubi_10.2.sh"
-    ]
+  "v1.14.* | v1.15.* | v1.16.* | v1.17.*": {
+    "build_deps": ["openblas", "numpy:v2.2.5"],
+    "build_script": "scipy.sh",
+    "patches": {
+      "SCIPY_F2PY_SAFE_PATH_PATCH": "s/scipy/patches/f2py-safe-path.patch"
+    }
   },
   "*": {
-    "build_script": [
-      "scipy_v1.18.0_ubi_9.6.sh",
-      "scipy_v1.18.0_ubi_10.2.sh"
-    ]
+    "build_deps": ["openblas", "numpy"],
+    "build_script": "scipy.sh"
   }
 }

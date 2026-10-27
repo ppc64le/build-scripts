@@ -1,35 +1,23 @@
 {
-  "maintainer": "SakshiJain0302",
+  "maintainer": "Build Scripts Team",
   "package_name": "numpy",
-  "github_url": "https://github.com/numpy/numpy.git",
-  "version": "v2.5.0",
-  "wheel_build" : true,
+  "language": "Python",
+  "github_url": "https://github.com/numpy/numpy",
+  "version": "v2.2.5",
+  "wheel_build": true,
+  "v2-enabled": true,
+  "resource_class": "heavy",
   "default_branch": "main",
   "package_dir": "n/numpy",
-  "build_script": "numpy_2.5.0_ubi_10.2.sh",
+  "build_script": "numpy.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "v1.26.0": {
-    "build_script": "numpy_1.26.0_ubi_9.3.sh"
-  },
-  "v1.26.4": {
-    "build_script": "numpy_1.26.4_ubi_8.10.sh"
-  },
-  "v1.23.5":{
-    "build_script": "numpy_1.23.5_ubi_9.3.sh"
-  },
-  "v1.24.2":{
-    "build_script": "numpy_1.23.5_ubi_9.3.sh"
-  },
-  "v2.2.*":{
-    "build_script": "numpy_v2.2.5_ubi_9.3.sh"
-  },
-  "*":{
-    "build_script": [
-      "numpy_v2.2.5_ubi_9.3.sh",
-      "numpy_2.5.0_ubi_10.2.sh"
-    ]
+  "provides_artifact": "numpy",
+  "build_deps": [
+    "openblas"
+  ],
+  "*": {
+    "build_script": "numpy.sh"
   }
 }
-

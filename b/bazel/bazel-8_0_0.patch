@@ -1,0 +1,14 @@
+diff --git a/tools/allowlists/function_transition_allowlist/BUILD b/tools/allowlists/function_transition_allowlist/BUILD
+index 46a89e8a4a..c80cda7b2c 100644
+--- a/tools/allowlists/function_transition_allowlist/BUILD
++++ b/tools/allowlists/function_transition_allowlist/BUILD
+@@ -6,3 +6,9 @@ filegroup(
+     srcs = glob(["**"]),
+     visibility = ["//tools/allowlists:__pkg__"],
+ )
++
++package_group(
++    name = "function_transition_allowlist",
++    packages = ["public"],
++)
++

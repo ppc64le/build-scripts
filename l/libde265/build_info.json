@@ -1,0 +1,19 @@
+{
+  "maintainer": "ibm",
+  "package_name": "libde265",
+  "language": "c++",
+  "github_url": "https://github.com/strukturag/libde265",
+  "version": "v1.1.1",
+  "wheel_build": false,
+  "package_dir": "l/libde265",
+  "default_branch": "master",
+  "build_script": "libde265.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "libde265",
+  "*": {
+    "build_script": "libde265.sh"
+  }
+}

@@ -1,0 +1,31 @@
+diff --git a/sphinx/ext/coverage.py b/sphinx/ext/coverage.py
+index 9f5fa44..07eeb88 100644
+--- a/sphinx/ext/coverage.py
++++ b/sphinx/ext/coverage.py
+@@ -144,18 +144,17 @@ def _determine_py_coverage_modules(
+     if additional_modules := seen_modules - modules:
+         logger.warning(
+             __(
+                 'the following modules are documented but were not specified '
+                 'in coverage_modules: %s'
+-            ),
+-            ', '.join(additional_modules),
++            )
++            % ', '.join(additional_modules)
+         )
+ 
+     # likewise, if there are missing modules we warn but continue scanning
+     if missing_modules := modules - seen_modules:
+         logger.warning(
+-            __(
+-                'the following modules are specified in coverage_modules '
+-                'but were not documented'
+-            ),
+-            ', '.join(missing_modules),
++            __('the following modules are specified in coverage_modules '
++               'but were not documented')
++            + ': '
++            + ', '.join(missing_modules)
+         )
+ 
+     return sorted(modules)

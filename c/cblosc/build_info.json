@@ -1,0 +1,19 @@
+{
+  "maintainer": "ibm",
+  "package_name": "cblosc",
+  "language": "c",
+  "github_url": "https://github.com/Blosc/c-blosc",
+  "version": "v1.21.6",
+  "wheel_build": false,
+  "package_dir": "c/cblosc",
+  "default_branch": "main",
+  "build_script": "cblosc.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "cblosc",
+  "*": {
+    "build_script": "cblosc.sh"
+  }
+}

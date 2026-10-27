@@ -1,16 +1,17 @@
 {
-    "maintainer": "pranithraoibm",
-    "package_name": "cachetools",
-    "github_url": "https://github.com/tkem/cachetools",
-    "version": "v4.2.2",
-    "wheel_build": true,
-    "default_branch": "master",
-    "build_script": "cachetools_ubi_9.3.sh",
-    "package_dir": "c/cachetools",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    "v4.*.*": {
-        "build_script": "cachetools_ubi_9.3.sh"
-    }
+  "maintainer": "pranithraoibm",
+  "package_name": "cachetools",
+  "github_url": "https://github.com/tkem/cachetools",
+  "version": "v6.2.1",
+  "wheel_build": true,
+  "default_branch": "master",
+  "build_script": "cachetools.sh",
+  "package_dir": "c/cachetools",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "cachetools.sh"
+  }
 }
