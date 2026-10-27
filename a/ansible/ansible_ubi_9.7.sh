@@ -327,4 +327,4 @@ fi
 ##Other dependency images for integration tests
 ##quay.io/pulp/galaxy                              4.7.1
 
-#Todo: If in future starting a container with privilages mode enabled then need to enbale this script on CI check, aslo need to enable ppc64le support for remaining cloudstack, pulp/galaxy images and debug excluded test cases
+#Todo: If in future starting a container with privilages mode enabled then need to enbale this script on CI check, aslo need to enable ppc64le support for remaining pulp and galaxy images and debug excluded test cases
