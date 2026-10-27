@@ -30,6 +30,7 @@ Signed-off-by: irapandey <ira.pandey2001@gmail.com>
  src/ci_workflow/ci_check_gradle_properties.py |   2 +-
  .../ci_check_gradle_publish_to_maven_local.py |   2 +-
  .../component_opensearch.py                   |   2 +-
+ .../test_builder_from_source.py               | 104 +++
  .../test_ci_check_gradle_dependencies.py      |  10 +-
  ...ci_check_gradle_dependencies_opensearch.py |   8 +-
  .../test_ci_check_gradle_properties.py        |   6 +-
@@ -296,7 +297,7 @@ index 00000000..34012116
 +index baeaeb72b24..83081f56421 100644
 +--- a/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java
 ++++ b/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java
-+@@ -127,7 +127,35 @@ public class OpenSearchJavaPlugin implements Plugin<Project> {
++@@ -127,7 +127,55 @@ public class OpenSearchJavaPlugin implements Plugin<Project> {
 +                 // just a self contained test-fixture configuration, likely transitive and hellacious
 +                 return;
 +             }
@@ -329,7 +330,7 @@ index 00000000..34012116
 ++                        details.useVersion("5.4.3");
 ++                    }
 ++                    // Force all io.netty artifacts to 4.2.17.Final (CVE-2026-75595, CVE-2026-75596, CVE-2026-59903)
-++                    if ("io.netty".equals(group)) {
+++                    if ("io.netty".equals(group) && !name.startsWith("netty-tcnative")) {
 ++                        details.useVersion("4.2.17.Final");
 ++                    }
 ++                    // Force httpclient5 to 5.6.3 (CVE-2026-64607)
@@ -343,6 +344,10 @@ index 00000000..34012116
 ++                    // Force jsoup to 1.23.1 (CVE-2026-71497)
 ++                    if ("org.jsoup".equals(group) && "jsoup".equals(name)) {
 ++                        details.useVersion("1.23.1");
+++                    }
+++                    // Force lz4-java to 1.11.4 (CVE-2026-106451 — arbitrary code execution via insecure temp file)
+++                    if ("at.yawk.lz4".equals(group) && "lz4-java".equals(name)) {
+++                        details.useVersion("1.11.4");
 ++                    }
 ++                });
 ++            });

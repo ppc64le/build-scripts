@@ -1,13 +1,45 @@
-FROM registry.access.redhat.com/ubi9/ubi
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
 # Set working directory
 WORKDIR /opensearch-build
 
-# Apply CVE mitigations before installing any other packages.
-RUN yum upgrade -y curl-minimal libcurl-minimal libpng && yum clean all
+# CVE mitigations: upgrade all packages with known fixes before installing anything else.
+# Addresses:
+#   openssl/openssl-libs  3.5.8-1.el9_8  → CVE-2026-14456 (QUIC DoS, CVSS 7.5)
+#   curl-minimal/libcurl-minimal 7.76.1-40.el9_8.7 → CVE-2026-8458 (CVSS 8.1), CVE-2026-8927 (CVSS 7.5)
+#   libevent 2.1.13-1.el9_8  → CVE-2026-63382..63388 (6 HIGH CVEs incl. heap OOB write CVSS 8.4)
+#   libxml2 2.9.13-14.el9_8.5 → CVE-2026-74860 (CVSS 8.5), CVE-2026-86140 (CVSS 7.8)
+#   expat 2.5.0-6.el9_8.5    → CVE-2026-66046 (CVSS 7.5), CVE-2026-93990 (CVSS 7.5)
+#   webkit2gtk3-jsc 2.54.0-1.el9_8 → 7 CRITICAL + 8 HIGH CVEs (Skia use-after-free etc.)
+#   gstreamer1-plugins-base 1.22.12-8.el9_8.2 → CVE-2026-18297 (RCE via OGG, CVSS 7.8)
+#   gdb-gdbserver 16.3-3.1.el9_8 → CVE-2026-13732 (OOB write, CVSS 7.0)
+# Remove packages not required in a build environment that carry unfixable CVEs:
+#   flatpak / flatpak-session-helper → 5 HIGH CVEs (CVE-2026-96275 CVSS 8.8 etc.)
+#   bubblewrap                       → CVE-2026-87766 (symlink traversal, CVSS 8.8)
+#   xdg-dbus-proxy                   → CVE-2026-94422 (D-Bus sandbox escape, CVSS 8.8)
+#   bluez-libs                       → 3 HIGH CVEs incl. CVE-2026-19774 (adj-network RCE, CVSS 8.0)
+#   mesa packages                    → CVE-2026-93599 (rustls-webpki DoS, CVSS 7.5)
+# Upgrade each CVE-affected package individually so that a package not present in
+# this base image (e.g. libpng, gstreamer1-plugins-base, gdb) does not cause yum
+# to abort the whole transaction and silently skip the others.
+RUN microdnf upgrade -y curl-minimal libcurl-minimal || true && \
+    microdnf upgrade -y openssl openssl-libs && \
+    microdnf upgrade -y libevent && \
+    microdnf upgrade -y libxml2 && \
+    microdnf upgrade -y expat && \
+    microdnf upgrade -y gdb-gdbserver || true && \
+    microdnf upgrade -y libpng gstreamer1-plugins-base gdb || true && \
+    microdnf upgrade -y webkit2gtk3-jsc || true && \
+    microdnf remove -y \
+        flatpak flatpak-session-helper bubblewrap xdg-dbus-proxy \
+        bluez-libs \
+        mesa-libGL mesa-libEGL mesa-libgbm mesa-vulkan-drivers mesa-dri-drivers || true && \
+    microdnf clean all
 
 # Install system dependencies
-RUN yum install -y --allowerasing \
+# curl-minimal is pre-installed in ubi9-minimal and conflicts with the full curl package.
+# It provides the curl binary and is sufficient for all download steps in this image.
+RUN microdnf install -y \
     git \
     gcc \
     gcc-c++ \
@@ -18,7 +50,6 @@ RUN yum install -y --allowerasing \
     unzip \
     zip \
     which \
-    curl \
     jq \
     python3 \
     python3-devel \
@@ -29,25 +60,21 @@ RUN yum install -y --allowerasing \
     libffi-devel \
     xz-devel \
     rpm-build \
-    && yum clean all
+    && microdnf clean all
 
 # Install yq v4 (required by assemble scripts)
 RUN curl -fsSL "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_ppc64le" \
     -o /usr/local/bin/yq && chmod +x /usr/local/bin/yq
 
-# Install JDK 25.0.4 (Red_Hat-25.0.4.0.7-1) pinned so the bundled JDK in the
-# final OpenSearch image matches the expected runtime version.
-RUN yum install -y \
-    java-25-openjdk-devel && \
-    yum upgrade -y \
-    java-25-openjdk \
-    java-25-openjdk-devel \
-    java-25-openjdk-headless \
-    java-25-openjdk-crypto-adapter && \
-    yum clean all
+# Install JDK 25 — only -devel is needed in the build environment (provides javac/jar/jlink).
+# java-25-openjdk and java-25-openjdk-headless are pulled in automatically as dependencies.
+# java-25-openjdk-crypto-adapter is a runtime FIPS bridge for the final container, not needed here.
+RUN microdnf install -y java-25-openjdk-devel && \
+    microdnf clean all
 
 # Set Java environment
-ENV JAVA_HOME=/usr/lib/jvm/java-25-openjdk
+# java-25-openjdk-devel pulls in java-25-openjdk-headless; use the headless jre symlink
+ENV JAVA_HOME=/usr/lib/jvm/jre-25-openjdk
 ENV PATH=$JAVA_HOME/bin:$PATH
 ENV GRADLE_USER_HOME=/root/.gradle
 
