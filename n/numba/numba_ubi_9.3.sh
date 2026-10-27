@@ -95,7 +95,7 @@ rm -rf llvm-project
 echo "Clone the repository ..."
 git clone --recursive https://github.com/numba/llvmlite
 cd llvmlite
-git checkout v0.42.0
+git checkout v0.40.1
 
 pip install --no-build-isolation .
 
@@ -104,7 +104,7 @@ cd ..
 echo "-------------------successfully Installed llvmlite----------------------"
 
 # Install numpy
-pip install pytest numpy==1.26.4
+pip install pytest numpy==1.24.4
 
 # Clone repository
 git clone $PACKAGE_URL
