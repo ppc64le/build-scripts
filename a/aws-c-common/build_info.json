@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachi-gaonkar",
+    "package_name": "aws-c-common",
+    "github_url": "https://github.com/awslabs/aws-c-common",
+    "version": "v0.14.0",
+    "default_branch": "main",
+    "package_dir": "a/aws-c-common/",
+    "build_script": "aws-c-common_v0.14.0_ubi_10.2.sh",
+    "docker_build": "false",
+    "wheel_build": "false",
+    "use_non_root_user": "false",
+    "v0.14.0": {
+        "build_script": ["aws-c-common_v0.14.0_ubi_10.2.sh"]
+    }
+}
