@@ -61,6 +61,8 @@ fi
 WHEEL=$(ls "$WORKDIR"/dist/[Ss]udachi[Pp]y-*.whl | head -1)
 echo "Wheel: $WHEEL"
 
+cp "$WHEEL" "$WORKDIR/"
+
 # Install the wheel
 if ! python3.12 -m pip install "$WHEEL"; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
