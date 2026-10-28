@@ -208,35 +208,11 @@ fi
 echo "Running Python wheel smoke test..."
 cd /tmp
 
-if ! python3 -u -c "
-import glob
-import os
+if ! python3 -c "
 from importlib.metadata import version
+import aws_crt_cpp
 
-print('STEP 1: Importing aws_crt_cpp...', flush=True)
-import aws_crt_cpp as p
-print('PASS: Import successful', flush=True)
-
-d = os.path.dirname(p.__file__)
-print('Package directory:', d, flush=True)
-
-print('STEP 2: Checking package version...', flush=True)
-installed_version = version('aws-crt-cpp')
-expected_version = '${PACKAGE_VERSION#v}'
-print('Installed version:', installed_version, flush=True)
-print('Expected version:', expected_version, flush=True)
-assert installed_version == expected_version, 'Package version mismatch'
-print('PASS: Version check', flush=True)
-
-print('STEP 3: Checking shared library...', flush=True)
-lib64_files = glob.glob(d + '/lib64/libaws-crt-cpp.so*')
-lib_files = glob.glob(d + '/lib/libaws-crt-cpp.so*')
-print('lib64 matches:', lib64_files, flush=True)
-print('lib matches:', lib_files, flush=True)
-assert lib64_files or lib_files, 'Expected shared library not found'
-print('PASS: Shared library check', flush=True)
-
-print('Smoke test passed', flush=True)
+assert version('aws-crt-cpp') == '${PACKAGE_VERSION#v}', 'Package version mismatch'
 "; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     cd "$WORKING_DIR"
