@@ -35,23 +35,26 @@ source /opt/rh/gcc-toolset-13/enable
 export CC=/opt/rh/gcc-toolset-13/root/usr/bin/gcc
 export CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
 
-N_CORES=$(nproc)
-export CMAKE_BUILD_PARALLEL_LEVEL=${N_CORES}
-export MAKEFLAGS="-j${N_CORES}"
-
 pip install --upgrade pip setuptools wheel scikit-build-core setuptools_scm ninja
 
 # Clone repository
+# The wheel is written to the starting directory so the wheel-build wrapper
+# finds it and does not compile Node.js a second time.
+WHEEL_OUT_DIR=$(pwd)
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION || git checkout v$PACKAGE_VERSION
 
-# Ensure CMake uses all available cores for building Node.js
-sed -i "s/ProcessorCount(N)/set(N ${N_CORES})/" CMakeLists.txt
-sed -i "s/make -j\${N}/make -j${N_CORES}/" CMakeLists.txt
+# Build the wheel once (this is the only Node.js compilation)
+if ! pip wheel --no-build-isolation --no-deps -v -w "$WHEEL_OUT_DIR" . ; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
+fi
 
-# Install
-if ! pip install --no-build-isolation -v . ; then
+# Install the already built wheel (no rebuild)
+if ! pip install --no-deps --force-reinstall "$WHEEL_OUT_DIR"/nodejs_wheel_binaries-*.whl ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
