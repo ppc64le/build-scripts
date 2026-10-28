@@ -5,23 +5,10 @@
 # Source repo   : https://github.com/jcrist/msgspec
 # Tested on     : UBI:9.6
 # Language      : Python
-# Script License: Apache License, Version 2 or later
+# Script License: Apache License, Version 2.0 or later
 # Maintainer    : ICH <OpenSource-Edge-for-IBM-Tool-1>
-#
-# Disclaimer    : This script has been tested in root mode on given
-# ==========      platform using the mentioned version of the package.
-#                 It may not work as expected with newer versions of the
-#                 package and/or distribution. In such case, please
-#                 contact "Maintainer" of this script.
-#
-# Notes:
-#   - msgspec has C extensions (no Cython) - requires gcc and python-devel
-#   - No submodules or code generation required
-#   - Container environment provides: gcc/g++
-#   - Repository is pre-cloned with full history for version flexibility
 # -----------------------------------------------------------------------------
 
-# Get script directory for template sourcing
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # =============================================================================
@@ -33,19 +20,44 @@ PACKAGE_URL="https://github.com/jcrist/msgspec"
 
 # =============================================================================
 # REQUIRED: Dependencies
-# System packages needed for building msgspec
-# Note: gcc/g++ are provided by the container
 # =============================================================================
 RH_DEP_PKGS="git python3-devel python3-pip"
 DEB_DEP_PKGS="git python3-dev python3-pip python3-venv"
 SLES_DEP_PKGS="git python3-devel python3-pip"
 
 # =============================================================================
-# CALLBACK: pre_test
+# CALLBACK: post_clone — read setuptools version from pyproject.toml
+# =============================================================================
+post_clone() {
+    log_info "Reading setuptools version from pyproject.toml"
+    local setuptools_req
+    setuptools_req="$(grep -o '"setuptools[><=!][^"]*"' pyproject.toml | head -1 | tr -d '"')"
+    if [[ -n "${setuptools_req}" ]]; then
+        SETUPTOOLS_VERSION="${setuptools_req#setuptools}"
+        SETUPTOOLSVERSION="${SETUPTOOLS_VERSION//[[:space:]]/}"
+        log_info "Using setuptools${SETUPTOOLS_VERSION} (from pyproject.toml)"
+    else
+        log_info "setuptools not found in pyproject.toml, using template default"
+    fi
+}
+
+# =============================================================================
+# CALLBACK: pre_build — install build-time dependencies for newer versions
+# =============================================================================
+pre_build() {
+    log_info "Installing build-time dependencies for 0.21.1+"
+    python -m pip install "setuptools-scm>=8"
+}
+# =============================================================================
+# CALLBACK: pre_test — install test dependencies
 # =============================================================================
 pre_test() {
     log_info "running pre test hook"
-    python -m pip install attrs PyYAML tomli_w
+    if [[ "${PACKAGE_VERSION#v}" == "0.21.1" ]]; then
+        python -m pip install attrs PyYAML tomli_w pyright mypy
+    else
+        python -m pip install attrs PyYAML tomli_w
+    fi
 }
 
 # =============================================================================
@@ -63,6 +75,6 @@ custom_test_command() {
 }
 
 # =============================================================================
-# Source the Python template to execute the build workflow
+# Execute the build (invokes the Python template)
 # =============================================================================
 source "${SCRIPT_DIR}/../../v2-templates/python.sh"

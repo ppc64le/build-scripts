@@ -1,19 +1,20 @@
 {
-  "maintainer": "shivansh-ibm",
+  "maintainer": "ibm",
   "package_name": "utf8proc",
   "github_url": "https://github.com/JuliaStrings/utf8proc",
-  "version": "v2.11.3",
-  "wheel_build" : true,
-  "default_branch": "main",
+  "version": "v2.6.1",
+  "language": "C",
+  "wheel_build": false,
+  "v2-enabled": true,
   "package_dir": "u/utf8proc",
-  "build_script": "utf8proc_ubi_9.3.sh",
+  "default_branch": "master",
+  "build_script": "utf8proc.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "provides_artifact": "utf8proc",
   "*": {
-    "build_script": [
-        "utf8proc_ubi_9.3.sh",
-        "utf8proc_ubi_10.2.sh"
-    ]
+    "build_script": "utf8proc.sh"
   }
 }
+

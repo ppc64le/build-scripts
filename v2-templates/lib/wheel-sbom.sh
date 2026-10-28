@@ -9,7 +9,8 @@
 #
 # Usage:
 #   source "${TEMPLATE_DIR}/lib/wheel-sbom.sh"
-#   generate_wheel_sbom wheelhouse/*.whl
+#   # Called by postprocess_wheel_single_pass inside wheel-utils.sh:
+#   #   generate_wheel_sbom_for_dir "$pkg_dir" "$dist_info" "$wheel_name" "$wheel_path"
 #
 # Output files are written to ${OUTPUT_DIR}:
 #   - <wheel_name>.sbom.json
@@ -73,7 +74,13 @@ _normalize_so_name() {
 
 # _compute_sha256: Compute SHA-256 hash of a file
 _compute_sha256() {
-    sha256sum "$1" 2>/dev/null | cut -d' ' -f1
+    if command -v sha256sum &>/dev/null; then
+        sha256sum "$1" 2>/dev/null | cut -d' ' -f1
+    elif command -v shasum &>/dev/null; then
+        shasum -a 256 "$1" 2>/dev/null | cut -d' ' -f1
+    else
+        python3 -c "import hashlib, sys; print(hashlib.sha256(open(sys.argv[1], 'rb').read()).hexdigest())" "$1" 2>/dev/null
+    fi
 }
 
 # _generate_uuid: Generate a UUID (v4-like)
@@ -107,30 +114,46 @@ _extract_wheel_metadata() {
     _META_AUTHOR=""
     _META_HOMEPAGE=""
     _META_SUMMARY=""
-    declare -g -a _META_REQUIRES=()
-    declare -g -a _META_LICENSE_FILES=()
+    _META_REQUIRES=()
+    _META_LICENSE_FILES=()
 
     if [[ ! -f "$metadata_file" ]]; then
         _sbom_warn "METADATA file not found: $metadata_file"
         return 1
     fi
 
-    # Parse key-value pairs from METADATA (RFC 822 style headers)
-    while IFS=: read -r key value; do
-        # Trim whitespace
-        key=$(echo "$key" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-        value=$(echo "$value" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    # Parse key-value pairs from METADATA (RFC 822 / PEP 566 headers)
+    # The header section is separated from the description body by the first blank line.
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        # Stop header parsing at the first blank line (start of Description body)
+        local trimmed
+        trimmed=$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+        [[ -z "$trimmed" ]] && break
 
-        case "$key" in
-            Name) _META_NAME="$value" ;;
-            Version) _META_VERSION="$value" ;;
-            License) _META_LICENSE="$value" ;;
-            License-Expression) _META_LICENSE_EXPR="$value" ;;
-            Author|Author-email) [[ -z "$_META_AUTHOR" ]] && _META_AUTHOR="$value" ;;
-            Home-page) _META_HOMEPAGE="$value" ;;
-            Summary) _META_SUMMARY="$value" ;;
-            Requires-Dist) _META_REQUIRES+=("$value") ;;
-        esac
+        # Match RFC 822 header format "Header-Name: Value"
+        if [[ "$line" =~ ^([A-Za-z0-9_-]+):[[:space:]]*(.*)$ ]]; then
+            local key="${BASH_REMATCH[1]}"
+            local value="${BASH_REMATCH[2]}"
+            # Trim trailing whitespace from value
+            value=$(echo "$value" | sed 's/[[:space:]]*$//')
+
+            case "$key" in
+                Name) _META_NAME="$value" ;;
+                Version) _META_VERSION="$value" ;;
+                License) _META_LICENSE="$value" ;;
+                License-Expression) _META_LICENSE_EXPR="$value" ;;
+                License-File) _META_LICENSE_FILES+=("$value") ;;
+                Author|Author-email) [[ -z "$_META_AUTHOR" ]] && _META_AUTHOR="$value" ;;
+                Home-page) _META_HOMEPAGE="$value" ;;
+                Summary) _META_SUMMARY="$value" ;;
+                Requires-Dist) _META_REQUIRES+=("$value") ;;
+                Classifier)
+                    if [[ -z "$_META_LICENSE" && "$value" =~ ^License\ ::\ (OSI\ Approved\ ::\ )?(.+)$ ]]; then
+                        _META_LICENSE="${BASH_REMATCH[2]}"
+                    fi
+                    ;;
+            esac
+        fi
     done < "$metadata_file"
 
     # Validate required fields
@@ -156,7 +179,8 @@ _is_clear_spdx_license() {
     local license="$1"
 
     # Normalize to uppercase for comparison
-    local lic_upper="${license^^}"
+    local lic_upper
+    lic_upper=$(echo "$license" | tr '[:lower:]' '[:upper:]')
 
     # Clear SPDX identifiers that don't need full text
     case "$lic_upper" in
@@ -198,11 +222,13 @@ _extract_license_text() {
     local dist_info="$1"
     local license_text=""
 
-    # Look for LICENSE files in dist-info
-    for pattern in LICENSE LICENSE.txt LICENSE.md COPYING COPYING.txt NOTICE; do
-        local license_file="${dist_info}/${pattern}"
-        if [[ -f "$license_file" ]]; then
-            cat "$license_file"
+    # Look for LICENSE/COPYING/NOTICE files in dist-info
+    for file in "${dist_info}"/*; do
+        [[ ! -f "$file" ]] && continue
+        local fname
+        fname=$(basename "$file")
+        if [[ "$fname" =~ ^(LICENSE|COPYING|LICENCE|COPYRIGHT|NOTICE|license|copying|licence|copyright|notice)(\..*)?$ ]]; then
+            cat "$file"
             return 0
         fi
     done
@@ -232,7 +258,7 @@ _extract_license_text() {
 # Populates _BINARIES array with JSON objects
 _scan_wheel_binaries() {
     local wheel_dir="$1"
-    declare -g -a _BINARIES=()
+    _BINARIES=()
 
     local rpm_available=false
     if [[ -f /etc/redhat-release ]] && command -v rpm &>/dev/null; then
@@ -289,9 +315,12 @@ _scan_wheel_binaries() {
             done
         fi
 
-        # If still unknown, mark as source-built
+        # If still unknown, mark as source-built and inherit package license
         if [[ "$source" == "unknown" ]]; then
             source="source-built"
+            if [[ -z "$license" ]]; then
+                license="${_META_LICENSE_EXPR:-$_META_LICENSE}"
+            fi
         fi
 
         # Flag missing license as red flag
@@ -428,7 +457,9 @@ _generate_cyclonedx() {
 EOF
 )
         # Add license if available
-        if [[ -n "$_META_LICENSE" ]]; then
+        if [[ -n "$_META_LICENSE_EXPR" ]]; then
+            main_comp=$(echo "$main_comp" | jq --arg lic "$_META_LICENSE_EXPR" '. + {licenses: [{expression: $lic}]}')
+        elif [[ -n "$_META_LICENSE" ]]; then
             main_comp=$(echo "$main_comp" | jq --arg lic "$_META_LICENSE" '. + {licenses: [{license: {name: $lic}}]}')
         fi
 
@@ -474,6 +505,24 @@ EOF
         done
     fi
 
+    # Build metadata component
+    local meta_comp=$(cat <<EOF
+{
+    "type": "library",
+    "name": "$(_json_escape "$_META_NAME")",
+    "version": "$(_json_escape "$_META_VERSION")",
+    "purl": "pkg:pypi/$(_json_escape "$_META_NAME")@$(_json_escape "$_META_VERSION")"
+}
+EOF
+)
+    if command -v jq &>/dev/null; then
+        if [[ -n "$_META_LICENSE_EXPR" ]]; then
+            meta_comp=$(echo "$meta_comp" | jq --arg lic "$_META_LICENSE_EXPR" '. + {licenses: [{expression: $lic}]}')
+        elif [[ -n "$_META_LICENSE" ]]; then
+            meta_comp=$(echo "$meta_comp" | jq --arg lic "$_META_LICENSE" '. + {licenses: [{license: {name: $lic}}]}')
+        fi
+    fi
+
     # Generate full SBOM
     cat <<EOF
 {
@@ -487,12 +536,7 @@ EOF
             "name": "wheel-sbom",
             "version": "1.0.0"
         }],
-        "component": {
-            "type": "library",
-            "name": "$(_json_escape "$_META_NAME")",
-            "version": "$(_json_escape "$_META_VERSION")",
-            "purl": "pkg:pypi/$(_json_escape "$_META_NAME")@$(_json_escape "$_META_VERSION")"
-        }
+        "component": ${meta_comp}
     },
     "components": ${components},
     "vulnerabilities": ${vulnerabilities}
@@ -572,13 +616,19 @@ EOF
 # MAIN ENTRY POINT
 # =============================================================================
 
-# generate_wheel_sbom: Generate SBOM and CVE report for wheel(s)
-# Arguments: wheel_path [wheel_path ...]
+# generate_wheel_sbom_for_dir: Generate SBOM and CVE report from an extracted wheel directory
+# Arguments:
+#   1. temp_dir    - Path to extracted wheel directory
+#   2. dist_info   - Path to .dist-info directory inside temp_dir
+#   3. wheel_name  - Name of the wheel (e.g. package-1.0.0+ubi9-cp312-...whl)
+#   4. wheel_path  - Optional original wheel file path for cve-bin-tool
 # Returns: Always 0 (never fails)
-generate_wheel_sbom() {
-    local wheel_paths=("$@")
-
-    [[ ${#wheel_paths[@]} -eq 0 ]] && return 0
+generate_wheel_sbom_for_dir() {
+    local temp_dir="$1"
+    local dist_info="$2"
+    local wheel_name="$3"
+    local wheel_path="${4:-}"
+    local wheel_base="${wheel_name%.whl}"
 
     # Ensure output directory exists
     mkdir -p "${OUTPUT_DIR}"
@@ -588,114 +638,90 @@ generate_wheel_sbom() {
         log_warn "[SBOM] jq not available - SBOM generation will be limited"
     fi
 
-    for wheel_path in "${wheel_paths[@]}"; do
-        [[ ! -f "$wheel_path" ]] && continue
+    log_info "[SBOM] Processing: ${wheel_name}"
 
-        local wheel_name=$(basename "$wheel_path")
-        local wheel_base="${wheel_name%.whl}"
+    # Reset tracking arrays
+    _SBOM_WARNINGS=()
+    _SBOM_RED_FLAGS=()
+    _CVE_FINDINGS=()
 
-        log_info "[SBOM] Processing: ${wheel_name}"
+    # Extract metadata
+    _extract_wheel_metadata "${dist_info}/METADATA"
 
-        # Reset tracking arrays
-        _SBOM_WARNINGS=()
-        _SBOM_RED_FLAGS=()
-        declare -g -a _CVE_FINDINGS=()
-
-        # Create temp directory for extraction
-        local temp_dir=$(mktemp -d)
-
-        # Extract wheel
-        if ! unzip -q "$wheel_path" -d "$temp_dir" 2>/dev/null; then
-            _sbom_warn "Failed to extract wheel: ${wheel_name}"
-            rm -rf "$temp_dir"
-            continue
+    # Get license text if needed
+    local license_text=""
+    if [[ -n "$_META_LICENSE" ]] && ! _is_clear_spdx_license "$_META_LICENSE"; then
+        license_text=$(_extract_license_text "$dist_info")
+        if [[ -z "$license_text" ]]; then
+            _sbom_red_flag "License '${_META_LICENSE}' requires full text but none found"
         fi
+    elif [[ -z "$_META_LICENSE" ]]; then
+        _sbom_red_flag "No license declared in package metadata"
+        # Still try to get license text
+        license_text=$(_extract_license_text "$dist_info")
+    fi
 
-        # Find dist-info directory
-        local dist_info=$(find "$temp_dir" -maxdepth 1 -type d -name "*.dist-info" | head -1)
+    # Scan binaries
+    _scan_wheel_binaries "$temp_dir"
 
-        if [[ -z "$dist_info" ]]; then
-            _sbom_warn "No .dist-info found in wheel: ${wheel_name}"
-            rm -rf "$temp_dir"
-            continue
-        fi
+    log_info "[SBOM] Found ${#_BINARIES[@]} binary files"
 
-        # Extract metadata
-        _extract_wheel_metadata "${dist_info}/METADATA"
+    # Run CVE detection
+    log_info "[SBOM] Running CVE detection..."
 
-        # Get license text if needed
-        local license_text=""
-        if [[ -n "$_META_LICENSE" ]] && ! _is_clear_spdx_license "$_META_LICENSE"; then
-            license_text=$(_extract_license_text "$dist_info")
-            if [[ -z "$license_text" ]]; then
-                _sbom_red_flag "License '${_META_LICENSE}' requires full text but none found"
-            fi
-        elif [[ -z "$_META_LICENSE" ]]; then
-            _sbom_red_flag "No license declared in package metadata"
-            # Still try to get license text
-            license_text=$(_extract_license_text "$dist_info")
-        fi
+    local pip_audit_results=$(_run_pip_audit "$_META_NAME" "$_META_VERSION")
+    local cve_bin_results=""
+    if [[ -n "$wheel_path" && -f "$wheel_path" ]]; then
+        cve_bin_results=$(_run_cve_bin_tool "$wheel_path")
+    else
+        cve_bin_results=$(_run_cve_bin_tool "$temp_dir")
+    fi
 
-        # Scan binaries
-        _scan_wheel_binaries "$temp_dir"
+    # Merge CVE results
+    if command -v jq &>/dev/null; then
+        local all_cves=$(echo "[$pip_audit_results, $cve_bin_results]" | jq -c 'add | unique_by(.cve_id // .id)')
+        while IFS= read -r cve; do
+            [[ -n "$cve" && "$cve" != "null" ]] && _CVE_FINDINGS+=("$cve")
+        done < <(echo "$all_cves" | jq -c '.[]' 2>/dev/null)
+    fi
 
-        log_info "[SBOM] Found ${#_BINARIES[@]} binary files"
+    log_info "[SBOM] Found ${#_CVE_FINDINGS[@]} CVE(s)"
 
-        # Run CVE detection
-        log_info "[SBOM] Running CVE detection..."
+    # Generate outputs
+    local sbom_file="${OUTPUT_DIR}/${wheel_base}.sbom.json"
+    local summary_file="${OUTPUT_DIR}/${wheel_base}.summary.json"
+    local cves_file="${OUTPUT_DIR}/${wheel_base}.cves.json"
 
-        local pip_audit_results=$(_run_pip_audit "$_META_NAME" "$_META_VERSION")
-        local cve_bin_results=$(_run_cve_bin_tool "$wheel_path")
+    # Generate CycloneDX SBOM
+    _generate_cyclonedx "$wheel_name" "$license_text" > "$sbom_file"
+    log_info "[SBOM] Generated: ${sbom_file}"
 
-        # Merge CVE results
+    # Generate summary
+    _generate_summary "$wheel_name" > "$summary_file"
+    log_info "[SBOM] Generated: ${summary_file}"
+
+    # Generate CVE report if any found
+    if [[ ${#_CVE_FINDINGS[@]} -gt 0 ]]; then
         if command -v jq &>/dev/null; then
-            local all_cves=$(echo "[$pip_audit_results, $cve_bin_results]" | jq -c 'add | unique_by(.cve_id // .id)')
-            while IFS= read -r cve; do
-                [[ -n "$cve" && "$cve" != "null" ]] && _CVE_FINDINGS+=("$cve")
-            done < <(echo "$all_cves" | jq -c '.[]' 2>/dev/null)
+            printf '%s\n' "${_CVE_FINDINGS[@]}" | jq -s '.' > "$cves_file"
+        else
+            echo "[" > "$cves_file"
+            printf '%s,\n' "${_CVE_FINDINGS[@]}" | sed '$ s/,$//' >> "$cves_file"
+            echo "]" >> "$cves_file"
         fi
+        log_info "[SBOM] Generated: ${cves_file}"
+    fi
 
-        log_info "[SBOM] Found ${#_CVE_FINDINGS[@]} CVE(s)"
-
-        # Generate outputs
-        local sbom_file="${OUTPUT_DIR}/${wheel_base}.sbom.json"
-        local summary_file="${OUTPUT_DIR}/${wheel_base}.summary.json"
-        local cves_file="${OUTPUT_DIR}/${wheel_base}.cves.json"
-
-        # Generate CycloneDX SBOM
-        _generate_cyclonedx "$wheel_name" "$license_text" > "$sbom_file"
-        log_info "[SBOM] Generated: ${sbom_file}"
-
-        # Generate summary
-        _generate_summary "$wheel_name" > "$summary_file"
-        log_info "[SBOM] Generated: ${summary_file}"
-
-        # Generate CVE report if any found
-        if [[ ${#_CVE_FINDINGS[@]} -gt 0 ]]; then
-            if command -v jq &>/dev/null; then
-                printf '%s\n' "${_CVE_FINDINGS[@]}" | jq -s '.' > "$cves_file"
-            else
-                echo "[" > "$cves_file"
-                printf '%s,\n' "${_CVE_FINDINGS[@]}" | sed '$ s/,$//' >> "$cves_file"
-                echo "]" >> "$cves_file"
-            fi
-            log_info "[SBOM] Generated: ${cves_file}"
-        fi
-
-        # Report summary
-        if [[ ${#_SBOM_RED_FLAGS[@]} -gt 0 ]]; then
-            log_warn "[SBOM] ${#_SBOM_RED_FLAGS[@]} red flag(s) - manual review required"
-            for flag in "${_SBOM_RED_FLAGS[@]}"; do
-                log_warn "  - $flag"
-            done
-        fi
-
-        # Cleanup
-        rm -rf "$temp_dir"
-
-    done
+    # Report summary
+    if [[ ${#_SBOM_RED_FLAGS[@]} -gt 0 ]]; then
+        log_warn "[SBOM] ${#_SBOM_RED_FLAGS[@]} red flag(s) - manual review required"
+        for flag in "${_SBOM_RED_FLAGS[@]}"; do
+            log_warn "  - $flag"
+        done
+    fi
 
     return 0
 }
 
 log_info "Wheel SBOM utilities loaded"
+

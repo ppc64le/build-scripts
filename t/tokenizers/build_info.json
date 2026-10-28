@@ -1,22 +1,20 @@
 {
-  "maintainer": "SakshiJain0302",
+  "maintainer": "Build Scripts Team",
   "package_name": "tokenizers",
+  "language": "Python",
   "github_url": "https://github.com/huggingface/tokenizers",
-  "version": "v0.23.1",
-  "wheel_build" : true,
+  "version": "v0.21.1",
+  "v2-enabled": true,
+  "wheel_build": true,
+  "resource_class": "medium",
   "default_branch": "main",
-  "build_script": "tokenizers_ubi_9.3.sh",
+  "build_script": "tokenizers.sh",
   "package_dir": "t/tokenizers",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "v0.21.0": {
-   "build_script": "tokenizers_ubi_9.3.sh"
-  },
-  "v0.23.1": {
-   "build_script": "tokenizers_0.23.1_ubi_10.2.sh"
-  },
+  "provides_artifact": "tokenizers",
   "*": {
-   "build_script": "tokenizers_ubi_9.3.sh"
+    "build_script": "tokenizers.sh"
   }
 }

@@ -21,7 +21,7 @@ PACKAGE_URL="https://github.com/asg017/sqlite-vec"
 # =============================================================================
 # REQUIRED: Dependencies
 # =============================================================================
-RH_DEP_PKGS="git make gettext unzip python3-devel python3-pip"
+RH_DEP_PKGS="git make gettext unzip sqlite sqlite-devel python3-devel python3-pip"
 DEB_DEP_PKGS=""
 SLES_DEP_PKGS=""
 
@@ -66,23 +66,33 @@ pre_test() {
 #   test_idxstr                    — SQLite version difference in EQP output
 # =============================================================================
 custom_test_command() {
-    log_info "Running sqlite-vec Python test suite..."
-    python -m pytest \
-        --rootdir=. \
-        -p no:cacheprovider \
-        tests/test-loadable.py \
-        tests/test-general.py \
-        tests/test-auxiliary.py \
-        tests/test-insert-delete.py \
-        tests/test-knn-distance-constraints.py \
-        tests/test-metadata.py \
-        tests/test-partition-keys.py \
-        -o "addopts=" \
-        --disable-warnings \
-        --deselect tests/test-loadable.py::test_vec_npy_each_errors_files \
-        --deselect tests/test-metadata.py::test_idxstr \
-        -v
+    local py_minor
+    py_minor=$(python -c "import sys; print(sys.version_info.minor)")
+
+    log_info "Checking if Python 3.${py_minor} sqlite3 supports loadable extensions..."
+    if python -c "import sqlite3; conn = sqlite3.connect(':memory:'); conn.enable_load_extension(True)" 2>/dev/null; then
+        log_info "Running sqlite-vec Python test suite..."
+        python -m pytest \
+            --rootdir=. \
+            --import-mode=importlib \
+            -p no:cacheprovider \
+            tests/test-loadable.py \
+            tests/test-general.py \
+            tests/test-auxiliary.py \
+            tests/test-insert-delete.py \
+            tests/test-knn-distance-constraints.py \
+            tests/test-metadata.py \
+            tests/test-partition-keys.py \
+            -o "addopts=" \
+            --disable-warnings \
+            --deselect tests/test-loadable.py::test_vec_npy_each_errors_files \  # uses delete_on_close (Python 3.12+ only)
+            --deselect tests/test-metadata.py::test_idxstr \                     # SQLite version difference in EQP output
+            -v
+    else
+        log_warn "Python 3.${py_minor} sqlite3 module does not support enable_load_extension. Skipping test suite."
+    fi
 }
 
 source "${SCRIPT_DIR}/../../v2-templates/python.sh"
+
 

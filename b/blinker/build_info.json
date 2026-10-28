@@ -3,6 +3,7 @@
   "package_name": "blinker",
   "github_url": "https://github.com/pallets-eco/blinker",
   "version": "rel-1.4",
+  "language": "Python",
   "wheel_build": true,
   "package_dir": "b/blinker",
   "default_branch": "main",

@@ -1,6 +1,8 @@
 {
   "maintainer": "Harithanagothu2",
   "package_name": "brotlipy",
+  "language": "Python",
+  "wheel_name": "brotlicffi",
   "github_url": "https://github.com/python-hyper/brotlicffi",
   "version": "v1.2.0.0",
   "wheel_build": true,

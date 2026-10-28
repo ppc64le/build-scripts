@@ -23,7 +23,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # =============================================================================
 PACKAGE_NAME="${PACKAGE_NAME}"               # Set by CI or override here
 PACKAGE_VERSION="${1:-${PACKAGE_VERSION}}"   # Set by CI or override here
-PACKAGE_URL="${PACKAGE_URL}"                 # Set by CI or override here
+PACKAGE_URL="${PACKAGE_URL}"
+NOARCH="${NOARCH:-false}"                 # Set by CI or override here
 
 # =============================================================================
 # REQUIRED: Dependencies (at minimum, set RH_DEP_PKGS)
@@ -60,3 +61,4 @@ SLES_DEP_PKGS="git python3 python3-devel python3-pip gcc"
 # Execute the build
 # =============================================================================
 source "${SCRIPT_DIR}/../python.sh"
+

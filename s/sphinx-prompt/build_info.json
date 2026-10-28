@@ -11,6 +11,7 @@
   "use_non_root_user": false,
   "docker_build": false,
   "v2-enabled": true,
+  "language": "Python",
   "*": {
     "build_script": "sphinx-prompt.sh"
   }

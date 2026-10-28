@@ -1,0 +1,10 @@
+diff --git a/cpp/.bazelrc b/cpp/.bazelrc
+index 830e568..d9d238b 100644
+--- a/cpp/.bazelrc
++++ b/cpp/.bazelrc
+@@ -21,3 +21,5 @@ build:x86_64 --platforms=@toolchain//:x86_64
+ 
+ # Azurite testing support (enables AZURE_STORAGE_ACCOUNT_KEY for local testing)
+ build:azurite --define azurite_testing=true
++
++build:ppc64le --platform_suffix=ppc64le

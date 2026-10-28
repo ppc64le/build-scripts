@@ -3,6 +3,7 @@
   "package_name": "poetry",
   "github_url": "https://github.com/python-poetry/poetry",
   "version": "2.3.3",
+  "language": "Python",
   "wheel_build": true,
   "default_branch": "main",
   "package_dir": "p/poetry",

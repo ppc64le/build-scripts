@@ -7,10 +7,11 @@
 #
 # Usage:
 #   source "${TEMPLATE_DIR}/lib/bundled-license-utils.sh"
-#   process_bundled_licenses wheelhouse/*.whl
+#   # Called by postprocess_wheel_single_pass inside wheel-utils.sh:
+#   #   _generate_license_files "$pkg_dir" "$dist_info"
 #
 # The process:
-#   1. Extract wheel and find .libs/ directories
+#   1. Inspect .libs/ directories inside extracted wheel
 #   2. For each bundled .so file:
 #      a. Check artifact system manifests (custom-built libs)
 #      b. Check RPM ownership and license (system libs, UBI/RHEL only)
@@ -18,7 +19,6 @@
 #   3. Generate license files in .dist-info/:
 #      - UBI_BUNDLED_LICENSES.txt (RPM-derived licenses)
 #      - BUNDLED_LICENSES.txt (project licenses and fallback markers)
-#   4. Update RECORD and repack wheel
 #
 # Environment:
 #   ARTIFACT_DIR - Base directory for artifact system (default: /opt/artifacts)
@@ -97,10 +97,13 @@ _resolve_license_from_artifact() {
                     echo "Source: Artifact system (${name})"
 
                     # Also check for full license file
-                    for license_file in LICENSE LICENSE.txt LICENSE.md COPYING; do
-                        if [[ -f "${artifact_path}/${license_file}" ]]; then
+                    for file in "${artifact_path}"/*; do
+                        [[ ! -f "$file" ]] && continue
+                        local fname
+                        fname=$(basename "$file")
+                        if [[ "$fname" =~ ^(LICENSE|COPYING|LICENCE|COPYRIGHT|license|copying|licence|copyright)(\..*)?$ ]]; then
                             echo ""
-                            cat "${artifact_path}/${license_file}"
+                            cat "$file"
                             break
                         fi
                     done
@@ -164,9 +167,14 @@ _resolve_license_from_filesystem() {
     local so_name="$1"
     local normalized="$2"
 
-    # Search for the library on the filesystem
-    local lib_path
-    lib_path=$(find / -name "$normalized" -type f 2>/dev/null | grep -v "\.whl" | head -1)
+    # Search for the library in likely build and system locations
+    local search_dirs=("$PWD" "${WORK_DIR:-$PWD}" /opt /usr/local /usr)
+    local lib_path=""
+    for s_dir in "${search_dirs[@]}"; do
+        [[ ! -d "$s_dir" ]] && continue
+        lib_path=$(find "$s_dir" -maxdepth 6 -name "$normalized" -type f 2>/dev/null | grep -v "\.whl" | head -1)
+        [[ -n "$lib_path" ]] && break
+    done
 
     [[ -z "$lib_path" ]] && return 1
 
@@ -177,10 +185,12 @@ _resolve_license_from_filesystem() {
     local max_depth=10
 
     while [[ "$dir" != "/" ]] && [[ $depth -lt $max_depth ]]; do
-        for license_pattern in LICENSE COPYING LICENSE.txt LICENSE.md COPYING.txt; do
-            local license_file="${dir}/${license_pattern}"
-            if [[ -f "$license_file" ]]; then
-                cat "$license_file"
+        for file in "$dir"/*; do
+            [[ ! -f "$file" ]] && continue
+            local fname
+            fname=$(basename "$file")
+            if [[ "$fname" =~ ^(LICENSE|COPYING|LICENCE|COPYRIGHT|license|copying|licence|copyright)(\..*)?$ ]]; then
+                cat "$file"
                 return 0
             fi
         done
@@ -317,136 +327,6 @@ EOF
     if [[ "$has_bundled_licenses" != "true" ]]; then
         rm -f "$bundled_licenses"
     fi
-}
-
-# _update_wheel_record: Regenerate RECORD file with new entries
-# Arguments: wheel_dir dist_info_dir
-_update_wheel_record() {
-    local wheel_dir="$1"
-    local dist_info="$2"
-    local record_file="${dist_info}/RECORD"
-
-    # Remove old RECORD
-    rm -f "$record_file"
-
-    # Generate new RECORD
-    # Format: path,sha256=hash,size
-    while IFS= read -r file; do
-        [[ -z "$file" ]] && continue
-        [[ "$file" == "$record_file" ]] && continue
-
-        local rel_path="${file#${wheel_dir}/}"
-        local hash
-        hash=$(sha256sum "$file" | cut -d' ' -f1)
-        local size
-        size=$(stat -c%s "$file")
-
-        echo "${rel_path},sha256=${hash},${size}" >> "$record_file"
-    done < <(find "$wheel_dir" -type f)
-
-    # RECORD itself has no hash
-    echo "${dist_info##*/}/RECORD,," >> "$record_file"
-}
-
-# =============================================================================
-# MAIN ENTRY POINT
-# =============================================================================
-
-# process_bundled_licenses: Process wheel to add licenses for bundled .so files
-# Arguments: wheel_path [wheel_path ...]
-# Returns: 0 on success, 1 on failure
-process_bundled_licenses() {
-    local wheel_paths=("$@")
-
-    [[ ${#wheel_paths[@]} -eq 0 ]] && return 0
-
-    # Check for required tools
-    if ! command -v unzip &>/dev/null || ! command -v zip &>/dev/null; then
-        log_warn "zip/unzip not available, skipping bundled license processing"
-        return 0
-    fi
-
-    # Log OS detection status
-    if _is_rpm_available; then
-        log_info "RPM available - will query system package licenses"
-    elif _is_ubuntu; then
-        log_warn "Running on Ubuntu - RPM license lookup not available"
-        log_warn "Licenses will be resolved from artifact system and filesystem only"
-        log_warn "See templates/docs/WHEEL_LICENSE_GAPS.md for more information"
-    else
-        log_warn "Non-RPM system detected - some licenses may not be resolved"
-    fi
-
-    # Reset missing licenses tracker
-    _MISSING_LICENSES=()
-
-    for wheel_path in "${wheel_paths[@]}"; do
-        [[ ! -f "$wheel_path" ]] && continue
-
-        local wheel_name
-        wheel_name=$(basename "$wheel_path")
-        log_info "Processing bundled licenses in: ${wheel_name}"
-
-        # Create temp directory for extraction
-        local temp_dir
-        temp_dir=$(mktemp -d)
-
-        # Extract wheel
-        if ! unzip -q "$wheel_path" -d "$temp_dir"; then
-            log_error "Failed to extract wheel: ${wheel_name}"
-            rm -rf "$temp_dir"
-            continue
-        fi
-
-        # Find .dist-info directory
-        local dist_info
-        dist_info=$(find "$temp_dir" -maxdepth 1 -type d -name "*.dist-info" | head -1)
-
-        if [[ -z "$dist_info" ]]; then
-            log_warn "No .dist-info found in wheel: ${wheel_name}"
-            rm -rf "$temp_dir"
-            continue
-        fi
-
-        # Check if wheel has bundled libraries
-        local libs_count
-        libs_count=$(_find_bundled_libs "$temp_dir" | wc -l)
-
-        if [[ "$libs_count" -eq 0 ]]; then
-            log_info "No bundled libraries found in: ${wheel_name}"
-            rm -rf "$temp_dir"
-            continue
-        fi
-
-        log_info "Found ${libs_count} bundled libraries"
-
-        # Generate license files
-        _generate_license_files "$temp_dir" "$dist_info"
-
-        # Update RECORD
-        _update_wheel_record "$temp_dir" "$dist_info"
-
-        # Repack wheel - convert to absolute path before cd
-        local wheel_path_abs
-        wheel_path_abs="$(cd "$(dirname "$wheel_path")" && pwd)/$(basename "$wheel_path")"
-
-        rm -f "$wheel_path_abs"
-
-        local original_dir="$PWD"
-        cd "$temp_dir"
-
-        if ! zip -q -r "$wheel_path_abs" .; then
-            log_error "Failed to repack wheel: ${wheel_name}"
-            cd "$original_dir"
-            rm -rf "$temp_dir"
-            return 1
-        fi
-
-        cd "$original_dir"
-        rm -rf "$temp_dir"
-
-        log_info "Bundled license processing complete: ${wheel_name}"
-    done
 
     # Report any missing licenses
     if [[ ${#_MISSING_LICENSES[@]} -gt 0 ]]; then
@@ -460,8 +340,7 @@ process_bundled_licenses() {
         log_warn "These are marked as '*_license_not_found' in BUNDLED_LICENSES.txt"
         log_warn "Manual review may be required for compliance."
     fi
-
-    return 0
 }
 
 log_info "Bundled license utilities loaded"
+

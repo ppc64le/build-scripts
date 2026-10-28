@@ -1,17 +1,19 @@
 {
   "maintainer": "aastha-sharma2",
   "package_name": "pyephem",
-  "github_url": "https://github.com/brandon-rhodes/pyephem.git",
+  "language": "Python",
+  "wheel_name": "ephem",
+  "github_url": "https://github.com/brandon-rhodes/pyephem",
   "version": "4.2",
   "default_branch": "master",
   "package_dir": "p/pyephem",
-  "wheel_build" : true,
-  "wheel_name": "ephem",
-  "build_script": "pyephem_ubi_9.6.sh",
+  "wheel_build": "true",
+  "build_script": "pyephem.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": "false",
-   "*": {
-    "build_script": "pyephem_ubi_9.6.sh"
-  }
+  "*": {
+    "build_script": "pyephem.sh"
+  },
+  "v2-enabled": true
 }

@@ -16,6 +16,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PACKAGE_NAME="sphinx"
 PACKAGE_VERSION="${1:-v8.2.3}"
 PACKAGE_URL="https://github.com/sphinx-doc/sphinx"
+
 NOARCH="true"
 
 # =============================================================================
@@ -35,10 +36,13 @@ post_clone() {
 
 # =============================================================================
 # CALLBACK: pre_test — install test dependencies used by the upstream make test target
+# Pin Pygments<2.19 because Pygments>=2.19 stopped HTML-escaping quotes inside
+# string tokens, causing the Sphinx 8.2.3 test suite assertions to fail.
 # =============================================================================
 pre_test() {
     log_info "Installing Sphinx test dependencies"
     python -m pip install --upgrade pip setuptools wheel
+    python -m pip install "Pygments<2.19"
     python -m pip install .[test] pytest pytest-xdist
 }
 

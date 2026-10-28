@@ -34,7 +34,7 @@ pre_test() {
     # Install test dependencies
     log_info "Installing test dependencies.."
     python -m pip install --upgrade pip setuptools wheel
-    python -m pip install hatch testpath packaging
+    python -m pip install hatch testpath packaging pep440
     python -m pip install nbformat[test]
 }
 

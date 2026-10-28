@@ -1,19 +1,20 @@
 {
-   "maintainer": "varsha.kumar@ibm.com",
-   "package_name": "lz4",
-   "github_url": "https://github.com/python-lz4/python-lz4",
-   "version": "v4.4.5",
-   "default_branch": "master",
-   "build_script": "lz4_4.4.5_ubi_9.6.sh",
-   "wheel_build" : true,
-   "package_dir": "l/lz4",
-   "docker_build": false,
-   "validate_build_script": true,
-   "use_non_root_user": false,
-   "v4.4.5":{
-           "build_script": "lz4_4.4.5_ubi_9.6.sh"
-   },
-   "*": {
-       "build_script": "lz4_4.4.5_ubi_9.6.sh"
-   }
+  "maintainer": "varsha.kumar",
+  "package_name": "lz4",
+  "github_url": "https://github.com/python-lz4/python-lz4",
+  "version": "v4.4.5",
+  "resource_class": "medium",
+  "language": "Python",
+  "default_branch": "main",
+  "package_dir": "l/lz4",
+  "wheel_build": true,
+  "build_script": "lz4.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "v2-enabled": true,
+  "build_deps": ["psutil:v7.2.1"],
+  "*": {
+    "build_script": "lz4.sh"
+  }
 }

@@ -42,17 +42,19 @@ post_clone() {
 }
 
 # =============================================================================
-# CALLBACK: custom_test_command — run pytest from inside tests/ so that the
-#           mocks/ sibling package is importable. Test files are named Test*.py
-#           so python_files and python_classes discovery overrides are required.
+# CALLBACK: custom_test_command — run unit tests excluding outdated mocks
+#           TestTokenStreamRewriter and mocks/TestLexer use legacy ATN v3 format
+#           which fails ATN deserialization in ANTLR 4.10+ (SERIALIZED_VERSION=4).
 # =============================================================================
 custom_test_command() {
-    log_info "Running antlr4-python3-runtime tests with pytest"
+    log_info "Running antlr4-python3-runtime unit tests with pytest"
     cd runtime/Python3/tests/
     python -m pytest . \
         -o "addopts=" \
         -o "python_files=Test*.py" \
         -o "python_classes=Test*" \
+        --ignore=mocks \
+        --ignore=TestTokenStreamRewriter.py \
         --disable-warnings
 }
 
@@ -60,4 +62,5 @@ custom_test_command() {
 # Execute the build (invokes the Python template)
 # =============================================================================
 source "${SCRIPT_DIR}/../../v2-templates/python.sh"
+
 

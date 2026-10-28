@@ -2,7 +2,7 @@
   "maintainer": "adarsh.agrawal1@ibm.com",
   "package_name": "docling-parse",
   "github_url": "https://github.com/docling-project/docling-parse",
-  "version": "v6.2.0",
+  "version": "v7.16.0",
   "wheel_build": true,
   "resource_class": "heavy",
   "package_dir": "d/docling-parse",
@@ -13,7 +13,9 @@
   "v2-enabled": true,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "build_deps": ["pillow:12.3.0"],
   "*": {
     "build_script": "docling-parse.sh"
   }
 }
+

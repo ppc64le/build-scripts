@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 # Package       : zstandard
-# Version       : 0.22.0
+# Version       : 0.25.0
 # Source repo   : https://github.com/indygreg/python-zstandard
 # Tested on     : UBI:9.6
 # Language      : Python
@@ -15,69 +15,116 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # REQUIRED: Package metadata
 # =============================================================================
 PACKAGE_NAME="zstandard"
-PACKAGE_VERSION="${1:-0.22.0}"
+PACKAGE_VERSION="${1:-0.25.0}"
 PACKAGE_URL="https://github.com/indygreg/python-zstandard"
 
 # =============================================================================
 # REQUIRED: Dependencies
 # =============================================================================
-RH_DEP_PKGS="cmake gcc-toolset-13 git libzstd-devel make pkg-config python3 python3-devel.ppc64le sudo wget"
+RH_DEP_PKGS="cmake git libzstd-devel make pkg-config python3-devel"
 DEB_DEP_PKGS=""
 SLES_DEP_PKGS=""
 
-# zstandard 0.22.0 pyproject.toml declares exact build-system requires:
-#   requires = ["cffi==1.16.0", "setuptools==68.2.2", "wheel==0.41.2"]
-# python -m build --no-isolation (used by the template) validates that the
-# installed versions in the build venv match exactly. Any mismatch causes a
-# "ERROR Unmet dependencies" failure and exits with code 1.
-# SETUPTOOLS_VERSION is consumed by python.sh to install
-# "setuptools${SETUPTOOLS_VERSION}" — setting it to "==68.2.2" satisfies
-# the exact pin declared in pyproject.toml.
-SETUPTOOLS_VERSION="==68.2.2"
-
-pre_build() {
-    # cffi and wheel must match the exact versions declared in zstandard's
-    # pyproject.toml [build-system] requires. python -m build --no-isolation
-    # checks the installed versions against these declarations and fails if
-    # there is any mismatch. The template installs a newer wheel by default,
-    # so we downgrade/pin both here before the build runs.
-    local lang_ver=(${LANGUAGE_VERSION//./ })
-
-    if [[ ${lang_ver[0]} -eq 3 && ${lang_ver[1]} -ge 13 ]]; then
-        log_info "Python ${LANGUAGE_VERSION} detected: installing cffi>=1.17.0 (cffi 1.16.0 does not support Python 3.13+)..."
-        pip install "cffi>=1.17.0" "wheel==0.41.2"
+# =============================================================================
+# CALLBACK: post_clone — detect SETUPTOOLS_VERSION from pyproject.toml; patch
+#           license field format for setuptools >=77 compatibility
+# =============================================================================
+post_clone() {
+    log_info "Reading setuptools version requirement from pyproject.toml"
+    if [[ -f "pyproject.toml" ]]; then
+        setuptools_req="$(grep -o '"setuptools[^"]*"' pyproject.toml | head -1 | tr -d '"')"
+        if [[ -n "$setuptools_req" ]]; then
+            SETUPTOOLS_VERSION="${setuptools_req#setuptools}"
+            SETUPTOOLS_VERSION="${SETUPTOOLS_VERSION//[[:space:]]/}"
+            log_info "Using SETUPTOOLS_VERSION='${SETUPTOOLS_VERSION}' from pyproject.toml"
+        else
+            SETUPTOOLS_VERSION="<82"
+            log_info "No setuptools pin found in pyproject.toml — falling back to SETUPTOOLS_VERSION='${SETUPTOOLS_VERSION}'"
+        fi
     else
-        log_info "Python ${LANGUAGE_VERSION} detected: installing exact build-system dependencies required by zstandard's pyproject.toml..."
-        pip install "cffi==1.16.0" "wheel==0.41.2"
+        SETUPTOOLS_VERSION="<82"
+        log_info "No pyproject.toml found — falling back to SETUPTOOLS_VERSION='${SETUPTOOLS_VERSION}'"
+    fi
+
+    # Fix pyproject.toml license field format if pyproject.toml defines [project].
+    # Newer versions (e.g. 0.25.0) use `license = "BSD-3-Clause"` (string) in pyproject.toml,
+    # but setuptools >=77 expects the license to be declared in the dynamic array and provided
+    # via setup.py. Older versions (e.g. 0.19.0) already have license="BSD" in setup.py and
+    # no [project] section.
+    if grep -q '^\[project\]' pyproject.toml 2>/dev/null; then
+        log_info "Fixing pyproject.toml license field for setuptools >=77..."
+        sed -i 's/dynamic = \["version"\]/dynamic = ["version", "license"]/' pyproject.toml
+        sed -i '/^license = "BSD-3-Clause"$/d' pyproject.toml
+
+        if ! grep -q 'license=' setup.py 2>/dev/null; then
+            log_info "Patching setup.py to include license from LICENSE file..."
+            test_suite_line=$(grep -n 'test_suite="tests"' setup.py | cut -d: -f1)
+            if [[ -n "$test_suite_line" ]]; then
+                sed -i "${test_suite_line}a\\    license=open(\"LICENSE\").read()," setup.py
+            fi
+        fi
     fi
 }
 
-pre_test() {
-    # setuptools is required by the pyproject.toml build backend
-    # (setuptools.build_meta). The test venv is created with only pip + pytest
-    # by the template (python.sh line 525), so setuptools is absent by default.
-    # Without it, pip install --no-build-isolation . fails with:
-    #   BackendUnavailable: Cannot import 'setuptools.build_meta'
-    log_info "Installing setuptools and wheel into test venv..."
-    pip install --upgrade setuptools wheel
+# =============================================================================
+# CALLBACK: pre_build — install cffi matching the version range declared in
+#           zstandard's pyproject.toml [build-system] requires
+# =============================================================================
+pre_build() {
+    local py_minor
+    py_minor=$(python -c "import sys; print(sys.version_info[1])")
+
+    if [[ ${py_minor} -ge 14 ]]; then
+        log_info "Python >= 3.14 detected: installing cffi>=2.0.0b (required for Python 3.14+)..."
+        python -m pip install "cffi>=2.0.0b"
+    else
+        log_info "Python < 3.14 detected: installing cffi~=1.17 (required by zstandard 0.25.0 pyproject.toml)..."
+        python -m pip install "cffi~=1.17"
+    fi
 }
 
-custom_test_command() {
-    log_info "Running zstandard test suite..."
-    # Build the C extension module in-place so tests can import it
-    python setup.py build_ext --inplace
-    # --import-mode=importlib is required because pytest is run from inside the
-    # source directory. Without it, Python's default import prepends the current
-    # directory to sys.path, causing `import zstandard` to resolve to the source
-    # folder (zstandard/) instead of the installed package. The source folder has
-    # no compiled C extension (backend_c.so), which causes:
-    #   ModuleNotFoundError: No module named 'zstandard.backend_c'
-    # importlib mode bypasses sys.path manipulation so the installed package
-    # (including the compiled .so) is imported correctly.
-    python -m pytest --import-mode=importlib -v tests/
+# =============================================================================
+# CALLBACK: pre_test — install build backend and cffi into the test venv.
+#           .venv-test is a fresh environment; setuptools and cffi are absent
+#           by default, causing 'Cannot import setuptools.build_meta' and
+#           import failures for the compiled C extension.
+# =============================================================================
+pre_test() {
+    log_info "Installing setuptools, wheel, and pip into test venv..."
+    python -m pip install --upgrade pip setuptools wheel
+
+    local py_minor
+    py_minor=$(python -c "import sys; print(sys.version_info[1])")
+
+    if [[ ${py_minor} -ge 14 ]]; then
+        log_info "Python >= 3.14 detected: installing cffi>=2.0.0b for test venv..."
+        python -m pip install "cffi>=2.0.0b"
+    else
+        log_info "Python < 3.14 detected: installing cffi~=1.17 for test venv..."
+        python -m pip install "cffi~=1.17"
+    fi
 }
+
+# =============================================================================
+# CALLBACK: custom_test_command — build C extension in-place then run tests.
+#           --import-mode=importlib prevents the source directory (zstandard/)
+#           from shadowing the installed package; without it pytest resolves
+#           `import zstandard` to the source folder which lacks backend_c.so,
+#           causing: ModuleNotFoundError: No module named 'zstandard.backend_c'
+# =============================================================================
+custom_test_command() {
+    log_info "Building C extension in-place for test run..."
+    python -m pip install --no-build-isolation -e .
+
+    log_info "Running zstandard test suite..."
+    python -m pytest \
+        --import-mode=importlib \
+        -o "addopts=" \
+        --disable-warnings \
+        -v tests/
+}
+
 # =============================================================================
 # Execute the build (invokes the Python template)
 # =============================================================================
 source "${SCRIPT_DIR}/../../v2-templates/python.sh"
-

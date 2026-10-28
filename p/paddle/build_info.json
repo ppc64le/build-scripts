@@ -1,6 +1,7 @@
 {
   "maintainer": "Prerna.Kumbhar",
   "package_name": "paddle",
+  "wheel_name": "paddlepaddle",
   "github_url": "https://github.com/PaddlePaddle/Paddle",
   "version": "v3.0.0",
   "package_dir": "p/paddle",

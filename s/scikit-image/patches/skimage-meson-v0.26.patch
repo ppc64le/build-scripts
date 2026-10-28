@@ -1,0 +1,23 @@
+diff --git a/src/skimage/meson.build b/src/skimage/meson.build
+index bb2891e..49cd777 100644
+--- a/src/skimage/meson.build
++++ b/src/skimage/meson.build
+@@ -58,7 +58,7 @@ if incdir_numpy == 'not-given'
+   incdir_numpy = run_command(py3,
+     [
+       '-c',
+-      'import os; os.chdir(".."); import numpy; print(numpy.get_include())'
++      'import numpy, re; p = numpy.get_include(); print(re.sub(r"^.*/.venv-build", "/tmp/ext_venv", p) if "/.venv-build" in p else p)'
+     ],
+     check: true
+   ).stdout().strip()
+@@ -88,7 +88,7 @@ if incdir_pythran == 'not-given'
+   incdir_pythran = run_command(py3,
+     [
+       '-c',
+-      'import os; os.chdir(".."); import pythran; print(os.path.dirname(pythran.__file__));'
++      'import os, pythran, re; p = os.path.dirname(pythran.__file__); print(re.sub(r"^.*/.venv-build", "/tmp/ext_venv", p) if "/.venv-build" in p else p)'
+     ],
+     check: true
+   ).stdout().strip()
+

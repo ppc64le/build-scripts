@@ -1,6 +1,8 @@
 {
   "maintainer": "vivek8123",
   "package_name": "chroma-hnswlib",
+  "language": "Python",
+  "wheel_name": "hnswlib",
   "github_url": "https://github.com/chroma-core/hnswlib",
   "version": "0.8.0",
   "default_branch": "master",

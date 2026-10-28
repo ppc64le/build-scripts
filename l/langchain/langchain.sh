@@ -29,7 +29,7 @@ DEB_DEP_PKGS=""
 SLES_DEP_PKGS=""
 
 # =============================================================================
-# CALLBACK: post_clone
+# CALLBACK: post_clone — enter the correct libs/ subdirectory for the 0.3.x or 1.x layout
 # =============================================================================
 post_clone() {
     if [[ "$PYPI_VERSION" == 0.3.* ]]; then
@@ -42,7 +42,7 @@ post_clone() {
 }
 
 # =============================================================================
-# CALLBACK: pre_test
+# CALLBACK: pre_test — install test dependencies for the detected langchain version
 # =============================================================================
 pre_test() {
     log_info "Installing common test dependencies"
@@ -64,6 +64,7 @@ pre_test() {
         lark \
         pytest-asyncio \
         pytest-socket \
+        greenlet \
         "${SYRUPY_PIN}"
 
     if [[ "$PYPI_VERSION" == 1.* ]]; then
@@ -85,13 +86,13 @@ pre_test() {
 }
 
 # =============================================================================
-# CALLBACK: custom_test_command
+# CALLBACK: custom_test_command — install local core/test deps and run unit tests, skipping integration tests
+# =============================================================================
     # Skip integration tests since they require external LLM API credentials
     # (OpenAI, Anthropic, etc.) that are not available in the build environment.
     #
     # Skip test_socket_disabled because it validates pytest-socket's
     # network-blocking behavior, which is not enforced in our test environment.
-# =============================================================================
 custom_test_command() {
     log_info "Pinning langchain-core from local source (libs/core)"
     pushd ../core
@@ -117,6 +118,6 @@ custom_test_command() {
 }
 
 # =============================================================================
-# Execute the build
+# Execute the build (invokes the Python template)
 # =============================================================================
 source "${SCRIPT_DIR}/../../v2-templates/python.sh"

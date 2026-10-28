@@ -1,7 +1,7 @@
 {
   "maintainer": "Autonomous AI pipeline",
   "package_name": "pyphen",
-  "language": "pyphen",
+  "language": "Python",
   "github_url": "https://github.com/Kozea/Pyphen",
   "version": "0.14.0",
   "wheel_build": true,

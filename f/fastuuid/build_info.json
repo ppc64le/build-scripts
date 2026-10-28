@@ -1,19 +1,21 @@
 {
   "maintainer": "Ryder Salinas <rbsalinas@ibm.com>",
   "package_name": "fastuuid",
-  "github_url": "https://github.com/fastuuid/fastuuid.git",
+  "language": "Python",
+  "github_url": "https://github.com/fastuuid/fastuuid",
   "version": "0.14.0",
-  "wheel_build" : true,
-  "default_branch": "main",
+  "wheel_build": true,
   "package_dir": "f/fastuuid",
-  "build_script": "fastuuid_0.14.0_ubi_9.6.sh",
+  "default_branch": "master",
+  "build_script": "fastuuid.sh",
+  "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "docker_build": false,
-  "0.14.0":{
-    "build_script":"fastuuid_0.14.0_ubi_9.6.sh"
+  "v2-enabled": true,
+  "patches": {
+     "FASTUUID_PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/pymssql/patches/fastuuid_0.14.0.patch"
   },
   "*": {
-    "build_script":"fastuuid_0.14.0_ubi_9.6.sh"
+    "build_script": "fastuuid.sh"
   }
 }

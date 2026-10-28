@@ -1,17 +1,19 @@
 {
   "maintainer": "ramnathnayak-ibm",
   "package_name": "airflow",
+  "language": "Python",
+  "wheel_name": "apache-airflow",
+  "v2-enabled": true,
   "github_url": "https://github.com/apache/airflow",
   "version": "3.0.2",
   "default_branch": "main",
-  "build_script": "airflow_ubi_9.3.sh",
+  "build_script": "airflow.sh",
   "package_dir": "a/airflow",
   "docker_build": false,
   "wheel_build": true,
   "use_non_root_user": false,
   "validate_build_script": true,
-  "wheel_name": "apache-airflow",
   "*": {
-    "build_script": "airflow_ubi_9.3.sh"
+    "build_script": "airflow.sh"
   }
 }

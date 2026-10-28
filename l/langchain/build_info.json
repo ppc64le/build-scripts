@@ -3,6 +3,7 @@
   "package_name": "langchain",
   "github_url": "https://github.com/langchain-ai/langchain",
   "version": "langchain==1.2.10",
+  "language": "Python",
   "wheel_build": true,
   "default_branch": "master",
   "package_dir": "l/langchain",

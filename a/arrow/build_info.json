@@ -1,0 +1,35 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "arrow",
+  "github_url": "https://github.com/apache/arrow",
+  "version": "apache-arrow-19.0.1",
+  "provides_artifact": "arrow",
+  "build_script": "arrow.sh",
+  "language": "C++",
+  "license": "Apache-2.0",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v2-enabled": true,
+  "resource_class": "heavy",
+  "build_deps": [
+    "grpc_cpp:v1.68.0",
+    "orc:v2.0.3",
+    "boost",
+    "thrift-cpp",
+    "utf8proc",
+    "snappy",
+    "zstd",
+    "re2:2024-07-02",
+    "xsimd",
+    "rapidjson",
+    "gflags",
+    "c-ares:v1.33.1",
+    "libprotobuf:v28.2",
+    "abseil-cpp:20240722.0"
+  ],
+  "*": {
+    "build_script": "arrow.sh"
+  }
+}
+

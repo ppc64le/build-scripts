@@ -1,16 +1,18 @@
 {
-  "maintainer": "jason.cho2",
+  "maintainer": "Shubham-Garud",
   "package_name": "impit",
-  "github_url": "https://github.com/apify/impit.git",
-  "version": "0.13.1",
-  "default_branch": "main",
+  "github_url": "https://github.com/apify/impit",
+  "version": "py-0.13.1",
+  "default_branch": "master",
   "package_dir": "i/impit",
-  "build_script": "impit_0.13.1_ubi_9.6.sh",
+  "wheel_build": true,
+  "build_script": "impit.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
   "docker_build": false,
-  "validate_build_script": true,
-  "wheel_build" : true,
-  "use_non_root_user": false,
+  "v2-enabled": true,
+  "language": "Python",
   "*": {
-    "build_script": "impit_0.13.1_ubi_9.6.sh"
+    "build_script": "impit.sh"
   }
 }

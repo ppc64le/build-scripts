@@ -1,0 +1,23 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "tesseract",
+  "language": "C++",
+  "github_url": "https://github.com/tesseract-ocr/tesseract",
+  "version": "5.5.1",
+  "wheel_build": false,
+  "package_dir": "t/tesseract",
+  "default_branch": "main",
+  "build_script": "tesseract.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "tesseract",
+  "build_deps": [
+    "leptonica:1.85.0"
+  ],
+  "*": {
+    "build_script": "tesseract.sh"
+  }
+}
+

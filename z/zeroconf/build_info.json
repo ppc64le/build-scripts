@@ -1,0 +1,15 @@
+{
+  "maintainer": "tharun-s-j",
+  "package_name": "zeroconf",
+  "github_url": "https://github.com/python-zeroconf/python-zeroconf",
+  "version": "0.151.5",
+  "default_branch": "master",
+  "build_script": "zeroconf.sh",
+  "package_dir": "z/zeroconf",
+  "docker_build": false,
+  "v2-enabled": true,
+  "language": "Python",
+  "validate_build_script": true,
+  "wheel_build": false,
+  "use_non_root_user": false
+}

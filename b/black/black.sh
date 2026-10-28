@@ -36,6 +36,23 @@ pre_test() {
 }
 
 # =============================================================================
+# CALLBACK: custom_test_command — run pytest directly so the template does not fall back to tox
+# tox rebuilds its own env from test_requirements.txt (pytest-xdist<3.0.2) and fails with
+# "No module named 'py.log'; 'py' is not a package" when run with --numprocesses auto.
+# =============================================================================
+custom_test_command() {
+    log_info "Running tests (no_jupyter set, same as tox.ini; without xdist/coverage)"
+    # pyproject.toml sets filterwarnings = ["error"]; black 22.12.0 uses ast.Str, which emits
+    # "DeprecationWarning: ast.Str is deprecated" on Python 3.12+, turning every format test into
+    # a failure. -W overrides the ini filter so the deprecation is not raised as an error.
+    python -m pytest tests \
+        --run-optional no_jupyter \
+        -o "addopts=" \
+        -W "ignore::DeprecationWarning" \
+        --disable-warnings
+}
+
+# =============================================================================
 # Execute the build (invokes the Python template)
 # =============================================================================
 source "${SCRIPT_DIR}/../../v2-templates/python.sh"

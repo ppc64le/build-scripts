@@ -38,11 +38,15 @@ pre_clone() {
 }
 
 # =============================================================================
-# CALLBACK: pre_test — install test-only dependencies and set environment variables.
+# CALLBACK: pre_test — install test-only dependencies, pin compatible pyparsing,
+#   and set environment variables.
 #   Do NOT pre-install drools-jpy, websockets, marshmallow, aiohttp etc. here —
 #   they are declared dependencies of ansible-rulebook itself and must be resolved
 #   together by pip to avoid version conflicts (e.g. marshmallow<4 vs pytest-jira
 #   requiring marshmallow>=4, or aiohttp version conflicts with kubernetes).
+#   pyparsing>=3.2.0 introduces breaking changes to infix_notation expression parsing
+#   which causes ConditionParsingException and invalid AST generation across rule tests;
+#   pin pyparsing to <3.2.0 for compatibility.
 # =============================================================================
 pre_test() {
     log_info "Upgrading pip, setuptools and wheel in test venv"
@@ -50,6 +54,9 @@ pre_test() {
 
     log_info "Installing test-only dependencies from requirements_test.txt"
     python -m pip install -r requirements_test.txt
+
+    log_info "Pinning pyparsing<3.2.0 for condition parser compatibility"
+    python -m pip install "pyparsing>=3.0.0,<3.2.0"
 
     log_info "Installing ansible event-driven-ansible collection"
     ansible-galaxy collection install git+https://github.com/ansible/event-driven-ansible

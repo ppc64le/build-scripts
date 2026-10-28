@@ -1,29 +1,20 @@
 {
-  "maintainer": "vinodk99",
+  "maintainer": "ira.pandey1@ibm.com",
   "package_name": "opencv-python",
-  "github_url": "https://github.com/opencv/opencv-python.git",
+  "language": "Python",
+  "github_url": "https://github.com/opencv/opencv-python",
   "version": "93",
-  "wheel_build" : true,
+  "v2-enabled": true,
+  "wheel_build": true,
+  "resource_class": "heavy",
   "package_dir": "o/opencv-python",
-  "default_branch": "5.x",
-  "build_script": "opencv-python_5.0.0.93_ubi_9.7.sh",
+  "default_branch": "4.x",
+  "build_script": "opencv-python.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": "false",
-  "required_versions": {"Releases": ["*"],"Tags": ["5.0.0.93", "4.0.0.84"]},
-  "84": {
-    "build_script": "opencv-python_ubi_9.3.sh"
-  },
-  "93": {
-    "build_script": "opencv-python_5.0.0.93_ubi_9.7.sh"
-  },
-  "4.0.0.84": {
-    "build_script": "opencv-python_ubi_9.3.sh"
-  },
-  "5.0.0.93": {
-    "build_script": "opencv-python_5.0.0.93_ubi_9.7.sh"
-  },
+  "use_non_root_user": false,
+  "build_deps": ["numpy:v2.2.5"],
   "*": {
-    "build_script": "opencv-python_5.0.0.93_ubi_9.7.sh"
+    "build_script": "opencv-python.sh"
   }
 }

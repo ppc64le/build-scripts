@@ -1,6 +1,7 @@
 {
   "maintainer": "meetj15",
   "package_name": "pywt",
+  "wheel_name": "pywavelets",
   "github_url": "https://github.com/PyWavelets/pywt",
   "version": "v1.8.0",
   "wheel_build": true,

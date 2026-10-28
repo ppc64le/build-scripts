@@ -1,22 +1,21 @@
 {
-  "maintainer": "Nayana-ibm",
+  "maintainer": "ibm",
   "package_name": "orc",
+  "language": "C++",
   "github_url": "https://github.com/apache/orc",
-  "version": "v2.0.7",
-  "wheel_build" : true,
+  "version": "v2.0.3",
+  "wheel_build": false,
+  "resource_class": "medium",
   "package_dir": "o/orc",
   "default_branch": "main",
-  "build_script": "orc_2.0.7_ubi_10.2.sh",
+  "build_script": "orc.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": "false",
-  "auditwheel_exclude": [
-    "liborc*"
-  ],
-  "v2.0.7": {
-    "build_script": "orc_2.0.7_ubi_10.2.sh"
-  },
+  "v2-enabled": true,
+  "use_non_root_user": false,
+  "provides_artifact": "orc",
   "*": {
-    "build_script": "orc_ubi_9.3.sh"
+    "build_script": "orc.sh"
   }
 }
+

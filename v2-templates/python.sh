@@ -140,11 +140,40 @@ _process_and_package_wheels() {
     local wheelhouse_dir="${input_dir}/wheelhouse"
     mkdir -p "$wheelhouse_dir"
 
+    # Validate wheel version against GITHUB_PACKAGE_VERSION / PACKAGE_VERSION
+    local expected_pkg_version="${GITHUB_PACKAGE_VERSION:-${PACKAGE_VERSION:-}}"
+    if [[ -n "$expected_pkg_version" ]]; then
+        for wheel_file in "${raw_wheels[@]}"; do
+            log_info "Validating wheel version: $(basename "$wheel_file") against expected: ${expected_pkg_version}"
+            if ! validate_wheel_version "$wheel_file" "$expected_pkg_version"; then
+                log_error "Wheel version validation failed for $(basename "$wheel_file")"
+                return 1
+            fi
+        done
+    fi
+
+    # Resolve target manylinux platform tag for auditwheel
+    local auditwheel_plat
+    auditwheel_plat=$(get_auditwheel_plat) || return 1
+
     local repair_success=true
     for wheel_file in "${raw_wheels[@]}"; do
-        log_info "Repairing: $(basename "$wheel_file")"
+        log_info "Repairing: $(basename "$wheel_file") (platform: ${auditwheel_plat})"
         log_info "Current LD_LIBRARY_PATH: ${LD_LIBRARY_PATH:-}"
-        auditwheel repair "$wheel_file" -w "$wheelhouse_dir" 2>&1 | tee /tmp/auditwheel.log
+
+        # Collect auditwheel exclusion arguments
+        local -a exclude_args=()
+        if type -t get_auditwheel_exclude_args &>/dev/null; then
+            while IFS= read -r line; do
+                [[ -n "$line" ]] && exclude_args+=("$line")
+            done < <(get_auditwheel_exclude_args "$wheel_file")
+        fi
+
+        if [[ ${#exclude_args[@]} -gt 0 ]]; then
+            log_info "Auditwheel exclusions: ${exclude_args[*]}"
+        fi
+
+        auditwheel repair "$wheel_file" --plat "$auditwheel_plat" -w "$wheelhouse_dir" "${exclude_args[@]}" 2>&1 | tee /tmp/auditwheel.log
         local auditwheel_rc=${PIPESTATUS[0]}
         if [[ $auditwheel_rc -eq 0 ]]; then
             if grep -q "Fixed-up wheel written to" /tmp/auditwheel.log; then
@@ -170,23 +199,21 @@ _process_and_package_wheels() {
         return 1
     fi
 
-    # Process bundled library licenses (adds license files to wheel)
-    log_info "Processing bundled library licenses"
-    process_bundled_licenses "$wheelhouse_dir"/*.whl
-
-    # Generate SBOM and CVE reports
-    log_info "Generating SBOM and CVE reports"
-    generate_wheel_sbom "$wheelhouse_dir"/*.whl
-
-    # Modify wheel metadata if classifiers are defined or custom callback exists
-    if [[ ${#WHEEL_CLASSIFIERS[@]} -gt 0 ]] || _has_callback custom_wheel_metadata; then
-        log_info "Modifying wheel metadata..."
-        for wheel_file in "$wheelhouse_dir"/*.whl; do
-            if ! modify_wheel_metadata "$wheel_file"; then
-                log_warn "Failed to modify metadata for $(basename "$wheel_file")"
-            fi
-        done
-    fi
+    # Single-pass postprocessing:
+    # 1. Bundled library license resolution & license file injection
+    # 2. Distro retagging (+ubi9, +ubi10 PEP 440 local version)
+    # 3. Classifier injection & custom_wheel_metadata hook
+    # 4. CycloneDX SBOM & CVE report generation
+    # 5. Repack into final wheel artifact (1 wheel unpack, 1 wheel pack)
+    log_info "Running single-pass postprocessing on wheels..."
+    for wheel_file in "$wheelhouse_dir"/*.whl; do
+        [[ ! -f "$wheel_file" ]] && continue
+        if ! postprocess_wheel_single_pass "$wheel_file" "$wheelhouse_dir"; then
+            log_error "Postprocessing failed for $(basename "$wheel_file")"
+            rm -rf "$wheelhouse_dir"
+            return 1
+        fi
+    done
 
     # Install wheel if requested
     if [[ "$install" == "true" ]]; then
@@ -198,15 +225,21 @@ _process_and_package_wheels() {
         fi
     fi
 
-    # Copy processed wheels to final destination
+    # Copy processed wheels and sha256.sha to final destination
     mkdir -p "$output_dir"
     cp "$wheelhouse_dir"/*.whl "$output_dir/"
+    if [[ -f "sha256.sha" ]]; then
+        cp "sha256.sha" "$output_dir/"
+    fi
     
     mkdir -p "${output_dir}/artifacts"
     # Create hard links instead of copying to prevent using double disk space
     for whl in "$output_dir"/*.whl; do
         ln -f "$whl" "${output_dir}/artifacts/" 2>/dev/null || cp "$whl" "${output_dir}/artifacts/"
     done
+    if [[ -f "$output_dir/sha256.sha" ]]; then
+        ln -f "$output_dir/sha256.sha" "${output_dir}/artifacts/" 2>/dev/null || cp "$output_dir/sha256.sha" "${output_dir}/artifacts/"
+    fi
 
     # Clean up the temporary wheelhouse
     rm -rf "$wheelhouse_dir"
@@ -672,3 +705,4 @@ else
         report_no_tests
     fi
 fi
+

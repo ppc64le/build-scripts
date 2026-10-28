@@ -2,15 +2,17 @@
   "maintainer": "aastha-sharma2",
   "package_name": "autovizwidget",
   "github_url": "https://github.com/jupyter-incubator/sparkmagic",
-  "version": "0.20.0",
-  "wheel_build" : true,
+  "version": "0.23.0",
+  "v2-enabled": true,
+  "language": "Python",
+  "wheel_build": true,
   "package_dir": "a/autovizwidget",
   "default_branch": "main",
-  "build_script": "autovizwidget_ubi_9_3.sh",
+  "build_script": "autovizwidget.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
   "*.*.*": {
-    "build_script": "autovizwidget_ubi_9_3.sh"
+    "build_script": "autovizwidget.sh"
   }
 }

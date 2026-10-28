@@ -1,6 +1,7 @@
 {
   "maintainer": "shubham-dayma-ibm",
   "package_name": "ruamel.yaml.clib",
+  "wheel_name": "ruamel-yaml-clib",
   "language": "Python",
   "github_url": "https://github.com/ruamel/yaml.clib",
   "version": "0.2.15",

@@ -1,26 +1,20 @@
 {
-  "maintainer": "tejasBadjateIBM",
+  "maintainer": "IBM",
   "package_name": "PyAV",
+  "language": "Python",
   "github_url": "https://github.com/PyAV-Org/PyAV",
-  "version": "v18.1.0",
-  "wheel_build" : true,
+  "version": "v13.1.0",
+  "wheel_build": true,
+  "wheel_name": "av",
+  "v2-enabled": true,
   "package_dir": "p/pyav",
   "default_branch": "main",
-  "build_script": "pyav_ubi_10.2.sh",
+  "build_script": "pyav.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": "false",
-  "wheel_name": "av",
-  "10.0.0": {
-    "build_script": "pyav_10-0_ubi_9.3.sh"
-  },
-  "v18.1.0": {
-    "build_script": "pyav_ubi_10.2.sh"
-  },
-  "*" : {
-    "build_script": [
-      "pyav_ubi_10.2.sh",
-      "pyav_ubi_9.3.sh"
-    ]
+  "use_non_root_user": false,
+  "build_deps": ["ffmpeg"],
+  "*": {
+    "build_script": "pyav.sh"
   }
 }
