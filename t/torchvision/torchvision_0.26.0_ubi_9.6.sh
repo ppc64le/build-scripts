@@ -625,6 +625,13 @@ git apply 0001-Exclude-source-that-has-commercial-license_v0.29.0.patch
 
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
+# The v0.29.0 tag still carries version.txt = 0.29.0a0, so pin the version
+# explicitly to get torchvision-0.29.0-* instead of torchvision-0.29.0a0-*.
+export BUILD_VERSION="${VERSION}"
+# CPU-only build: don't enable NVJPEG support
+export FORCE_CUDA=0
+export TORCHVISION_USE_NVJPEG=0
+
 if ! python3 setup.py build; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
