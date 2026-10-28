@@ -23,11 +23,6 @@ PACKAGE_URL=https://github.com/Nixtla/statsforecast.git
 PACKAGE_DIR=statsforecast
 WORK_DIR=$(pwd)
 
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-export PATH=$JAVA_HOME/bin:$PATH
-export PYSPARK_PYTHON=$(which python3.12)
-export PYSPARK_DRIVER_PYTHON=$(which python3.12)
-
 # Installing System Dependencies
 dnf install -y \
     git \
@@ -42,6 +37,11 @@ dnf install -y \
     openblas-devel \
     atlas-devel \
     java-17-openjdk-devel
+
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+export PATH=$JAVA_HOME/bin:$PATH
+export PYSPARK_PYTHON=$(which python3.12)
+export PYSPARK_DRIVER_PYTHON=$(which python3.12)
 
 python3.12 -m pip install --no-cache-dir --upgrade pip setuptools wheel build "pybind11>=2.10" cython meson-python scikit-build-core cmake ninja packaging pytest
 
