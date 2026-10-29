@@ -1,5 +1,6 @@
 # Minimum requirements for the build system to execute.
 # Do not include sys,subprocess and os as they are default packages
+[build-system]
 requires = [
     "setuptools",
     "wheel",
@@ -8,19 +9,20 @@ requires = [
 #Set build backend to setuptools
 build-backend = "setuptools.build_meta"
 
-#Project name an version
+#Project name and version
 [project]
 name = "snappy"
 version = "{PACKAGE_VERSION}"
+license = {text = "BSD-3-Clause"}
 
 #One line description
 description = "A fast compressor/decompressor"
 
-#Classifiers to improve pacakage discoverability
+#Classifiers to improve package discoverability
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: C++",
-  "License :: BSD 3-Clause",
+  "License :: OSI Approved :: BSD License",
 ]
 
 #Project URLs
@@ -28,17 +30,16 @@ classifiers = [
 homepage = "https://github.com/google/snappy"
 upstream = "https://github.com/google/snappy"
 
-#Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
+#Find package files in local folder — not following standard setuptools directory structure
 [tool.setuptools.packages.find]
-# scanning for namespace packages is true by default in pyproject.toml, so
-# # you do NOT need to include the following line.
 namespaces = true
 where = ["local"]
 
-#Package data to add bazel in wheel, this is needed as its not a .py file
+#Package data to include all installed libraries, shared files, and headers in the wheel.
+#These files are not Python and would be excluded by setuptools unless listed here.
 [tool.setuptools.package-data]
 snappy = ["lib/**/*", "share/**/*", "include/**/*"]
 
 [tool.distutils.bdist_wheel]
 plat-name = "linux_ppc64le"  # Explicitly set the platform tag
-universal = false  # Disable universal wheel (forces platform-specific build)
+universal = false             # Disable universal wheel (forces platform-specific build)

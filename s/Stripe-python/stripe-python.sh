@@ -16,6 +16,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # =============================================================================
 PACKAGE_NAME="stripe-python"
 PACKAGE_VERSION="${1:-v12.2.0}"
+# Normalise: stripe-python tags are always v-prefixed; accept bare versions too
+[[ "${PACKAGE_VERSION}" != v* ]] && PACKAGE_VERSION="v${PACKAGE_VERSION}"
 PACKAGE_URL="https://github.com/stripe/stripe-python"
 
 # PyPI package name differs from the GitHub repo name
@@ -74,4 +76,3 @@ custom_test_command() {
 # Execute the build (invokes the Python template)
 # =============================================================================
 source "${SCRIPT_DIR}/../../v2-templates/python.sh"
-

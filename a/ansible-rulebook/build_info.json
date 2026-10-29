@@ -9,6 +9,7 @@
   "build_script": "ansible-rulebook.sh",
   "docker_build": false,
   "v2-enabled": true,
+  "language": "Python",
   "validate_build_script": true,
   "use_non_root_user": false,
   "*": {

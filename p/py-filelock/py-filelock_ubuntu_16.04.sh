@@ -1,34 +1,40 @@
-# ----------------------------------------------------------------------------
-#
-# Package	: py-filelock
-# Version	: n/a
-# Source repo	: https://github.com/benediktschmitt/py-filelock
-# Tested on	: ubuntu_16.04
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
+# Package       : py-filelock
+# Version       : n/a
+# Source repo   : https://github.com/benediktschmitt/py-filelock
+# Tested on     : ubuntu_16.04
+# Language      : Python
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Snehlata Mohite <smohite@us.ibm.com>
-#
-# Disclaimer: This script has been tested in non-root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
-#
-# ----------------------------------------------------------------------------
+# Maintainer    : Snehlata Mohite <smohite@us.ibm.com>
+# -----------------------------------------------------------------------------
 
-#!/bin/bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Install dependencies.
-sudo apt-get update -y
-sudo apt-get install -y build-essential python python-dev python-lxml \
-    python-virtualenv python-pip git
-sudo pip install --upgrade pip
+# =============================================================================
+# REQUIRED: Package metadata
+# =============================================================================
+PACKAGE_NAME="py-filelock"
+PACKAGE_VERSION="${1:-n/a}"
+PACKAGE_URL="https://github.com/benediktschmitt/py-filelock"
 
-# Clone and build source code.
-git clone https://github.com/benediktschmitt/py-filelock
-virtualenv -p python2 --system-site-packages env2
-cd py-filelock
-python setup.py install
-python test.py
+# =============================================================================
+# REQUIRED: Dependencies
+# =============================================================================
+RH_DEP_PKGS=""
+DEB_DEP_PKGS="build-essential git python python-dev python-lxml python-pip python-virtualenv"
+SLES_DEP_PKGS=""
 
-# Cleanup.
-rm -rf py-filelock
+# REVIEW - following code was not auto-migrated. See PORTING-NOTES.md for details.
+# sudo pip install --upgrade pip
+# git clone https://github.com/benediktschmitt/py-filelock
+# virtualenv -p python2 --system-site-packages env2
+# cd py-filelock
+# python setup.py install
+# python test.py
+# rm -rf py-filelock
+
+# =============================================================================
+# Execute the build (invokes the Python template)
+# =============================================================================
+source "${SCRIPT_DIR}/../../v2-templates/python.sh"

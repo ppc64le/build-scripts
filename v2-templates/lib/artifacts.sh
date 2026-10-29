@@ -31,7 +31,12 @@ mkdir -p "${ARTIFACT_WORKSPACE}" 2>/dev/null || true
 artifact_dir() {
     local name="$1"
     local version="${2:-default}"
-    echo "${ARTIFACT_WORKSPACE}/${name}/${version}"
+    local ubi_ver="${UBI_VERSION:-}"
+    if [[ -n "$ubi_ver" && "${ARTIFACT_WORKSPACE}" != */"${ubi_ver}"* ]]; then
+        echo "${ARTIFACT_WORKSPACE}/${ubi_ver}/${name}/${version}"
+    else
+        echo "${ARTIFACT_WORKSPACE}/${name}/${version}"
+    fi
 }
 
 # -----------------------------------------------------------------------------
@@ -42,7 +47,12 @@ artifact_dir() {
 source_artifact() {
     local name="$1"
     local version="${2:-}"
+    local ubi_ver="${UBI_VERSION:-}"
     local artifact_base="${ARTIFACT_WORKSPACE}/${name}"
+
+    if [[ -n "$ubi_ver" && "${ARTIFACT_WORKSPACE}" != */"${ubi_ver}"* && -d "${ARTIFACT_WORKSPACE}/${ubi_ver}/${name}" ]]; then
+        artifact_base="${ARTIFACT_WORKSPACE}/${ubi_ver}/${name}"
+    fi
 
     # If version specified, use it directly
     if [[ -n "$version" ]]; then
@@ -102,7 +112,12 @@ source_artifact() {
 artifact_exists() {
     local name="$1"
     local version="${2:-}"
+    local ubi_ver="${UBI_VERSION:-}"
     local artifact_base="${ARTIFACT_WORKSPACE}/${name}"
+
+    if [[ -n "$ubi_ver" && "${ARTIFACT_WORKSPACE}" != */"${ubi_ver}"* && -d "${ARTIFACT_WORKSPACE}/${ubi_ver}/${name}" ]]; then
+        artifact_base="${ARTIFACT_WORKSPACE}/${ubi_ver}/${name}"
+    fi
 
     if [[ -n "$version" ]]; then
         if [[ -f "${artifact_base}/${version}/env.sh" ]]; then
@@ -129,6 +144,92 @@ artifact_exists() {
         done
         $found
     fi
+}
+
+# -----------------------------------------------------------------------------
+# compute_artifact_recipe_sha - Compute deterministic recipe SHA for an artifact
+# Usage: compute_artifact_recipe_sha <name> <version> [deps...]
+# -----------------------------------------------------------------------------
+compute_artifact_recipe_sha() {
+    local name="$1"
+    local version="$2"
+    shift 2 2>/dev/null || true
+    local dep_list=("$@")
+
+    # 1. Determine build script path
+    local script_file="${BUILD_SCRIPT:-}"
+    if [[ -z "$script_file" || ! -f "$script_file" ]]; then
+        local s_dir="${SCRIPT_DIR:-}"
+        if [[ -n "$s_dir" && -d "$s_dir" ]]; then
+            for candidate in "${BUILD_SCRIPT_NAME:-}" "${name}.sh" "$(basename "$s_dir").sh"; do
+                if [[ -n "$candidate" && -f "${s_dir}/${candidate}" ]]; then
+                    script_file="${s_dir}/${candidate}"
+                    break
+                fi
+            done
+        fi
+    fi
+
+    # 2. Extract BUILD_SCRIPT_DATE via git log on the build script file
+    local build_script_date=""
+    if [[ -n "$script_file" && -f "$script_file" ]] && command -v git &>/dev/null; then
+        local s_dir="$(dirname "$script_file")"
+        local s_base="$(basename "$script_file")"
+        build_script_date=$(git -C "$s_dir" log -1 --format=%ci -- "$s_base" 2>/dev/null || echo "")
+    fi
+
+    if [[ -z "$build_script_date" ]]; then
+        build_script_date="unknown"
+    fi
+
+    # 3. Determine package language
+    local pkg_lang="${PACKAGE_LANGUAGE:-${LANGUAGE:-c++}}"
+
+    # 4. Resolve build dependency hashes
+    local dep_hashes=""
+    local all_deps=()
+    if [[ ${#dep_list[@]} -gt 0 ]]; then
+        all_deps+=("${dep_list[@]}")
+    fi
+    if [[ -n "${BUILD_DEPS:-}" ]]; then
+        for d in $(echo "$BUILD_DEPS" | tr ',' ' '); do
+            [[ -n "$d" ]] && all_deps+=("$d")
+        done
+    fi
+
+    if [[ ${#all_deps[@]} -gt 0 ]]; then
+        local sorted_deps
+        sorted_deps=$(printf '%s
+' "${all_deps[@]}" | sort -u)
+        local d_hashes=()
+        for dep in $sorted_deps; do
+            local dep_name="${dep%%:*}"
+            local dep_ver="${dep#*:}"
+            [[ "$dep_ver" == "$dep" ]] && dep_ver=""
+
+            local d_sha=""
+            for candidate_dir in "${ARTIFACT_WORKSPACE}/${dep_name}/${dep_ver}"                                  "${ARTIFACT_WORKSPACE}/${UBI_VERSION:-}/${dep_name}/${dep_ver}"                                  "${ARTIFACT_WORKSPACE}/${dep_name}"                                  "${ARTIFACT_WORKSPACE}/${UBI_VERSION:-}/${dep_name}"; do
+                if [[ -f "${candidate_dir}/sha256.sha" ]]; then
+                    d_sha=$(head -n1 "${candidate_dir}/sha256.sha" | awk '{print $1}')
+                    break
+                fi
+            done
+            if [[ -z "$d_sha" ]]; then
+                d_sha=$(echo -n "${dep_name}:${dep_ver}" | sha256sum | awk '{print $1}' | cut -c1-16)
+            fi
+            d_hashes+=("$d_sha")
+        done
+        dep_hashes="${d_hashes[*]}"
+    fi
+
+    # 5. Build string_to_hash matching compute_recipe_sha pattern
+    local base_str="${name}_${version}_${pkg_lang}_${build_script_date}"
+    local string_to_hash="$base_str"
+    if [[ -n "$dep_hashes" ]]; then
+        string_to_hash="${base_str} ${dep_hashes}"
+    fi
+
+    echo -n "$string_to_hash" | sha256sum | awk '{print $1}'
 }
 
 # -----------------------------------------------------------------------------
@@ -161,22 +262,32 @@ generate_artifact_manifest() {
         deps_json="[\"${depends_on[*]// /\", \"}\"]"
     fi
 
+    # Compute deterministic Recipe SHA
+    local recipe_sha
+    recipe_sha=$(compute_artifact_recipe_sha "${name}" "${version}" "${depends_on[@]}")
+
     # Generate manifest
     cat > "${manifest_file}" << EOF
 {
   "name": "${name}",
   "version": "${version}",
+  "recipe_sha": "${recipe_sha}",
   "git_sha": "${git_sha}",
   "git_url": "${git_url}",
   "build_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
   "build_host": "$(hostname -s 2>/dev/null || echo unknown)",
   "arch": "$(uname -m)",
+  "distro": "${UBI_VERSION:-unknown}",
   "license_spdx": "${license_spdx}",
   "license_files": ["LICENSE"],
   "depends_on": ${deps_json}
 }
 EOF
     log_info "Generated manifest: ${manifest_file}"
+
+    # Write deterministic Recipe SHA into sha256.sha
+    echo "${recipe_sha}" > "${artifact_dir}/sha256.sha"
+    log_info "Wrote recipe SHA to ${artifact_dir}/sha256.sha: ${recipe_sha}"
 }
 
 # -----------------------------------------------------------------------------
@@ -228,8 +339,8 @@ collect_dependency_licenses() {
 
     # Check if jq is available for proper parsing
     if command -v jq &>/dev/null; then
-        # Iterate through all artifact manifests
-        for manifest in "${ARTIFACT_WORKSPACE}"/*/*/manifest.json; do
+        # Iterate through all artifact manifests (supporting both flat and ubi-nested workspaces)
+        for manifest in "${ARTIFACT_WORKSPACE}"/*/*/manifest.json "${ARTIFACT_WORKSPACE}"/*/*/*/manifest.json; do
             [[ -f "$manifest" ]] || continue
             found_any=true
 
@@ -263,7 +374,7 @@ collect_dependency_licenses() {
     else
         # Fallback without jq
         log_warn "jq not available, using basic license collection"
-        for artifact_path in "${ARTIFACT_WORKSPACE}"/*/*/; do
+        for artifact_path in "${ARTIFACT_WORKSPACE}"/*/*/ "${ARTIFACT_WORKSPACE}"/*/*/*/; do
             [[ -d "$artifact_path" ]] || continue
             for license_file in "${artifact_path}"/LICENSE*; do
                 if [[ -f "$license_file" ]]; then
@@ -405,3 +516,4 @@ export PATH="${artifact_dir}/bin:\${PATH}"
 EOF
     fi
 }
+

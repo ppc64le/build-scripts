@@ -1,16 +1,23 @@
 {
-  "maintainer": "adarsh-agrawal1",
+  "maintainer": "kiranNukal",
   "package_name": "tesserocr",
   "github_url": "https://github.com/sirfz/tesserocr",
   "version": "v2.9.1",
-  "wheel_build" : true,
+  "wheel_build": true,
+  "language": "Python",
   "package_dir": "t/tesserocr",
   "default_branch": "master",
-  "build_script": "tesserocr_ubi_9.6.sh",
+  "build_script": "tesserocr.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "*":{
-    "build_script":"tesserocr_ubi_9.6.sh"
+  "v2-enabled": true,
+  "build_deps": [
+    "leptonica:1.85.0",
+    "tesseract:5.5.1"
+  ],
+  "*": {
+    "build_script": "tesserocr.sh"
   }
 }
+

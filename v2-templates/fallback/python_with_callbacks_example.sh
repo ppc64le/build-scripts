@@ -1,92 +1,64 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
-# Package       : some-complex-package
-# Version       : v2.0.0
-# Source repo   : https://github.com/example/some-complex-package
+# Package       : <PACKAGE_NAME>           # TODO: Replace with package name
+# Version       : <VERSION>                # TODO: Replace with default version
+# Source repo   : <GIT_URL>                # TODO: Replace with git URL
 # Tested on     : UBI:9.6
 # Language      : Python
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Your Name <your.email@example.com>
-#
-# This is a COMPLEX example demonstrating callback hooks.
-# Define functions before sourcing the template to customize behavior.
+# Maintainer    : <YOUR_NAME> <YOUR_EMAIL> # TODO: Replace with your info
+# -----------------------------------------------------------------------------
+# HOW TO USE THIS TEMPLATE:
+#   1. Copy this file to your package directory
+#   2. Replace all <PLACEHOLDERS> with actual values
+#   3. Adjust dependencies for your package
+#   4. Uncomment and customize callback functions if needed
+#   5. Test: ./your_script.sh v1.0.0
 # -----------------------------------------------------------------------------
 
-# Get script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # =============================================================================
-# REQUIRED: Package metadata
+# REQUIRED: Package metadata (MUST be set)
 # =============================================================================
-PACKAGE_NAME="${PACKAGE_NAME}"
-PACKAGE_VERSION="${1:-PACKAGE_VERSION}"
+PACKAGE_NAME="${PACKAGE_NAME}"               # Set by CI or override here
+PACKAGE_VERSION="${1:-${PACKAGE_VERSION}}"   # Set by CI or override here
 PACKAGE_URL="${PACKAGE_URL}"
+NOARCH="${NOARCH:-false}"                 # Set by CI or override here
 
 # =============================================================================
-# REQUIRED: Dependencies
+# REQUIRED: Dependencies (at minimum, set RH_DEP_PKGS)
 # =============================================================================
-RH_DEP_PKGS="git python3 python3-devel python3-pip gcc gcc-c++ openssl-devel"
-DEB_DEP_PKGS="git python3 python3-dev python3-pip python3-venv gcc g++ libssl-dev"
-SLES_DEP_PKGS="git python3 python3-devel python3-pip gcc gcc-c++ libopenssl-devel"
+# Add packages your build needs. Common Python packages:
+#   git python3 python3-devel python3-pip gcc gcc-c++ make
+#   For native extensions: openssl-devel libffi-devel zlib-devel
+
+RH_DEP_PKGS="git python3 python3-devel python3-pip gcc"
+DEB_DEP_PKGS="git python3 python3-dev python3-pip python3-venv gcc"
+SLES_DEP_PKGS="git python3 python3-devel python3-pip gcc"
 
 # =============================================================================
 # OPTIONAL: Callback functions
-# Define these BEFORE sourcing the template
+# Uncomment and customize only what you need
 # =============================================================================
 
-# Called before cloning - use for extra system setup
-pre_clone() {
-    log_info "Setting up extra build environment..."
-    export CFLAGS="-O2"
-    export LDFLAGS="-L/usr/local/lib"
-}
+# # Apply patches after cloning
+# post_clone() {
+#     git apply "${SCRIPT_DIR}/patches/fix.patch"
+# }
 
-# Called after checkout - use for patches and source modifications
-post_clone() {
-    log_info "Applying patches..."
+# # Set environment before building
+# pre_build() {
+#     export SPECIAL_FLAG=1
+# }
 
-    # Example: Apply a patch file
-    # git apply "${SCRIPT_DIR}/patches/fix-build.patch"
-
-    # Example: Inline fix using sed
-    # sed -i 's/old_api_call/new_api_call/g' src/module.py
-
-    # Example: Modify setup.py for compatibility
-    # echo "install_requires.append('backports.functools')" >> setup.py
-
-    log_info "Patches applied successfully"
-}
-
-# Called before pip install - extra environment or dependencies
-pre_build() {
-    log_info "Installing extra build dependencies..."
-    pip install cython numpy
-}
-
-# Called after build, before tests - verification
-post_build() {
-    log_info "Verifying installation..."
-    python -c "import some_complex_package; print(some_complex_package.__version__)"
-}
-
-# Override default test behavior
-custom_test_command() {
-    log_info "Running custom test suite..."
-
-    # Example: Run specific test file with timeout
-    python -m pytest tests/unit/ -x --timeout=300 -v
-
-    # Example: Skip slow integration tests in CI
-    # python -m pytest tests/ --ignore=tests/integration/
-}
-
-# Called after tests pass - cleanup or artifact collection
-post_test() {
-    log_info "Collecting test artifacts..."
-    # cp -r .coverage "${SCRIPT_DIR}/coverage/"
-}
+# # Custom test command (overrides default pytest/tox/nox)
+# custom_test_command() {
+#     python -m pytest tests/ -x
+# }
 
 # =============================================================================
-# Execute the build (sources the template which runs the workflow)
+# Execute the build
 # =============================================================================
 source "${SCRIPT_DIR}/../python.sh"
+

@@ -1,0 +1,19 @@
+{
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "cassandra-python-driver",
+  "github_url": "https://github.com/apache/cassandra-python-driver",
+  "version": "3.30.0",
+  "default_branch": "master",
+  "build_script": "cassandra-python-driver.sh",
+  "package_dir": "c/cassandra-python-driver",
+  "docker_build": false,
+  "wheel_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "build_deps": ["libev"],
+  "wheel_name": "cassandra-driver",
+  "v2-enabled": true,
+  "*": {
+    "build_script": "cassandra-python-driver.sh"
+  }
+}

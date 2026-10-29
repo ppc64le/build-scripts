@@ -32,9 +32,20 @@ DEB_DEP_PKGS=""
 SLES_DEP_PKGS=""
 
 # =============================================================================
-# CALLBACK: pre_clone — initialize nvm from /opt/nvm so Node is available
+# CALLBACK: pre_clone — normalize PACKAGE_VERSION to CalVer tag format and
+#           initialize nvm from /opt/nvm so Node is available
 # =============================================================================
 pre_clone() {
+    local bare="${PACKAGE_VERSION#v}"
+    if [[ "$bare" =~ ^([0-9]{4})\.([0-9]{1,2})\.([0-9]{1,2})(.*)$ ]]; then
+        local year="${BASH_REMATCH[1]}"
+        local month="$((10#${BASH_REMATCH[2]}))"
+        local day="$((10#${BASH_REMATCH[3]}))"
+        local rest="${BASH_REMATCH[4]}"
+        PACKAGE_VERSION="$(printf "%04d.%02d.%02d%s" "$year" "$month" "$day" "$rest")"
+        log_info "Normalized PACKAGE_VERSION → ${PACKAGE_VERSION}"
+    fi
+
     if [[ -d "/opt/nvm" ]]; then
         log_info "Found nvm in /opt/nvm, setting NVM_DIR"
         export NVM_DIR="/opt/nvm"
@@ -65,4 +76,7 @@ pre_test() {
     fi
 }
 
+# =============================================================================
+# Execute the build (invokes the Python template)
+# =============================================================================
 source "${SCRIPT_DIR}/../../v2-templates/python.sh"

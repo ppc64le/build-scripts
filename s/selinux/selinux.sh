@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 # Package       : selinux
-# Version       : v0.3.0
+# Version       : 0.3.0
 # Source repo   : https://github.com/pycontribs/selinux
 # Tested on     : UBI:9.6
 # Language      : Python
@@ -14,7 +14,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # REQUIRED: Package metadata
 # =============================================================================
 PACKAGE_NAME="selinux"
-PACKAGE_VERSION="${1:-v0.3.0}"
+PACKAGE_VERSION="${1:-0.3.0}"
 PACKAGE_URL="https://github.com/pycontribs/selinux"
 
 # =============================================================================
@@ -25,30 +25,23 @@ DEB_DEP_PKGS=""
 SLES_DEP_PKGS=""
 
 NOARCH="true"
-RUST_VERSION="1.75.0"
 
 # =============================================================================
-# CALLBACK: pre_build — install missing build backend requirements and set the Rust toolchain
+# CALLBACK: custom_test_command — bypass tox; run only the two checks tox actually executes
 # =============================================================================
-pre_build() {
-    log_info "Installing build dependencies"
-    python -m pip install "setuptools_scm[toml]>=7.0.0"
+# The upstream tox.ini [testenv] lists paramiko -> bcrypt (Rust extension) and
+# molecule[docker] as deps, but the actual test commands are only:
+#   python -c "import selinux"
+#   python -m pip check
+# The pytest line is commented out upstream. Running tox would fail trying to
+# build bcrypt (requires Rust) because no default Rust toolchain is configured.
+# We skip tox and run the two real checks directly.
+custom_test_command() {
+    log_info "Verifying selinux import"
+    python -c "import selinux"
 
-    log_info "Setting up Rust toolchain"
-    log_info "Installing Rust ${RUST_VERSION} for ${PACKAGE_NAME} ${PACKAGE_VERSION} compatibility"
-    rustup install ${RUST_VERSION}
-    rustup default ${RUST_VERSION}
-}
-
-# =============================================================================
-# CALLBACK: pre_test — install package-specific test deps and mirror the Rust toolchain
-# =============================================================================
-pre_test() {
-    log_info "Installing package-specific test dependencies"
-    python -m pip install bcrypt
-
-    log_info "Setting Rust ${RUST_VERSION} as default for test environment"
-    rustup default ${RUST_VERSION}
+    log_info "Checking for dependency conflicts"
+    python -m pip check
 }
 
 # =============================================================================

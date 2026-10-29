@@ -1,17 +1,15 @@
 {
-	"maintainer": "vivek8123",
-	"package_name": "pulsar-client-python",
-	"github_url": "https://github.com/apache/pulsar-client-python.git",
-	"version": "v3.5.0",
-	"default_branch": "main",
-	"build_script": "pulsar-client-python_ubi_9.3.sh",
-	"package_dir": "p/pulsar-client-python",
-	"docker_build": false,
-	"validate_build_script": true,
-	"wheel_build" : true,
-	"use_non_root_user": false,
-	"wheel_name": "pulsar-client",
-	"*": {
-	   "build_script": "pulsar-client-python_ubi_9.3.sh"
-	}
+  "maintainer": "vivek8123",
+  "package_name": "pulsar-client-python",
+  "wheel_name": "pulsar-client",
+  "v2-enabled": true,
+  "github_url": "https://github.com/apache/pulsar-client-python",
+  "version": "v3.5.0",
+  "default_branch": "main",
+  "package_dir": "p/pulsar-client-python",
+  "build_script": "pulsar-client-python.sh",
+  "language": "python",
+  "build_deps": ["protobuf"],
+  "docker_build": false,
+  "validate_build_script": true
 }

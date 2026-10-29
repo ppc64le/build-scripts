@@ -1,0 +1,16 @@
+{
+   "maintainer": "bhagyashrigais",
+   "package_name": "tvm-ffi",
+   "github_url": "https://github.com/apache/tvm-ffi",
+   "version": "v0.1.13-post3",
+   "language": "Python",
+   "default_branch": "main",
+   "build_script": "apache-tvm-ffi.sh",
+   "package_dir": "a/apache-tvm-ffi",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v2-enabled": true,
+   "resource_class": "medium"
+}

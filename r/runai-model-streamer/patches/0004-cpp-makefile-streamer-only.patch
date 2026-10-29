@@ -1,0 +1,20 @@
+diff --git a/cpp/Makefile b/cpp/Makefile
+index ed15755..b466570 100644
+--- a/cpp/Makefile
++++ b/cpp/Makefile
+@@ -4,15 +4,6 @@ ARCH := $$(uname -m)
+ 
+ build:
+ 	bazel build streamer:libstreamer.so \
+-		"--config=${ARCH}" && \
+-	bazel build s3:libstreamers3.so \
+-		--define USE_SYSTEM_LIBS=${USE_SYSTEM_LIBS} \
+-		"--config=${ARCH}" && \
+-	bazel build gcs:libstreamergcs.so \
+-		--define USE_SYSTEM_LIBS=${USE_SYSTEM_LIBS} \
+-		"--config=${ARCH}" && \
+-	bazel build azure:libstreamerazure.so \
+-		--define USE_SYSTEM_LIBS=${USE_SYSTEM_LIBS} \
+ 		"--config=${ARCH}"
+ 
+ # Build Azure library with Azurite testing support (enables AZURE_STORAGE_ACCOUNT_KEY)

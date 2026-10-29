@@ -14,6 +14,7 @@
   "language": "Python",
   "build_deps": ["tree-command"],
   "*": {
-    "build_script": "furo.sh"
+    "build_script": "furo.sh",
+    "build_deps": ["tree-command"]
   }
 }

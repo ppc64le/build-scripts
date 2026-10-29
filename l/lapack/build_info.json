@@ -1,20 +1,20 @@
 {
-  "maintainer": "bhagyashrigais",
+  "maintainer": "Bhagyashri Gaikwad",
   "package_name": "lapack",
+  "language": "C",
   "github_url": "https://github.com/Reference-LAPACK/lapack",
   "version": "v3.12.1",
-  "wheel_build" : true,
+  "wheel_build": true,
+  "resource_class": "medium",
   "package_dir": "l/lapack",
   "default_branch": "master",
-  "build_script": "lapack_ubi_9.6.sh",
+  "build_script": "lapack.sh",
   "docker_build": false,
+  "v2-enabled": true,
   "validate_build_script": true,
-  "use_non_root_user": "false",
-  "auditwheel_exclude": [
-    "libblas*",
-    "liblapack*"
-  ],
+  "use_non_root_user": false,
+  "provides_artifact": "lapack",
   "*": {
-    "build_script": "lapack_ubi_9.6.sh"
+    "build_script": "lapack.sh"
   }
 }

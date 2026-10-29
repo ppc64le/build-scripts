@@ -14,12 +14,12 @@
   "validate_build_script": true,
   "use_non_root_user": false,
   "provides_artifact": "onnxruntime",
-  "build_deps": ["openblas", "numpy:v2.2.5", "protobuf:v25.3", "abseil-cpp:20240722.0"],
+  "build_deps": ["openblas", "numpy:v2.2.5", "libprotobuf:v25.3", "abseil-cpp:20240722.0"],
   "v1.20.1": {
     "build_deps": [
       "openblas",
       "numpy:v2.2.5",
-      "protobuf:v25.3",
+      "libprotobuf:v25.3",
       "abseil-cpp:20240722.0"
     ],
     "build_script": "onnxruntime.sh"
@@ -28,7 +28,7 @@
     "build_deps": [
       "openblas",
       "numpy:v2.2.5",
-      "protobuf:v25.3",
+      "libprotobuf:v25.3",
       "abseil-cpp:20240722.0"
     ],
     "build_script": "onnxruntime.sh"
@@ -37,7 +37,7 @@
     "build_deps": [
       "openblas",
       "numpy:v2.2.5",
-      "protobuf:v25.3",
+      "libprotobuf:v25.3",
       "abseil-cpp:20240722.0"
     ],
     "build_script": "onnxruntime.sh"
@@ -46,7 +46,7 @@
     "build_deps": [
       "openblas",
       "numpy:v2.2.5",
-      "protobuf:v25.3",
+      "libprotobuf:v25.3",
       "abseil-cpp:20240722.0"
     ],
     "build_script": "onnxruntime.sh"
@@ -55,7 +55,7 @@
     "build_deps": [
       "openblas",
       "numpy:v2.2.5",
-      "protobuf:v25.3",
+      "libprotobuf:v25.3",
       "abseil-cpp:20240722.0"
     ],
     "build_script": "onnxruntime.sh"
@@ -64,7 +64,7 @@
     "build_deps": [
       "openblas",
       "numpy",
-      "protobuf",
+      "libprotobuf",
       "abseil-cpp:20240722.0"
     ],
     "build_script": "onnxruntime.sh"

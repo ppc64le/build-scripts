@@ -3,6 +3,7 @@
   "package_name": "s3transfer",
   "github_url": "https://github.com/boto/s3transfer",
   "version": "0.10.4",
+  "language": "Python",
   "default_branch": "develop",
   "build_script": "s3transfer.sh",
   "package_dir": "s/s3transfer",

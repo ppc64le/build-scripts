@@ -16,7 +16,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # =============================================================================
 PACKAGE_NAME="backports.functools_lru_cache"
 PACKAGE_VERSION="${1:-v2.0.0}"
+# Normalise: backports.functools_lru_cache tags are v-prefixed; accept bare versions too
+[[ "${PACKAGE_VERSION}" != v* ]] && PACKAGE_VERSION="v${PACKAGE_VERSION}"
 PACKAGE_URL="https://github.com/jaraco/backports.functools_lru_cache"
+
+# Pure Python — skip compilation stages
+NOARCH="true"
 
 # =============================================================================
 # REQUIRED: Dependencies
@@ -24,9 +29,6 @@ PACKAGE_URL="https://github.com/jaraco/backports.functools_lru_cache"
 RH_DEP_PKGS="git python3-devel"
 DEB_DEP_PKGS=""
 SLES_DEP_PKGS=""
-
-# Pure Python — skip compilation stages
-NOARCH="true"
 
 # =============================================================================
 # CALLBACK: pre_clone — set SETUPTOOLS_SCM_PRETEND_VERSION so the SCM version
@@ -38,21 +40,14 @@ pre_clone() {
 }
 
 # =============================================================================
-# CALLBACK: post_clone — install ruff and auto-fix formatting issues that
-# caused test failures in the original v1 script before the build runs
-# =============================================================================
-post_clone() {
-    log_info "Installing ruff and auto-fixing formatting issues"
-    python -m pip install --upgrade ruff
-    ruff format .
-}
-
-# =============================================================================
-# CALLBACK: pre_test — ensure build backend is available in the test venv
+# CALLBACK: pre_test — ensure build backend is available and format code before test run
 # =============================================================================
 pre_test() {
     log_info "Installing setuptools, wheel, and pip into test venv"
     python -m pip install --upgrade pip setuptools wheel
+    log_info "Installing ruff and auto-fixing formatting issues"
+    python -m pip install --upgrade ruff
+    ruff format .
 }
 
 # =============================================================================

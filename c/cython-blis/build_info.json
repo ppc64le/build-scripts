@@ -1,17 +1,19 @@
 {
    "maintainer": "bhagyashrigai",
    "package_name": "cython-blis",
-   "github_url": "https://github.com/explosion/cython-blis.git",
-   "version": "release-v1.3.0",
+   "wheel_name": "blis",
+   "language":"Python",
+   "github_url": "https://github.com/explosion/cython-blis",
+   "version": "release-v1.3.3",
    "default_branch": "main",
-   "build_script": "cython-blis_ubi_9.6.sh",
-   "package_dir": "c/cython-bliss",
+   "build_script": "cython-blis.sh",
+   "package_dir": "c/cython-blis",
    "docker_build": false,
    "wheel_build": true,
-   "wheel_name": "blis",
    "validate_build_script": true,
    "use_non_root_user": false,
+   "v2-enabled": true,
    "*": {
-     "build_script":"cython-blis_ubi_9.6.sh"
-  }
+      "build_script": "cython-blis.sh"
+   }
 }

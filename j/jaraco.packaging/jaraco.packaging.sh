@@ -11,12 +11,20 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# =============================================================================
+# REQUIRED: Package metadata
+# =============================================================================
 PACKAGE_NAME="jaraco.packaging"
 PACKAGE_VERSION="${1:-v10.2.2}"
+# Upstream git tags carry a "v" prefix; CI may pass the bare version (e.g. 10.2.2)
+[[ "${PACKAGE_VERSION}" == v* ]] || PACKAGE_VERSION="v${PACKAGE_VERSION}"
 PACKAGE_URL="https://github.com/jaraco/jaraco.packaging"
 
 NOARCH="true"
 
+# =============================================================================
+# REQUIRED: Dependencies
+# =============================================================================
 RH_DEP_PKGS="git"
 DEB_DEP_PKGS=""
 SLES_DEP_PKGS=""

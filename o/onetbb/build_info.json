@@ -1,26 +1,22 @@
 {
-    "maintainer": "SakshiJain0302",
-    "package_name": "oneTBB",
-    "github_url": "https://github.com/uxlfoundation/oneTBB",
-    "version": "v2023.1.0",
-    "default_branch": "master",
-    "package_dir": "o/onetbb",
-    "build_script": "onetbb_ubi_9.3.sh",
-    "docker_build": false,
-    "wheel_build": true,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    "wheel_name": "tbb",
-    "v2021.*.*":{
-        "patches":{
-            "PATCH":"https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/onetbb/tbb.patch"
-        },
-        "build_script": "onetbb_ubi_9.3.sh"
-    },
-    "v2023.1.0":{
-        "patches":{
-            "PATCH":"https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/onetbb/tbb_ubi_10.2.patch"
-        },
-        "build_script":"onetbb_ubi_10.2.sh"
-    }
- }
+  "maintainer": "ibm",
+  "package_name": "oneTBB",
+  "wheel_name": "tbb",
+  "language": "c++",
+  "github_url": "https://github.com/oneapi-src/oneTBB",
+  "version": "v2021.13.0",
+  "wheel_build": false,
+  "resource_class": "heavy",
+  "package_dir": "o/onetbb",
+  "default_branch": "master",
+  "build_script": "onetbb.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "onetbb",
+  "build_deps": ["hwloc"],
+  "*": {
+    "build_script": "onetbb.sh"
+  },
+  "v2-enabled": true
+}

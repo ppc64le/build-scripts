@@ -1,14 +1,16 @@
 {
   "maintainer": "SohamBadjateIBM",
   "package_name": "nodejs-wheel",
-  "github_url": "https://github.com/njzjz/nodejs-wheel.git",
+  "language": "Python",
+  "wheel_name": "nodejs-wheel-binaries",
+  "github_url": "https://github.com/njzjz/nodejs-wheel",
   "version": "v22.20.0",
   "default_branch": "main",
-  "build_script": "nodejs-wheel-binaries_22.20.0_ubi_9.5.sh",
+  "build_script": "nodejs-wheel-binaries_22.20.0.sh",
   "package_dir": "n/nodejs-wheel",
   "use_non_root_user": "false",
   "docker_build": false,
   "wheel_build": true,
-  "wheel_name": "nodejs-wheel-binaries",
-  "validate_build_script": true
+  "validate_build_script": true,
+  "v2-enabled": true
 }

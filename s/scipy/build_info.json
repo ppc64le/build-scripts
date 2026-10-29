@@ -15,10 +15,6 @@
   "provides_artifact": "scipy",
   "v2-enabled": true,
   "build_deps": ["openblas", "numpy:v2.2.5"],
-  "v1.13.*": {
-    "build_deps": ["openblas", "numpy:v2.2.5"],
-    "build_script": "scipy.sh"
-  },
   "v1.14.* | v1.15.* | v1.16.* | v1.17.*": {
     "build_deps": ["openblas", "numpy:v2.2.5"],
     "build_script": "scipy.sh",
@@ -27,7 +23,7 @@
     }
   },
   "*": {
-    "build_deps": ["openblas", "numpy"],
+    "build_deps": ["openblas", "numpy:v2.2.5"],
     "build_script": "scipy.sh"
   }
 }

@@ -1,11 +1,16 @@
 {
-  "maintainer": "abhijeetdandekaribm",
+  "maintainer": "Pooja-Shah4",
   "package_name": "rake-nltk",
   "github_url": "https://github.com/csurfer/rake-nltk",
-  "version": "a80f633",
+  "version": "1.0.6",
   "default_branch": "master",
-  "build_script": "rake-nltk_ubi_8.7.sh",
+  "build_script": "rake-nltk.sh",
   "package_dir": "r/rake-nltk",
   "docker_build": false,
-  "validate_build_script": true
+  "validate_build_script": true,
+  "v2-enabled": true,
+  "language": "Python",
+  "*": {
+    "build_script": "rake-nltk.sh"
+  }
 }

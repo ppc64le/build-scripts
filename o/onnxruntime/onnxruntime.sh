@@ -21,7 +21,7 @@ PACKAGE_URL="https://github.com/microsoft/onnxruntime"
 # =============================================================================
 # Artifact dependencies and declaration
 # =============================================================================
-BUILD_DEPS=${BUILD_DEPS:-"openblas numpy:v2.2.5 protobuf:v25.3 abseil-cpp:20240722.0"}
+BUILD_DEPS=${BUILD_DEPS:-"openblas numpy:v2.2.5 libprotobuf:v25.3 abseil-cpp:20240722.0"}
 PROVIDES_ARTIFACT="onnxruntime"
 
 # =============================================================================

@@ -1,0 +1,20 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "leptonica",
+  "language": "C",
+  "github_url": "https://github.com/DanBloomberg/leptonica",
+  "version": "1.85.0",
+  "wheel_build": false,
+  "package_dir": "l/leptonica",
+  "default_branch": "master",
+  "build_script": "leptonica.sh",
+  "docker_build": false,
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "leptonica",
+  "*": {
+    "build_script": "leptonica.sh"
+  }
+}
+

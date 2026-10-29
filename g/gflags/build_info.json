@@ -1,0 +1,20 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "gflags",
+  "github_url": "https://github.com/gflags/gflags",
+  "version": "v2.2.2",
+  "wheel_build": false,
+  "package_dir": "g/gflags",
+  "default_branch": "master",
+  "build_script": "gflags.sh",
+  "docker_build": false,
+  "language": "C++",
+  "v2-enabled": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "gflags",
+  "*": {
+    "build_script": "gflags.sh"
+  }
+}
+

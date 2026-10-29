@@ -1,34 +1,20 @@
 {
-  "maintainer": "SakshiJain0302",
+  "maintainer": "Build Scripts Team",
   "package_name": "pillow",
+  "language": "Python",
   "github_url": "https://github.com/python-pillow/Pillow",
-  "version": "v12.3.0",
+  "version": "12.3.0",
+  "v2-enabled": true,
+  "wheel_build": true,
+  "resource_class": "medium",
   "default_branch": "main",
-  "build_script": "pillow_v12.3.0_ubi_10.2.sh",
+  "build_script": "pillow.sh",
   "package_dir": "p/pillow",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "wheel_build" : true,
-  "v10.4.0": {
-    "build_script": "pillow_ubi_9.3.sh"
-  },
-  "v10.*": {
-    "build_script": "pillow_v10.0.1_ubi_9.3.sh"
-  },
-  "v12.0.0": {
-    "build_script": "pillow_v12.0.0_ubi_9.3.sh"
-  },
-  "v12.3.0": {
-    "build_script": [
-      "pillow_v12.3.0_ubi_9.6.sh",
-      "pillow_v12.3.0_ubi_10.2.sh"
-    ]
-  },
+  "provides_artifact": "pillow",
   "*": {
-    "build_script": [
-      "pillow_v12.3.0_ubi_9.6.sh",
-      "pillow_v12.3.0_ubi_10.2.sh"
-    ]
+    "build_script": "pillow.sh"
   }
 }

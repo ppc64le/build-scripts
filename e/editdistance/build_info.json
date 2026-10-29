@@ -8,6 +8,7 @@
   "package_dir": "e/editdistance",
   "docker_build": false,
   "v2-enabled": true,
+  "language": "Python",
   "wheel_build": true,
   "validate_build_script": true,
   "use_non_root_user": false,

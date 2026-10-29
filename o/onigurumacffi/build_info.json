@@ -1,16 +1,20 @@
 {
-  "maintainer": "Rosman Carino",
+  "maintainer": "Build Scripts Team",
   "package_name": "onigurumacffi",
+  "language": "Python",
   "github_url": "https://github.com/asottile/onigurumacffi",
-  "version": "v1.5.0",
-  "default_branch": "main",
-  "build_script": "onigurumacffi_ubi_9.6.sh",
-  "package_dir": "o/onigurumacffi",
-  "docker_build": false,
+  "version": "1.5.0",
   "wheel_build": true,
+  "resource_class": "medium",
+  "package_dir": "o/onigurumacffi",
+  "default_branch": "main",
+  "build_script": "onigurumacffi.sh",
+  "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "provides_artifact": "onigurumacffi",
+  "v2-enabled": true,
   "*": {
-    "build_script": "onigurumacffi_ubi_9.6.sh"
+    "build_script": "onigurumacffi.sh"
   }
 }

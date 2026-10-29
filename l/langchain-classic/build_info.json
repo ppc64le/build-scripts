@@ -1,0 +1,18 @@
+{
+  "maintainer": "Sanket-Kumbhar",
+  "package_name": "langchain-classic",
+  "github_url": "https://github.com/langchain-ai/langchain",
+  "version": "langchain-classic==1.0.1",
+  "language": "Python",
+  "wheel_build": true,
+  "default_branch": "master",
+  "package_dir": "l/langchain-classic",
+  "build_script": "langchain-classic.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v2-enabled": true,
+  "*": {
+    "build_script": "langchain-classic.sh"
+  }
+}

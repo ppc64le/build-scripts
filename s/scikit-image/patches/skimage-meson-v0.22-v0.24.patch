@@ -1,0 +1,36 @@
+diff --git a/meson.build b/meson.build
+index 72462c8..59d6475 100644
+--- a/meson.build
++++ b/meson.build
+@@ -10,7 +10,7 @@ project(
+   default_options: [
+     'buildtype=debugoptimized',
+     'c_std=c99',
+-    'cpp_std=c++14',
++    'cpp_std=c++17',
+   ],
+ )
+ 
+diff --git a/skimage/meson.build b/skimage/meson.build
+index 3882096..620d442 100644
+--- a/skimage/meson.build
++++ b/skimage/meson.build
+@@ -58,7 +58,7 @@ if incdir_numpy == 'not-given'
+   incdir_numpy = run_command(py3,
+     [
+       '-c',
+-      'import os; os.chdir(".."); import numpy; print(numpy.get_include())'
++      'import numpy, re; p = numpy.get_include(); print(re.sub(r"^.*/.venv-build", "/tmp/ext_venv", p) if "/.venv-build" in p else p)'
+     ],
+     check: true
+   ).stdout().strip()
+@@ -75,7 +75,7 @@ if incdir_pythran == 'not-given'
+   incdir_pythran = run_command(py3,
+     [
+       '-c',
+-      'import os; os.chdir(".."); import pythran; print(os.path.dirname(pythran.__file__));'
++      'import os, pythran, re; p = os.path.dirname(pythran.__file__); print(re.sub(r"^.*/.venv-build", "/tmp/ext_venv", p) if "/.venv-build" in p else p)'
+     ],
+     check: true
+   ).stdout().strip()
+

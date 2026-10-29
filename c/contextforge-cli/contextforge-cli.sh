@@ -22,7 +22,7 @@ PACKAGE_URL="https://github.com/contextforge-org/contextforge-cli"
 # =============================================================================
 # REQUIRED: Dependencies
 # =============================================================================
-RH_DEP_PKGS="git gcc gcc-c++ make openssl-devel libffi-devel python3-devel pkgconf-pkg-config autoconf automake libtool"
+RH_DEP_PKGS="git make openssl-devel libffi-devel python3-devel pkgconf-pkg-config autoconf automake libtool"
 DEB_DEP_PKGS=""
 SLES_DEP_PKGS=""
 
@@ -87,6 +87,7 @@ custom_test_command() {
     # test_version_live_server: requires live server to query version endpoint
     python -m pytest tests/ -v \
         --import-mode=importlib \
+        -W "ignore::DeprecationWarning" \
         -o "addopts=" \
         --disable-warnings \
         --deselect tests/commands/settings/test_login.py::TestLoginCommandIntegration::test_login_lifecycle \

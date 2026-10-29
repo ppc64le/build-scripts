@@ -4,6 +4,7 @@
   "github_url": "https://github.com/takluyver/terminado",
   "version": "v0.18.1",
   "v2-enabled": true,
+  "language": "Python",
   "wheel_build": true,
   "default_branch": "main",
   "package_dir": "t/terminado",
@@ -15,3 +16,4 @@
     "build_script": "terminado.sh"
   }
 }
+

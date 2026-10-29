@@ -1,17 +1,31 @@
 {
-    "maintainer":"Daniel-Schenker",
-    "package_name" : "runai-model-streamer",
-    "github_url":"https://github.com/run-ai/runai-model-streamer",
-    "version": "0.16.1",
-    "default_branch": "master",
-    "package_dir": "r/runai-model-streamer",
-    "build_script": "runai-model-streamer_0.16.1_ubi_10.2.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    "wheel_build": true,
-    "required_versions": {"Releases": ["*"],"Tags": ["0.16.1"]},
-    "*": {
-     "build_script":"runai-model-streamer_0.16.1_ubi_10.2.sh"
-   }
+  "maintainer": "Daniel Schenker",
+  "package_name": "runai-model-streamer",
+  "language": "Python",
+  "version": "0.16.1",
+  "v2-enabled": true,
+  "github_url": "https://github.com/run-ai/runai-model-streamer",
+  "default_branch": "master",
+  "package_dir": "r/runai-model-streamer",
+  "build_script": "runai-model-streamer.sh",
+  "wheel_build": true,
+  "resource_class": "heavy",
+  "build_deps": [
+    "bazel:7.6.1",
+    "pytorch:v2.6.0",
+    "numpy:v2.2.5",
+    "openblas:v0.3.29",
+    "abseil-cpp:20240116.2",
+    "libprotobuf:v26.1"
+  ],
+  "*": {
+    "build_script": "runai-model-streamer.sh",
+    "patches": {
+      "MAKEFILE_PPC64LE_PATCH": "r/runai-model-streamer/patches/0001-makefile-ppc64le.patch",
+      "BAZELRC_PPC64LE_PATCH": "r/runai-model-streamer/patches/0002-bazelrc-ppc64le.patch",
+      "FREERES_VISIBILITY_PATCH": "r/runai-model-streamer/patches/0003-freeres-visibility.patch",
+      "CPP_MAKEFILE_STREAMER_PATCH": "r/runai-model-streamer/patches/0004-cpp-makefile-streamer-only.patch",
+      "PY_MAKEFILE_BASE_WHEEL_PATCH": "r/runai-model-streamer/patches/0005-py-makefile-base-wheel-only.patch"
+    }
+  }
 }

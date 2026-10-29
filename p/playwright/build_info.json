@@ -1,19 +1,21 @@
 {
-  "maintainer": "Ryder Salinas <rbsalinas@ibm.com>",
+  "maintainer": "Stuti Wali <Stuti.Wali@ibm.com>",
   "package_name": "playwright",
-  "github_url": "https://github.com/microsoft/playwright-python.git",
+  "github_url": "https://github.com/microsoft/playwright-python",
   "version": "v1.61.0",
-  "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/playwright",
-  "build_script": "playwright_1.61.0_ubi_9.6.sh",
-  "validate_build_script": true,
-  "use_non_root_user": false,
+  "build_script": "playwright.sh",
+  "language": "Python",
   "docker_build": false,
-  "v1.61.0":{
-    "build_script":"playwright_1.61.0_ubi_9.6.sh"
-  },
+  "validate_build_script": true,
+  "v2-enabled": true,
+  "use_non_root_user": false,
+  "wheel_build": true,
   "*": {
-    "build_script":"playwright_1.61.0_ubi_9.6.sh"
+    "build_script": "playwright.sh",
+    "patches": {
+      "POWER_SUPPORT_PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/playwright/power_support.patch"
+    }
   }
 }

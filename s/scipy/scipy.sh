@@ -29,8 +29,8 @@ PROVIDES_ARTIFACT="scipy"
 # REQUIRED: Dependencies
 # =============================================================================
 RH_DEP_PKGS="git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make cmake ninja-build pkg-config python3 python3-devel python3-pip"
-DEB_DEP_PKGS="git gcc g++ gfortran make cmake ninja-build pkg-config python3-dev python3-pip"
-SLES_DEP_PKGS="git gcc gcc-c++ gcc-fortran make cmake ninja pkg-config python3-devel python3-pip"
+DEB_DEP_PKGS=""   # not yet validated on Debian/Ubuntu
+SLES_DEP_PKGS=""  # not yet validated on SUSE
 
 # =============================================================================
 # Build Configuration
@@ -38,7 +38,11 @@ SLES_DEP_PKGS="git gcc gcc-c++ gcc-fortran make cmake ninja pkg-config python3-d
 LICENSE_SPDX="BSD-3-Clause"
 
 # =============================================================================
-# CALLBACK: post_clone — apply f2py safe path patch
+# CALLBACK: post_clone — apply f2py safe path patch (SciPy issue #24744)
+# Needed because meson's `find_program('f2py')` + `f2py -v` probe is fragile
+# in this build environment; the patch uses `python -m numpy.f2py` instead.
+# This is a build-system logic fix, not a dependency version problem, so a
+# version pin cannot replace it. Applies to v1.14+ only; skipped otherwise.
 # =============================================================================
 
 post_clone() {
@@ -97,7 +101,7 @@ PY
 
     rm -f "${req_file}"
     log_info "Installing additional SciPy build tooling"
-    python -m pip install ninja pyproject-metadata packaging setuptools wheel "patchelf>=0.11.0"
+    python -m pip install ninja pyproject-metadata packaging "patchelf>=0.11.0"
 }
 
 # =============================================================================
@@ -182,7 +186,80 @@ pre_build() {
 }
 
 # =============================================================================
+# CALLBACK: pre_test — install artifact NumPy into the isolated .venv-test
+# =============================================================================
+
+pre_test() {
+    log_info "Installing artifact NumPy into test venv (.venv-test does not inherit .venv-build)"
+    local python_abi numpy_wheel
+    python_abi=$(python -c "import sys; print(f'cp{sys.version_info.major}{sys.version_info.minor}')")
+    numpy_wheel=$(find "${NUMPY_PREFIX}/wheels" -name "numpy-*-${python_abi}-${python_abi}-*.whl" -print 2>/dev/null | head -1)
+    if [[ -n "${numpy_wheel}" ]]; then
+        log_info "Installing NumPy wheel from artifact into test venv: ${numpy_wheel}"
+        python -m pip install --force-reinstall --no-deps "${numpy_wheel}"
+    fi
+}
+
+# =============================================================================
+# CALLBACK: post_build — package scipy artifact (env.sh + wheels/) for consumers
+# Mirrors the pattern used by numpy.sh post_build.
+# =============================================================================
+post_build() {
+    log_info "Packaging SciPy artifact..."
+
+    local ARTIFACT_DIR
+    ARTIFACT_DIR="$(artifact_dir "scipy" "${PACKAGE_VERSION}")"
+
+    local wheel_file
+    wheel_file=$(ls wheelhouse/*.whl 2>/dev/null | head -1)
+    if [[ -z "${wheel_file}" ]]; then
+        wheel_file=$(ls "${OUTPUT_DIR:-/tmp}/artifacts"/scipy-*.whl 2>/dev/null | head -1)
+    fi
+
+    if [[ -z "${wheel_file}" ]]; then
+        log_warn "No SciPy wheel found — artifact will not be created"
+    else
+        local python_version
+        python_version=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+
+        log_info "Packaging SciPy artifact to ${ARTIFACT_DIR} for Python ${python_version}..."
+        mkdir -p "${ARTIFACT_DIR}"
+
+        local site_packages="${ARTIFACT_DIR}/lib/python${python_version}/site-packages"
+        mkdir -p "${site_packages}"
+        python -m pip install --target="${site_packages}" --no-deps "${wheel_file}"
+
+        mkdir -p "${ARTIFACT_DIR}/wheels"
+        cp "${wheel_file}" "${ARTIFACT_DIR}/wheels/"
+
+        if [[ -f "LICENSE.txt" ]]; then
+            cp LICENSE.txt "${ARTIFACT_DIR}/LICENSE"
+        elif [[ -f "LICENSE" ]]; then
+            cp LICENSE "${ARTIFACT_DIR}/LICENSE"
+        fi
+
+        cat > "${ARTIFACT_DIR}/env.sh" << 'EOF'
+# SciPy environment
+export SCIPY_PREFIX="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_scipy_python_version="$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")"
+export PYTHONPATH="${SCIPY_PREFIX}/lib/python${_scipy_python_version}/site-packages:${PYTHONPATH:-}"
+unset _scipy_python_version
+EOF
+
+        generate_artifact_manifest "${ARTIFACT_DIR}" \
+            "scipy" "${PACKAGE_VERSION}" \
+            "${PACKAGE_URL}" "${LICENSE_SPDX}" \
+            "openblas" "numpy"
+
+        log_info "SciPy artifact created at ${ARTIFACT_DIR} for Python ${python_version}"
+    fi
+}
+
+# =============================================================================
 # CALLBACK: custom_test_command — run scipy smoke tests to verify install
+# Replaces the template pytest cascade on purpose: the full SciPy suite is far
+# too heavy for CI, and its tests live in nested dirs (scipy/*/tests) that the
+# template's default discovery does not pick up.
 # =============================================================================
 
 custom_test_command() {

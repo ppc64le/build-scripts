@@ -1,17 +1,19 @@
 {
-	"maintainer": "vivek8123",
-	"package_name": "msgpack-python",
-	"github_url": "https://github.com/msgpack/msgpack-python.git",
-	"version": "v1.1.1",
-	"default_branch": "main",
-	"build_script": "msgpack-python_ubi_9.3.sh",
-	"package_dir": "m/msgpack-python",
-	"docker_build": false,
-	"validate_build_script": true,
-	"wheel_build" : true,
-	"use_non_root_user": false,
-	"wheel_name": "msgpack",
-	"*": {
-	   "build_script": "msgpack-python_ubi_9.3.sh"
-	}
+  "maintainer": "vivek8123",
+  "package_name": "msgpack-python",
+  "language": "Python",
+  "wheel_name": "msgpack",
+  "github_url": "https://github.com/msgpack/msgpack-python",
+  "version": "v1.1.1",
+  "default_branch": "main",
+  "build_script": "msgpack-python.sh",
+  "package_dir": "m/msgpack-python",
+  "docker_build": false,
+  "validate_build_script": true,
+  "wheel_build": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "msgpack-python.sh"
+  },
+  "v2-enabled": true
 }

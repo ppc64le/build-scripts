@@ -1,6 +1,7 @@
 {
   "maintainer": "vinodk99",
   "package_name": "zfp",
+  "wheel_name": "zfpy",
   "language": "c",
   "github_url": "https://github.com/LLNL/zfp",
   "version": "1.0.1",

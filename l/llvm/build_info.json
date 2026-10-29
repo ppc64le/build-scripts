@@ -1,0 +1,20 @@
+{
+  "maintainer": "ibm",
+  "package_name": "llvm",
+  "resource_class": "heavy",
+  "github_url": "https://github.com/llvm/llvm-project",
+  "version": "llvmorg-18.1.8",
+  "wheel_build": false,
+  "package_dir": "l/llvm",
+  "default_branch": "main",
+  "language": "C",
+  "build_script": "llvm.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "v2-enabled": true,
+  "use_non_root_user": false,
+  "provides_artifact": "llvm",
+  "*": {
+    "build_script": "llvm.sh"
+  }
+}

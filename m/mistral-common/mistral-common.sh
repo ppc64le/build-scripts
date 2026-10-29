@@ -16,6 +16,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # =============================================================================
 PACKAGE_NAME="mistral-common"
 PACKAGE_VERSION="${1:-v1.11.5}"
+PACKAGE_VERSION="v${PACKAGE_VERSION#v}"
 PACKAGE_URL="https://github.com/mistralai/mistral-common"
 NOARCH="true"
 
@@ -79,6 +80,6 @@ custom_test_command() {
 }
 
 # =============================================================================
-# Execute the build
+# Execute the build (invokes the Node template)
 # =============================================================================
 source "${SCRIPT_DIR}/../../v2-templates/python.sh"

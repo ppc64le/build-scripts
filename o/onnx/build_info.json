@@ -1,25 +1,23 @@
 {
-    "maintainer": "Siddesh-Sangodkar1",
-    "package_name": "onnx",
-    "github_url": "https://github.com/onnx/onnx",
-    "version": "v1.21.0",
-    "wheel_build" : true,
-    "package_dir": "o/onnx",
-    "default_branch": "main",
-    "build_script": "onnx_1.21.0_ubi_10.2.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": "false",
-    "v1.16.0" : {
-      "build_script": "onnx_ubi_1.16.0_9.3.sh"
-    },
-    "v1.13.1" : {
-      "build_script": "onnx_1.13.1_ubi_9.3.sh" 
-    },
-    "v1.21.0": {
-        "build_script": "onnx_1.21.0_ubi_10.2.sh"
-    },
-    "*": {
-        "build_script": "onnx_1.21.0_ubi_10.2.sh"
-    }
+  "maintainer": "SakshiJain0302",
+  "package_name": "onnx",
+  "language": "Python",
+  "github_url": "https://github.com/onnx/onnx",
+  "version": "v1.17.0",
+  "build_deps": [
+    "abseil-cpp:20240116.2",
+    "libprotobuf:v4.25.3"
+  ],
+  "resource_class": "heavy",
+  "v2-enabled": true,
+  "wheel_build": true,
+  "package_dir": "o/onnx",
+  "default_branch": "main",
+  "build_script": "onnx.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "onnx.sh"
+  }
 }

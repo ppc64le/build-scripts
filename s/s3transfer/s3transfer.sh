@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/boto/s3transfer
 # Tested on     : UBI:9.6
 # Language      : Python
-# Script License: Apache License, Version 2 or later
+# Script License: Apache License, Version 2.0 or later
 # Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
 # -----------------------------------------------------------------------------
 
@@ -26,6 +26,17 @@ DEB_DEP_PKGS=""
 SLES_DEP_PKGS=""
 
 NOARCH="true"
+
+# =============================================================================
+# CALLBACK: custom_test_command — Run unit tests while excluding integration and socket tests, as the S3 integration tests require AWS credentials.
+# =============================================================================
+custom_test_command() {
+    log_info "Running ${PACKAGE_NAME} tests (excluding integration)"
+    python -m pytest \
+        --import-mode=importlib \
+        -o "addopts=" \
+        -k "not integration and not test_socket_disabled"
+}
 
 # =============================================================================
 # Execute the build (invokes the Python template)
