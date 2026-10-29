@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : airflow
-# Version          : 3.0.2
+# Version          : 3.3.2
 # Source repo      : https://github.com/apache/airflow
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=airflow
-PACKAGE_VERSION=${1:-3.0.2}
+PACKAGE_VERSION=${1:-3.3.2}
 PACKAGE_URL=https://github.com/apache/airflow
 PACKAGE_DIR=airflow
 
@@ -839,7 +839,7 @@ ldconfig
 cd $CURRENT_DIR
 
 #Install xmlsec1
-wget https://www.aleksey.com/xmlsec/download/xmlsec1-1.3.7.tar.gz
+wget https://github.com/lsh123/xmlsec/releases/download/1.3.7/xmlsec1-1.3.7.tar.gz
 tar xzf xmlsec1-1.3.7.tar.gz
 cd xmlsec1-1.3.7
 
@@ -871,5 +871,3 @@ if ! pip install . ; then
 fi
 
 # Skipping tests since they require a fully initialized metadata DB and environment, which are not supported in this context.
-
-
