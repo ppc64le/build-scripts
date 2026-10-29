@@ -284,14 +284,14 @@ if grep -q '^amdsmi' "$REQ_FILE"; then
     echo "Patched $REQ_FILE: removed amdsmi line (installed from system ROCm instead)"
 fi
 
-# Pin apache-tvm-ffi to 0.1.10 — required by tilelang;
-# https://github.com/tile-ai/tilelang/issues/2367
+# Relax apache-tvm-ffi pin to >=0.1.15 — 0.1.15 adds C++20 support required
+# by torch 2.14; tilelang only requires >=0.1.10 so this is safe.
 if grep -q '^apache-tvm-ffi' "$REQ_FILE"; then
-    sed -i 's|^apache-tvm-ffi.*$|apache-tvm-ffi==0.1.10|' "$REQ_FILE"
-    echo "Patched $REQ_FILE: apache-tvm-ffi pinned to 0.1.10"
+    sed -i 's|^apache-tvm-ffi.*$|apache-tvm-ffi>=0.1.15|' "$REQ_FILE"
+    echo "Patched $REQ_FILE: apache-tvm-ffi relaxed to >=0.1.15"
 else
-    echo "apache-tvm-ffi==0.1.10" >> "$REQ_FILE"
-    echo "Patched $REQ_FILE: appended apache-tvm-ffi==0.1.10"
+    echo "apache-tvm-ffi>=0.1.15" >> "$REQ_FILE"
+    echo "Patched $REQ_FILE: appended apache-tvm-ffi>=0.1.15"
 fi
 
 # Inject ROCm bitcode path into CMAKE_HIP_FLAGS in setup.py
@@ -530,7 +530,7 @@ $PYTHON -m pip install "${CURRENT_DIR}"/vllm-*.whl \
 echo "Installing test-stage dependencies from devpi index"
 $PYTHON -m pip install --prefer-binary \
     --extra-index-url "${DEVPI_INDEX}" \
-    "apache-tvm-ffi==0.1.10" \
+    "apache-tvm-ffi>=0.1.15" \
     fastsafetensors
 
 echo "Running import test"
