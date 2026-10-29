@@ -258,9 +258,21 @@ fi
 
 wheel_file="${wheels[0]}"
 
-echo 
+# If Python 3.10 is being used, only abi3 wheels are permitted.
+# Regular cpython-3.10 wheels must not be produced (3.10 support is dropped).
+if [[ "$PYTHON_VERSION" == "3.10" && "$wheel_file" != *abi3* ]]; then
+    echo
+    echo "===> WARNING: Python 3.10 regular wheel detected: $(basename "$wheel_file")"
+    echo "===>          Non-abi3 Python 3.10 wheels are no longer supported — skipping."
+    echo
+    cleanup "$VENV_DIR"
+    [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
+    exit 0
+fi
+
+echo
 echo "==== Running auditwheel repair on: ${wheel_file} ===="
-echo 
+echo
 
 # location of repaired wheel
 WHEELHOUSE="$CURRENT_DIR/wheelhouse"
