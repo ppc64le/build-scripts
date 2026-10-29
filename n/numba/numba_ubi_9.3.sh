@@ -31,7 +31,7 @@ yum install -y  xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel make
 echo "-------------------Installing llvmlite----------------------"
 
 source /opt/rh/gcc-toolset-12/enable
-pip install setuptools==78.0.1 build
+pip install setuptools==78.0.1 wheel build
 
 echo "Build llvmdev which is a pre-req for llvmlite ..."
 git clone --recursive https://github.com/llvm/llvm-project
@@ -95,16 +95,16 @@ rm -rf llvm-project
 echo "Clone the repository ..."
 git clone --recursive https://github.com/numba/llvmlite
 cd llvmlite
-git checkout v0.42.0
+git checkout v0.40.1
 
-pip install .
+pip install --no-build-isolation .
 
 cd ..
 
 echo "-------------------successfully Installed llvmlite----------------------"
 
 # Install numpy
-pip install pytest numpy==1.26.4
+pip install pytest numpy==1.24.4
 
 # Clone repository
 git clone $PACKAGE_URL
