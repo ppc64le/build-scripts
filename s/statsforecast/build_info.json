@@ -1,0 +1,17 @@
+{
+  "maintainer": "Mohammed Sheikh",
+  "package_name": "statsforecast",
+  "github_url": "https://github.com/Nixtla/statsforecast.git",
+  "version": "v2.0.1",
+  "wheel_build": true,
+  "skip_python_versions": ["3.14"],
+  "default_branch": "master",
+  "package_dir": "s/statsforecast",
+  "build_script": "statsforecast-v2.0.1_ubi9.8.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v2.0.1": {
+    "build_script": "statsforecast-v2.0.1_ubi9.8.sh"
+  }
+}
