@@ -1,11 +1,11 @@
 {
-    "maintainer": "SakshiJain0302",
+    "maintainer": "Amit Kumar",
     "package_name": "numba",
     "github_url": "https://github.com/numba/numba",
-    "version": "0.67.0",
+    "version": "0.57.0",
     "wheel_build": true,
     "default_branch": "main",
-    "build_script": "numba_ubi_10.2.sh",
+    "build_script": "numba_0.65.1_ubi_10.2.sh",
     "package_dir": "n/numba",
     "validate_build_script": true,
     "use_non_root_user": false,
@@ -27,6 +27,9 @@
     },
     "0.67.*": {
         "build_script": "numba_ubi_10.2.sh"
+    },
+    "0.65.*": {
+        "build_script": "numba_0.65.1_ubi_10.2.sh"
     },
     "*": {
         "build_script": "numba_0.64.0_ubi_9.3.sh"
