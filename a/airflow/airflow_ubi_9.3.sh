@@ -27,6 +27,26 @@ CURRENT_DIR=${PWD}
 
 yum install -y git make cmake zip tar wget python3 python3-devel python3-pip gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel bzip2-devel libffi-devel openldap-devel unixODBC-devel libpq-devel sqlite-devel mysql openssl openssl-devel lz4 lz4-devel xz-devel libjpeg-devel libevent libtool pkg-config brotli-devel krb5-devel krb5-workstation pkgconf-pkg-config mariadb-connector-c-devel librdkafka-devel libxml2 libxslt libxml2-devel libxslt-devel 
 
+# Airflow 3.x needs Python >= 3.10, but UBI 9 ships 3.9 as the default python3.
+# If the active python is older, install a newer one and put it first in PATH.
+# The system /usr/bin/python3 is left untouched because dnf/yum depend on it.
+# Skipped when the caller (e.g. the wheel build wrapper) already provides >= 3.10.
+PY_OK=$(python3 -c "import sys; print(int(sys.version_info >= (3, 10)))" 2>/dev/null || echo 0)
+if [ "$PY_OK" != "1" ]; then
+    TARGET_PY=${2:-3.12}
+    echo "Active python3 is older than 3.10, installing python${TARGET_PY}..."
+    yum install -y python${TARGET_PY} python${TARGET_PY}-devel python${TARGET_PY}-pip
+    PY_SHIM_DIR=/opt/py-shim
+    mkdir -p ${PY_SHIM_DIR}
+    ln -sf /usr/bin/python${TARGET_PY} ${PY_SHIM_DIR}/python3
+    ln -sf /usr/bin/python${TARGET_PY} ${PY_SHIM_DIR}/python
+    ln -sf /usr/bin/pip${TARGET_PY} ${PY_SHIM_DIR}/pip3
+    ln -sf /usr/bin/pip${TARGET_PY} ${PY_SHIM_DIR}/pip
+    export PATH=${PY_SHIM_DIR}:$PATH
+    hash -r
+fi
+python3 --version
+
 export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
 export PATH=$GCC_TOOLSET_PATH/bin:$PATH
 export CFLAGS="-mcpu=power9 -mtune=power10 ${CFLAGS}"
