@@ -124,7 +124,6 @@ Runs only when `wheel_build_enabled=true`. Jobs are split by UBI version and Pyt
 |-----|-----|--------|---------------------|
 | `wheel_build_ubi8_py311` | UBI8 | 3.11 | No |
 | `wheel_build_ubi8_py312` | UBI8 | 3.12 | No |
-| `wheel_build_ubi9_py310` | UBI9 | 3.10 | No |
 | `wheel_build_ubi9_py311` | UBI9 | 3.11 | No |
 | `wheel_build_ubi9_py312` | UBI9 | 3.12 | No |
 | `wheel_build_ubi9_py313` | UBI9 | 3.13 | Yes (best-effort) |
@@ -133,9 +132,9 @@ Runs only when `wheel_build_enabled=true`. Jobs are split by UBI version and Pyt
 | `wheel_build_ubi10_py313` | UBI10 | 3.13 | Yes (best-effort) |
 | `wheel_build_ubi10_py314` | UBI10 | 3.14 | Yes (best-effort) |
 
-> **UBI8 note:** Python 3.10, 3.13, and 3.14 are not supported on UBI8. Only py311 and py312 wheel jobs run.
+> **UBI8 note:** Python 3.13, and 3.14 are not supported on UBI8. Only py311 and py312 wheel jobs run.
 >
-> **UBI10 note:** Python 3.10 and 3.11 are not supported on UBI10. Only py312–py314 wheel jobs run.
+> **UBI10 note:** Python 3.11 is not supported on UBI10. Only py312–py314 wheel jobs run.
 
 Each wheel job:
 - Runs `build_wheels.sh` with `ENABLE_CVE_SCAN=false` (PR builds do not publish)
@@ -191,7 +190,6 @@ check_changes
             ├── build_ubi10     (parallel)
             ├── wheel_build_ubi8_py311   \
             ├── wheel_build_ubi8_py312    |
-            ├── wheel_build_ubi9_py310    |
             ├── wheel_build_ubi9_py311    | all parallel
             ├── wheel_build_ubi9_py312    |
             ├── wheel_build_ubi9_py313    |
