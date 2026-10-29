@@ -91,23 +91,6 @@ jobs:
         use: build_cache
       allow_failure: true
 
-    - name: "Create Wheel for Python 3.10"
-      if: env(WHEEL_BUILD) = true
-      env: PYTHON_VERSION="3.10"
-      script:
-        - echo "wheel build python 3.10"
-        - source variable.sh
-        - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
-        - sudo chmod a+r *.whl
-        - WHEEL_FILE=*.whl
-        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
-      workspaces:
-        create:
-          name: wheels_cache_310
-          paths:
-            - ./*.whl
-        use: build_cache
-
     - name: "Create Wheel for Python 3.11"
       if: env(WHEEL_BUILD) = true
       env: PYTHON_VERSION="3.11"
