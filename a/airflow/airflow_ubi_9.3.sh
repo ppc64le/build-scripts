@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : airflow
-# Version          : 3.0.2
+# Version          : 3.3.2
 # Source repo      : https://github.com/apache/airflow
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -19,13 +19,30 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=airflow
-PACKAGE_VERSION=${1:-3.0.2}
+PACKAGE_VERSION=${1:-3.3.2}
 PACKAGE_URL=https://github.com/apache/airflow
 PACKAGE_DIR=airflow
 
 CURRENT_DIR=${PWD}
 
 yum install -y git make cmake zip tar wget python3 python3-devel python3-pip gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel bzip2-devel libffi-devel openldap-devel unixODBC-devel libpq-devel sqlite-devel mysql openssl openssl-devel lz4 lz4-devel xz-devel libjpeg-devel libevent libtool pkg-config brotli-devel krb5-devel krb5-workstation pkgconf-pkg-config mariadb-connector-c-devel librdkafka-devel libxml2 libxslt libxml2-devel libxslt-devel 
+
+# Airflow 3.x needs Python >= 3.10, but UBI 9 ships 3.9 as the default python3.
+PY_OK=$(python3 -c "import sys; print(int(sys.version_info >= (3, 10)))" 2>/dev/null || echo 0)
+if [ "$PY_OK" != "1" ]; then
+    TARGET_PY=${2:-3.12}
+    echo "Active python3 is older than 3.10, installing python${TARGET_PY}..."
+    yum install -y python${TARGET_PY} python${TARGET_PY}-devel python${TARGET_PY}-pip
+    PY_SHIM_DIR=/opt/py-shim
+    mkdir -p ${PY_SHIM_DIR}
+    ln -sf /usr/bin/python${TARGET_PY} ${PY_SHIM_DIR}/python3
+    ln -sf /usr/bin/python${TARGET_PY} ${PY_SHIM_DIR}/python
+    ln -sf /usr/bin/pip${TARGET_PY} ${PY_SHIM_DIR}/pip3
+    ln -sf /usr/bin/pip${TARGET_PY} ${PY_SHIM_DIR}/pip
+    export PATH=${PY_SHIM_DIR}:$PATH
+    hash -r
+fi
+python3 --version
 
 export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
 export PATH=$GCC_TOOLSET_PATH/bin:$PATH
@@ -50,6 +67,7 @@ make -j$(nproc)
 echo "Installing flex..."
 make install
 cd $CURRENT_DIR 
+echo "---------- flex installed successfully ----------"
 
 echo "-------bison installing----------------------"
 wget https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.gz
@@ -62,6 +80,7 @@ make -j$(nproc)
 echo "Installing bison..."
 make install
 cd $CURRENT_DIR
+echo "---------- bison installed successfully ----------"
 
 echo "------------ gflags installing-------------------"
 git clone https://github.com/gflags/gflags.git
@@ -74,6 +93,7 @@ make -j$(nproc)
 echo "Installing gflags..."
 make install
 cd $CURRENT_DIR 
+echo "---------- gflags installed successfully ----------"
 
 echo "----------Installing c-ares----------------"
 #Building c-areas
@@ -141,6 +161,7 @@ make -j$(nproc)
 echo "Installing rapidjson"
 make install
 cd $CURRENT_DIR 
+echo "---------- rapidjson installed successfully ----------"
 
 echo "--------------xsimd installing-------------------------"
 git clone https://github.com/xtensor-stack/xsimd.git
@@ -153,6 +174,7 @@ make -j$(nproc)
 echo "Installing xsimd..."
 make install
 cd $CURRENT_DIR 
+echo "---------- xsimd installed successfully ----------"
 
 
 echo "-----------------snappy installing----------------"
@@ -175,6 +197,7 @@ echo "Installing snappy..."
 make install
 cd ..
 cd $CURRENT_DIR 
+echo "---------- snappy installed successfully ----------"
 
 
 echo "------------libzstd installing-------------------------"
@@ -189,11 +212,12 @@ export ZSTD_HOME=/usr/local
 export CMAKE_PREFIX_PATH=$ZSTD_HOME
 export LD_LIBRARY_PATH=$ZSTD_HOME/lib64:$LD_LIBRARY_PATH
 cd $CURRENT_DIR
+echo "---------- libzstd installed successfully ----------"
 
 #re2 install from source
 echo "------------ re2 installing-------------------"
 
-git clone http://github.com/google/re2
+git clone https://github.com/google/re2
 cd re2
 git checkout 2022-04-01
 
@@ -223,6 +247,7 @@ echo "Installing re2..."
 echo "Running make shared-install......"
 make -j "${CPU_COUNT}" prefix=${RE2_PREFIX} shared-install
 cd $CURRENT_DIR 
+echo "---------- re2 installed successfully ----------"
 
 
 
@@ -253,6 +278,7 @@ cmake --build .
 echo "Installing utf8proc ..."
 cmake --build . --target install
 cd $CURRENT_DIR 
+echo "---------- utf8proc installed successfully ----------"
 
 echo "------------ abseil_cpp cloning-------------------"
 
@@ -305,6 +331,7 @@ cmake --build . --verbose
 echo  "Installing libprotobuf..."
 cmake --install .
 cd $CURRENT_DIR 
+echo "---------- libprotobuf installed successfully ----------"
 
 echo "------------ orc installing-------------------"
 
@@ -386,6 +413,7 @@ echo  "Installing orc..."
 ninja install
 
 cd $CURRENT_DIR
+echo "---------- orc installed successfully ----------"
 
 
 echo "-----------------boost_cpp installing-----------------------"
@@ -451,6 +479,7 @@ echo " Building and installing Boost...."
 rm -rf "${BOOST_PREFIX}/include/boost/python.hpp"
 rm -rf "${BOOST_PREFIX}/include/boost/python"
 cd $CURRENT_DIR 
+echo "---------- boost-cpp installed successfully ----------"
 
 
 echo "------------thrift_cpp  installing-------------------"
@@ -498,6 +527,7 @@ make -j$(nproc)
 echo  "Installing thrift_cpp..."
 make install
 cd $CURRENT_DIR 
+echo "---------- thrift-cpp installed successfully ----------"
 
 
 echo "------------ grpc_cpp 1.68.0 installing-------------------"
@@ -555,6 +585,7 @@ echo  "Installing grpc_cpp..."
 ninja install -v
 popd
 cd $CURRENT_DIR
+echo "---------- grpc-cpp installed successfully ----------"
 
 #echo "---------------Installing grpc 1.70.0---------------------"
 
@@ -570,6 +601,7 @@ python3 -m pip install "coverage>=4.0" "cython>=0.29.8,<3.0.0" "wheel>=0.29"
 # Install the package
 GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 python3 -m pip install -e .
 cd $CURRENT_DIR
+echo "---------- grpc (python) installed successfully ----------"
 
 #echo "-------------grpc 1.70.0 installed-----------------------------------"
 
@@ -760,6 +792,7 @@ ninja install
 popd
 
 cd $CURRENT_DIR
+echo "---------- arrow-cpp installed successfully ----------"
 
 echo "Installing prerequisite for arrow..."
 pip install setuptools-scm Cython
@@ -775,7 +808,6 @@ export CMAKE_PREFIX_PATH=$ARROW_HOME
 
 # Build dependencies
 export PARQUET_HOME=$ARROW_HOME
-export SETUPTOOLS_SCM_PRETEND_VERSION=$version
 export PYARROW_BUILD_TYPE=release
 export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 export PYARROW_WITH_DATASET=1
@@ -799,14 +831,23 @@ fi
 
 yum reinstall cmake -y
 cd python
-pip install -e .
+# pyarrow 20.0.0 requires "cython >= 3" in its isolated build env Cython 3.3.0 rejects
+CYTHON_CONSTRAINT=$(mktemp)
+echo "cython<3.3" > "$CYTHON_CONSTRAINT"
+if ! SETUPTOOLS_SCM_PRETEND_VERSION=20.0.0 PIP_CONSTRAINT="$CYTHON_CONSTRAINT" PIP_BUILD_CONSTRAINT="$CYTHON_CONSTRAINT" pip install -e . ; then
+    echo "------------------pyarrow:install_fails-------------------------------------"
+    exit 1
+fi
+rm -f "$CYTHON_CONSTRAINT"
 cd $CURRENT_DIR
+echo "---------- pyarrow (python) installed successfully ----------"
 
 #Install redoc
 git clone https://github.com/sphinx-contrib/redoc
 cd redoc
 SETUPTOOLS_SCM_PRETEND_VERSION=1.6.0 pip install .
 cd $CURRENT_DIR
+echo "---------- redoc installed successfully ----------"
 
 #Install FreeTDS
 curl -LO https://www.freetds.org/files/stable/freetds-1.3.18.tar.gz
@@ -817,6 +858,7 @@ cd freetds-1.3.18
 make
 make install
 cd $CURRENT_DIR
+echo "---------- FreeTDS installed successfully ----------"
 
 #Install librdkafka
 git clone https://github.com/confluentinc/librdkafka.git
@@ -827,6 +869,7 @@ cd librdkafka
 make
 make install
 cd $CURRENT_DIR
+echo "---------- librdkafka installed successfully ----------"
 
 #Install libtool
 wget https://ftp.gnu.org/gnu/libtool/libtool-2.4.7.tar.gz
@@ -837,9 +880,10 @@ make -j$(nproc)
 make install
 ldconfig
 cd $CURRENT_DIR
+echo "---------- libtool installed successfully ----------"
 
 #Install xmlsec1
-wget https://www.aleksey.com/xmlsec/download/xmlsec1-1.3.7.tar.gz
+wget https://github.com/lsh123/xmlsec/releases/download/1.3.7/xmlsec1-1.3.7.tar.gz
 tar xzf xmlsec1-1.3.7.tar.gz
 cd xmlsec1-1.3.7
 
@@ -849,6 +893,7 @@ make install
 ldconfig
 
 cd $CURRENT_DIR
+echo "---------- xmlsec1 installed successfully ----------"
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -863,13 +908,17 @@ uv tool install cherry-picker
 
 
 #Build package
-if ! pip install . ; then
+# airflow requires grpcio>=1.75.1; pip may have to build it from source on ppc64le, and grpcio's bundled
+if ! GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+echo "------------------$PACKAGE_NAME:install_success-------------------------------------"
+echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass |  Install_Success"
+echo "========== BUILD COMPLETE: $PACKAGE_NAME $PACKAGE_VERSION installed successfully =========="
+
+
 
 # Skipping tests since they require a fully initialized metadata DB and environment, which are not supported in this context.
-
-
