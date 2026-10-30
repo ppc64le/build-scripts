@@ -70,6 +70,7 @@ make -j$(nproc)
 echo "Installing flex..."
 make install
 cd $CURRENT_DIR 
+echo "---------- flex installed successfully ----------"
 
 echo "-------bison installing----------------------"
 wget https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.gz
@@ -82,6 +83,7 @@ make -j$(nproc)
 echo "Installing bison..."
 make install
 cd $CURRENT_DIR
+echo "---------- bison installed successfully ----------"
 
 echo "------------ gflags installing-------------------"
 git clone https://github.com/gflags/gflags.git
@@ -94,6 +96,7 @@ make -j$(nproc)
 echo "Installing gflags..."
 make install
 cd $CURRENT_DIR 
+echo "---------- gflags installed successfully ----------"
 
 echo "----------Installing c-ares----------------"
 #Building c-areas
@@ -161,6 +164,7 @@ make -j$(nproc)
 echo "Installing rapidjson"
 make install
 cd $CURRENT_DIR 
+echo "---------- rapidjson installed successfully ----------"
 
 echo "--------------xsimd installing-------------------------"
 git clone https://github.com/xtensor-stack/xsimd.git
@@ -173,6 +177,7 @@ make -j$(nproc)
 echo "Installing xsimd..."
 make install
 cd $CURRENT_DIR 
+echo "---------- xsimd installed successfully ----------"
 
 
 echo "-----------------snappy installing----------------"
@@ -195,6 +200,7 @@ echo "Installing snappy..."
 make install
 cd ..
 cd $CURRENT_DIR 
+echo "---------- snappy installed successfully ----------"
 
 
 echo "------------libzstd installing-------------------------"
@@ -209,11 +215,12 @@ export ZSTD_HOME=/usr/local
 export CMAKE_PREFIX_PATH=$ZSTD_HOME
 export LD_LIBRARY_PATH=$ZSTD_HOME/lib64:$LD_LIBRARY_PATH
 cd $CURRENT_DIR
+echo "---------- libzstd installed successfully ----------"
 
 #re2 install from source
 echo "------------ re2 installing-------------------"
 
-git clone http://github.com/google/re2
+git clone https://github.com/google/re2
 cd re2
 git checkout 2022-04-01
 
@@ -243,6 +250,7 @@ echo "Installing re2..."
 echo "Running make shared-install......"
 make -j "${CPU_COUNT}" prefix=${RE2_PREFIX} shared-install
 cd $CURRENT_DIR 
+echo "---------- re2 installed successfully ----------"
 
 
 
@@ -273,6 +281,7 @@ cmake --build .
 echo "Installing utf8proc ..."
 cmake --build . --target install
 cd $CURRENT_DIR 
+echo "---------- utf8proc installed successfully ----------"
 
 echo "------------ abseil_cpp cloning-------------------"
 
@@ -325,6 +334,7 @@ cmake --build . --verbose
 echo  "Installing libprotobuf..."
 cmake --install .
 cd $CURRENT_DIR 
+echo "---------- libprotobuf installed successfully ----------"
 
 echo "------------ orc installing-------------------"
 
@@ -406,6 +416,7 @@ echo  "Installing orc..."
 ninja install
 
 cd $CURRENT_DIR
+echo "---------- orc installed successfully ----------"
 
 
 echo "-----------------boost_cpp installing-----------------------"
@@ -471,6 +482,7 @@ echo " Building and installing Boost...."
 rm -rf "${BOOST_PREFIX}/include/boost/python.hpp"
 rm -rf "${BOOST_PREFIX}/include/boost/python"
 cd $CURRENT_DIR 
+echo "---------- boost-cpp installed successfully ----------"
 
 
 echo "------------thrift_cpp  installing-------------------"
@@ -518,6 +530,7 @@ make -j$(nproc)
 echo  "Installing thrift_cpp..."
 make install
 cd $CURRENT_DIR 
+echo "---------- thrift-cpp installed successfully ----------"
 
 
 echo "------------ grpc_cpp 1.68.0 installing-------------------"
@@ -575,6 +588,7 @@ echo  "Installing grpc_cpp..."
 ninja install -v
 popd
 cd $CURRENT_DIR
+echo "---------- grpc-cpp installed successfully ----------"
 
 #echo "---------------Installing grpc 1.70.0---------------------"
 
@@ -590,6 +604,7 @@ python3 -m pip install "coverage>=4.0" "cython>=0.29.8,<3.0.0" "wheel>=0.29"
 # Install the package
 GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 python3 -m pip install -e .
 cd $CURRENT_DIR
+echo "---------- grpc (python) installed successfully ----------"
 
 #echo "-------------grpc 1.70.0 installed-----------------------------------"
 
@@ -780,6 +795,7 @@ ninja install
 popd
 
 cd $CURRENT_DIR
+echo "---------- arrow-cpp installed successfully ----------"
 
 echo "Installing prerequisite for arrow..."
 pip install setuptools-scm Cython
@@ -821,12 +837,14 @@ yum reinstall cmake -y
 cd python
 pip install -e .
 cd $CURRENT_DIR
+echo "---------- pyarrow (python) installed successfully ----------"
 
 #Install redoc
 git clone https://github.com/sphinx-contrib/redoc
 cd redoc
 SETUPTOOLS_SCM_PRETEND_VERSION=1.6.0 pip install .
 cd $CURRENT_DIR
+echo "---------- redoc installed successfully ----------"
 
 #Install FreeTDS
 curl -LO https://www.freetds.org/files/stable/freetds-1.3.18.tar.gz
@@ -837,6 +855,7 @@ cd freetds-1.3.18
 make
 make install
 cd $CURRENT_DIR
+echo "---------- FreeTDS installed successfully ----------"
 
 #Install librdkafka
 git clone https://github.com/confluentinc/librdkafka.git
@@ -847,6 +866,7 @@ cd librdkafka
 make
 make install
 cd $CURRENT_DIR
+echo "---------- librdkafka installed successfully ----------"
 
 #Install libtool
 wget https://ftp.gnu.org/gnu/libtool/libtool-2.4.7.tar.gz
@@ -857,6 +877,7 @@ make -j$(nproc)
 make install
 ldconfig
 cd $CURRENT_DIR
+echo "---------- libtool installed successfully ----------"
 
 #Install xmlsec1
 wget https://github.com/lsh123/xmlsec/releases/download/1.3.7/xmlsec1-1.3.7.tar.gz
@@ -869,6 +890,7 @@ make install
 ldconfig
 
 cd $CURRENT_DIR
+echo "---------- xmlsec1 installed successfully ----------"
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -889,5 +911,10 @@ if ! pip install . ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+echo "------------------$PACKAGE_NAME:install_success-------------------------------------"
+echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass |  Install_Success"
+echo "========== BUILD COMPLETE: $PACKAGE_NAME $PACKAGE_VERSION installed successfully =========="
+
+
 
 # Skipping tests since they require a fully initialized metadata DB and environment, which are not supported in this context.
