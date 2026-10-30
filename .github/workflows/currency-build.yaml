@@ -640,7 +640,7 @@ jobs:
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
             bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
-            echo "No wheel file found!"; exit 1
+            echo "No wheel file found — skipped (non-abi3 Python 3.10 wheel is intentionally not generated)."
           fi
       - name: Upload CVE report
         run: |

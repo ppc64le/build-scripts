@@ -244,10 +244,17 @@ fi
 
 cd $CURRENT_DIR
 if ls *.whl 1>/dev/null 2>&1; then
-    echo "=============== Modifying Metadata file =================="
-    #add modifying metadata file
-    wheel_file=$(ls *.whl 1>/dev/null 2>&1 && echo *.whl)
-    modify_metadata_file "$wheel_file"
+    wheel_file=$(echo *.whl)
+
+    # If Python 3.10 is being used, only abi3 wheels are permitted.
+    # Regular cpython-3.10 wheels must not be produced (3.10 support is dropped).
+    if [[ "$PYTHON_VERSION" == "3.10" && "$wheel_file" != *abi3* ]]; then
+        echo "============ WARNING: Python 3.10 regular wheel detected: $wheel_file ================="
+        echo "============          Non-abi3 Python 3.10 wheels are no longer supported — skipping. ================="
+    else
+        echo "=============== Modifying Metadata file =================="
+        modify_metadata_file "$wheel_file"
+    fi
 fi
 
 # Clean up virtual environment
