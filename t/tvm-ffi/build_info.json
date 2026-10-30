@@ -11,12 +11,6 @@
    "wheel_name": "apache-tvm-ffi",
    "validate_build_script": true,
    "use_non_root_user": false,
-   "v0.1.9": {
-     "build_script":"tvm_ffi_ubi_9.6.sh"
-   },
-   "v0.1.13-post3": {
-     "build_script":"tvm_ffi_v0.1.13-post3_ubi_9.6.sh"
-   },
    "*": {
      "build_script":"tvm_ffi_v0.1.13-post3_ubi_9.6.sh"
    }
