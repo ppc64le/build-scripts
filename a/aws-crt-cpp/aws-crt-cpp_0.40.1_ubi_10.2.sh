@@ -23,7 +23,6 @@ PACKAGE_VERSION="${1:-v0.40.1}"
 PACKAGE_URL="https://github.com/awslabs/aws-crt-cpp"
 PACKAGE_DIR="aws-crt-cpp"
 WORKING_DIR="$(pwd)"
-INSTALL_PREFIX="${2:-/usr/local}"
 
 # Detect POWER10 and set CPU optimization flags accordingly
 if grep -q "POWER10" /proc/cpuinfo 2>/dev/null; then
@@ -45,15 +44,22 @@ yum install -y --allowerasing \
 # Apply CPU optimization flags
 export CFLAGS="${CPU_FLAGS}"
 export CXXFLAGS="${CPU_FLAGS}"
-export LDFLAGS="${CPU_FLAGS}"
-
 
 # Clone source
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+rm -rf "$PACKAGE_DIR"
+if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
+    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME" 
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Clone_Fails"
+    exit 1
+fi
+cd "$PACKAGE_DIR"
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 SOURCE_DIR=$(pwd)
+
+INSTALL_PREFIX="${2:-${SOURCE_DIR}/local/install_stage}"
+mkdir -p "${INSTALL_PREFIX}"
 
 # Configure and build.
 echo "Configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}..."
@@ -62,10 +68,10 @@ mkdir -p build && cd build
 if ! cmake .. \
         -DCMAKE_BUILD_TYPE=Release \
     	-DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
+		-DCMAKE_INSTALL_LIBDIR=lib64 \
+        -DCMAKE_SKIP_BUILD_RPATH=ON \
         -DCMAKE_C_FLAGS="${CPU_FLAGS}" \
         -DCMAKE_CXX_FLAGS="${CPU_FLAGS}" \
-	    -DCMAKE_EXE_LINKER_FLAGS="${CPU_FLAGS}" \
-        -DCMAKE_SHARED_LINKER_FLAGS="${CPU_FLAGS}" \
 	    -DBUILD_DEPS=ON \
         -DBUILD_SHARED_LIBS=ON \
         -DBUILD_TESTING=ON \
@@ -88,6 +94,8 @@ if ! cmake --install .; then
     exit 1
 fi
 
+# Run tests against the freshly installed (staged) libraries.
+export LD_LIBRARY_PATH="${INSTALL_PREFIX}/lib64:${INSTALL_PREFIX}/lib"
 # Run Test 
 if ! ctest --output-on-failure -j"$(nproc)"; then
     echo "ERROR: C++ tests failed"
@@ -107,44 +115,24 @@ mkdir -p "${LOCAL_PKG}/lib64" \
          "${LOCAL_PKG}/include" \
          "${LOCAL_PKG}/cmake"
 
-# Copy from lib64 if it exists
-if [ -d "${INSTALL_PREFIX}/lib64" ]; then
-    echo "  Copying from lib64..."
-    # Copy shared libraries
-    cp -r ${INSTALL_PREFIX}/lib64/*.so* local/aws_crt_cpp/lib64/ 2>/dev/null || true
-    # Copy static libraries
-    cp -r ${INSTALL_PREFIX}/lib64/*.a local/aws_crt_cpp/lib64/ 2>/dev/null || true
-    # Copy CMake files
-    find ${INSTALL_PREFIX}/lib64 -name "*.cmake" -exec cp {} local/aws_crt_cpp/lib64/ \; 2>/dev/null || true
-    # Copy cmake subdirectories
-    if [ -d "${INSTALL_PREFIX}/lib64/cmake" ]; then
-        cp -r ${INSTALL_PREFIX}/lib64/cmake/* local/aws_crt_cpp/cmake/ 2>/dev/null || true
+for libdir in lib64 lib; do
+    if [ -d "${INSTALL_PREFIX}/${libdir}" ]; then
+        echo "  Copying from ${libdir}..."
+        cp -a "${INSTALL_PREFIX}/${libdir}"/*.so* "${LOCAL_PKG}/${libdir}/" 2>/dev/null || true
+        cp -a "${INSTALL_PREFIX}/${libdir}"/*.a   "${LOCAL_PKG}/${libdir}/" 2>/dev/null || true
+        find "${INSTALL_PREFIX}/${libdir}" -name "*.cmake" -exec cp {} "${LOCAL_PKG}/${libdir}/" \; 2>/dev/null || true
+        if [ -d "${INSTALL_PREFIX}/${libdir}/cmake" ]; then
+            cp -r "${INSTALL_PREFIX}/${libdir}/cmake"/* "${LOCAL_PKG}/cmake/" 2>/dev/null || true
+        fi
     fi
-fi
+done
 
-# Copy from lib if it exists
-if [ -d "${INSTALL_PREFIX}/lib" ]; then
-    echo "  Copying from lib..."
-    # Copy shared libraries
-    cp -r ${INSTALL_PREFIX}/lib/*.so* local/aws_crt_cpp/lib/ 2>/dev/null || true
-    # Copy static libraries
-    cp -r ${INSTALL_PREFIX}/lib/*.a local/aws_crt_cpp/lib/ 2>/dev/null || true
-    # Copy CMake files
-    find ${INSTALL_PREFIX}/lib -name "*.cmake" -exec cp {} local/aws_crt_cpp/lib/ \; 2>/dev/null || true
-    # Copy cmake subdirectories
-    if [ -d "${INSTALL_PREFIX}/lib/cmake" ]; then
-        cp -r ${INSTALL_PREFIX}/lib/cmake/* local/aws_crt_cpp/cmake/ 2>/dev/null || true
-    fi
-fi
-
-# # Copy installed headers.
+# Copy installed headers.
 echo "Copying headers from ${INSTALL_PREFIX}..."
 if [ -d "${INSTALL_PREFIX}/include/aws" ]; then
-    cp -r ${INSTALL_PREFIX}/include/aws local/aws_crt_cpp/include/
+    cp -r "${INSTALL_PREFIX}/include/aws" "${LOCAL_PKG}/include/"
 fi
-
-# Copy any other headers that might be at the root
-find ${INSTALL_PREFIX}/include -maxdepth 1 -type f -name "*.h" -exec cp {} local/aws_crt_cpp/include/ \; 2>/dev/null || true
+find "${INSTALL_PREFIX}/include" -maxdepth 1 -type f -name "*.h" -exec cp {} "${LOCAL_PKG}/include/" \; 2>/dev/null || true
 
 # Create __init__.py
 echo "Creating Python package files..."
@@ -170,7 +158,7 @@ else
     https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/aws-crt-cpp/pyproject.toml
 fi
 
-sed -i "s/{PACKAGE_VERSION}/${PACKAGE_VERSION#aws-crt-cpp_}/g" "${SOURCE_DIR}/pyproject.toml"
+sed -i "s/{PACKAGE_VERSION}/${PACKAGE_VERSION#v}/g" "${SOURCE_DIR}/pyproject.toml"
 
 # Build the wheel.
 mkdir -p "${WORKING_DIR}/dist"
@@ -203,18 +191,37 @@ if ! pip install --force-reinstall "${WHEEL_FILE}"; then
     exit 1
 fi
 
-# Smoke test - run from /tmp so Python imports the installed wheel, not the
-# source tree.
+# Smoke test: package version matches, and the installed wheel ships the shared
+# libraries. Run from /tmp so Python imports the installed wheel, not the source tree.
 echo "Running Python wheel smoke test..."
 cd /tmp
-
 if ! python3 -c "
+import glob, os
 from importlib.metadata import version
 import aws_crt_cpp
 
 assert version('aws-crt-cpp') == '${PACKAGE_VERSION#v}', 'Package version mismatch'
+d = os.path.dirname(aws_crt_cpp.__file__)
+for lib in ('libaws-crt-cpp.so', 'libaws-c-common.so'):
+    assert glob.glob(os.path.join(d, 'lib64', lib + '*')), 'missing ' + lib + ' in wheel'
+print('aws_crt_cpp import OK')
 "; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_success_but_test_Fails"
+    cd "$WORKING_DIR"
+    deactivate || true
+    exit 2
+fi
+
+# Wheel test: re-run the upstream tests, now against the libraries from the installed wheel.
+WHEEL_LIB_DIR=$(python3 -c "import os, aws_crt_cpp; print(os.path.dirname(aws_crt_cpp.__file__))")
+export LD_LIBRARY_PATH="${WHEEL_LIB_DIR}/lib64:${WHEEL_LIB_DIR}/lib"
+cd "${SOURCE_DIR}/build"
+if ! ctest --output-on-failure -j"$(nproc)"; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_success_but_test_Fails"
     cd "$WORKING_DIR"
     deactivate || true
     exit 2
@@ -223,6 +230,7 @@ fi
 cd "$WORKING_DIR"
 deactivate
 
-echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"
+echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+echo "$PACKAGE_URL $PACKAGE_NAME"
+echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Both_Install_and_Test_Success"
 exit 0
