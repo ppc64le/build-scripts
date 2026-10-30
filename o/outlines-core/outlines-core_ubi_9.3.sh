@@ -133,11 +133,11 @@ source "$HOME/.cargo/env"
 # --------------------- Build PyTorch ---------------------
 git clone https://github.com/pytorch/pytorch.git
 cd pytorch
-git checkout v2.6.0
+git checkout v2.7.0
 git submodule sync
 git submodule update --init --recursive
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.6.0.patch
-git apply pytorch_v2.6.0.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.7.0.patch
+git apply pytorch_v2.7.0.patch
 
 # Set environment variables
 ARCH=`uname -p`
@@ -723,7 +723,7 @@ python3.12 -m pip install "multiprocess==0.70.15"
 python3.12 -m pip install "xxhash==3.4.1"
 python3.12 -m pip install "dill==0.3.7" "fsspec==2023.10.0" aiohttp pyarrow-hotfix
 python3.12 -m pip install "transformers==4.39.2" maturin puccinialin
-python3.12 -m pip install llvmlite==0.44.0 numba==0.61.2 --prefer-binary --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux
+python3.12 -m pip install llvmlite==0.44.0 numba==0.62.0 --prefer-binary --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux
 
 
 # NOTE: outlines-core is built with maturin (Rust/PyO3).
