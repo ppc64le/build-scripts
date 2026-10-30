@@ -811,7 +811,9 @@ export CMAKE_PREFIX_PATH=$ARROW_HOME
 
 # Build dependencies
 export PARQUET_HOME=$ARROW_HOME
-export SETUPTOOLS_SCM_PRETEND_VERSION=$version
+# The sed on ThirdpartyToolchain.cmake dirties the arrow tree, so setuptools_scm would otherwise
+# produce 20.0.1.dev0+g<hash>.d<date>. Pin the version to the checked-out tag.
+export SETUPTOOLS_SCM_PRETEND_VERSION=20.0.0
 export PYARROW_BUILD_TYPE=release
 export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 export PYARROW_WITH_DATASET=1
@@ -835,7 +837,15 @@ fi
 
 yum reinstall cmake -y
 cd python
-pip install -e .
+# pyarrow 20.0.0 requires "cython >= 3" in its isolated build env; Cython 3.3.0 rejects
+# only knows PIP_CONSTRAINT, so set both.
+CYTHON_CONSTRAINT=$(mktemp)
+echo "cython<3.3" > "$CYTHON_CONSTRAINT"
+if ! PIP_CONSTRAINT="$CYTHON_CONSTRAINT" PIP_BUILD_CONSTRAINT="$CYTHON_CONSTRAINT" pip install -e . ; then
+    echo "------------------pyarrow:install_fails-------------------------------------"
+    exit 1
+fi
+rm -f "$CYTHON_CONSTRAINT"
 cd $CURRENT_DIR
 echo "---------- pyarrow (python) installed successfully ----------"
 
