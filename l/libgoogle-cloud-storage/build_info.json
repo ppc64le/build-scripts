@@ -1,0 +1,19 @@
+{
+    "maintainer": "Shivender-Singh",
+    "package_name": "libgoogle-cloud-storage",
+    "github_url": "https://github.com/googleapis/google-cloud-cpp",
+    "version": "v3.6.0",
+    "default_branch": "main",
+    "build_script": "libgoogle-cloud-storage_ubi_10.2.sh",
+    "package_dir": "l/libgoogle-cloud-storage",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "wheel_build": true,
+    "v3.6.0": {
+        "build_script": "libgoogle-cloud-storage_ubi_10.2.sh"
+    },
+    "*": {
+        "build_script": "libgoogle-cloud-storage_ubi_10.2.sh"
+    }
+}
