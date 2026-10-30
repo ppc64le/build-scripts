@@ -28,9 +28,6 @@ CURRENT_DIR=${PWD}
 yum install -y git make cmake zip tar wget python3 python3-devel python3-pip gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel bzip2-devel libffi-devel openldap-devel unixODBC-devel libpq-devel sqlite-devel mysql openssl openssl-devel lz4 lz4-devel xz-devel libjpeg-devel libevent libtool pkg-config brotli-devel krb5-devel krb5-workstation pkgconf-pkg-config mariadb-connector-c-devel librdkafka-devel libxml2 libxslt libxml2-devel libxslt-devel 
 
 # Airflow 3.x needs Python >= 3.10, but UBI 9 ships 3.9 as the default python3.
-# If the active python is older, install a newer one and put it first in PATH.
-# The system /usr/bin/python3 is left untouched because dnf/yum depend on it.
-# Skipped when the caller (e.g. the wheel build wrapper) already provides >= 3.10.
 PY_OK=$(python3 -c "import sys; print(int(sys.version_info >= (3, 10)))" 2>/dev/null || echo 0)
 if [ "$PY_OK" != "1" ]; then
     TARGET_PY=${2:-3.12}
@@ -834,14 +831,7 @@ fi
 
 yum reinstall cmake -y
 cd python
-# pyarrow 20.0.0 requires "cython >= 3" in its isolated build env; Cython 3.3.0 rejects
-# pyarrow/table.pxi ("Coercion from Python not allowed without the GIL"), so cap it below 3.3.
-# Recent pip ignores PIP_CONSTRAINT for isolated builds and needs PIP_BUILD_CONSTRAINT; older pip
-# only knows PIP_CONSTRAINT, so set both.
-# The sed on ThirdpartyToolchain.cmake dirties the arrow tree, so setuptools_scm would otherwise
-# produce 20.0.1.dev0+g<hash>.d<date>. Pin the version to the checked-out tag, for this command
-# only: an exported SETUPTOOLS_SCM_PRETEND_VERSION leaks into every later setuptools_scm build
-# (e.g. libcst) and makes pip reject them as "inconsistent version".
+# pyarrow 20.0.0 requires "cython >= 3" in its isolated build env Cython 3.3.0 rejects
 CYTHON_CONSTRAINT=$(mktemp)
 echo "cython<3.3" > "$CYTHON_CONSTRAINT"
 if ! SETUPTOOLS_SCM_PRETEND_VERSION=20.0.0 PIP_CONSTRAINT="$CYTHON_CONSTRAINT" PIP_BUILD_CONSTRAINT="$CYTHON_CONSTRAINT" pip install -e . ; then
@@ -918,7 +908,8 @@ uv tool install cherry-picker
 
 
 #Build package
-if ! pip install . ; then
+# airflow requires grpcio>=1.75.1; pip may have to build it from source on ppc64le, and grpcio's bundled
+if ! GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
