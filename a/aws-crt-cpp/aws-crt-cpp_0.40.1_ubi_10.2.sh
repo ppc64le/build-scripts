@@ -58,7 +58,7 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 SOURCE_DIR=$(pwd)
 
-INSTALL_PREFIX="${2:-${SOURCE_DIR}/local/install_stage}"
+INSTALL_PREFIX="${SOURCE_DIR}/local/install_stage"
 mkdir -p "${INSTALL_PREFIX}"
 
 # Configure and build.
@@ -95,7 +95,8 @@ if ! cmake --install .; then
 fi
 
 # Run tests against the freshly installed (staged) libraries.
-export LD_LIBRARY_PATH="${INSTALL_PREFIX}/lib64:${INSTALL_PREFIX}/lib"
+BUILD_LIB_DIRS=$(find "${SOURCE_DIR}/build" -name "*.so*" -printf '%h\n' | sort -u | paste -sd:)
+export LD_LIBRARY_PATH="${INSTALL_PREFIX}/lib64:${INSTALL_PREFIX}/lib:${BUILD_LIB_DIRS}"
 # Run Test 
 if ! ctest --output-on-failure -j"$(nproc)"; then
     echo "ERROR: C++ tests failed"
