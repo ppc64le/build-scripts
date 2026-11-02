@@ -108,7 +108,7 @@ git checkout "$BUILD_TAG"
 ###############################################################################
 # Determine build number for wheel version
 ###############################################################################
-
+WHEEL_VERSION="${LLAMA_CPP_VERSION#v}"
 
 echo "llama.cpp Version : $LLAMA_CPP_VERSION"
 echo "Build Tag          : $BUILD_TAG"
@@ -244,7 +244,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="llama_cpp_python_package",
-    version="1.0+${WHEEL_VERSION}",
+    version="${WHEEL_VERSION}",
     description="Standalone llama.cpp binaries",
     author="Shalini Salomi Bodapati",
     author_email="Shalini.Salomi.Bodapati@ibm.com",
