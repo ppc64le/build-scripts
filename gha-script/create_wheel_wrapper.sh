@@ -43,21 +43,6 @@ install_python_version() {
     "3.11" | "3.12")
         yum install -y python${version} python${version}-devel python${version}-pip
         ;;
-    "3.10")
-        if ! python3.10 --version &>/dev/null; then
-            yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
-            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
-            wget https://www.python.org/ftp/python/3.10.20/Python-3.10.20.tgz
-            tar xf Python-3.10.20.tgz
-            cd Python-3.10.20
-            ./configure --prefix=/usr/local --enable-optimizations --enable-shared
-            make -j2
-            make altinstall
-            echo "/usr/local/lib" > /etc/ld.so.conf.d/python-local.conf && ldconfig
-            echo "Completed..."
-            cd .. && rm -rf Python-3.10.20.tgz
-        fi
-        ;;
     "3.13")
         if ! python3.13 --version &>/dev/null; then
             yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
@@ -258,21 +243,9 @@ fi
 
 wheel_file="${wheels[0]}"
 
-# If Python 3.10 is being used, only abi3 wheels are permitted.
-# Regular cpython-3.10 wheels must not be produced (3.10 support is dropped).
-if [[ "$PYTHON_VERSION" == "3.10" && "$wheel_file" != *abi3* ]]; then
-    echo
-    echo "===> WARNING: Python 3.10 regular wheel detected: $(basename "$wheel_file")"
-    echo "===>          Non-abi3 Python 3.10 wheels are no longer supported — skipping."
-    echo
-    cleanup "$VENV_DIR"
-    [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
-    exit 0
-fi
-
-echo
+echo 
 echo "==== Running auditwheel repair on: ${wheel_file} ===="
-echo
+echo 
 
 # location of repaired wheel
 WHEELHOUSE="$CURRENT_DIR/wheelhouse"
