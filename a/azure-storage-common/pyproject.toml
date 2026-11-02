@@ -1,0 +1,38 @@
+[build-system]
+requires = [
+    "setuptools",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "azure-storage-common-cpp"
+version = "{PACKAGE_VERSION}"
+description = "Azure Storage Common SDK for C++ packaging (ppc64le)"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: C++",
+  "License :: OSI Approved :: MIT License",
+]
+
+[project.urls]
+homepage = "https://github.com/Azure/azure-sdk-for-cpp"
+upstream = "https://github.com/Azure/azure-sdk-for-cpp"
+
+# Find package files in local folder
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["local"]
+
+# Package data: shared libs, headers, cmake config
+[tool.setuptools.package-data]
+"azure_storage_common_cpp" = [
+    "lib64/libazure-storage-common*",
+    "include/azure/storage/common.hpp",
+    "include/azure/storage/common/**/*",
+    "share/azure-storage-common-cpp/*",
+]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_ppc64le"
+universal = false

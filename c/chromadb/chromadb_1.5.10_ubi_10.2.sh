@@ -89,7 +89,11 @@ cd ${PACKAGE_DIR}
 
 # Checkout version — try v-prefixed tag, bare tag, branch, then fall back to main
 if [[ "${PACKAGE_VERSION}" == "latest" ]]; then
-    git checkout main
+     #Use commit 973eeac as it includes fix for CVE-2026-45829
+     #https://github.com/chroma-core/chroma/issues/7226#issuecomment-5087519634
+     #TODO: Remove this commit, once upstream tags a release with this fix.
+     git checkout 973eeac
+     PACKAGE_VERSION=1.5.10
 elif git rev-parse "v${PACKAGE_VERSION}" &>/dev/null; then
     git checkout "v${PACKAGE_VERSION}"
 elif git rev-parse "${PACKAGE_VERSION}" &>/dev/null; then
@@ -102,20 +106,19 @@ fi
 git submodule update --init --recursive
 # Patch version sources. Cargo.lock is patched AFTER cargo update (below) because
 # cargo update rewrites the entire lock file, undoing any earlier Cargo.lock patch.
-if [[ "$PACKAGE_VERSION" != "latest" ]]; then
-    sed -i 's/^dynamic = \["version"\]/version = "'"$PACKAGE_VERSION"'"/' pyproject.toml
-    python3.12 - <<'PYEOF'
+sed -i 's/^dynamic = \["version"\]/version = "'"$PACKAGE_VERSION"'"/' pyproject.toml
+python3.12 - <<'PYEOF'
 import re, pathlib
 p = pathlib.Path("pyproject.toml")
 src = p.read_text()
 src = re.sub(r'\[tool\.setuptools_scm\].*?(?=^\[)', '', src, flags=re.DOTALL | re.MULTILINE)
 p.write_text(src)
 PYEOF
-    sed -i 's/^version = "0\.1\.0"/version = "'"$PACKAGE_VERSION"'"/' \
-        rust/python_bindings/Cargo.toml
-    sed -i 's/^__version__ = ".*"/__version__ = "'"$PACKAGE_VERSION"'"/' \
-        chromadb/__init__.py
-fi
+sed -i 's/^version = "0\.1\.0"/version = "'"$PACKAGE_VERSION"'"/' \
+    rust/python_bindings/Cargo.toml
+sed -i 's/^__version__ = ".*"/__version__ = "'"$PACKAGE_VERSION"'"/' \
+    chromadb/__init__.py
+
 sed -i 's/, features = \["abi3-py39"\]/ /' Cargo.toml
 
 # Install the chromadb requirements.

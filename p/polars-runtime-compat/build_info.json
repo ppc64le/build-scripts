@@ -1,16 +1,19 @@
 {
-  "maintainer": "Sumit Dubey",
+  "maintainer": "Pratik Tonage",
   "package_name": "polars-runtime-compat",
   "github_url": "https://github.com/pola-rs/polars",
-  "version": "py-1.38.1",
+  "version": "py-1.44.2",
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/polars-runtime-compat",
-  "build_script": "polars-runtime-compat_py-1.38.1_ubi9.7.sh",
+  "build_script": "polars-runtime-compat_py-1.44.2_ubi9.8.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": false,
   "*": {
+    "build_script": "polars-runtime-compat_py-1.44.2_ubi9.8.sh"
+  },
+  "py-1.38.1": {
     "build_script": "polars-runtime-compat_py-1.38.1_ubi9.7.sh"
   }
 }

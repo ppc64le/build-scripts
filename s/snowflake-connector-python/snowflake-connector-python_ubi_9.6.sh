@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : snowflake-connector-python
-# Version          : v4.3.0
+# Version          : v4.8.0
 # Source repo      : https://github.com/snowflakedb/snowflake-connector-python
 # Tested on        : UBI:9.6
 # Language         : Python, C
@@ -20,10 +20,10 @@
 
 PACKAGE_NAME=snowflake-connector-python
 PACKAGE_URL=https://github.com/snowflakedb/snowflake-connector-python
-PACKAGE_VERSION=${1:-v4.3.0}
+PACKAGE_VERSION=${1:-v4.8.0}
 PACKAGE_DIR=snowflake-connector-python
 
-dnf -y install git python3 python3-pip python3-devel gcc-toolset-13
+dnf -y install git python3.11 python3.11-pip python3.11-devel gcc-toolset-13
 
 # Enable GCC toolset
 source /opt/rh/gcc-toolset-13/enable
@@ -34,13 +34,13 @@ cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
 
 echo "building snowflake-connector-python...."
-if ! python3 -m pip install --no-cache-dir .; then
+if ! python3.11 -m pip install --no-cache-dir .; then
     echo "------------------$PACKAGE_NAME: build_fail------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fail"
     exit 1
 fi
 
-if ! (python3 - <<EOF
+if ! (python3.11 - <<EOF
 import snowflake.connector
 import cryptography
 import OpenSSL

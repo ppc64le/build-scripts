@@ -4,7 +4,7 @@
 # Package       : pyarrow
 # Version       : apache-arrow-23.0.1
 # Source repo   : https://github.com/apache/arrow
-# Tested on     : UBI:9.3
+# Tested on     : UBI:9.8
 # Language      : Python, C
 # Ci-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -204,7 +204,7 @@ cd $SCRIPT_DIR
 #re2 install from sosurce
 echo "------------ re2 installing-------------------"
 
-git clone http://github.com/google/re2
+git clone https://github.com/google/re2.git
 cd re2
 git checkout 2022-04-01
 
@@ -763,19 +763,8 @@ PY_VER=$(python3.11 -c 'import sys;print(f"{sys.version_info.major}.{sys.version
 python3.11 -m pip install -U pip
 python3.11 -m pip install setuptools-scm
 
-if python3 - <<'PY'
-import sys
-raise SystemExit(0 if sys.version_info >= (3,13) else 1)
-PY
-then
-  # Python ≥ 3.13
-  python3.11 -m pip install "cython>=3.2"
-  python3.11 -m pip install "numpy>=2.0" "pandas>=2.2.3"
-else
-  # Python < 3.13
-  python3.11 -m pip install "cython>=3.1"
-  python3.11 -m pip install "numpy==1.26.4" "pandas>=2.1"
-fi
+python3.11 -m pip install "cython>=3.2"
+python3.11 -m pip install "numpy>=2.0" "pandas>=2.2.3"
 
 # pip install setuptools-scm "cython<3"
 # pip install numpy==1.26.4 pandas==2.0.3

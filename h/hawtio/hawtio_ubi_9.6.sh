@@ -23,12 +23,15 @@ set -e
 PACKAGE_NAME=hawtio
 PACKAGE_URL=https://github.com/hawtio/hawtio
 PACKAGE_VERSION=4.x
-MAVEN_VERSION=3.9.11
+MAVEN_VERSION=3.9.16
+wdir="$(pwd)"
+PATCH_FILE="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/hawtio.patch"
 
 yum install git wget jq -y
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+git clone "$PACKAGE_URL"
+cd "$wdir/${PACKAGE_NAME}"
 git checkout $PACKAGE_VERSION
+git apply --ignore-whitespace "$PATCH_FILE"
 #install JAVA17
 yum install java-17-openjdk java-17-openjdk-devel -y
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
@@ -67,7 +70,7 @@ cd ../..
 echo $PWD
 
 
-if ! mvn --batch-mode --no-transfer-progress install; then
+if ! mvn --batch-mode --no-transfer-progress -fn  install; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL   $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_fails"

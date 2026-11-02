@@ -2,7 +2,11 @@
   "maintainer": "ethanchoe-3",
   "package_name": "ollama",
   "github_url": "https://github.com/ollama/ollama",
-  "version": "v0.33.3",
+  "version": "v0.40.11",
+  "required_versions": {
+    "Releases": ["*"],
+    "Tags": ["*"]
+  },
   "wheel_build": true,
   "wheel_name": "ollama-python-package",
   "package_dir": "o/ollama",
@@ -12,9 +16,21 @@
   "validate_build_script": true,
   "docker_cmd": "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
   "use_non_root_user": false,
+  "v0.40.11": {
+    "dir": "ollama_ubi_10",
+    "build_script": [
+      "ollama_v0.40.11_ubi_9.6.sh",
+      "ollama_ubi_10.sh"
+    ],
+    "base_docker_image": "registry.access.redhat.com/ubi10/ubi:10.0",
+    "base_docker_variant": "redhat"
+  },
   "*": {
     "dir": "ollama_ubi_10",
-    "build_script": "ollama_ubi_10.sh",
+    "build_script": [
+      "ollama_v0.40.11_ubi_9.6.sh",
+      "ollama_ubi_10.sh"
+    ],
     "base_docker_image": "registry.access.redhat.com/ubi10/ubi:10.0",
     "base_docker_variant": "redhat"
   },

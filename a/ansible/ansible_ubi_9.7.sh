@@ -31,7 +31,7 @@ yum install -y git make cmake zip tar wget python3.12 python3.12-devel python3.1
 
 source /opt/rh/gcc-toolset-13/enable
 
-python3.12 -m pip install build pytest pytest-xdist pytest-mock
+python3.12 -m pip install build "pytest<9" pytest-xdist pytest-mock
 
 python3.12 -m pip install \
     jinja2 \
@@ -65,7 +65,7 @@ export ANSIBLE_LIBRARY=./test/integration/targets/ansible-doc/library
 
 #Installing Package Dependencies
 pip install .
-pip install build pytest pytest-xdist pytest-mock
+pip install build "pytest<9" pytest-xdist pytest-mock
 
 #Building Package
 if ! python3.12 -m build ; then
@@ -139,6 +139,10 @@ if [ "$(uname -m)" = "ppc64le" ]; then
 
     sed -i 's|quay.io/ansible/acme-test-container:2.3.0|icr.io/ppc64le-oss/ansible-acme-test-container-ppc64le:2.3.0|g' \
         test/lib/ansible_test/_internal/commands/integration/cloud/acme.py
+
+    sed -i 's|quay.io/ansible/cloudstack-test-container:1.7.0|icr.io/ppc64le-oss/ansible-cloudstack-test-container-ppc64le:1.7.0|' \
+        test/lib/ansible_test/_internal/commands/integration/cloud/cs.py
+
 fi
 
 # UBI/RHEL 9 containers use the host kernel, so matching kernel-modules-extra
@@ -309,7 +313,6 @@ if ! ./bin/ansible-test integration --python 3.12 -vvv \
     --exclude lookup_password \
     --exclude omit \
     --exclude remote_tmp \
-    --exclude ansible-test-cloud-cs \
     --exclude module_no_log \
     --exclude service_facts ; then
     echo "------------------$PACKAGE_NAME:Integration_Test_Failure---------------------"
@@ -322,8 +325,6 @@ else
 fi
 
 ##Other dependency images for integration tests
-##quay.io/ansible/cloudstack-test-container        1.7.0
 ##quay.io/pulp/galaxy                              4.7.1
 
-#Todo: If in future starting a container with privilages mode enabled then need to enbale this script on CI check, aslo need to enable ppc64le support for remaining cloudstack, pulp/galaxy images and debug excluded test cases
-
+#Todo: If in future starting a container with privilages mode enabled then need to enbale this script on CI check, aslo need to enable ppc64le support for remaining pulp and galaxy images and debug excluded test cases

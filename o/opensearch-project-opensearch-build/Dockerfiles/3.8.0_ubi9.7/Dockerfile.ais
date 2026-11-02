@@ -13,7 +13,7 @@
 #   OPENSEARCH_HOME: Optional. Specify the opensearch root directory. Defaults to /usr/share/opensearch.
 
 ########################### Stage 0 ########################
-FROM registry.access.redhat.com/ubi9:latest AS linux_stage_0
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest AS linux_stage_0
 
 ARG UID=1000
 ARG GID=1000
@@ -24,12 +24,70 @@ ARG OPENSEARCH_PATH_CONF=$OPENSEARCH_HOME/config
 ARG SECURITY_PLUGIN_DIR=$OPENSEARCH_HOME/plugins/opensearch-security
 ARG PERFORMANCE_ANALYZER_PLUGIN_CONFIG_DIR=$OPENSEARCH_PATH_CONF/opensearch-performance-analyzer
 
-# Update packages and install required extraction/user tools
-# Remove vim-minimal (pulled as transitive dep) - eliminates 3 HIGH + 18 MEDIUM CVEs
-RUN dnf upgrade -y curl-minimal libcurl-minimal libpng && \
-    dnf install -y tar gzip shadow-utils which openssl && \
-    dnf remove -y vim-minimal && \
-    dnf clean all
+# CVE mitigations: upgrade all packages with known fixes before installing anything else.
+# Addresses:
+#   at.yawk.lz4:lz4-java 1.11.1 → 1.11.4 (CVE-2026-106451 — arbitrary code execution via insecure temp file)
+#     Fixed via Gradle dependency resolution strategy in ppc64le-3.8.0-ai-services.patch
+#     (OpenSearchJavaPlugin.java eachDependency block forces at.yawk.lz4:lz4-java → 1.11.4)
+#   openssl/openssl-libs  3.5.8-1.el9_8  → CVE-2026-14456 (QUIC DoS, CVSS 7.5)
+#   curl-minimal/libcurl-minimal 7.76.1-40.el9_8.7 → CVE-2026-8458 (CVSS 8.1), CVE-2026-8927 (CVSS 7.5)
+#   libevent 2.1.13-1.el9_8  → CVE-2026-63382..63388 (6 HIGH CVEs incl. heap OOB write CVSS 8.4)
+#   libxml2 2.9.13-14.el9_8.5 → CVE-2026-74860 (CVSS 8.5), CVE-2026-86140 (CVSS 7.8)
+#   expat 2.5.0-6.el9_8.5    → CVE-2026-66046 (CVSS 7.5), CVE-2026-93990 (CVSS 7.5)
+#   webkit2gtk3-jsc 2.54.0-1.el9_8 → 7 CRITICAL + 8 HIGH CVEs (Skia use-after-free etc.)
+#   gstreamer1-plugins-base 1.22.12-8.el9_8.2 → CVE-2026-18297 (RCE via OGG, CVSS 7.8)
+#   gdb-gdbserver 16.3-3.1.el9_8 → CVE-2026-13732 (OOB write, CVSS 7.0)
+#   pcre2 / pcre2-syntax 10.40-6.el9 → CVE-2026-103111, CVE-2026-86145 (will_not_fix), CVE-2026-89161
+#                                       (no patched RPM yet; upgrade line auto-applies when fix lands)
+# Remove packages not required in a production OpenSearch container that carry unfixable CVEs:
+#   flatpak / flatpak-session-helper → 5 HIGH CVEs (CVE-2026-96275 CVSS 8.8 etc.)
+#   bubblewrap                       → CVE-2026-87766 (symlink traversal, CVSS 8.8)
+#   xdg-dbus-proxy                   → CVE-2026-94422 (D-Bus sandbox escape, CVSS 8.8)
+#   bluez-libs                       → 3 HIGH CVEs incl. CVE-2026-19774 (adj-network RCE, CVSS 8.0)
+#   mesa packages                    → CVE-2026-93599 (rustls-webpki DoS, CVSS 7.5)
+#   webkit2gtk3-jsc                  → 31 CRITICAL + 114 HIGH CVEs (ANGLE/Chromium engine, no fix);
+#                                      orphan package: libproxy-webkitgtk4 already absent at runtime
+#   vim-minimal                      → CVE-2026-43961, CVE-2026-73073 (arbitrary code execution)
+#   librsvg2                         → CVE-2026-96889 (use-after-free); desktop rendering, not needed
+#   libosinfo / osinfo-db-tools / osinfo-db → desktop VM metadata, not needed
+#   geoclue2                         → CVE via libsoup chain; geolocation daemon, not needed
+#   xdg-desktop-portal               → desktop portal daemon, not needed
+#   tracker / tracker-miners         → desktop file indexer, not needed
+#   (removing the above orphans libsoup → also drops CVE-2026-102556, CVE-2026-102557)
+#   expat                            → CVE-2026-76641 (XML external entity DoS); not needed at runtime
+#   libblkid / libmount / libsmartcols / libuuid → CVE-2026-53613 (util-linux TOCTOU);
+#                                                   block/mount utils not needed in a JVM container
+#   python3 / python3-libs / python-unversioned-command / python3-pip-wheel
+#                                    → CVE-2026-19445, CVE-2026-19553, CVE-2026-57585;
+#                                      pulled in transitively by java-25-openjdk-headless weak deps;
+#                                      OpenSearch is a pure Java app and does not need Python at runtime
+# Upgrade each CVE-affected package individually so that a package not present in
+# this base image does not cause dnf to abort the whole transaction and skip others.
+# --setopt=install_weak_deps=0 prevents java-25-openjdk-headless from pulling in python3 transitively.
+RUN microdnf upgrade -y curl-minimal libcurl-minimal || true && \
+    microdnf upgrade -y openssl openssl-libs && \
+    microdnf upgrade -y libevent && \
+    microdnf upgrade -y libxml2 && \
+    microdnf upgrade -y expat && \
+    microdnf upgrade -y pcre2 pcre2-syntax || true && \
+    microdnf upgrade -y gdb-gdbserver || true && \
+    microdnf upgrade -y libpng gstreamer1-plugins-base gdb || true && \
+    microdnf remove -y \
+        flatpak flatpak-session-helper bubblewrap xdg-dbus-proxy \
+        bluez-libs \
+        mesa-libGL mesa-libEGL mesa-libgbm mesa-vulkan-drivers mesa-dri-drivers \
+        webkit2gtk3-jsc libproxy-webkitgtk4 \
+        vim-minimal \
+        librsvg2 \
+        libosinfo osinfo-db-tools osinfo-db \
+        geoclue2 \
+        xdg-desktop-portal \
+        tracker tracker-miners \
+        expat \
+        libblkid libmount libsmartcols libuuid \
+        python3 python3-libs python-unversioned-command python3-pip-wheel || true && \
+    microdnf install -y --setopt=install_weak_deps=0 tar gzip shadow-utils which openssl && \
+    microdnf clean all
 
 # Create an opensearch user and group, add to GID 0 (root) for OpenShift arbitrary UID compatibility
 RUN groupadd -g $GID opensearch && \
@@ -57,25 +115,47 @@ RUN ls -l $TEMP_DIR && \
 
 
 ########################### Stage 1 ########################
-FROM registry.access.redhat.com/ubi9:latest
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
 ARG UID=1000
 ARG GID=1000
 ARG OPENSEARCH_HOME=/usr/share/opensearch
 
-# Install tools, OpenSSL for certificate generation, and Java 25 OpenJDK
-# Remove vim-minimal (pulled as transitive dep) - eliminates 3 HIGH + 18 MEDIUM CVEs
-RUN dnf upgrade -y curl-minimal libcurl-minimal libpng && \
-    dnf install -y tar gzip shadow-utils which openssl \
-    java-25-openjdk \
-    java-25-openjdk-devel \
-    java-25-openjdk-headless \
-    java-25-openjdk-crypto-adapter && \
-    dnf remove -y vim-minimal && \
-    dnf clean all
+# CVE mitigations: upgrade all packages with known fixes before installing anything else.
+# Same set of package upgrades/removals as Stage 0 to ensure the final image is clean.
+# Upgrade each CVE-affected package individually so that a package not present in
+# this base image does not cause dnf to abort the whole transaction and skip others.
+# --setopt=install_weak_deps=0 prevents java-25-openjdk-headless from pulling in python3 transitively
+# (eliminates CVE-2026-19445, CVE-2026-19553, CVE-2026-57585 — OpenSearch needs no Python at runtime).
+RUN microdnf upgrade -y curl-minimal libcurl-minimal || true && \
+    microdnf upgrade -y openssl openssl-libs && \
+    microdnf upgrade -y libevent && \
+    microdnf upgrade -y libxml2 && \
+    microdnf upgrade -y expat && \
+    microdnf upgrade -y pcre2 pcre2-syntax || true && \
+    microdnf upgrade -y gdb-gdbserver || true && \
+    microdnf upgrade -y libpng gstreamer1-plugins-base gdb || true && \
+    microdnf remove -y \
+        flatpak flatpak-session-helper bubblewrap xdg-dbus-proxy \
+        bluez-libs \
+        mesa-libGL mesa-libEGL mesa-libgbm mesa-vulkan-drivers mesa-dri-drivers \
+        webkit2gtk3-jsc libproxy-webkitgtk4 \
+        vim-minimal \
+        librsvg2 \
+        libosinfo osinfo-db-tools osinfo-db \
+        geoclue2 \
+        xdg-desktop-portal \
+        tracker tracker-miners \
+        expat \
+        libblkid libmount libsmartcols libuuid \
+        python3 python3-libs python-unversioned-command python3-pip-wheel || true && \
+    microdnf install -y --setopt=install_weak_deps=0 tar gzip shadow-utils which openssl \
+        java-25-openjdk-headless && \
+    microdnf clean all
 
 # Point JAVA_HOME and PATH to the system installed OpenJDK (ppc64le has no bundled JDK)
-ENV JAVA_HOME=/usr/lib/jvm/java-25-openjdk
+# java-25-openjdk-headless provides /usr/lib/jvm/jre-25-openjdk on UBI9
+ENV JAVA_HOME=/usr/lib/jvm/jre-25-openjdk
 ENV PATH=$OPENSEARCH_HOME/bin:$JAVA_HOME/bin:$PATH
 
 # Create opensearch user and add to root group (GID 0) for OpenShift arbitrary UID compatibility
