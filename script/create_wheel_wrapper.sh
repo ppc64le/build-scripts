@@ -27,27 +27,6 @@ install_python_version() {
         echo "Starting python installing..."
         yum install -y python${version} python${version}-devel python${version}-pip
         ;;
-    "3.10")
-        if ! python3.10 --version &>/dev/null; then
-            echo "Installing dependencies required for python installation..."
-            yum install -y sudo zlib-devel wget ncurses git
-            echo "Installing..."
-            yum install -y make cmake openssl-devel xz xz-devel
-            echo "Installing..."
-            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
-            echo "Starting python installing..."
-            wget https://www.python.org/ftp/python/3.10.15/Python-3.10.15.tgz
-            tar xf Python-3.10.15.tgz
-            cd Python-3.10.15
-            ./configure --prefix=/usr/local --enable-optimizations
-            echo "Still building..."
-            make -j2
-            echo "Still building..."
-            make altinstall
-            echo "Completed..."
-            cd .. && rm -rf Python-3.10.15.tgz
-        fi
-        ;;
     "3.13")
         if ! python3.13 --version &>/dev/null; then
             echo "Installing dependencies required for python installation..."
@@ -244,17 +223,10 @@ fi
 
 cd $CURRENT_DIR
 if ls *.whl 1>/dev/null 2>&1; then
-    wheel_file=$(echo *.whl)
-
-    # If Python 3.10 is being used, only abi3 wheels are permitted.
-    # Regular cpython-3.10 wheels must not be produced (3.10 support is dropped).
-    if [[ "$PYTHON_VERSION" == "3.10" && "$wheel_file" != *abi3* ]]; then
-        echo "============ WARNING: Python 3.10 regular wheel detected: $wheel_file ================="
-        echo "============          Non-abi3 Python 3.10 wheels are no longer supported — skipping. ================="
-    else
-        echo "=============== Modifying Metadata file =================="
-        modify_metadata_file "$wheel_file"
-    fi
+    echo "=============== Modifying Metadata file =================="
+    #add modifying metadata file
+    wheel_file=$(ls *.whl 1>/dev/null 2>&1 && echo *.whl)
+    modify_metadata_file "$wheel_file"
 fi
 
 # Clean up virtual environment
