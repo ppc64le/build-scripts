@@ -20,7 +20,7 @@
 
 PACKAGE_DIR="litellm"
 PACKAGE_NAME="litellm"
-PACKAGE_VERSION=${1:-v1.93.0}
+PACKAGE_VERSION=${1:-v1.106.6}
 PACKAGE_URL="https://github.com/BerriAI/litellm.git"
 SOURCE_ROOT="$(pwd)"
 
@@ -44,6 +44,12 @@ git clone "$PACKAGE_URL"
 cd "${PACKAGE_DIR}"
 git checkout "$PACKAGE_VERSION"
 git submodule update --init --depth 1
+
+# Update pyproject.toml file:
+# - Remove litellm-enterprise package as it is an enterprise package.
+# - Remove pyroscope-io package because the Pyroscope core profiling engine only supports x86_64 and aarch64 architectures and does not support PowerPC 64-bit Little Endian (ppc64le).
+sed -i '/litellm-enterprise/d' pyproject.toml
+sed -i '/pyroscope-io/d' pyproject.toml
 
 # Build wheel
 python3.12 -m build --wheel --outdir "${SOURCE_ROOT}/dist/"
@@ -73,13 +79,14 @@ python3.12 -c "import importlib.metadata; print('litellm version:', importlib.me
 
 # 2. Upstream unit tests — skip any that require live API keys or external services.
 #    The marker filter avoids integration test functions that call real LLM endpoints.
+#    Note: Unit test case path has changed from tests/test_litellm/ to tests/unit/.
 cd "${PACKAGE_DIR}"
 python3.12 -m pytest \
-    tests/test_litellm/test_filter_out_litellm_params.py \
-    tests/test_litellm/test_model_cost_aliases.py \
-    tests/test_litellm/test_count_tokens_public_api.py \
-    tests/test_litellm/test_cost_calculator.py \
-    tests/test_litellm/test_exception_mapping_request_attribute.py \
+    tests/unit/test_filter_out_litellm_params.py \
+    tests/unit/test_model_cost_aliases.py \
+    tests/unit/test_count_tokens_public_api.py \
+    tests/unit/test_cost_calculator.py \
+    tests/unit/test_exception_mapping_request_attribute.py \
     -v \
     --timeout=60 \
     -k "not test_extract_cache" \
