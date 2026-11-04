@@ -175,7 +175,7 @@ compute_artifact_recipe_sha() {
     if [[ -n "$script_file" && -f "$script_file" ]] && command -v git &>/dev/null; then
         local s_dir="$(dirname "$script_file")"
         local s_base="$(basename "$script_file")"
-        build_script_date=$(git -C "$s_dir" log -1 --format=%ci -- "$s_base" 2>/dev/null || echo "")
+        build_script_date=$(git -c safe.directory='*' -C "$s_dir" log -1 --format=%ci -- "$s_base" 2>/dev/null || echo "")
     fi
 
     if [[ -z "$build_script_date" ]]; then
