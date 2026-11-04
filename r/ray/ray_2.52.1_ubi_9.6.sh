@@ -58,8 +58,18 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/r/ray/upstream_pr_51673_2521.patch
-git apply upstream_pr_51673_2521.patch
+# Apply Ray version-specific patches
+if [ "$PACKAGE_VERSION" = "ray-2.52.1" ]; then
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/r/ray/upstream_pr_51673_2521.patch
+    git apply upstream_pr_51673_2521.patch
+
+elif [ "$PACKAGE_VERSION" = "ray-2.55.1" ]; then
+    # Apply once the Ray 2.55.1 compatible patch is available
+    echo "Skipping upstream_pr_51673_2521.patch for Ray 2.55.1"
+
+else
+    echo "No version-specific patch configured for $PACKAGE_VERSION"
+fi
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/r/ray/ray-master-openssl.patch
 git apply ray-master-openssl.patch
