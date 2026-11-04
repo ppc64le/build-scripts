@@ -81,6 +81,9 @@ if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
 fi
 cd "$PACKAGE_DIR"
 git checkout $PACKAGE_VERSION
+# Pin in-tree azure-core/azure-identity (1.17.0-beta.1/1.14.0-beta.1) to released core 1.16.3 and identity 1.13.3.
+git checkout azure-core_1.16.3 -- sdk/core/azure-core
+git checkout azure-identity_1.13.3 -- sdk/identity/azure-identity
 SOURCE_DIR=$(pwd)
 
 # Configure from repo root so azure-core resolves in-tree
@@ -90,6 +93,8 @@ if ! cmake .. \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_C_FLAGS="${CPU_FLAGS}" \
         -DCMAKE_CXX_FLAGS="${CPU_FLAGS} -include cstdint" \
+        -DCMAKE_SKIP_BUILD_RPATH=ON \
+        -DCMAKE_SHARED_LINKER_FLAGS='-Wl,-rpath,\$ORIGIN' \
         -DBUILD_SHARED_LIBS=ON \
         -DBUILD_TRANSPORT_CURL=ON \
         -DBUILD_TESTING=ON \
@@ -103,6 +108,14 @@ if ! cmake .. \
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
     exit 1
 fi
+
+# Build has no rpath, so put build-tree lib dirs on LD_LIBRARY_PATH for the test binary (gtest discovery and ctest).
+BUILD_LIB_PATHS=""
+for d in lib sdk/core/azure-core sdk/core/azure-core-test sdk/identity/azure-identity \
+         sdk/storage/azure-storage-common sdk/storage/azure-storage-blobs; do
+    BUILD_LIB_PATHS="${BUILD_LIB_PATHS:+${BUILD_LIB_PATHS}:}${SOURCE_DIR}/build/${d}"
+done
+export LD_LIBRARY_PATH="${BUILD_LIB_PATHS}"
 
 if ! cmake --build . --target azure-storage-common azure-storage-common-test -j"$(nproc)"; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -126,9 +139,11 @@ mkdir -p "${LOCAL_PKG}/lib64" \
          "${LOCAL_PKG}/include/azure/storage/common" \
          "${LOCAL_PKG}/share/azure-storage-common-cpp"
 
-# Copy shared libraries directly from the build tree
-find "${SOURCE_DIR}/build" -name "libazure-storage-common.so*" \
-    -exec cp -P {} "${LOCAL_PKG}/lib64/" \;
+# Bundle common and core libs so the wheel works on its own (found via the $ORIGIN rpath).
+for lib in azure-storage-common azure-core; do
+    find "${SOURCE_DIR}/build/sdk" -name "lib${lib}.so*" \
+        -exec cp -P {} "${LOCAL_PKG}/lib64/" \;
+done
 
 # Copy headers from source tree
 cp -r "${SOURCE_DIR}/sdk/storage/azure-storage-common/inc/azure/storage/common" \
