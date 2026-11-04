@@ -2,15 +2,25 @@
    "maintainer": "kiranNukal",
    "package_name": "cymem",
    "github_url": "https://github.com/explosion/cymem",
-   "version": "v2.0.7",
+   "version": "release-v2.0.16",
    "default_branch": "master",
-   "build_script": "cymem_ubi_9.6.sh",
+   "build_script": "cymem_2.0.16_ubi_9.6.sh",
    "package_dir": "c/cymem",
    "docker_build": false,
    "wheel_build": true,
    "validate_build_script": true,
    "use_non_root_user": false,
+   "required_versions": {
+     "Releases": ["*"],
+     "Tags": ["*"]
+   },
+   "v2.0.7": {
+     "build_script": "cymem_ubi_9.6.sh"
+   },
+   "release-v2.0.16": {
+     "build_script": "cymem_2.0.16_ubi_9.6.sh"
+   },
    "*": {
-     "build_script":"cymem_ubi_9.6.sh"
+     "build_script":"cymem_2.0.16_ubi_9.6.sh"
   }
 }
