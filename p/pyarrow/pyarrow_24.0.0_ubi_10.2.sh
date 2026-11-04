@@ -81,8 +81,10 @@ cd cpp
 mkdir -p release && cd release
 if ! cmake -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX=/usr/local \
-      -DCMAKE_C_FLAGS="${CFLAGS}" \
-      -DCMAKE_CXX_FLAGS="${CXXFLAGS}" \
+      -DCMAKE_CXX_STANDARD=20 \
+      -DCMAKE_C_FLAGS="${CFLAGS} -Wno-error -Wno-deprecated-declarations" \
+      -DCMAKE_CXX_FLAGS="${CXXFLAGS} -Wno-error -Wno-deprecated-declarations -Wno-cpp" \
+      -DARROW_SIMD_LEVEL=NONE \
       -DARROW_PYTHON=ON \
       -DARROW_COMPUTE=ON \
       -DARROW_PARQUET=ON \
@@ -113,7 +115,7 @@ if ! cmake -DCMAKE_BUILD_TYPE=Release \
     exit 1
 fi
 
-if ! make -j$(nproc); then
+if ! make -j8; then
     echo "------------------${PACKAGE_NAME}:arrow_cpp_build_fails-----------------------------"
     echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Arrow_Cpp_Build_Fails"
     exit 1
@@ -156,7 +158,9 @@ fi
 
 echo "Building pyarrow wheel..."
 mkdir -p "${WORKDIR}/dist"
-if ! SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION#apache-arrow-} \
+if ! CFLAGS="${CFLAGS}" \
+     CXXFLAGS="${CXXFLAGS}" \
+     SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION#apache-arrow-} \
      CMAKE_PREFIX_PATH=/usr/local \
      python3 -m build --wheel --no-isolation --outdir "${WORKDIR}/dist"; then
     echo "------------------${PACKAGE_NAME}:wheel_build_fails---------------------------------"
