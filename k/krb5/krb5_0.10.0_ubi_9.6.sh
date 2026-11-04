@@ -26,8 +26,13 @@ PACKAGE_URL=https://github.com/jborean93/pykrb5.git
 # Install dependencies and tools
 yum install -y git wget gcc gcc-c++ make python3.12 python3.12-devel python3.12-pip krb5-devel krb5-libs
 
-# KDC and client tools are needed by the k5test based unit tests
-yum install -y krb5-server krb5-workstation || echo "krb5-server/krb5-workstation not available, KDC based tests may fail"
+# krb5-server (KDC for tests) is not in UBI, so use CentOS Stream
+yum install -y krb5-workstation libverto
+rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
+rpm -ivh --nodeps https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/krb5-server-1.21.1-10.el9.ppc64le.rpm
+for b in /usr/sbin/kdb5_util /usr/sbin/krb5kdc /usr/sbin/kadmind /usr/sbin/kadmin.local /usr/bin/kinit; do
+    [ -x "$b" ] || { echo "Missing $b"; exit 1; }
+done
 
 # Clone repository
 git clone $PACKAGE_URL
