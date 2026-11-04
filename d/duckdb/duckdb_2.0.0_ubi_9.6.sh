@@ -24,6 +24,8 @@ PACKAGE_VERSION=${1:-v2.0.0}
 PACKAGE_DIR=duckdb-python
 PACKAGE_URL=https://github.com/duckdb/duckdb-python.git
 PYTHON_VERSION=3.12
+# ASCII compiler output: CI log streamer fails to decode UTF-8 warning quotes split across chunks
+export LC_ALL=C
 
 # Install necessary system packages
 dnf install -y gcc-toolset-13 make cmake ninja-build libomp-devel git python${PYTHON_VERSION} python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-devel
