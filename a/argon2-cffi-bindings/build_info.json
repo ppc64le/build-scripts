@@ -10,6 +10,10 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "required_versions": {
+    "Releases": ["*"],
+    "Tags": ["*"]
+  },
   "26.1.0" : {
     "build_script": "argon2-cffi-bindings_ubi_10.2.sh"
   },
