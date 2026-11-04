@@ -23,7 +23,6 @@ PACKAGE_NAME="litellm"
 PACKAGE_VERSION=${1:-v1.106.6}
 PACKAGE_URL="https://github.com/BerriAI/litellm.git"
 SOURCE_ROOT="$(pwd)"
-SCRIPT_PATH=$(dirname "$(realpath "$0")")
 
 echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 
@@ -47,9 +46,10 @@ git checkout "$PACKAGE_VERSION"
 git submodule update --init --depth 1
 
 # Apply patch to run the post-call success hook (guardrails/callbacks) on pass-through responses (used for watsonx pass-through).
-if ! git apply "${SCRIPT_PATH}/watsonx-passthrough.patch"; then
-    echo "ERROR: failed to apply watsonx-passthrough.patch"
-    exit 1
+if wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/l/litellm/watsonx-passthrough.patch; then
+    git apply watsonx-passthrough.patch || echo "ERROR: failed to apply watsonx-passthrough.patch, continuing without it"
+else
+    echo "ERROR: failed to download watsonx-passthrough.patch, continuing without it"
 fi
 
 # Update pyproject.toml file:
