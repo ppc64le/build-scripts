@@ -27,7 +27,7 @@ SOURCE_ROOT="$(pwd)"
 echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 
 # Install system dependencies
-dnf install -y gcc-toolset-13 git python3.12 python3.12-devel python3.12-pip
+dnf install -y gcc gcc-toolset-13 git python3.12 python3.12-devel python3.12-pip libsndfile
 
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:$PATH"
 
@@ -69,7 +69,11 @@ cd "${SOURCE_ROOT}"
 # Install wheel + test dependencies
 echo "=== Installing Wheel ==="
 python3.12 -m pip install "${WHEEL}"
-python3.12 -m pip install pytest pytest-asyncio pytest-timeout
+python3.12 -m pip install numpy pynacl uvloop orjson polars-runtime-32 \
+    --index-url https://wheels.developerfirst.ibm.com/ppc64le/linux \
+    --extra-index-url https://pypi.org/simple
+
+python3.12 -m pip install maturin pytest pytest-asyncio pytest-timeout pytest-socket respx websockets litellm[proxy]
 
 # Run tests
 echo "=== Running Tests ==="
