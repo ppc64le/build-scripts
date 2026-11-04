@@ -1,0 +1,21 @@
+{
+    "maintainer": "prachi-gaonkar",
+    "package_name": "aws-checksums",
+    "github_url": "https://github.com/awslabs/aws-checksums",
+    "version": "v0.2.10",
+    "default_branch": "main",
+    "build_script": "aws-checksums_0.2.10_ubi_10.2.sh",
+    "package_dir": "a/aws-checksums",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "wheel_build": true,
+    "v0.2.10": {
+        "build_script": [
+            "aws-checksums_0.2.10_ubi_10.2.sh"
+        ]
+    },
+    "*": {
+        "build_script": "aws-checksums_0.2.10_ubi_10.2.sh"
+    }
+}
