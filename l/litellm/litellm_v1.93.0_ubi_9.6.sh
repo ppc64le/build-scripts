@@ -55,8 +55,10 @@ fi
 # Update pyproject.toml file:
 # - Remove litellm-enterprise package as it is an enterprise package.
 # - Remove pyroscope-io package because the Pyroscope core profiling engine only supports x86_64 and aarch64 architectures and does not support PowerPC 64-bit Little Endian (ppc64le).
-sed -i '/litellm-enterprise/d' pyproject.toml
-sed -i '/pyroscope-io/d' pyproject.toml
+# - Add prisma dependency in place of the removed pyroscope-io line.
+sed -i.bak '/"litellm-enterprise/d' pyproject.toml
+sed -i.bak 's|.*pyroscope-io.*|    "prisma>=0.11.0,<1.0",|' pyproject.toml
+rm -f pyproject.toml.bak
 
 # Build wheel
 python3.12 -m build --wheel --outdir "${SOURCE_ROOT}/dist/"
