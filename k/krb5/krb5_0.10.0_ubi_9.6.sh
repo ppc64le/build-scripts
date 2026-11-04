@@ -26,13 +26,20 @@ PACKAGE_URL=https://github.com/jborean93/pykrb5.git
 # Install dependencies and tools
 yum install -y git wget gcc gcc-c++ make python3.12 python3.12-devel python3.12-pip krb5-devel krb5-libs
 
-# krb5-server (KDC for tests) is not in UBI, so use CentOS Stream
-yum install -y krb5-workstation libverto
-rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
-rpm -ivh --nodeps https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/krb5-server-1.21.1-10.el9.ppc64le.rpm
+# KDC libs and tools for tests (all in UBI)
+yum install -y krb5-workstation krb5-pkinit libkadm5 libverto libss lmdb-libs keyutils-libs
+
+# krb5-server and libverto-libev (event loop for krb5kdc) are not in UBI, so use AlmaLinux
+ALMA=https://repo.almalinux.org/almalinux/9/BaseOS/ppc64le/os/Packages
+rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux-9
+rpm -ivh --nodeps $ALMA/krb5-server-1.21.1-10.el9_8.1.ppc64le.rpm $ALMA/libev-4.33-6.el9.ppc64le.rpm $ALMA/libverto-libev-0.3.2-3.el9.ppc64le.rpm
+
+# Fail early if KDC binaries or their libs are missing
 for b in /usr/sbin/kdb5_util /usr/sbin/krb5kdc /usr/sbin/kadmind /usr/sbin/kadmin.local /usr/bin/kinit; do
     [ -x "$b" ] || { echo "Missing $b"; exit 1; }
+    if ldd "$b" | grep "not found"; then echo "Missing libs for $b"; exit 1; fi
 done
+[ -f /usr/lib64/libverto-libev.so.1 ] || { echo "Missing libverto-libev"; exit 1; }
 
 # Clone repository
 git clone $PACKAGE_URL
