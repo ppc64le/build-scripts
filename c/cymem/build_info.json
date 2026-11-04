@@ -4,7 +4,7 @@
    "github_url": "https://github.com/explosion/cymem",
    "version": "release-v2.0.16",
    "default_branch": "master",
-   "build_script": "cymem_release-v2.0.16_ubi_9.6.sh",
+   "build_script": "cymem_2.0.16_ubi_9.6.sh",
    "package_dir": "c/cymem",
    "docker_build": false,
    "wheel_build": true,
@@ -18,9 +18,9 @@
      "build_script": "cymem_ubi_9.6.sh"
    },
    "release-v2.0.16": {
-     "build_script": "cymem_release-v2.0.16_ubi_9.6.sh"
+     "build_script": "cymem_2.0.16_ubi_9.6.sh"
    },
    "*": {
-     "build_script":"cymem_release-v2.0.16_ubi_9.6.sh"
+     "build_script":"cymem_2.0.16_ubi_9.6.sh"
   }
 }
