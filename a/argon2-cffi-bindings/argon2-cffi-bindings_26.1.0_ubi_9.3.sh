@@ -26,7 +26,15 @@ PACKAGE_DIR=./argon2-cffi-bindings
 CURRENT_DIR="${PWD}"
 
 #install dependencies (26.1.0 requires Python >= 3.10)
-yum install -y wget gcc gcc-c++ gcc-gfortran git make python3.12 python3.12-devel python3.12-pip openssl-devel cmake unzip
+yum install -y wget git make python3.12 python3.12-devel python3.12-pip openssl-devel cmake unzip
+
+yum install -y gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran
+
+# Activate GCC Toolset 13
+source /opt/rh/gcc-toolset-13/enable
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export CC=/opt/rh/gcc-toolset-13/root/usr/bin/gcc
+export CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
 
 #build and install libargon2
 git clone https://github.com/P-H-C/phc-winner-argon2.git
