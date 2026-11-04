@@ -83,6 +83,8 @@ if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
 fi
 cd "$PACKAGE_DIR"
 git checkout ${PACKAGE_VERSION}
+# The blobs tag carries azure-core 1.17.0-beta.1 in-tree. Pin it to the released 1.16.3.
+git checkout azure-core_1.16.3 -- sdk/core/azure-core
 SOURCE_DIR=$(pwd)
 
 
@@ -93,6 +95,8 @@ if ! cmake .. \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_C_FLAGS="${CPU_FLAGS}" \
         -DCMAKE_CXX_FLAGS="${CPU_FLAGS} -include cstdint" \
+        -DCMAKE_SKIP_BUILD_RPATH=ON \
+        -DCMAKE_SHARED_LINKER_FLAGS='-Wl,-rpath,\$ORIGIN' \
         -DBUILD_SHARED_LIBS=ON \
         -DBUILD_TRANSPORT_CURL=ON \
         -DBUILD_TESTING=OFF \
@@ -125,9 +129,11 @@ mkdir -p "${LOCAL_PKG}/lib64" \
          "${LOCAL_PKG}/include/azure/storage/blobs" \
          "${LOCAL_PKG}/share/azure-storage-blobs-cpp"
 
-# Copy only the blobs shared library from the build tree
-find "${SOURCE_DIR}/build" -name "libazure-storage-blobs.so*" \
-    -exec cp -P {} "${LOCAL_PKG}/lib64/" \;
+# Bundle blobs, common and core libs so the wheel works on its own (found via the $ORIGIN rpath).
+for lib in azure-storage-blobs azure-storage-common azure-core; do
+    find "${SOURCE_DIR}/build/sdk" -name "lib${lib}.so*" \
+        -exec cp -P {} "${LOCAL_PKG}/lib64/" \;
+done
 
 # Copy headers from source tree
 cp -r "${SOURCE_DIR}/sdk/storage/azure-storage-blobs/inc/azure/storage/blobs" \
