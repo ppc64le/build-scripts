@@ -83,7 +83,19 @@ python3 --version
 
 # --- Step 0: Install Abseil-cpp, c-ares, RE2, Protobuf, gRPC, nlohmann_json, OpenTelemetry, GoogleTest, and Google Benchmark ---
 # Order of installation: 1) Wheel -> 2) Build Script -> 3) Source Build
-mkdir -p /usr/local/include /usr/local/lib64 /usr/local/lib /usr/local/share/cmake
+mkdir -p /usr/local/include /usr/local/lib64 /usr/local/lib /usr/local/lib64/cmake /usr/local/lib/cmake
+
+# Ensure no broken /usr/local/share/cmake directory breaks system CMAKE_ROOT
+if [ -d "/usr/local/share/cmake" ] && [ ! -d "/usr/local/share/cmake/Modules" ]; then
+    mkdir -p /usr/local/lib64/cmake
+    cp -rf /usr/local/share/cmake/* /usr/local/lib64/cmake/ 2>/dev/null || true
+    rm -rf /usr/local/share/cmake
+fi
+
+# Set global CMake policies and arguments for compatibility across toolsets
+export CMAKE_POLICY_VERSION_MINIMUM=3.5
+export CMAKE_POLICY_DEFAULT_CMP0000=NEW
+export CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}"
 
 # 1. Setup persistent dynamic linker configuration
 mkdir -p /etc/ld.so.conf.d
@@ -102,10 +114,12 @@ extract_wheel_artifacts() {
     [ -d "${PKG_DIR}/lib64" ]   && cp -rf "${PKG_DIR}/lib64/"* /usr/local/lib64/ 2>/dev/null || true
     [ -d "${PKG_DIR}/lib" ]     && cp -rf "${PKG_DIR}/lib/"* /usr/local/lib/ 2>/dev/null || true
 
-    # Safely merge cmake configs without overwriting system /usr/local/share/cmake modules
+    # Safely merge cmake configs into /usr/local/lib64/cmake and /usr/local/lib/cmake
+    # NEVER create or touch /usr/local/share/cmake directly to avoid corrupting CMAKE_ROOT
     if [ -d "${PKG_DIR}/share/cmake" ]; then
-        mkdir -p /usr/local/share/cmake
-        cp -rf "${PKG_DIR}/share/cmake/"* /usr/local/share/cmake/ 2>/dev/null || true
+        mkdir -p /usr/local/lib64/cmake /usr/local/lib/cmake
+        cp -rf "${PKG_DIR}/share/cmake/"* /usr/local/lib64/cmake/ 2>/dev/null || true
+        cp -rf "${PKG_DIR}/share/cmake/"* /usr/local/lib/cmake/ 2>/dev/null || true
     fi
     for d in "${PKG_DIR}/share/"*; do
         if [ -d "$d" ] && [ "$(basename "$d")" != "cmake" ]; then
@@ -150,7 +164,7 @@ elif [ ! -f "/usr/local/lib64/libabsl_base.so" ] && [ ! -f "/usr/local/lib/libab
         [ -f "${WORKING_DIR}/abseil-cpp_ubi_10.2.sh" ] && ABSL_SCRIPT="${WORKING_DIR}/abseil-cpp_ubi_10.2.sh"
     fi
 
-    if [ -n "${ABSL_SCRIPT}" ] && [ -f "${ABSL_SCRIPT}" ] && bash "${ABSL_SCRIPT}" 20240116.2; then
+    if [ -n "${ABSL_SCRIPT}" ] && [ -f "${ABSL_SCRIPT}" ] && CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${ABSL_SCRIPT}" 20240116.2; then
         echo "Successfully built Abseil-cpp via build script (${ABSL_SCRIPT})"
         cd "${WORKING_DIR}"
     else
@@ -163,6 +177,7 @@ elif [ ! -f "/usr/local/lib64/libabsl_base.so" ] && [ ! -f "/usr/local/lib/libab
         git checkout 20240116.2 2>/dev/null || git checkout 20240722.0 2>/dev/null || true
         mkdir -p build && cd build
         cmake \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_CXX_STANDARD=17 \
             -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
@@ -200,7 +215,7 @@ elif [ ! -f "/usr/local/lib64/libcares.so" ] && [ ! -f "/usr/local/lib/libcares.
         [ -f "${WORKING_DIR}/cares_ubi_10.2.sh" ] && CARES_SCRIPT="${WORKING_DIR}/cares_ubi_10.2.sh"
     fi
 
-    if [ -n "${CARES_SCRIPT}" ] && [ -f "${CARES_SCRIPT}" ] && bash "${CARES_SCRIPT}" cares-1_19_1; then
+    if [ -n "${CARES_SCRIPT}" ] && [ -f "${CARES_SCRIPT}" ] && CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${CARES_SCRIPT}" cares-1_19_1; then
         echo "Successfully built c-ares via build script (${CARES_SCRIPT})"
         cd "${WORKING_DIR}"
     else
@@ -250,7 +265,7 @@ elif [ ! -f "/usr/local/lib64/libre2.so" ] && [ ! -f "/usr/local/lib/libre2.so" 
         [ -f "${WORKING_DIR}/re2_ubi_10.2.sh" ] && RE2_SCRIPT="${WORKING_DIR}/re2_ubi_10.2.sh"
     fi
 
-    if [ -n "${RE2_SCRIPT}" ] && [ -f "${RE2_SCRIPT}" ] && bash "${RE2_SCRIPT}" 2022-04-01; then
+    if [ -n "${RE2_SCRIPT}" ] && [ -f "${RE2_SCRIPT}" ] && CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${RE2_SCRIPT}" 2022-04-01; then
         echo "Successfully built RE2 via build script (${RE2_SCRIPT})"
         cd "${WORKING_DIR}"
     else
@@ -263,6 +278,7 @@ elif [ ! -f "/usr/local/lib64/libre2.so" ] && [ ! -f "/usr/local/lib/libre2.so" 
         git checkout 2022-04-01 2>/dev/null || true
         mkdir -p build && cd build
         cmake \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_CXX_STANDARD=17 \
             -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
@@ -300,7 +316,7 @@ elif [ ! -f "/usr/local/lib64/libprotobuf.so" ] && [ ! -f "/usr/local/lib/libpro
         [ -f "${WORKING_DIR}/libprotobuf_ubi_10.2_v33.6.sh" ] && PROTOBUF_SCRIPT="${WORKING_DIR}/libprotobuf_ubi_10.2_v33.6.sh"
     fi
 
-    if [ -n "${PROTOBUF_SCRIPT}" ] && [ -f "${PROTOBUF_SCRIPT}" ] && bash "${PROTOBUF_SCRIPT}" v28.0; then
+    if [ -n "${PROTOBUF_SCRIPT}" ] && [ -f "${PROTOBUF_SCRIPT}" ] && CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${PROTOBUF_SCRIPT}" v28.0; then
         echo "Successfully built Protobuf via build script (${PROTOBUF_SCRIPT})"
         cd "${WORKING_DIR}"
     else
@@ -314,6 +330,7 @@ elif [ ! -f "/usr/local/lib64/libprotobuf.so" ] && [ ! -f "/usr/local/lib/libpro
         git submodule update --init --recursive 2>/dev/null || true
         mkdir -p build && cd build
         cmake \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_CXX_STANDARD=17 \
             -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
@@ -352,7 +369,7 @@ elif [ ! -f "/usr/local/lib64/libgrpc++.so" ] && [ ! -f "/usr/local/lib/libgrpc+
         [ -f "${WORKING_DIR}/grpc_cpp_ubi_10.2.sh" ] && GRPC_SCRIPT="${WORKING_DIR}/grpc_cpp_ubi_10.2.sh"
     fi
 
-    if [ -n "${GRPC_SCRIPT}" ] && [ -f "${GRPC_SCRIPT}" ] && bash "${GRPC_SCRIPT}" 1.80.0; then
+    if [ -n "${GRPC_SCRIPT}" ] && [ -f "${GRPC_SCRIPT}" ] && CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${GRPC_SCRIPT}" 1.80.0; then
         echo "Successfully built gRPC via build script (${GRPC_SCRIPT})"
         cd "${WORKING_DIR}"
     else
@@ -366,6 +383,7 @@ elif [ ! -f "/usr/local/lib64/libgrpc++.so" ] && [ ! -f "/usr/local/lib/libgrpc+
         git submodule update --init --recursive 2>/dev/null || true
         mkdir -p build && cd build
         cmake \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_CXX_STANDARD=17 \
             -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
