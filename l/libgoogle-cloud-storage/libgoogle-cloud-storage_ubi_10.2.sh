@@ -87,19 +87,52 @@ mkdir -p /usr/local/include /usr/local/lib64 /usr/local/lib /usr/local/lib64/cma
 
 # Helper to ensure system CMAKE_ROOT is never corrupted by dependency scripts installing into /usr/local/share/cmake
 fix_cmake_root() {
-    if [ -d "/usr/local/share/cmake" ] && [ ! -d "/usr/local/share/cmake/Modules" ]; then
-        mkdir -p /usr/local/lib64/cmake /usr/local/lib/cmake
-        cp -rf /usr/local/share/cmake/* /usr/local/lib64/cmake/ 2>/dev/null || true
-        cp -rf /usr/local/share/cmake/* /usr/local/lib/cmake/ 2>/dev/null || true
-        rm -rf /usr/local/share/cmake
+    local SYS_MODS=""
+    for p in /usr/share/cmake*/Modules /usr/share/cmake/Modules /usr/lib*/cmake*/Modules; do
+        if [ -d "$p" ] && [ -f "$p/CMake.cmake" ]; then
+            SYS_MODS="$p"
+            break
+        fi
+    done
+
+    if [ -z "${SYS_MODS}" ]; then
+        SYS_MODS=$(find /usr/share /usr/local/lib* /usr/lib* -type d -name "Modules" 2>/dev/null | grep "cmake" | while read -r d; do
+            if [ -f "$d/CMake.cmake" ]; then
+                echo "$d"
+                break
+            fi
+        done | head -1)
     fi
 
-    if [ -z "${CMAKE_ROOT:-}" ] || [ ! -d "${CMAKE_ROOT}/Modules" ]; then
-        local SYS_MODS
-        SYS_MODS=$(find /usr/share/cmake* /usr/lib*/cmake* -type d -name "Modules" 2>/dev/null | head -1)
-        if [ -n "${SYS_MODS}" ] && [ -d "${SYS_MODS}" ]; then
-            export CMAKE_ROOT="$(dirname "${SYS_MODS}")"
+    # Ensure /usr/bin/cmake takes precedence over broken /usr/local/bin/cmake from pip
+    if [ -x "/usr/bin/cmake" ]; then
+        if [ -f "/usr/local/bin/cmake" ] && [ ! -L "/usr/local/bin/cmake" ]; then
+            rm -f /usr/local/bin/cmake /usr/local/bin/ctest /usr/local/bin/cpack 2>/dev/null || true
+            ln -sf /usr/bin/cmake /usr/local/bin/cmake 2>/dev/null || true
+            ln -sf /usr/bin/ctest /usr/local/bin/ctest 2>/dev/null || true
+            ln -sf /usr/bin/cpack /usr/local/bin/cpack 2>/dev/null || true
         fi
+    fi
+
+    # Ensure /usr/local/share/cmake/Modules points directly to system Modules
+    if [ -n "${SYS_MODS}" ] && [ -d "${SYS_MODS}" ]; then
+        export CMAKE_ROOT="$(dirname "${SYS_MODS}")"
+        mkdir -p /usr/local/share/cmake
+        if [ ! -d "/usr/local/share/cmake/Modules" ] || [ ! -f "/usr/local/share/cmake/Modules/CMake.cmake" ]; then
+            rm -rf /usr/local/share/cmake/Modules 2>/dev/null || true
+            ln -sf "${SYS_MODS}" /usr/local/share/cmake/Modules
+        fi
+    fi
+
+    # Replicate any non-Modules cmake configs into /usr/local/lib64/cmake and /usr/local/lib/cmake
+    if [ -d "/usr/local/share/cmake" ]; then
+        mkdir -p /usr/local/lib64/cmake /usr/local/lib/cmake
+        for item in /usr/local/share/cmake/*; do
+            if [ -e "$item" ] && [ "$(basename "$item")" != "Modules" ]; then
+                cp -rf "$item" /usr/local/lib64/cmake/ 2>/dev/null || true
+                cp -rf "$item" /usr/local/lib/cmake/ 2>/dev/null || true
+            fi
+        done
     fi
 }
 
