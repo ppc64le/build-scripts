@@ -1944,7 +1944,9 @@ jobs:
           if ! command -v python &>/dev/null && command -v python3 &>/dev/null; then
             sudo ln -sf "$(command -v python3)" /usr/local/bin/python
           fi
+          set -a
           source variable.sh
+          set +a
           chmod +x ./gha-script/build_docker.sh
           bash ./gha-script/build_docker.sh
           docker save -o image.tar "$IMAGE_NAME"
@@ -1953,7 +1955,9 @@ jobs:
         env:
           GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
         run: |
+          set -a
           source variable.sh
+          set +a
           chmod +x ./gha-script/upload-scripts/upload_docker_image.sh
           bash ./gha-script/upload-scripts/upload_docker_image.sh
 

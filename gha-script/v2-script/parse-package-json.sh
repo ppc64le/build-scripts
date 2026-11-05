@@ -51,18 +51,18 @@ fi
 
 echo "--- Writing variable.sh ---"
 printf '%s\n' \
-  "PACKAGE_NAME=\"${PKG_NAME}\"" \
-  "PACKAGE_VERSION=\"${PKG_VER}\"" \
-  "VERSION=\"${PKG_VER}\"" \
-  "PKG_DIR_PATH=\"${PKG_DIR_PATH}\"" \
-  "IMAGE_NAME=\"${IMAGE_NAME}\"" \
-  "TECHNOLOGY=\"${TECH}\"" \
-  "TECHNOLOGY_VERSION=\"${TECH_VER}\"" \
-  "UBI_VERSION=\"${UBI_VER}\"" \
-  "ARCH=\"${ARCH}\"" \
-  "V2_ENABLED=\"${V2_ENABLED}\"" \
-  "TRIGGER_ALL_PYTHON_BUILDS=\"${TRIGGER_ALL_PYTHON_BUILDS}\"" \
-  "BUILD_DOCKER=\"${BUILD_DOCKER}\"" \
+  "export PACKAGE_NAME=\"${PKG_NAME}\"" \
+  "export PACKAGE_VERSION=\"${PKG_VER}\"" \
+  "export VERSION=\"${PKG_VER}\"" \
+  "export PKG_DIR_PATH=\"${PKG_DIR_PATH}\"" \
+  "export IMAGE_NAME=\"${IMAGE_NAME}\"" \
+  "export TECHNOLOGY=\"${TECH}\"" \
+  "export TECHNOLOGY_VERSION=\"${TECH_VER}\"" \
+  "export UBI_VERSION=\"${UBI_VER}\"" \
+  "export ARCH=\"${ARCH}\"" \
+  "export V2_ENABLED=\"${V2_ENABLED}\"" \
+  "export TRIGGER_ALL_PYTHON_BUILDS=\"${TRIGGER_ALL_PYTHON_BUILDS}\"" \
+  "export BUILD_DOCKER=\"${BUILD_DOCKER}\"" \
   > variable.sh
 
 echo "===== variable.sh ====="
