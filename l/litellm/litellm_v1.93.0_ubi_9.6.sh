@@ -27,7 +27,7 @@ SOURCE_ROOT="$(pwd)"
 echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 
 # Install system dependencies
-dnf install -y gcc gcc-toolset-13 git python3.12 python3.12-devel python3.12-pip libsndfile
+dnf install -y wget gcc gcc-toolset-13 git python3.12 python3.12-devel python3.12-pip libsndfile
 
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:$PATH"
 
