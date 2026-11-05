@@ -85,12 +85,25 @@ python3 --version
 # Order of installation: 1) Wheel -> 2) Build Script -> 3) Source Build
 mkdir -p /usr/local/include /usr/local/lib64 /usr/local/lib /usr/local/lib64/cmake /usr/local/lib/cmake
 
-# Ensure no broken /usr/local/share/cmake directory breaks system CMAKE_ROOT
-if [ -d "/usr/local/share/cmake" ] && [ ! -d "/usr/local/share/cmake/Modules" ]; then
-    mkdir -p /usr/local/lib64/cmake
-    cp -rf /usr/local/share/cmake/* /usr/local/lib64/cmake/ 2>/dev/null || true
-    rm -rf /usr/local/share/cmake
-fi
+# Helper to ensure system CMAKE_ROOT is never corrupted by dependency scripts installing into /usr/local/share/cmake
+fix_cmake_root() {
+    if [ -d "/usr/local/share/cmake" ] && [ ! -d "/usr/local/share/cmake/Modules" ]; then
+        mkdir -p /usr/local/lib64/cmake /usr/local/lib/cmake
+        cp -rf /usr/local/share/cmake/* /usr/local/lib64/cmake/ 2>/dev/null || true
+        cp -rf /usr/local/share/cmake/* /usr/local/lib/cmake/ 2>/dev/null || true
+        rm -rf /usr/local/share/cmake
+    fi
+
+    if [ -z "${CMAKE_ROOT:-}" ] || [ ! -d "${CMAKE_ROOT}/Modules" ]; then
+        local SYS_MODS
+        SYS_MODS=$(find /usr/share/cmake* /usr/lib*/cmake* -type d -name "Modules" 2>/dev/null | head -1)
+        if [ -n "${SYS_MODS}" ] && [ -d "${SYS_MODS}" ]; then
+            export CMAKE_ROOT="$(dirname "${SYS_MODS}")"
+        fi
+    fi
+}
+
+fix_cmake_root
 
 # Set global CMake policies and arguments for compatibility across toolsets
 export CMAKE_POLICY_VERSION_MINIMUM=3.5
@@ -190,7 +203,9 @@ elif [ ! -f "/usr/local/lib64/libabsl_base.so" ] && [ ! -f "/usr/local/lib/libab
         ninja install
         cd "${WORKING_DIR}"
     fi
+    fix_cmake_root
 fi
+fix_cmake_root
 
 # 0.2 c-ares
 CARES_WHEEL=$(find "${SCRIPT_PATH}" "${WORKING_DIR}" -maxdepth 1 \( -name 'c_ares*.whl' -o -name 'c-ares*.whl' \) 2>/dev/null | head -1)
@@ -240,7 +255,9 @@ elif [ ! -f "/usr/local/lib64/libcares.so" ] && [ ! -f "/usr/local/lib/libcares.
         ninja install
         cd "${WORKING_DIR}"
     fi
+    fix_cmake_root
 fi
+fix_cmake_root
 
 # 0.3 re2
 RE2_WHEEL=$(find "${SCRIPT_PATH}" "${WORKING_DIR}" -maxdepth 1 -name 're2*.whl' 2>/dev/null | head -1)
@@ -291,7 +308,9 @@ elif [ ! -f "/usr/local/lib64/libre2.so" ] && [ ! -f "/usr/local/lib/libre2.so" 
         ninja install
         cd "${WORKING_DIR}"
     fi
+    fix_cmake_root
 fi
+fix_cmake_root
 
 # 0.4 libprotobuf
 PROTOBUF_WHEEL=$(find "${SCRIPT_PATH}" "${WORKING_DIR}" -maxdepth 1 -name '*protobuf*.whl' 2>/dev/null | head -1)
@@ -344,7 +363,9 @@ elif [ ! -f "/usr/local/lib64/libprotobuf.so" ] && [ ! -f "/usr/local/lib/libpro
         ninja install
         cd "${WORKING_DIR}"
     fi
+    fix_cmake_root
 fi
+fix_cmake_root
 
 # 0.5 grpc_cpp
 GRPC_WHEEL=$(find "${SCRIPT_PATH}" "${WORKING_DIR}" -maxdepth 1 -name 'grpc_cpp*.whl' 2>/dev/null | head -1)
@@ -403,7 +424,9 @@ elif [ ! -f "/usr/local/lib64/libgrpc++.so" ] && [ ! -f "/usr/local/lib/libgrpc+
         ninja install
         cd "${WORKING_DIR}"
     fi
+    fix_cmake_root
 fi
+fix_cmake_root
 
 ldconfig
 
@@ -412,10 +435,14 @@ if [ ! -d "${JSON_DIR}" ]; then
     git clone https://github.com/nlohmann/json.git "${JSON_DIR}"
 fi
 
-if [ ! -f "/usr/local/share/cmake/nlohmann_json/nlohmann_jsonConfig.cmake" ] && [ ! -f "/usr/local/include/nlohmann/json.hpp" ]; then
+if [ ! -f "/usr/local/share/cmake/nlohmann_json/nlohmann_jsonConfig.cmake" ] && \
+   [ ! -f "/usr/local/lib64/cmake/nlohmann_json/nlohmann_jsonConfig.cmake" ] && \
+   [ ! -f "/usr/local/lib/cmake/nlohmann_json/nlohmann_jsonConfig.cmake" ] && \
+   [ ! -f "/usr/local/include/nlohmann/json.hpp" ]; then
     cd "${JSON_DIR}"
     git checkout v3.11.3 2>/dev/null || true
     mkdir -p build && cd build
+    fix_cmake_root
     cmake \
         -DCMAKE_BUILD_TYPE=Release \
         -DJSON_BuildTests=OFF \
@@ -424,6 +451,7 @@ if [ ! -f "/usr/local/share/cmake/nlohmann_json/nlohmann_jsonConfig.cmake" ] && 
         ..
     ninja install
     cd "${WORKING_DIR}"
+    fix_cmake_root
 fi
 
 OTEL_DIR="${WORKING_DIR}/opentelemetry-cpp"
@@ -440,6 +468,7 @@ if [ ! -f "${OTEL_DIR}/build/.stl_built" ]; then
     find api/include/ -type f -name "*.h" -exec sed -i '1{/^#include <cstdint>/!s/^/#include <cstdint>\n/}' {} + 2>/dev/null || true
     rm -rf build
     mkdir -p build && cd build
+    fix_cmake_root
     cmake \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_CXX_STANDARD=17 \
@@ -455,6 +484,7 @@ if [ ! -f "${OTEL_DIR}/build/.stl_built" ]; then
     ninja install
     touch "${OTEL_DIR}/build/.stl_built"
     cd "${WORKING_DIR}"
+    fix_cmake_root
 fi
 
 GTEST_DIR="${WORKING_DIR}/googletest"
@@ -466,6 +496,7 @@ if [ ! -f "/usr/local/lib64/cmake/GTest/GTestConfig.cmake" ] && [ ! -f "/usr/loc
     cd "${GTEST_DIR}"
     git checkout v1.15.2 2>/dev/null || true
     mkdir -p build && cd build
+    fix_cmake_root
     cmake \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
@@ -475,6 +506,7 @@ if [ ! -f "/usr/local/lib64/cmake/GTest/GTestConfig.cmake" ] && [ ! -f "/usr/loc
     ninja -j"$(nproc)"
     ninja install
     cd "${WORKING_DIR}"
+    fix_cmake_root
 fi
 
 BENCH_DIR="${WORKING_DIR}/benchmark"
@@ -486,6 +518,7 @@ if [ ! -f "/usr/local/lib64/cmake/benchmark/benchmarkConfig.cmake" ] && [ ! -f "
     cd "${BENCH_DIR}"
     git checkout v1.9.0 2>/dev/null || true
     mkdir -p build && cd build
+    fix_cmake_root
     cmake \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
@@ -496,6 +529,7 @@ if [ ! -f "/usr/local/lib64/cmake/benchmark/benchmarkConfig.cmake" ] && [ ! -f "
     ninja -j"$(nproc)"
     ninja install
     cd "${WORKING_DIR}"
+    fix_cmake_root
 fi
 
 # Clone source only if not already present
@@ -523,6 +557,7 @@ SOURCE_DIR=$(pwd)
 cd "$SOURCE_DIR"
 rm -rf build
 mkdir -p build && cd build
+fix_cmake_root
 
 # Build google-cloud-cpp with Storage component enabled
 if ! cmake \
