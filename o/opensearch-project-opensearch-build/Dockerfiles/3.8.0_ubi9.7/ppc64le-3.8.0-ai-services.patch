@@ -8,7 +8,7 @@ Signed-off-by: irapandey <ira.pandey2001@gmail.com>
  manifests/3.8.0/opensearch-3.8.0.yml          | 164 -----
  ml-commons.patch                              |  37 +
  opensearch.patch                              | 697 ++++++++++++++++++
- reporting.patch                               |  12 +
+ reporting.patch                               |  13 +
  .../build.pre20260429.sh                      |   8 +-
  .../components/OpenSearch-DataFusion/build.sh |   8 +-
  scripts/components/OpenSearch/build.sh        |   8 +-
@@ -292,7 +292,7 @@ new file mode 100644
 index 00000000..34012116
 --- /dev/null
 +++ b/opensearch.patch
-@@ -0,0 +1,697 @@
+@@ -0,0 +1,717 @@
 +diff --git a/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java b/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java
 +index baeaeb72b24..83081f56421 100644
 +--- a/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java
@@ -1015,7 +1015,7 @@ new file mode 100644
 index 00000000..63672797
 --- /dev/null
 +++ b/reporting.patch
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,13 @@
 +diff --git a/build.gradle b/build.gradle
 +index aeda5092..00000000 100644
 +--- a/build.gradle
@@ -1028,6 +1028,7 @@ index 00000000..63672797
 ++    implementation 'org.jsoup:jsoup:1.23.2'
 +     implementation 'com.google.code.gson:gson:2.8.9'
 +     implementation "org.jetbrains.kotlin:kotlin-test:${kotlin_version}"
++ 
 diff --git a/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh b/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh
 index bbe39bfd..efd5699f 100755
 --- a/scripts/components/OpenSearch-DataFusion/build.pre20260429.sh
