@@ -234,13 +234,8 @@ fi
 
 echo "Running upstream pyarrow tests..."
 cd "${WORKDIR:-/}"
-<<<<<<< HEAD
 if ! ARROW_TEST_DATA="${WORKDIR}/${SRC_DIR}/testing/data" \
      PARQUET_TEST_DATA="${WORKDIR}/${SRC_DIR}/cpp/submodules/parquet-testing/data" \
-=======
-if ! ARROW_TEST_DATA="${WORKDIR}/${PACKAGE_DIR}/testing/data" \
-     PARQUET_TEST_DATA="${WORKDIR}/${PACKAGE_DIR}/cpp/submodules/parquet-testing/data" \
->>>>>>> c177a6a72eaab845c608f2c0d67445ed778e557e
      python3 -c "import os, pytest; os._exit(pytest.main(['--pyargs', 'pyarrow', '-v', '--tb=short', '-k', 'not test_s3_finalize and not test_s3_finalize_region_resolver and not test_concurrent_s3fs_init and not test_env_var_io_thread_count']))"; then
     echo "------------------${PACKAGE_NAME}:install_success_but_test_fails---------------------"
     echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Test_Fails"
