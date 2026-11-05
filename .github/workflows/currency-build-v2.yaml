@@ -1927,6 +1927,37 @@ jobs:
           bash ./gha-script/v2-script/cleanup-powercore.sh
 
   # ---------------------------------------------------------------------------
+  # build_docker: Builds and uploads the package docker image to ICR.
+  # ---------------------------------------------------------------------------
+  build_docker:
+    needs: build_info
+    if: ${{ inputs.build_docker == 'true' }}
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download build-info artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-info
+      - name: Build Docker Image
+        run: |
+          if ! command -v python &>/dev/null && command -v python3 &>/dev/null; then
+            sudo ln -sf "$(command -v python3)" /usr/local/bin/python
+          fi
+          source variable.sh
+          chmod +x ./gha-script/build_docker.sh
+          bash ./gha-script/build_docker.sh
+          docker save -o image.tar "$IMAGE_NAME"
+          docker images
+      - name: Upload Docker Image
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
+        run: |
+          source variable.sh
+          chmod +x ./gha-script/upload-scripts/upload_docker_image.sh
+          bash ./gha-script/upload-scripts/upload_docker_image.sh
+
+  # ---------------------------------------------------------------------------
   # v2_license_extraction: Runs after all wheel builds; collects scan result
   # tarballs from COS (one per UBI×Python combo), extracts licenses, uploads
   # the combined license results tarball back to COS.
@@ -2041,6 +2072,7 @@ jobs:
       - wheel_build_ubi10_py314
       - build_package_ubi9
       - build_package_ubi10
+      - build_docker
     if: always()
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
     steps:
