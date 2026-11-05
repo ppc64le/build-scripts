@@ -1953,7 +1953,7 @@ jobs:
           docker images
       - name: Upload Docker Image
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
           set -a
           source variable.sh
@@ -2163,7 +2163,6 @@ jobs:
       - wheel_build_ubi10_py314
       - build_package_ubi9
       - build_package_ubi10
-      - build_docker
       - image_scanner
     if: always()
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
