@@ -29,12 +29,28 @@ WORKDIR="${WORKDIR%/}"
 # System dependencies
 # ---------------------------------------------------------------------------
 echo "Install dependencies and tools."
-dnf install -y --allowerasing gcc gcc-c++ make cmake ninja-build git binutils openssl openssl-devel zlib-devel libuuid-devel libcurl-devel libatomic libatomic-devel cargo python3 python3-pip python3-devel || true
+dnf install -y --allowerasing \
+    git gcc gcc-c++ make cmake ninja-build binutils \
+    openssl openssl-devel zlib-devel libuuid-devel libcurl-devel \
+    python3 python3-pip python3-devel libatomic
 
-# Ensure libatomic.so symlink exists for linker
-if [ ! -f /usr/lib64/libatomic.so ] && [ -f /usr/lib64/libatomic.so.1 ]; then
-    ln -sf /usr/lib64/libatomic.so.1 /usr/lib64/libatomic.so
+dnf install -y libatomic-devel cargo || true
+
+# Ensure cc command is available
+if ! command -v cc >/dev/null 2>&1 && command -v gcc >/dev/null 2>&1; then
+    ln -sf "$(command -v gcc)" /usr/bin/cc
 fi
+
+# Ensure libatomic.so symlink exists for linker in system and toolset paths
+for d in /usr/lib64 /lib64 /opt/rh/gcc-toolset-*/root/usr/lib64; do
+    if [ -d "$d" ]; then
+        if [ -f "$d/libatomic.so.1" ] && [ ! -f "$d/libatomic.so" ]; then
+            ln -sf "$d/libatomic.so.1" "$d/libatomic.so"
+        elif [ -f "/usr/lib64/libatomic.so.1" ] && [ ! -f "$d/libatomic.so" ]; then
+            ln -sf "/usr/lib64/libatomic.so.1" "$d/libatomic.so"
+        fi
+    fi
+done
 
 # ---------------------------------------------------------------------------
 # Rust toolchain
