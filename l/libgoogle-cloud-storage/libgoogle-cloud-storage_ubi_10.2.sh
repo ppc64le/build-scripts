@@ -160,10 +160,16 @@ extract_wheel_artifacts() {
     [ -d "${PKG_DIR}/lib64" ]   && cp -rf "${PKG_DIR}/lib64/"* /usr/local/lib64/ 2>/dev/null || true
     [ -d "${PKG_DIR}/lib" ]     && cp -rf "${PKG_DIR}/lib/"* /usr/local/lib/ 2>/dev/null || true
 
-    # Safely merge cmake configs into /usr/local/lib64/cmake and /usr/local/lib/cmake
-    # NEVER create or touch /usr/local/share/cmake directly to avoid corrupting CMAKE_ROOT
+    mkdir -p /usr/local/lib64/cmake /usr/local/lib/cmake
+    if [ -d "${PKG_DIR}/lib64/cmake" ]; then
+        cp -rf "${PKG_DIR}/lib64/cmake/"* /usr/local/lib64/cmake/ 2>/dev/null || true
+        cp -rf "${PKG_DIR}/lib64/cmake/"* /usr/local/lib/cmake/ 2>/dev/null || true
+    fi
+    if [ -d "${PKG_DIR}/lib/cmake" ]; then
+        cp -rf "${PKG_DIR}/lib/cmake/"* /usr/local/lib64/cmake/ 2>/dev/null || true
+        cp -rf "${PKG_DIR}/lib/cmake/"* /usr/local/lib/cmake/ 2>/dev/null || true
+    fi
     if [ -d "${PKG_DIR}/share/cmake" ]; then
-        mkdir -p /usr/local/lib64/cmake /usr/local/lib/cmake
         cp -rf "${PKG_DIR}/share/cmake/"* /usr/local/lib64/cmake/ 2>/dev/null || true
         cp -rf "${PKG_DIR}/share/cmake/"* /usr/local/lib/cmake/ 2>/dev/null || true
     fi
@@ -191,13 +197,16 @@ for m in ['$1', '$2', '$3', '$4']:
 ABSEIL_WHEEL=$(find "${SCRIPT_PATH}" "${WORKING_DIR}" -maxdepth 1 -name 'abseil_cpp*.whl' 2>/dev/null | head -1)
 if [ -n "${ABSEIL_WHEEL}" ]; then
     echo "Using Abseil wheel: ${ABSEIL_WHEEL}"
-    python3 -m pip install "${ABSEIL_WHEEL}"
+    python3 -m pip install "${ABSEIL_WHEEL}" 2>/dev/null || true
 fi
 
 ABSL_PKG_DIR=$(find_pkg_dir "abseil_cpp" "absl")
-if [ -n "${ABSL_PKG_DIR}" ] && [ -d "${ABSL_PKG_DIR}" ]; then
-    extract_wheel_artifacts "${ABSL_PKG_DIR}"
-elif [ ! -f "/usr/local/lib64/libabsl_base.so" ] && [ ! -f "/usr/local/lib/libabsl_base.a" ] && [ ! -f "/usr/local/lib64/cmake/absl/abslConfig.cmake" ]; then
+[ -n "${ABSL_PKG_DIR}" ] && extract_wheel_artifacts "${ABSL_PKG_DIR}"
+
+if [ ! -f "/usr/local/lib64/cmake/absl/abslConfig.cmake" ] && \
+   [ ! -f "/usr/local/lib/cmake/absl/abslConfig.cmake" ] && \
+   [ ! -f "/usr/local/include/absl/base/config.h" ]; then
+
     ABSL_SCRIPT=""
     if [ -f "${SCRIPT_PATH}/abseil-cpp_ubi_10.2.sh" ]; then
         ABSL_SCRIPT="${SCRIPT_PATH}/abseil-cpp_ubi_10.2.sh"
@@ -210,33 +219,40 @@ elif [ ! -f "/usr/local/lib64/libabsl_base.so" ] && [ ! -f "/usr/local/lib/libab
         [ -f "${WORKING_DIR}/abseil-cpp_ubi_10.2.sh" ] && ABSL_SCRIPT="${WORKING_DIR}/abseil-cpp_ubi_10.2.sh"
     fi
 
-    if [ -n "${ABSL_SCRIPT}" ] && [ -f "${ABSL_SCRIPT}" ] && CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${ABSL_SCRIPT}" 20240116.2; then
-        echo "Successfully built Abseil-cpp via build script (${ABSL_SCRIPT})"
-        cd "${WORKING_DIR}"
-    else
-        echo "Abseil build script not found/failed. Building from source..."
-        ABSL_DIR="${WORKING_DIR}/abseil-cpp"
-        if [ ! -d "${ABSL_DIR}" ]; then
-            git clone https://github.com/abseil/abseil-cpp.git "${ABSL_DIR}"
+    if [ -n "${ABSL_SCRIPT}" ] && [ -f "${ABSL_SCRIPT}" ]; then
+        if CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${ABSL_SCRIPT}" 20240116.2; then
+            echo "Successfully executed Abseil build script (${ABSL_SCRIPT})"
+            cd "${WORKING_DIR}"
+            ABSL_PKG_DIR=$(find_pkg_dir "abseil_cpp" "absl")
+            [ -n "${ABSL_PKG_DIR}" ] && extract_wheel_artifacts "${ABSL_PKG_DIR}"
         fi
-        cd "${ABSL_DIR}"
-        git checkout 20240116.2 2>/dev/null || git checkout 20240722.0 2>/dev/null || true
-        mkdir -p build && cd build
-        cmake \
-            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_CXX_STANDARD=17 \
-            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-            -DABSL_PROPAGATE_CXX_STD=ON \
-            -DBUILD_TESTING=OFF \
-            -DCMAKE_INSTALL_PREFIX=/usr/local \
-            -GNinja \
-            ..
-        ninja -j"$(nproc)"
-        ninja install
-        cd "${WORKING_DIR}"
     fi
+fi
+
+if [ ! -f "/usr/local/lib64/cmake/absl/abslConfig.cmake" ] && \
+   [ ! -f "/usr/local/lib/cmake/absl/abslConfig.cmake" ]; then
+    echo "Abseil CMake configs missing. Building Abseil-cpp from source..."
+    ABSL_DIR="${WORKING_DIR}/abseil-cpp"
+    if [ ! -d "${ABSL_DIR}" ]; then
+        git clone https://github.com/abseil/abseil-cpp.git "${ABSL_DIR}"
+    fi
+    cd "${ABSL_DIR}"
+    git checkout 20240116.2 2>/dev/null || git checkout 20240722.0 2>/dev/null || true
+    rm -rf build && mkdir -p build && cd build
     fix_cmake_root
+    cmake \
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_STANDARD=17 \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DABSL_PROPAGATE_CXX_STD=ON \
+        -DBUILD_TESTING=OFF \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -GNinja \
+        ..
+    ninja -j"$(nproc)"
+    ninja install
+    cd "${WORKING_DIR}"
 fi
 fix_cmake_root
 
@@ -244,13 +260,13 @@ fix_cmake_root
 CARES_WHEEL=$(find "${SCRIPT_PATH}" "${WORKING_DIR}" -maxdepth 1 \( -name 'c_ares*.whl' -o -name 'c-ares*.whl' \) 2>/dev/null | head -1)
 if [ -n "${CARES_WHEEL}" ]; then
     echo "Using c-ares wheel: ${CARES_WHEEL}"
-    python3 -m pip install "${CARES_WHEEL}"
+    python3 -m pip install "${CARES_WHEEL}" 2>/dev/null || true
 fi
 
 CARES_PKG_DIR=$(find_pkg_dir "c_ares" "cares")
-if [ -n "${CARES_PKG_DIR}" ] && [ -d "${CARES_PKG_DIR}" ]; then
-    extract_wheel_artifacts "${CARES_PKG_DIR}"
-elif [ ! -f "/usr/local/lib64/libcares.so" ] && [ ! -f "/usr/local/lib/libcares.so" ] && [ ! -f "/usr/local/include/ares.h" ]; then
+[ -n "${CARES_PKG_DIR}" ] && extract_wheel_artifacts "${CARES_PKG_DIR}"
+
+if [ ! -f "/usr/local/lib64/libcares.so" ] && [ ! -f "/usr/local/lib/libcares.so" ] && [ ! -f "/usr/local/include/ares.h" ]; then
     CARES_SCRIPT=""
     if [ -f "${SCRIPT_PATH}/cares_ubi_10.2.sh" ]; then
         CARES_SCRIPT="${SCRIPT_PATH}/cares_ubi_10.2.sh"
@@ -263,32 +279,39 @@ elif [ ! -f "/usr/local/lib64/libcares.so" ] && [ ! -f "/usr/local/lib/libcares.
         [ -f "${WORKING_DIR}/cares_ubi_10.2.sh" ] && CARES_SCRIPT="${WORKING_DIR}/cares_ubi_10.2.sh"
     fi
 
-    if [ -n "${CARES_SCRIPT}" ] && [ -f "${CARES_SCRIPT}" ] && CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${CARES_SCRIPT}" cares-1_19_1; then
-        echo "Successfully built c-ares via build script (${CARES_SCRIPT})"
-        cd "${WORKING_DIR}"
-    else
-        echo "c-ares build script not found/failed. Building from source..."
-        CARES_DIR="${WORKING_DIR}/c-ares"
-        if [ ! -d "${CARES_DIR}" ]; then
-            git clone https://github.com/c-ares/c-ares.git "${CARES_DIR}"
+    if [ -n "${CARES_SCRIPT}" ] && [ -f "${CARES_SCRIPT}" ]; then
+        if CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${CARES_SCRIPT}" cares-1_19_1; then
+            echo "Successfully executed c-ares build script (${CARES_SCRIPT})"
+            cd "${WORKING_DIR}"
+            CARES_PKG_DIR=$(find_pkg_dir "c_ares" "cares")
+            [ -n "${CARES_PKG_DIR}" ] && extract_wheel_artifacts "${CARES_PKG_DIR}"
         fi
-        cd "${CARES_DIR}"
-        git checkout cares-1_19_1 2>/dev/null || git checkout v1.19.1 2>/dev/null || true
-        mkdir -p build && cd build
-        cmake \
-            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-            -DCARES_STATIC=OFF \
-            -DCARES_SHARED=ON \
-            -DCMAKE_INSTALL_PREFIX=/usr/local \
-            -GNinja \
-            ..
-        ninja -j"$(nproc)"
-        ninja install
-        cd "${WORKING_DIR}"
     fi
+fi
+
+if [ ! -f "/usr/local/include/ares.h" ] || \
+   ([ ! -f "/usr/local/lib64/cmake/c-ares/c-ares-config.cmake" ] && [ ! -f "/usr/local/lib/cmake/c-ares/c-ares-config.cmake" ]); then
+    echo "c-ares CMake configs missing. Building from source..."
+    CARES_DIR="${WORKING_DIR}/c-ares"
+    if [ ! -d "${CARES_DIR}" ]; then
+        git clone https://github.com/c-ares/c-ares.git "${CARES_DIR}"
+    fi
+    cd "${CARES_DIR}"
+    git checkout cares-1_19_1 2>/dev/null || git checkout v1.19.1 2>/dev/null || true
+    rm -rf build && mkdir -p build && cd build
     fix_cmake_root
+    cmake \
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DCARES_STATIC=OFF \
+        -DCARES_SHARED=ON \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -GNinja \
+        ..
+    ninja -j"$(nproc)"
+    ninja install
+    cd "${WORKING_DIR}"
 fi
 fix_cmake_root
 
@@ -296,13 +319,13 @@ fix_cmake_root
 RE2_WHEEL=$(find "${SCRIPT_PATH}" "${WORKING_DIR}" -maxdepth 1 -name 're2*.whl' 2>/dev/null | head -1)
 if [ -n "${RE2_WHEEL}" ]; then
     echo "Using RE2 wheel: ${RE2_WHEEL}"
-    python3 -m pip install "${RE2_WHEEL}"
+    python3 -m pip install "${RE2_WHEEL}" 2>/dev/null || true
 fi
 
 RE2_PKG_DIR=$(find_pkg_dir "re2")
-if [ -n "${RE2_PKG_DIR}" ] && [ -d "${RE2_PKG_DIR}" ]; then
-    extract_wheel_artifacts "${RE2_PKG_DIR}"
-elif [ ! -f "/usr/local/lib64/libre2.so" ] && [ ! -f "/usr/local/lib/libre2.so" ] && [ ! -f "/usr/local/include/re2/re2.h" ]; then
+[ -n "${RE2_PKG_DIR}" ] && extract_wheel_artifacts "${RE2_PKG_DIR}"
+
+if [ ! -f "/usr/local/lib64/libre2.so" ] && [ ! -f "/usr/local/lib/libre2.so" ] && [ ! -f "/usr/local/include/re2/re2.h" ]; then
     RE2_SCRIPT=""
     if [ -f "${SCRIPT_PATH}/re2_ubi_10.2.sh" ]; then
         RE2_SCRIPT="${SCRIPT_PATH}/re2_ubi_10.2.sh"
@@ -315,33 +338,40 @@ elif [ ! -f "/usr/local/lib64/libre2.so" ] && [ ! -f "/usr/local/lib/libre2.so" 
         [ -f "${WORKING_DIR}/re2_ubi_10.2.sh" ] && RE2_SCRIPT="${WORKING_DIR}/re2_ubi_10.2.sh"
     fi
 
-    if [ -n "${RE2_SCRIPT}" ] && [ -f "${RE2_SCRIPT}" ] && CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${RE2_SCRIPT}" 2022-04-01; then
-        echo "Successfully built RE2 via build script (${RE2_SCRIPT})"
-        cd "${WORKING_DIR}"
-    else
-        echo "RE2 build script not found/failed. Building from source..."
-        RE2_DIR="${WORKING_DIR}/re2"
-        if [ ! -d "${RE2_DIR}" ]; then
-            git clone https://github.com/google/re2.git "${RE2_DIR}"
+    if [ -n "${RE2_SCRIPT}" ] && [ -f "${RE2_SCRIPT}" ]; then
+        if CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${RE2_SCRIPT}" 2022-04-01; then
+            echo "Successfully executed RE2 build script (${RE2_SCRIPT})"
+            cd "${WORKING_DIR}"
+            RE2_PKG_DIR=$(find_pkg_dir "re2")
+            [ -n "${RE2_PKG_DIR}" ] && extract_wheel_artifacts "${RE2_PKG_DIR}"
         fi
-        cd "${RE2_DIR}"
-        git checkout 2022-04-01 2>/dev/null || true
-        mkdir -p build && cd build
-        cmake \
-            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_CXX_STANDARD=17 \
-            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-            -DBUILD_SHARED_LIBS=ON \
-            -DRE2_BUILD_TESTING=OFF \
-            -DCMAKE_INSTALL_PREFIX=/usr/local \
-            -GNinja \
-            ..
-        ninja -j"$(nproc)"
-        ninja install
-        cd "${WORKING_DIR}"
     fi
+fi
+
+if [ ! -f "/usr/local/include/re2/re2.h" ] || \
+   ([ ! -f "/usr/local/lib64/cmake/re2/re2Config.cmake" ] && [ ! -f "/usr/local/lib/cmake/re2/re2Config.cmake" ]); then
+    echo "RE2 CMake configs missing. Building from source..."
+    RE2_DIR="${WORKING_DIR}/re2"
+    if [ ! -d "${RE2_DIR}" ]; then
+        git clone https://github.com/google/re2.git "${RE2_DIR}"
+    fi
+    cd "${RE2_DIR}"
+    git checkout 2022-04-01 2>/dev/null || true
+    rm -rf build && mkdir -p build && cd build
     fix_cmake_root
+    cmake \
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_STANDARD=17 \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DBUILD_SHARED_LIBS=ON \
+        -DRE2_BUILD_TESTING=OFF \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -GNinja \
+        ..
+    ninja -j"$(nproc)"
+    ninja install
+    cd "${WORKING_DIR}"
 fi
 fix_cmake_root
 
@@ -349,13 +379,13 @@ fix_cmake_root
 PROTOBUF_WHEEL=$(find "${SCRIPT_PATH}" "${WORKING_DIR}" -maxdepth 1 -name '*protobuf*.whl' 2>/dev/null | head -1)
 if [ -n "${PROTOBUF_WHEEL}" ]; then
     echo "Using Protobuf wheel: ${PROTOBUF_WHEEL}"
-    python3 -m pip install "${PROTOBUF_WHEEL}"
+    python3 -m pip install "${PROTOBUF_WHEEL}" 2>/dev/null || true
 fi
 
 PROTOBUF_PKG_DIR=$(find_pkg_dir "libprotobuf" "google.protobuf")
-if [ -n "${PROTOBUF_PKG_DIR}" ] && [ -d "${PROTOBUF_PKG_DIR}" ]; then
-    extract_wheel_artifacts "${PROTOBUF_PKG_DIR}"
-elif [ ! -f "/usr/local/lib64/libprotobuf.so" ] && [ ! -f "/usr/local/lib/libprotobuf.so" ] && [ ! -f "/usr/local/include/google/protobuf/message.h" ]; then
+[ -n "${PROTOBUF_PKG_DIR}" ] && extract_wheel_artifacts "${PROTOBUF_PKG_DIR}"
+
+if [ ! -f "/usr/local/lib64/libprotobuf.so" ] && [ ! -f "/usr/local/lib/libprotobuf.so" ] && [ ! -f "/usr/local/include/google/protobuf/message.h" ]; then
     PROTOBUF_SCRIPT=""
     if [ -f "${SCRIPT_PATH}/libprotobuf_ubi_10.2_v33.6.sh" ]; then
         PROTOBUF_SCRIPT="${SCRIPT_PATH}/libprotobuf_ubi_10.2_v33.6.sh"
@@ -368,35 +398,42 @@ elif [ ! -f "/usr/local/lib64/libprotobuf.so" ] && [ ! -f "/usr/local/lib/libpro
         [ -f "${WORKING_DIR}/libprotobuf_ubi_10.2_v33.6.sh" ] && PROTOBUF_SCRIPT="${WORKING_DIR}/libprotobuf_ubi_10.2_v33.6.sh"
     fi
 
-    if [ -n "${PROTOBUF_SCRIPT}" ] && [ -f "${PROTOBUF_SCRIPT}" ] && CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${PROTOBUF_SCRIPT}" v28.0; then
-        echo "Successfully built Protobuf via build script (${PROTOBUF_SCRIPT})"
-        cd "${WORKING_DIR}"
-    else
-        echo "Protobuf build script not found/failed. Building from source..."
-        PROTOBUF_DIR="${WORKING_DIR}/protobuf"
-        if [ ! -d "${PROTOBUF_DIR}" ]; then
-            git clone https://github.com/protocolbuffers/protobuf.git "${PROTOBUF_DIR}"
+    if [ -n "${PROTOBUF_SCRIPT}" ] && [ -f "${PROTOBUF_SCRIPT}" ]; then
+        if CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${PROTOBUF_SCRIPT}" v28.0; then
+            echo "Successfully executed Protobuf build script (${PROTOBUF_SCRIPT})"
+            cd "${WORKING_DIR}"
+            PROTOBUF_PKG_DIR=$(find_pkg_dir "libprotobuf" "google.protobuf")
+            [ -n "${PROTOBUF_PKG_DIR}" ] && extract_wheel_artifacts "${PROTOBUF_PKG_DIR}"
         fi
-        cd "${PROTOBUF_DIR}"
-        git checkout v28.0 2>/dev/null || git checkout v28.3 2>/dev/null || git checkout v33.6 2>/dev/null || true
-        git submodule update --init --recursive 2>/dev/null || true
-        mkdir -p build && cd build
-        cmake \
-            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_CXX_STANDARD=17 \
-            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-            -Dprotobuf_BUILD_TESTS=OFF \
-            -Dprotobuf_ABSL_PROVIDER=package \
-            -DCMAKE_PREFIX_PATH=/usr/local \
-            -DCMAKE_INSTALL_PREFIX=/usr/local \
-            -GNinja \
-            ..
-        ninja -j"$(nproc)"
-        ninja install
-        cd "${WORKING_DIR}"
     fi
+fi
+
+if [ ! -f "/usr/local/include/google/protobuf/message.h" ] || \
+   ([ ! -f "/usr/local/lib64/cmake/protobuf/protobuf-config.cmake" ] && [ ! -f "/usr/local/lib/cmake/protobuf/protobuf-config.cmake" ]); then
+    echo "Protobuf CMake configs missing. Building from source..."
+    PROTOBUF_DIR="${WORKING_DIR}/protobuf"
+    if [ ! -d "${PROTOBUF_DIR}" ]; then
+        git clone https://github.com/protocolbuffers/protobuf.git "${PROTOBUF_DIR}"
+    fi
+    cd "${PROTOBUF_DIR}"
+    git checkout v28.0 2>/dev/null || git checkout v28.3 2>/dev/null || git checkout v33.6 2>/dev/null || true
+    git submodule update --init --recursive 2>/dev/null || true
+    rm -rf build && mkdir -p build && cd build
     fix_cmake_root
+    cmake \
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_STANDARD=17 \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -Dprotobuf_BUILD_TESTS=OFF \
+        -Dprotobuf_ABSL_PROVIDER=package \
+        -DCMAKE_PREFIX_PATH="/usr/local;/usr/local/lib64/cmake;/usr/local/lib/cmake" \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -GNinja \
+        ..
+    ninja -j"$(nproc)"
+    ninja install
+    cd "${WORKING_DIR}"
 fi
 fix_cmake_root
 
@@ -404,13 +441,13 @@ fix_cmake_root
 GRPC_WHEEL=$(find "${SCRIPT_PATH}" "${WORKING_DIR}" -maxdepth 1 -name 'grpc_cpp*.whl' 2>/dev/null | head -1)
 if [ -n "${GRPC_WHEEL}" ]; then
     echo "Using gRPC wheel: ${GRPC_WHEEL}"
-    python3 -m pip install "${GRPC_WHEEL}"
+    python3 -m pip install "${GRPC_WHEEL}" 2>/dev/null || true
 fi
 
 GRPC_PKG_DIR=$(find_pkg_dir "grpc_cpp" "grpccpp" "grpc")
-if [ -n "${GRPC_PKG_DIR}" ] && [ -d "${GRPC_PKG_DIR}" ]; then
-    extract_wheel_artifacts "${GRPC_PKG_DIR}"
-elif [ ! -f "/usr/local/lib64/libgrpc++.so" ] && [ ! -f "/usr/local/lib/libgrpc++.so" ] && [ ! -f "/usr/local/include/grpcpp/grpcpp.h" ]; then
+[ -n "${GRPC_PKG_DIR}" ] && extract_wheel_artifacts "${GRPC_PKG_DIR}"
+
+if [ ! -f "/usr/local/lib64/libgrpc++.so" ] && [ ! -f "/usr/local/lib/libgrpc++.so" ] && [ ! -f "/usr/local/include/grpcpp/grpcpp.h" ]; then
     GRPC_SCRIPT=""
     if [ -f "${SCRIPT_PATH}/grpc_cpp_ubi_10.2.sh" ]; then
         GRPC_SCRIPT="${SCRIPT_PATH}/grpc_cpp_ubi_10.2.sh"
@@ -423,41 +460,48 @@ elif [ ! -f "/usr/local/lib64/libgrpc++.so" ] && [ ! -f "/usr/local/lib/libgrpc+
         [ -f "${WORKING_DIR}/grpc_cpp_ubi_10.2.sh" ] && GRPC_SCRIPT="${WORKING_DIR}/grpc_cpp_ubi_10.2.sh"
     fi
 
-    if [ -n "${GRPC_SCRIPT}" ] && [ -f "${GRPC_SCRIPT}" ] && CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${GRPC_SCRIPT}" 1.80.0; then
-        echo "Successfully built gRPC via build script (${GRPC_SCRIPT})"
-        cd "${WORKING_DIR}"
-    else
-        echo "gRPC build script not found/failed. Building from source..."
-        GRPC_DIR="${WORKING_DIR}/grpc"
-        if [ ! -d "${GRPC_DIR}" ]; then
-            git clone --recurse-submodules https://github.com/grpc/grpc.git "${GRPC_DIR}"
+    if [ -n "${GRPC_SCRIPT}" ] && [ -f "${GRPC_SCRIPT}" ]; then
+        if CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 ${CMAKE_ARGS:-}" bash "${GRPC_SCRIPT}" 1.80.0; then
+            echo "Successfully executed gRPC build script (${GRPC_SCRIPT})"
+            cd "${WORKING_DIR}"
+            GRPC_PKG_DIR=$(find_pkg_dir "grpc_cpp" "grpccpp" "grpc")
+            [ -n "${GRPC_PKG_DIR}" ] && extract_wheel_artifacts "${GRPC_PKG_DIR}"
         fi
-        cd "${GRPC_DIR}"
-        git checkout v1.68.0 2>/dev/null || git checkout 1.80.0 2>/dev/null || true
-        git submodule update --init --recursive 2>/dev/null || true
-        mkdir -p build && cd build
-        cmake \
-            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_CXX_STANDARD=17 \
-            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-            -DgRPC_INSTALL=ON \
-            -DgRPC_BUILD_TESTS=OFF \
-            -DgRPC_ABSL_PROVIDER=package \
-            -DgRPC_PROTOBUF_PROVIDER=package \
-            -DgRPC_RE2_PROVIDER=package \
-            -DgRPC_CARES_PROVIDER=package \
-            -DgRPC_SSL_PROVIDER=package \
-            -DgRPC_ZLIB_PROVIDER=package \
-            -DCMAKE_PREFIX_PATH=/usr/local \
-            -DCMAKE_INSTALL_PREFIX=/usr/local \
-            -GNinja \
-            ..
-        ninja -j"$(nproc)"
-        ninja install
-        cd "${WORKING_DIR}"
     fi
+fi
+
+if [ ! -f "/usr/local/include/grpcpp/grpcpp.h" ] || \
+   ([ ! -f "/usr/local/lib64/cmake/grpc/gRPCConfig.cmake" ] && [ ! -f "/usr/local/lib/cmake/grpc/gRPCConfig.cmake" ]); then
+    echo "gRPC CMake configs missing. Building from source..."
+    GRPC_DIR="${WORKING_DIR}/grpc"
+    if [ ! -d "${GRPC_DIR}" ]; then
+        git clone --recurse-submodules https://github.com/grpc/grpc.git "${GRPC_DIR}"
+    fi
+    cd "${GRPC_DIR}"
+    git checkout v1.68.0 2>/dev/null || git checkout 1.80.0 2>/dev/null || true
+    git submodule update --init --recursive 2>/dev/null || true
+    rm -rf build && mkdir -p build && cd build
     fix_cmake_root
+    cmake \
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_STANDARD=17 \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DgRPC_INSTALL=ON \
+        -DgRPC_BUILD_TESTS=OFF \
+        -DgRPC_ABSL_PROVIDER=package \
+        -DgRPC_PROTOBUF_PROVIDER=package \
+        -DgRPC_RE2_PROVIDER=package \
+        -DgRPC_CARES_PROVIDER=package \
+        -DgRPC_SSL_PROVIDER=package \
+        -DgRPC_ZLIB_PROVIDER=package \
+        -DCMAKE_PREFIX_PATH="/usr/local;/usr/local/lib64/cmake;/usr/local/lib/cmake" \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -GNinja \
+        ..
+    ninja -j"$(nproc)"
+    ninja install
+    cd "${WORKING_DIR}"
 fi
 fix_cmake_root
 
@@ -597,7 +641,7 @@ if ! cmake \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_C_FLAGS="${CPU_FLAGS}" \
     -DCMAKE_CXX_FLAGS="${CPU_FLAGS}" \
-    -DCMAKE_PREFIX_PATH=/usr/local \
+    -DCMAKE_PREFIX_PATH="/usr/local;/usr/local/lib64/cmake;/usr/local/lib/cmake;/usr" \
     -DCMAKE_INSTALL_PREFIX=/usr/local \
     -DCMAKE_INSTALL_RPATH="\$ORIGIN:\$ORIGIN/../lib64:\$ORIGIN/../lib" \
     -DBUILD_TESTING=ON \
