@@ -199,39 +199,19 @@ echo "Wheel: ${WHEEL}"
 cd "${WORKDIR:-/}"
 
 # ---------------------------------------------------------------------------
-# Install wheel in an isolated venv
+# Install wheel
 # ---------------------------------------------------------------------------
-rm -rf "${WORKDIR}/venv-test"
-if ! python3 -m venv "${WORKDIR}/venv-test"; then
-    echo "------------------${PACKAGE_NAME}:venv_create_fails---------------------------------"
-    echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Venv_Create_Fails"
-    exit 1
-fi
-VENV_PY="${WORKDIR}/venv-test/bin/python"
-${VENV_PY} -m pip install --upgrade pip
-
-if ! ${VENV_PY} -m pip install "${WHEEL}"; then
+if ! python3 -m pip install --force-reinstall --no-deps "${WHEEL}"; then
     echo "------------------${PACKAGE_NAME}:install_fails-------------------------------------"
     echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Install_Fails"
     exit 1
 fi
 
 # ---------------------------------------------------------------------------
-# Test
+# Smoke test
 # ---------------------------------------------------------------------------
-if ! ${VENV_PY} -m pip install --index-url "${DEVFIRST_INDEX}" "numpy==${NUMPY_VERSION}"; then
-    echo "------------------${PACKAGE_NAME}:install_success_but_test_fails---------------------"
-    echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Test_Dependencies_Install_Fails"
-    exit 2
-fi
-
-if ! ${VENV_PY} -m pip install --extra-index-url "${DEVFIRST_INDEX}" --prefer-binary pytest pytest-timeout hypothesis cffi pytz; then
-    echo "------------------${PACKAGE_NAME}:install_success_but_test_fails---------------------"
-    echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Test_Dependencies_Install_Fails"
-    exit 2
-fi
 echo "Validating pyarrow installation..."
-if ! ${VENV_PY} -c "import pyarrow as pa; print('pyarrow version:', pa.__version__)"; then
+if ! python3 -c "import pyarrow as pa; print('pyarrow version:', pa.__version__)"; then
     echo "------------------${PACKAGE_NAME}:install_success_but_test_fails---------------------"
     echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Validation_Fails"
     exit 2
@@ -245,11 +225,17 @@ fi
 #   - test_env_var_io_thread_count:
 #       Spawns standalone python child process triggering same glibc exit teardown abort.
 # ---------------------------------------------------------------------------
+if ! python3 -m pip install --extra-index-url "${DEVFIRST_INDEX}" --prefer-binary pytest pytest-timeout hypothesis cffi pytz; then
+    echo "------------------${PACKAGE_NAME}:install_success_but_test_fails---------------------"
+    echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Test_Dependencies_Install_Fails"
+    exit 2
+fi
+
 echo "Running upstream pyarrow tests..."
 cd "${WORKDIR:-/}"
 if ! ARROW_TEST_DATA="${WORKDIR}/${PACKAGE_DIR}/testing/data" \
      PARQUET_TEST_DATA="${WORKDIR}/${PACKAGE_DIR}/cpp/submodules/parquet-testing/data" \
-     ${VENV_PY} -c "import os, pytest; os._exit(pytest.main(['--pyargs', 'pyarrow', '-v', '--tb=short', '-k', 'not test_s3_finalize and not test_s3_finalize_region_resolver and not test_concurrent_s3fs_init and not test_env_var_io_thread_count']))"; then
+     python3 -c "import os, pytest; os._exit(pytest.main(['--pyargs', 'pyarrow', '-v', '--tb=short', '-k', 'not test_s3_finalize and not test_s3_finalize_region_resolver and not test_concurrent_s3fs_init and not test_env_var_io_thread_count']))"; then
     echo "------------------${PACKAGE_NAME}:install_success_but_test_fails---------------------"
     echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Test_Fails"
     exit 2
