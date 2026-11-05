@@ -21,7 +21,8 @@
 PACKAGE_NAME=pyarrow
 PACKAGE_VERSION=${1:-apache-arrow-24.0.0}
 PACKAGE_URL=https://github.com/apache/arrow
-PACKAGE_DIR=arrow
+PACKAGE_DIR=arrow/python
+SRC_DIR=arrow
 WORKDIR="$(pwd -P)"
 WORKDIR="${WORKDIR%/}"
 
@@ -82,16 +83,16 @@ export CXXFLAGS="${CPU_FLAGS}"
 # Clone
 # ---------------------------------------------------------------------------
 cd "${WORKDIR:-/}"
-rm -rf "${PACKAGE_DIR}"
+rm -rf "${SRC_DIR}"
 
 echo "Entering Pyarrow source directory..."
-if ! git clone "${PACKAGE_URL}" "${PACKAGE_DIR}"; then
+if ! git clone "${PACKAGE_URL}" "${SRC_DIR}"; then
     echo "------------------${PACKAGE_NAME}:clone_fails---------------------------------------"
     echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Clone_Fails"
     exit 1
 fi
 
-cd "${PACKAGE_DIR}"
+cd "${SRC_DIR}"
 git checkout "${PACKAGE_VERSION}"
 git submodule update --init --recursive
 
@@ -151,7 +152,7 @@ fi
 echo "/usr/local/lib64" > /etc/ld.so.conf.d/arrow.conf 2>/dev/null || true
 ldconfig 2>/dev/null || true
 
-cd ../../python
+cd "${WORKDIR}/${PACKAGE_DIR}"
 export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
 
 # ---------------------------------------------------------------------------
@@ -199,39 +200,19 @@ echo "Wheel: ${WHEEL}"
 cd "${WORKDIR:-/}"
 
 # ---------------------------------------------------------------------------
-# Install wheel in an isolated venv
+# Install wheel
 # ---------------------------------------------------------------------------
-rm -rf "${WORKDIR}/venv-test"
-if ! python3 -m venv "${WORKDIR}/venv-test"; then
-    echo "------------------${PACKAGE_NAME}:venv_create_fails---------------------------------"
-    echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Venv_Create_Fails"
-    exit 1
-fi
-VENV_PY="${WORKDIR}/venv-test/bin/python"
-${VENV_PY} -m pip install --upgrade pip
-
-if ! ${VENV_PY} -m pip install "${WHEEL}"; then
+if ! python3 -m pip install --force-reinstall --no-deps "${WHEEL}"; then
     echo "------------------${PACKAGE_NAME}:install_fails-------------------------------------"
     echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Install_Fails"
     exit 1
 fi
 
 # ---------------------------------------------------------------------------
-# Test
+# Smoke test
 # ---------------------------------------------------------------------------
-if ! ${VENV_PY} -m pip install --index-url "${DEVFIRST_INDEX}" "numpy==${NUMPY_VERSION}"; then
-    echo "------------------${PACKAGE_NAME}:install_success_but_test_fails---------------------"
-    echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Test_Dependencies_Install_Fails"
-    exit 2
-fi
-
-if ! ${VENV_PY} -m pip install --extra-index-url "${DEVFIRST_INDEX}" --prefer-binary pytest pytest-timeout hypothesis cffi pytz; then
-    echo "------------------${PACKAGE_NAME}:install_success_but_test_fails---------------------"
-    echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Test_Dependencies_Install_Fails"
-    exit 2
-fi
 echo "Validating pyarrow installation..."
-if ! ${VENV_PY} -c "import pyarrow as pa; print('pyarrow version:', pa.__version__)"; then
+if ! python3 -c "import pyarrow as pa; print('pyarrow version:', pa.__version__)"; then
     echo "------------------${PACKAGE_NAME}:install_success_but_test_fails---------------------"
     echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Validation_Fails"
     exit 2
@@ -245,11 +226,17 @@ fi
 #   - test_env_var_io_thread_count:
 #       Spawns standalone python child process triggering same glibc exit teardown abort.
 # ---------------------------------------------------------------------------
+if ! python3 -m pip install --extra-index-url "${DEVFIRST_INDEX}" --prefer-binary pytest pytest-timeout hypothesis cffi pytz; then
+    echo "------------------${PACKAGE_NAME}:install_success_but_test_fails---------------------"
+    echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Test_Dependencies_Install_Fails"
+    exit 2
+fi
+
 echo "Running upstream pyarrow tests..."
 cd "${WORKDIR:-/}"
-if ! ARROW_TEST_DATA="${WORKDIR}/${PACKAGE_DIR}/testing/data" \
-     PARQUET_TEST_DATA="${WORKDIR}/${PACKAGE_DIR}/cpp/submodules/parquet-testing/data" \
-     ${VENV_PY} -c "import os, pytest; os._exit(pytest.main(['--pyargs', 'pyarrow', '-v', '--tb=short', '-k', 'not test_s3_finalize and not test_s3_finalize_region_resolver and not test_concurrent_s3fs_init and not test_env_var_io_thread_count']))"; then
+if ! ARROW_TEST_DATA="${WORKDIR}/${SRC_DIR}/testing/data" \
+     PARQUET_TEST_DATA="${WORKDIR}/${SRC_DIR}/cpp/submodules/parquet-testing/data" \
+     python3 -c "import os, pytest; os._exit(pytest.main(['--pyargs', 'pyarrow', '-v', '--tb=short', '-k', 'not test_s3_finalize and not test_s3_finalize_region_resolver and not test_concurrent_s3fs_init and not test_env_var_io_thread_count']))"; then
     echo "------------------${PACKAGE_NAME}:install_success_but_test_fails---------------------"
     echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | Fail | Test_Fails"
     exit 2
