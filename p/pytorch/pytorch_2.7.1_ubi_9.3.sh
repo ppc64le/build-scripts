@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : pytorch
-# Version          : v2.7.1
+# Version          : v2.15.0
 # Source repo      : https://github.com/pytorch/pytorch.git
 # Tested on        : UBI:9.3
 # Language         : Python

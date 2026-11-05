@@ -2,7 +2,7 @@
   "maintainer": "saisrivatsa",
   "package_name": "pytorch",
   "github_url": "https://github.com/pytorch/pytorch.git",
-  "version": "v2.6.0",
+  "version": "v2.15.0",
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/pytorch",
