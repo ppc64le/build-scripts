@@ -83,7 +83,49 @@ python3 --version
 
 # --- Step 0: Install Abseil-cpp, c-ares, RE2, Protobuf, gRPC, nlohmann_json, OpenTelemetry, GoogleTest, and Google Benchmark ---
 # Order of installation: 1) Wheel -> 2) Build Script -> 3) Source Build
-mkdir -p /usr/local/include /usr/local/lib64 /usr/local/lib /usr/local/share
+mkdir -p /usr/local/include /usr/local/lib64 /usr/local/lib /usr/local/share/cmake
+
+# 1. Setup persistent dynamic linker configuration
+mkdir -p /etc/ld.so.conf.d
+cat >/etc/ld.so.conf.d/local.conf <<EOF
+/usr/local/lib
+/usr/local/lib64
+EOF
+ldconfig
+
+# Helper functions for safe wheel extraction and package detection
+extract_wheel_artifacts() {
+    local PKG_DIR="$1"
+    [ -z "${PKG_DIR}" ] || [ ! -d "${PKG_DIR}" ] && return 0
+    echo "Safely extracting artifacts from ${PKG_DIR} -> /usr/local"
+    [ -d "${PKG_DIR}/include" ] && cp -rf "${PKG_DIR}/include/"* /usr/local/include/ 2>/dev/null || true
+    [ -d "${PKG_DIR}/lib64" ]   && cp -rf "${PKG_DIR}/lib64/"* /usr/local/lib64/ 2>/dev/null || true
+    [ -d "${PKG_DIR}/lib" ]     && cp -rf "${PKG_DIR}/lib/"* /usr/local/lib/ 2>/dev/null || true
+
+    # Safely merge cmake configs without overwriting system /usr/local/share/cmake modules
+    if [ -d "${PKG_DIR}/share/cmake" ]; then
+        mkdir -p /usr/local/share/cmake
+        cp -rf "${PKG_DIR}/share/cmake/"* /usr/local/share/cmake/ 2>/dev/null || true
+    fi
+    for d in "${PKG_DIR}/share/"*; do
+        if [ -d "$d" ] && [ "$(basename "$d")" != "cmake" ]; then
+            mkdir -p /usr/local/share
+            cp -rf "$d" /usr/local/share/ 2>/dev/null || true
+        fi
+    done
+}
+
+find_pkg_dir() {
+    python3 -c "
+import importlib.util
+for m in ['$1', '$2', '$3', '$4']:
+    if not m: continue
+    s = importlib.util.find_spec(m)
+    if s and s.submodule_search_locations:
+        print(s.submodule_search_locations[0])
+        break
+" 2>/dev/null || true
+}
 
 # 0.1 Abseil-cpp
 ABSEIL_WHEEL=$(find "${SCRIPT_PATH}" "${WORKING_DIR}" -maxdepth 1 -name 'abseil_cpp*.whl' 2>/dev/null | head -1)
@@ -92,13 +134,9 @@ if [ -n "${ABSEIL_WHEEL}" ]; then
     python3 -m pip install "${ABSEIL_WHEEL}"
 fi
 
-ABSL_PKG_DIR=$(python3 -c "import abseil_cpp, os; print(os.path.dirname(abseil_cpp.__file__))" 2>/dev/null || true)
-if [ -n "${ABSL_PKG_DIR}" ] && [ -d "${ABSL_PKG_DIR}/include/absl" ]; then
-    echo "Extracted Abseil C++ headers and libraries from wheel (${ABSL_PKG_DIR}) to /usr/local"
-    cp -rf "${ABSL_PKG_DIR}/include/absl" /usr/local/include/ 2>/dev/null || true
-    cp -rf "${ABSL_PKG_DIR}/lib64/"* /usr/local/lib64/ 2>/dev/null || true
-    cp -rf "${ABSL_PKG_DIR}/lib/"* /usr/local/lib/ 2>/dev/null || true
-    cp -rf "${ABSL_PKG_DIR}/share/"* /usr/local/share/ 2>/dev/null || true
+ABSL_PKG_DIR=$(find_pkg_dir "abseil_cpp" "absl")
+if [ -n "${ABSL_PKG_DIR}" ] && [ -d "${ABSL_PKG_DIR}" ]; then
+    extract_wheel_artifacts "${ABSL_PKG_DIR}"
 elif [ ! -f "/usr/local/lib64/libabsl_base.so" ] && [ ! -f "/usr/local/lib/libabsl_base.a" ] && [ ! -f "/usr/local/lib64/cmake/absl/abslConfig.cmake" ]; then
     ABSL_SCRIPT=""
     if [ -f "${SCRIPT_PATH}/abseil-cpp_ubi_10.2.sh" ]; then
@@ -146,13 +184,9 @@ if [ -n "${CARES_WHEEL}" ]; then
     python3 -m pip install "${CARES_WHEEL}"
 fi
 
-CARES_PKG_DIR=$(python3 -c "import c_ares, os; print(os.path.dirname(c_ares.__file__))" 2>/dev/null || python3 -c "import cares, os; print(os.path.dirname(cares.__file__))" 2>/dev/null || true)
+CARES_PKG_DIR=$(find_pkg_dir "c_ares" "cares")
 if [ -n "${CARES_PKG_DIR}" ] && [ -d "${CARES_PKG_DIR}" ]; then
-    echo "Extracted c-ares C++ headers and libraries from wheel (${CARES_PKG_DIR}) to /usr/local"
-    [ -d "${CARES_PKG_DIR}/include" ] && cp -rf "${CARES_PKG_DIR}/include/"* /usr/local/include/ 2>/dev/null || true
-    [ -d "${CARES_PKG_DIR}/lib64" ]   && cp -rf "${CARES_PKG_DIR}/lib64/"* /usr/local/lib64/ 2>/dev/null || true
-    [ -d "${CARES_PKG_DIR}/lib" ]     && cp -rf "${CARES_PKG_DIR}/lib/"* /usr/local/lib/ 2>/dev/null || true
-    [ -d "${CARES_PKG_DIR}/share" ]   && cp -rf "${CARES_PKG_DIR}/share/"* /usr/local/share/ 2>/dev/null || true
+    extract_wheel_artifacts "${CARES_PKG_DIR}"
 elif [ ! -f "/usr/local/lib64/libcares.so" ] && [ ! -f "/usr/local/lib/libcares.so" ] && [ ! -f "/usr/local/include/ares.h" ]; then
     CARES_SCRIPT=""
     if [ -f "${SCRIPT_PATH}/cares_ubi_10.2.sh" ]; then
@@ -179,6 +213,7 @@ elif [ ! -f "/usr/local/lib64/libcares.so" ] && [ ! -f "/usr/local/lib/libcares.
         git checkout cares-1_19_1 2>/dev/null || git checkout v1.19.1 2>/dev/null || true
         mkdir -p build && cd build
         cmake \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
             -DCARES_STATIC=OFF \
@@ -199,13 +234,9 @@ if [ -n "${RE2_WHEEL}" ]; then
     python3 -m pip install "${RE2_WHEEL}"
 fi
 
-RE2_PKG_DIR=$(python3 -c "import re2, os; print(os.path.dirname(re2.__file__))" 2>/dev/null || true)
+RE2_PKG_DIR=$(find_pkg_dir "re2")
 if [ -n "${RE2_PKG_DIR}" ] && [ -d "${RE2_PKG_DIR}" ]; then
-    echo "Extracted RE2 C++ headers and libraries from wheel (${RE2_PKG_DIR}) to /usr/local"
-    [ -d "${RE2_PKG_DIR}/include" ] && cp -rf "${RE2_PKG_DIR}/include/"* /usr/local/include/ 2>/dev/null || true
-    [ -d "${RE2_PKG_DIR}/lib64" ]   && cp -rf "${RE2_PKG_DIR}/lib64/"* /usr/local/lib64/ 2>/dev/null || true
-    [ -d "${RE2_PKG_DIR}/lib" ]     && cp -rf "${RE2_PKG_DIR}/lib/"* /usr/local/lib/ 2>/dev/null || true
-    [ -d "${RE2_PKG_DIR}/share" ]   && cp -rf "${RE2_PKG_DIR}/share/"* /usr/local/share/ 2>/dev/null || true
+    extract_wheel_artifacts "${RE2_PKG_DIR}"
 elif [ ! -f "/usr/local/lib64/libre2.so" ] && [ ! -f "/usr/local/lib/libre2.so" ] && [ ! -f "/usr/local/include/re2/re2.h" ]; then
     RE2_SCRIPT=""
     if [ -f "${SCRIPT_PATH}/re2_ubi_10.2.sh" ]; then
@@ -253,13 +284,9 @@ if [ -n "${PROTOBUF_WHEEL}" ]; then
     python3 -m pip install "${PROTOBUF_WHEEL}"
 fi
 
-PROTOBUF_PKG_DIR=$(python3 -c "import google.protobuf, os; print(os.path.dirname(google.protobuf.__file__))" 2>/dev/null || python3 -c "import libprotobuf, os; print(os.path.dirname(libprotobuf.__file__))" 2>/dev/null || true)
+PROTOBUF_PKG_DIR=$(find_pkg_dir "libprotobuf" "google.protobuf")
 if [ -n "${PROTOBUF_PKG_DIR}" ] && [ -d "${PROTOBUF_PKG_DIR}" ]; then
-    echo "Extracted Protobuf C++ headers and libraries from wheel (${PROTOBUF_PKG_DIR}) to /usr/local"
-    [ -d "${PROTOBUF_PKG_DIR}/include" ] && cp -rf "${PROTOBUF_PKG_DIR}/include/"* /usr/local/include/ 2>/dev/null || true
-    [ -d "${PROTOBUF_PKG_DIR}/lib64" ]   && cp -rf "${PROTOBUF_PKG_DIR}/lib64/"* /usr/local/lib64/ 2>/dev/null || true
-    [ -d "${PROTOBUF_PKG_DIR}/lib" ]     && cp -rf "${PROTOBUF_PKG_DIR}/lib/"* /usr/local/lib/ 2>/dev/null || true
-    [ -d "${PROTOBUF_PKG_DIR}/share" ]   && cp -rf "${PROTOBUF_PKG_DIR}/share/"* /usr/local/share/ 2>/dev/null || true
+    extract_wheel_artifacts "${PROTOBUF_PKG_DIR}"
 elif [ ! -f "/usr/local/lib64/libprotobuf.so" ] && [ ! -f "/usr/local/lib/libprotobuf.so" ] && [ ! -f "/usr/local/include/google/protobuf/message.h" ]; then
     PROTOBUF_SCRIPT=""
     if [ -f "${SCRIPT_PATH}/libprotobuf_ubi_10.2_v33.6.sh" ]; then
@@ -309,13 +336,9 @@ if [ -n "${GRPC_WHEEL}" ]; then
     python3 -m pip install "${GRPC_WHEEL}"
 fi
 
-GRPC_PKG_DIR=$(python3 -c "import grpc_cpp, os; print(os.path.dirname(grpc_cpp.__file__))" 2>/dev/null || true)
+GRPC_PKG_DIR=$(find_pkg_dir "grpc_cpp" "grpccpp" "grpc")
 if [ -n "${GRPC_PKG_DIR}" ] && [ -d "${GRPC_PKG_DIR}" ]; then
-    echo "Extracted gRPC C++ headers and libraries from wheel (${GRPC_PKG_DIR}) to /usr/local"
-    [ -d "${GRPC_PKG_DIR}/include" ] && cp -rf "${GRPC_PKG_DIR}/include/"* /usr/local/include/ 2>/dev/null || true
-    [ -d "${GRPC_PKG_DIR}/lib64" ]   && cp -rf "${GRPC_PKG_DIR}/lib64/"* /usr/local/lib64/ 2>/dev/null || true
-    [ -d "${GRPC_PKG_DIR}/lib" ]     && cp -rf "${GRPC_PKG_DIR}/lib/"* /usr/local/lib/ 2>/dev/null || true
-    [ -d "${GRPC_PKG_DIR}/share" ]   && cp -rf "${GRPC_PKG_DIR}/share/"* /usr/local/share/ 2>/dev/null || true
+    extract_wheel_artifacts "${GRPC_PKG_DIR}"
 elif [ ! -f "/usr/local/lib64/libgrpc++.so" ] && [ ! -f "/usr/local/lib/libgrpc++.so" ] && [ ! -f "/usr/local/include/grpcpp/grpcpp.h" ]; then
     GRPC_SCRIPT=""
     if [ -f "${SCRIPT_PATH}/grpc_cpp_ubi_10.2.sh" ]; then
@@ -364,7 +387,7 @@ elif [ ! -f "/usr/local/lib64/libgrpc++.so" ] && [ ! -f "/usr/local/lib/libgrpc+
     fi
 fi
 
-ldconfig /usr/local/lib64 /usr/local/lib 2>/dev/null || true
+ldconfig
 
 JSON_DIR="${WORKING_DIR}/json"
 if [ ! -d "${JSON_DIR}" ]; then
