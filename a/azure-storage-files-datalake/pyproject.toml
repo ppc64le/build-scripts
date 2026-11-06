@@ -1,0 +1,37 @@
+[build-system]
+requires = [
+    "setuptools",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "azure-storage-files-datalake-cpp"
+version = "{PACKAGE_VERSION}"
+description = "Azure Storage Files Data Lake SDK for C++ packaging (ppc64le)"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: C++",
+  "License :: OSI Approved :: MIT License",
+]
+
+[project.urls]
+homepage = "https://github.com/Azure/azure-sdk-for-cpp"
+upstream = "https://github.com/Azure/azure-sdk-for-cpp"
+
+[tool.setuptools]
+packages = ["azure_storage_files_datalake_cpp"]
+package-dir = {"" = "local"}
+
+# Package data: shared libs, headers, cmake config
+[tool.setuptools.package-data]
+"azure_storage_files_datalake_cpp" = [
+    "lib64/libazure-*",
+    "include/azure/storage/files/datalake.hpp",
+    "include/azure/storage/files/datalake/**/*",
+    "share/azure-storage-files-datalake-cpp/*",
+]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_ppc64le"
+universal = false
