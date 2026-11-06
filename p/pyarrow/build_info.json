@@ -1,8 +1,8 @@
 {
-  "maintainer": "Nayana Thorat <Nayana.Thorat1@ibm.com>",
+  "maintainer": "Amitkumar282",
   "package_name": "pyarrow",
-  "github_url": "https://github.com/apache/arrow.git",
-  "version": "apache-arrow-23.0.1",
+  "github_url": "https://github.com/apache/arrow",
+  "version": "apache-arrow-24.0.0",
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/pyarrow",
@@ -50,8 +50,11 @@
     "build_script": "pyarrow_25.0.0_ubi_10.2.sh"
   },
   "apache-arrow-24.0.0": {
-    "build_script": "pyarrow_24.0.0_ubi_9.6.sh"
-   },
+    "build_script": [
+      "pyarrow_24.0.0_ubi_9.6.sh",
+      "pyarrow_24.0.0_ubi_10.2.sh"
+    ]
+  },
   "*": {
     "build_script": "pyarrow_23.0.1_ubi_9.3.sh"
   }
