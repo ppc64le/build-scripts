@@ -1,5 +1,4 @@
 #!/bin/bash -e
-
 # Required format:
 # Package   : vllm
 # Version   : v0.27.0
