@@ -28,7 +28,7 @@ package-dir = {"" = "local"}
 # Package data: shared libs, headers, cmake config
 [tool.setuptools.package-data]
 "azure_storage_blobs_cpp" = [
-    "lib64/libazure-storage-blobs*",
+    "lib64/libazure-*",
     "include/azure/storage/blobs.hpp",
     "include/azure/storage/blobs/**/*",
     "share/azure-storage-blobs-cpp/*",
