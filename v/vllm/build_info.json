@@ -72,6 +72,9 @@
   "v0.30.0": {
     "build_script": "vllm_v0.27.0_ubi_9.5.sh"
   },
+  "v0.33.0": {
+  "build_script": "vllm_v0.27.0_ubi_9.5.sh"
+  },
   "*": {
     "build_script": "vllm_v0.27.0_ubi_9.5.sh"
   }
