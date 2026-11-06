@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 # Package          : uvloop
-# Version          : v0.22.1
+# Version          : v0.23.0
 # Source repo      : https://github.com/MagicStack/uvloop.git
 # Tested on        : UBI 9.6
 # Language         : Python
@@ -18,7 +18,7 @@
 
 PACKAGE_DIR="uvloop"
 PACKAGE_NAME="uvloop"
-PACKAGE_VERSION=${1:-v0.22.1}
+PACKAGE_VERSION=${1:-v0.23.0}
 PACKAGE_URL="https://github.com/MagicStack/uvloop.git"
 SOURCE_ROOT="$(pwd)"
 
