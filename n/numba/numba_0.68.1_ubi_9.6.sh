@@ -119,8 +119,13 @@ ldconfig
 cd $CURRENT_DIR
 echo "--------------------OpenBLAS installed-------------------------------"
 
-# Install Python dependencies (numba 0.68.1 supports numpy < 2.6)
-python3.12 -m pip install numpy==2.5.0 setuptools
+# Install Python dependencies (numba 0.68.1 supports numpy < 2.6; numpy 2.5 needs Python >= 3.12)
+if python3.12 -c "import sys; sys.exit(0 if sys.version_info >= (3, 12) else 1)"; then
+    NUMPY_SPEC="numpy==2.5.0"
+else
+    NUMPY_SPEC="numpy<2.5"
+fi
+python3.12 -m pip install "${NUMPY_SPEC}" setuptools
 
 # Clone and checkout numba
 cd $CURRENT_DIR
