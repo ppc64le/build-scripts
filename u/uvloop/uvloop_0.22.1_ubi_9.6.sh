@@ -18,7 +18,7 @@
 
 PACKAGE_DIR="uvloop"
 PACKAGE_NAME="uvloop"
-PACKAGE_VERSION=${1:-v0.22.1}
+PACKAGE_VERSION=${1:-v0.23.0}
 PACKAGE_URL="https://github.com/MagicStack/uvloop.git"
 SOURCE_ROOT="$(pwd)"
 
