@@ -20,7 +20,7 @@
 set -eo pipefail
 
 PACKAGE_NAME=vllm
-PACKAGE_VERSION=${1:-v0.27.0}
+PACKAGE_VERSION=${1:-v0.33.0}
 PACKAGE_URL=https://github.com/vllm-project/vllm.git
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=vllm
