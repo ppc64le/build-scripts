@@ -1,7 +1,8 @@
 #!/bin/bash -e
+
 # Required format:
 # Package   : vllm
-# Version   : v0.33.0
+# Version   : v0.27.0
 # Source repo   : https://github.com/vllm-project/vllm
 # Tested on : UBI:9.5
 # Language  : Python
@@ -20,7 +21,7 @@
 set -eo pipefail
 
 PACKAGE_NAME=vllm
-PACKAGE_VERSION=${1:-v0.33.0}
+PACKAGE_VERSION=${1:-v0.27.0}
 PACKAGE_URL=https://github.com/vllm-project/vllm.git
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=vllm
