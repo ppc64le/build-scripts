@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : outlines-core
-# Version          : 0.1.26
+# Version          : 0.2.14
 # Source repo      : https://github.com/dottxt-ai/outlines-core
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -61,13 +61,13 @@ cd $CURRENT_DIR
 
 # --------------------- Install Python Packages ---------------------
 python3.12 -m pip install -U pip
-python3.12 -m pip install beniget==0.4.2.post1 Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 \
-    packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja "patchelf>=0.11.0" setuptools-scm
+python3.12 -m pip install beniget==0.4.2.post1 Cython==3.1.4 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.3.4 \
+    packaging pybind11 pyproject-metadata pythran==0.18.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja "patchelf>=0.11.0" setuptools-scm
 
 # --------------------- Build SciPy ---------------------
 git clone https://github.com/scipy/scipy
 cd scipy
-git checkout v1.15.2
+git checkout v1.16.2
 git submodule update --init
 python3.12 -m pip install .
 cd ..
@@ -117,11 +117,14 @@ export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
-git apply set_cpp_to_17_v4.25.3.patch
-cd python
-python3.12 -m pip install . --no-build-isolation
-cd ../..
+# NOTE: Skip protobuf Python package installation as it creates namespace package
+# conflicts that corrupt the Python environment. The C++ libraries are sufficient
+# for PyTorch build.
+# wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
+# git apply set_cpp_to_17_v4.25.3.patch
+# cd python
+# python3.12 -m pip install . --no-build-isolation
+# cd ../..
 
 # --------------------- Install Rust ---------------------
 curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -130,11 +133,11 @@ source "$HOME/.cargo/env"
 # --------------------- Build PyTorch ---------------------
 git clone https://github.com/pytorch/pytorch.git
 cd pytorch
-git checkout v2.6.0
+git checkout v2.9.1
 git submodule sync
 git submodule update --init --recursive
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.6.0.patch
-git apply pytorch_v2.6.0.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch
+git apply pytorch_v2.9.1.patch
 
 # Set environment variables
 ARCH=`uname -p`
@@ -183,6 +186,8 @@ export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${L
 
 # Fix CMake version requirement
 sed -i "s/cmake/cmake==3.31.6/g" requirements.txt
+# PyTorch >= 2.9 pulls cmake via requirements-build.txt (cmake>=3.27) -> pip installs CMake 4.x, which breaks older projects (c-ares, ...)
+sed -i "s/cmake>=3.27/cmake==3.31.6/g" requirements-build.txt
 python3.12 -m pip install -r requirements.txt
 
 MAX_JOBS=$(nproc) python3.12 setup.py install
@@ -638,7 +643,7 @@ cd $CURRENT_DIR
 echo "Cloning Apache Arrow..."
 git clone https://github.com/apache/arrow.git
 cd arrow
-git checkout apache-arrow-19.0.0
+git checkout apache-arrow-22.0.0
 git submodule update --init --recursive
 
 # Set a local install prefix **inside the Arrow repo**
@@ -707,19 +712,29 @@ cd $PACKAGE_NAME
 export LD_LIBRARY_PATH="${RE2_PREFIX}/lib:$LD_LIBRARY_PATH"
 
 python3.12 -m pip install setuptools pytest pydantic pytest-cov pandas
-python3.12 -m pip install sentencepiece --no-build-isolation
+# Patch sentencepiece pyproject.toml to fix license field (PEP 621 compliance)
+python3.12 -m pip download sentencepiece --no-deps --no-binary sentencepiece -d /tmp/sentencepiece_patch
+cd /tmp/sentencepiece_patch
+tar -xzf sentencepiece-*.tar.gz
+cd $(ls -d sentencepiece-* | head -1)
+sed -i 's/license = "Apache-2.0"/license = {text = "Apache-2.0"}/' pyproject.toml
+python3.12 -m pip install . --no-build-isolation
+cd $CURRENT_DIR/$PACKAGE_NAME
 python3.12 -m pip install datasets==2.14.7 --no-build-isolation --no-deps
-python3.12 -m pip install "multiprocess==0.70.15"
-python3.12 -m pip install "xxhash==3.4.1"
-python3.12 -m pip install "dill==0.3.7" "fsspec==2023.10.0" aiohttp pyarrow-hotfix
-python3.12 -m pip install "transformers==4.39.2" maturin puccinialin
-python3.12 -m pip install llvmlite==0.44.0 numba==0.61.2 --prefer-binary --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux
+python3.12 -m pip install "multiprocess==0.70.18"
+python3.12 -m pip install "xxhash==3.6.0"
+python3.12 -m pip install "dill==0.4.0" "fsspec==2023.10.0" aiohttp pyarrow-hotfix
+python3.12 -m pip install "transformers>=4.50,<5" maturin puccinialin
+python3.12 -m pip install llvmlite==0.46.0 numba==0.63.1 --prefer-binary --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux
 
 
 # NOTE: outlines-core is built with maturin (Rust/PyO3).
 # The wheel version comes from Cargo.toml, not setuptools or SCM,
 # so we must update the [package] version here explicitly.
 sed -i "/^\[package\]/,/^\[/{/name = \"outlines-core\"/,/^\[/{s/^version = \".*\"/version = \"${PACKAGE_VERSION}\"/}}" Cargo.toml
+
+# PyO3 0.22 (outlines-core 0.1.x) only knows Python <= 3.13; build against the stable ABI on 3.14
+export PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
 
 #install
 if ! (python3.12 -m pip install -e .) ; then
