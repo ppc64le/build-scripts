@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : outlines-core
-# Version          : 0.1.26
+# Version          : 0.2.14
 # Source repo      : https://github.com/dottxt-ai/outlines-core
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -186,6 +186,8 @@ export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${L
 
 # Fix CMake version requirement
 sed -i "s/cmake/cmake==3.31.6/g" requirements.txt
+# PyTorch >= 2.9 pulls cmake via requirements-build.txt (cmake>=3.27) -> pip installs CMake 4.x, which breaks older projects (c-ares, ...)
+sed -i "s/cmake>=3.27/cmake==3.31.6/g" requirements-build.txt
 python3.12 -m pip install -r requirements.txt
 
 MAX_JOBS=$(nproc) python3.12 setup.py install
