@@ -27,7 +27,7 @@ where = ["local"]
 # Package data: shared libs, headers, cmake config
 [tool.setuptools.package-data]
 "azure_storage_common_cpp" = [
-    "lib64/libazure-storage-common*",
+    "lib64/libazure-*",
     "include/azure/storage/common.hpp",
     "include/azure/storage/common/**/*",
     "share/azure-storage-common-cpp/*",
