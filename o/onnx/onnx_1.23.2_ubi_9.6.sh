@@ -28,10 +28,10 @@ CURRENT_DIR=$(pwd)
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 IBM_WHEELS_HOST="wheels.developerfirst.ibm.com"
 
-# System dependencies (curl is already provided by curl-minimal)
+# System dependencies (curl is already provided by curl-minimal; jpeg/zlib headers for Pillow)
 yum install -y python3.12 python3.12-devel python3.12-pip git cmake make \
     gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ \
-    libatomic zlib-devel tar which
+    libatomic zlib-devel libjpeg-turbo-devel tar which
 
 # Enable the GCC toolset
 if [[ -f /opt/rh/gcc-toolset-13/enable ]]; then
