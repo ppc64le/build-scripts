@@ -2,7 +2,7 @@
   "maintainer": "vinodk99",
   "package_name": "ujson",
   "github_url": "https://github.com/ultrajson/ultrajson",
-  "version": "5.10.0",
+  "version": "6.0.0",
   "wheel_build" : true,
   "package_dir": "u/ujson",
   "default_branch": "master",
