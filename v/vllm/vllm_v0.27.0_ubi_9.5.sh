@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # Required format:
 # Package   : vllm
-# Version   : v0.27.0
+# Version   : v0.33.0
 # Source repo   : https://github.com/vllm-project/vllm
 # Tested on : UBI:9.5
 # Language  : Python
