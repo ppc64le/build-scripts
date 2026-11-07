@@ -7,6 +7,7 @@
   "package_dir": "m/ml_dtypes",
   "default_branch": "main",
   "build_script": "ml_dtypes_v0.6.0_ubi_10.2.sh",
+  "required_versions": {"Releases": ["*"], "Tags": ["*"]},
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
@@ -18,7 +19,7 @@
   },
   "v0.6.0": {
     "build_script": [
-      "ml_dtypes_v0.4.1_ubi_9.3.sh",
+      "ml_dtypes_v0.6.0_ubi_9.6.sh",
       "ml_dtypes_v0.6.0_ubi_10.2.sh"
     ]
   },
