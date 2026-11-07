@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : pytorch
-# Version          : v2.7.1
+# Version          : v2.15.0
 # Source repo      : https://github.com/pytorch/pytorch.git
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -22,7 +22,7 @@ set -e
 # Variables
 PACKAGE_NAME=pytorch
 PACKAGE_URL=https://github.com/pytorch/pytorch.git
-PACKAGE_VERSION=${1:-v2.7.1}
+PACKAGE_VERSION=${1:-v2.15.0}
 SCRIPT_DIR=$(pwd)
 
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
@@ -211,6 +211,7 @@ export USE_QNNPACK=0
 export USE_XNNPACK=0
 export USE_PYTORCH_QNNPACK=0
 export TH_BINARY_BUILD=1
+export BUILD_TEST=0
 export USE_LMDB=1
 export USE_LEVELDB=1
 export USE_NINJA=0
