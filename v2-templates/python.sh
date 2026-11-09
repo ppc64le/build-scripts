@@ -184,8 +184,14 @@ _process_and_package_wheels() {
             fi
         else
             if grep -q "This does not look like a platform wheel" /tmp/auditwheel.log; then
-                log_info "Pure Python wheel, no repair needed"
-                cp "$wheel_file" "$wheelhouse_dir/"
+                log_info "Auditwheel skipped for: ${wheel_file}"
+                if [[ "$wheel_file" == *none* ]]; then
+                    log_info "Pure Python wheel detected. (No-arch wheel)"
+                    cp "$wheel_file" "$wheelhouse_dir/"
+                else
+                    log_error "Skipped wheel is not universal i.e(*any.whl)."
+                    repair_success=false
+                fi
             else
                 log_error "auditwheel repair failed for $(basename "$wheel_file")"
                 repair_success=false
@@ -705,4 +711,3 @@ else
         report_no_tests
     fi
 fi
-

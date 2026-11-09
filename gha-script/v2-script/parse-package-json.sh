@@ -40,17 +40,29 @@ done
 # Default ubi_version to ubi9 when blank
 UBI_VER="${UBI_VER:-ubi9}"
 
+# Derive package directory and image name (used by build_docker and upload_docker_image)
+PKG_NAME_LOWER=$(echo "$PKG_NAME" | tr '[:upper:]' '[:lower:]')
+IMAGE_NAME="icr.io/ppc64le-oss/${PKG_NAME_LOWER}-ppc64le:${PKG_VER}"
+INITIAL_CHAR=${PKG_NAME_LOWER:0:1}
+PKG_DIR_PATH="${INITIAL_CHAR}/${PKG_NAME_LOWER}/"
+if [ ! -d "$PKG_DIR_PATH" ] && [ -d "${INITIAL_CHAR}/${PKG_NAME}/" ]; then
+  PKG_DIR_PATH="${INITIAL_CHAR}/${PKG_NAME}/"
+fi
+
 echo "--- Writing variable.sh ---"
 printf '%s\n' \
-  "PACKAGE_NAME=\"${PKG_NAME}\"" \
-  "PACKAGE_VERSION=\"${PKG_VER}\"" \
-  "TECHNOLOGY=\"${TECH}\"" \
-  "TECHNOLOGY_VERSION=\"${TECH_VER}\"" \
-  "UBI_VERSION=\"${UBI_VER}\"" \
-  "ARCH=\"${ARCH}\"" \
-  "V2_ENABLED=\"${V2_ENABLED}\"" \
-  "TRIGGER_ALL_PYTHON_BUILDS=\"${TRIGGER_ALL_PYTHON_BUILDS}\"" \
-  "BUILD_DOCKER=\"${BUILD_DOCKER}\"" \
+  "export PACKAGE_NAME=\"${PKG_NAME}\"" \
+  "export PACKAGE_VERSION=\"${PKG_VER}\"" \
+  "export VERSION=\"${PKG_VER}\"" \
+  "export PKG_DIR_PATH=\"${PKG_DIR_PATH}\"" \
+  "export IMAGE_NAME=\"${IMAGE_NAME}\"" \
+  "export TECHNOLOGY=\"${TECH}\"" \
+  "export TECHNOLOGY_VERSION=\"${TECH_VER}\"" \
+  "export UBI_VERSION=\"${UBI_VER}\"" \
+  "export ARCH=\"${ARCH}\"" \
+  "export V2_ENABLED=\"${V2_ENABLED}\"" \
+  "export TRIGGER_ALL_PYTHON_BUILDS=\"${TRIGGER_ALL_PYTHON_BUILDS}\"" \
+  "export BUILD_DOCKER=\"${BUILD_DOCKER}\"" \
   > variable.sh
 
 echo "===== variable.sh ====="

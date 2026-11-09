@@ -24,6 +24,9 @@ PACKAGE_URL="https://github.com/PyAV-Org/PyAV"
 # all shared libraries when repairing the wheel
 # =============================================================================
 BUILD_DEPS="ffmpeg libvpx lame opus"
+PROVIDES_ARTIFACT="pyav"
+
+LICENSE_SPDX="BSD-3-Clause"
 
 # =============================================================================
 # REQUIRED: Dependencies
@@ -122,6 +125,66 @@ pre_build() {
     log_info "FFmpeg version (libavcodec): $(pkg-config --modversion libavcodec 2>/dev/null || echo 'unknown')"
     log_info "FFmpeg libs: $(pkg-config --libs libavcodec 2>/dev/null || echo 'unknown')"
 }
+
+# =============================================================================
+# CALLBACK: post_build — package pyav artifact (env.sh + wheels/) for consumers
+# =============================================================================
+post_build() {
+    log_info "Packaging PyAV artifact..."
+
+    local ARTIFACT_DIR
+    ARTIFACT_DIR="$(artifact_dir "pyav" "${PACKAGE_VERSION}")"
+
+    local wheel_file
+    wheel_file=$(ls wheelhouse/*.whl 2>/dev/null | head -1)
+    if [[ -z "${wheel_file}" ]]; then
+        wheel_file=$(ls dist/wheelhouse/av-*.whl dist/wheelhouse/PyAV-*.whl 2>/dev/null | head -1)
+    fi
+    if [[ -z "${wheel_file}" ]]; then
+        wheel_file=$(ls dist/av-*.whl dist/PyAV-*.whl 2>/dev/null | head -1)
+    fi
+
+    if [[ -z "${wheel_file}" ]]; then
+        log_warn "No PyAV wheel found — artifact will not be created"
+        return 0
+    fi
+
+    local python_version
+    python_version=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+
+    log_info "Packaging PyAV artifact to ${ARTIFACT_DIR} for Python ${python_version}..."
+    mkdir -p "${ARTIFACT_DIR}/wheels"
+
+    # Copy wheel to artifact directory for downstream consumers
+    cp "${wheel_file}" "${ARTIFACT_DIR}/wheels/"
+    log_info "Wheel stored at: ${ARTIFACT_DIR}/wheels/$(basename "${wheel_file}")"
+
+    # Copy license from cloned source (LICENSE.txt is the PyAV BSD-3-Clause license)
+    if [[ -f "LICENSE.txt" ]]; then
+        cp LICENSE.txt "${ARTIFACT_DIR}/LICENSE"
+    elif [[ -f "LICENSE" ]]; then
+        cp LICENSE "${ARTIFACT_DIR}/LICENSE"
+    fi
+
+    # Write env.sh — exposes wheel path so downstream BUILD_DEPS="pyav" can install it
+    cat > "${ARTIFACT_DIR}/env.sh" << EOF
+# PyAV artifact environment
+# Provides the pre-built PyAV wheel for downstream packages.
+# Usage in dependent scripts: BUILD_DEPS="pyav"
+
+export PYAV_PREFIX="${ARTIFACT_DIR}"
+export PYAV_WHEEL_DIR="${ARTIFACT_DIR}/wheels"
+export PYAV_VERSION="${PACKAGE_VERSION}"
+EOF
+
+    generate_artifact_manifest "${ARTIFACT_DIR}" \
+        "pyav" "${PACKAGE_VERSION}" \
+        "${PACKAGE_URL}" "${LICENSE_SPDX}" \
+        "ffmpeg" "libvpx" "lame" "opus"
+
+    log_info "PyAV artifact created at ${ARTIFACT_DIR} for Python ${python_version}"
+}
+
 
 # =============================================================================
 # CALLBACK: pre_test

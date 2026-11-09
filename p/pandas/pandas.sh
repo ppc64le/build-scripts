@@ -71,17 +71,27 @@ _install_artifact_wheels() {
 # Fallback: resolve patch from SCRIPT_DIR when running outside powercore.
 # =============================================================================
 post_clone() {
-    if [[ -z "${PANDAS_MESON_PATCH:-}" ]]; then
-        local pkg_major="${PACKAGE_VERSION%%.*}"
-        pkg_major="${pkg_major#v}"
-        if [[ "${pkg_major}" -ge 3 ]]; then
-            PANDAS_MESON_PATCH="${SCRIPT_DIR}/patches/meson-numpy-include-3x.patch"
-        else
-            PANDAS_MESON_PATCH="${SCRIPT_DIR}/patches/meson-numpy-include.patch"
+    if [[ -f "pandas/meson.build" ]]; then
+        if [[ -z "${PANDAS_MESON_PATCH:-}" ]]; then
+            local pkg_major="${PACKAGE_VERSION%%.*}"
+            pkg_major="${pkg_major#v}"
+            if [[ "${pkg_major}" -ge 3 ]]; then
+                PANDAS_MESON_PATCH="${SCRIPT_DIR}/patches/meson-numpy-include-3x.patch"
+            else
+                PANDAS_MESON_PATCH="${SCRIPT_DIR}/patches/meson-numpy-include.patch"
+            fi
         fi
+        log_info "Applying meson-numpy-include patch to pandas/meson.build"
+        git apply "${PANDAS_MESON_PATCH}"
+
+        # versioneer derives the wheel version from 'git describe --dirty'. The patched
+        # meson.build would add a '+0.g<hash>.dirty' local identifier to the wheel version,
+        # so hide the modification from git to keep the version equal to the release tag.
+        log_info "Marking pandas/meson.build as unchanged so the wheel version has no .dirty suffix"
+        git update-index --assume-unchanged pandas/meson.build
+    else
+        log_info "pandas/meson.build not found — skipping meson-numpy-include patch"
     fi
-    log_info "Applying meson-numpy-include patch to pandas/meson.build"
-    git apply "${PANDAS_MESON_PATCH}"
 }
 
 # =============================================================================
@@ -128,6 +138,7 @@ pre_test() {
 # to avoid source tree shadowing the installed C extensions
 # =============================================================================
 custom_test_command() {
+    log_info "Running pandas import and DataFrame smoke test"
     (cd /tmp && python -c "
 import pandas as pd
 import numpy as np
@@ -149,5 +160,6 @@ print('pandas smoke test passed!')
 # Execute the build (invokes the Python template)
 # =============================================================================
 source "${SCRIPT_DIR}/../../v2-templates/python.sh"
+
 
 

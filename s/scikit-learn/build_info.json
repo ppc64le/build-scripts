@@ -1,43 +1,21 @@
 {
-    "maintainer": "SakshiJain0302",
-    "package_name": "scikit-learn",
-    "github_url": "https://github.com/scikit-learn/scikit-learn.git",
-    "version": "1.9.0",
-    "wheel_build": true,
-    "default_branch": "main",
-    "build_script": "scikit-learn_1.9.0_ubi_10.1.sh",
-    "package_dir": "s/scikit-learn",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    "1.0.2": {
-        "build_script": "scikit-learn_ubi_8.5.sh"
-    },
-    "1.1.1": {
-        "build_script": "scikit-learn_1.1.1_ubi_9.3.sh"
-    },
-    "1.3.0": {
-        "build_script": "scikit-learn_ubi_9.3.sh"
-    },
-    "1.5.0": {
-        "build_script": "scikit-learn_ubi_8.10.sh"
-    },
-    "1.7.0": {
-        "build_script": "scikit-learn_1.7.0_ubi_9.3.sh"
-    },
-    "1.8.0": {
-        "build_script": "scikit-learn_1.8.0_ubi_9.6.sh"
-    },
-    "1.9.0": {
-        "build_script": [
-            "scikit-learn_ubi_10.2.sh",
-            "scikit-learn_1.8.0_ubi_9.6.sh"
-        ]
-    },
-    "*": {
-        "build_script": [
-            "scikit-learn_ubi_10.2.sh",
-            "scikit-learn_1.8.0_ubi_9.6.sh"
-        ]
-    }
+  "maintainer": "Build Scripts Team",
+  "package_name": "scikit-learn",
+  "language": "Python",
+  "github_url": "https://github.com/scikit-learn/scikit-learn",
+  "version": "1.7.0",
+  "wheel_build": true,
+  "resource_class": "medium",
+  "default_branch": "main",
+  "build_script": "scikit-learn.sh",
+  "package_dir": "s/scikit-learn",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "provides_artifact": "scikit-learn",
+  "v2-enabled": true,
+  "build_deps": ["numpy:v2.2.5", "scipy:v1.15.2"],
+  "*": {
+    "build_script": "scikit-learn.sh"
+  }
 }

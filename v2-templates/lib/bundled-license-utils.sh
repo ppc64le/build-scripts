@@ -35,6 +35,9 @@ _BUNDLED_LICENSE_UTILS_SOURCED=1
 
 : "${ARTIFACT_DIR:=/opt/artifacts}"
 
+readonly LICENSE_PATTERN='^(LICENSE|COPYING)(\..*)?$'
+readonly LICENSE_SEPARATOR='----'
+
 # Track missing licenses for reporting
 declare -a _MISSING_LICENSES=()
 
@@ -46,10 +49,6 @@ _is_rpm_available() {
     [[ -f /etc/redhat-release ]] && command -v rpm &>/dev/null
 }
 
-_is_ubuntu() {
-    [[ -f /etc/lsb-release ]] && grep -q "Ubuntu" /etc/lsb-release 2>/dev/null
-}
-
 # =============================================================================
 # LIBRARY NAME NORMALIZATION
 # =============================================================================
@@ -58,7 +57,6 @@ _is_ubuntu() {
 # Example: libgfortran-37ae8338.so.5.0.0 -> libgfortran.so.5.0.0
 _normalize_so_name() {
     local original="$1"
-    # Remove pattern: -<8+ hex chars> before .so or version suffix
     echo "$original" | sed -E 's/-[0-9a-f]{8,}(\.so)/\1/g'
 }
 
@@ -71,10 +69,6 @@ _normalize_so_name() {
 _resolve_license_from_artifact() {
     local so_name="$1"
     local normalized="$2"
-
-    # Extract base library name (e.g., libopenblas -> openblas)
-    local lib_base
-    lib_base=$(echo "$normalized" | sed -E 's/^lib//; s/\.so.*$//')
 
     # Search artifact directories for matching library
     for artifact_path in "${ARTIFACT_DIR}"/*; do
@@ -94,18 +88,20 @@ _resolve_license_from_artifact() {
 
                 if [[ -n "$spdx" ]]; then
                     echo "License: ${spdx}"
-                    echo "Source: Artifact system (${name})"
 
-                    # Also check for full license file
+                    # Collect all license files and join with LICENSE_SEPARATOR.
+                    local artifact_license_files=()
                     for file in "${artifact_path}"/*; do
                         [[ ! -f "$file" ]] && continue
                         local fname
                         fname=$(basename "$file")
-                        if [[ "$fname" =~ ^(LICENSE|COPYING|LICENCE|COPYRIGHT|license|copying|licence|copyright)(\..*)?$ ]]; then
-                            echo ""
-                            cat "$file"
-                            break
-                        fi
+                        [[ "$fname" =~ $LICENSE_PATTERN ]] && artifact_license_files+=("$file")
+                    done
+
+                    local first=true
+                    for lf in "${artifact_license_files[@]}"; do
+                        [[ "$first" == "true" ]] && first=false || printf '\n\n%s\n\n' "$LICENSE_SEPARATOR"
+                        cat "$lf"
                     done
                     return 0
                 fi
@@ -123,8 +119,7 @@ _resolve_license_from_artifact() {
 # _resolve_license_from_rpm: Check RPM ownership and get license
 # Returns license text on stdout, returns 0 if found
 _resolve_license_from_rpm() {
-    local so_name="$1"
-    local normalized="$2"
+    local normalized="$1"
 
     if ! _is_rpm_available; then
         return 1
@@ -138,9 +133,7 @@ _resolve_license_from_rpm() {
 
     # Check RPM ownership
     local rpm_name
-    rpm_name=$(rpm -qf "$lib_path" 2>/dev/null)
-
-    if [[ $? -ne 0 ]] || [[ "$rpm_name" == *"not owned"* ]]; then
+    if ! rpm_name=$(rpm -qf "$lib_path" 2>/dev/null) || [[ "$rpm_name" == *"not owned"* ]]; then
         return 1
     fi
 
@@ -149,8 +142,7 @@ _resolve_license_from_rpm() {
     license=$(rpm -q --qf "%{LICENSE}\n" "$rpm_name" 2>/dev/null)
 
     if [[ -n "$license" ]] && [[ "$license" != "(none)" ]]; then
-        echo "License: ${license}"
-        echo "Source: RPM (${rpm_name})"
+        echo "$license"
         return 0
     fi
 
@@ -164,75 +156,53 @@ _resolve_license_from_rpm() {
 # _resolve_license_from_filesystem: Search for bundled LICENSE/COPYING files
 # Returns license text on stdout, returns 0 if found
 _resolve_license_from_filesystem() {
-    local so_name="$1"
-    local normalized="$2"
+    local normalized="$1"
 
-    # Search for the library in likely build and system locations
-    local search_dirs=("$PWD" "${WORK_DIR:-$PWD}" /opt /usr/local /usr)
-    local lib_path=""
-    for s_dir in "${search_dirs[@]}"; do
-        [[ ! -d "$s_dir" ]] && continue
-        lib_path=$(find "$s_dir" -maxdepth 6 -name "$normalized" -type f 2>/dev/null | grep -v "\.whl" | head -1)
-        [[ -n "$lib_path" ]] && break
-    done
+    # Search . first, fall back to / if nothing found — then filter site-packages.
+    # If all found paths were in site-packages, report and return.
+    local all_paths
+    all_paths=$(find . -type f -name "$normalized" 2>/dev/null | grep -v "\.whl")
+    [[ -z "$all_paths" ]] && all_paths=$(find / -type f -name "$normalized" 2>/dev/null | grep -v "\.whl")
+
+    local lib_path
+    lib_path=$(printf '%s' "$all_paths" | grep -v "site-packages" | head -1)
+    if [[ -z "$lib_path" ]] && [[ -n "$all_paths" ]]; then
+        log_error "All paths for ${normalized} were in site-packages, no valid build path found"
+        return 1
+    fi
 
     [[ -z "$lib_path" ]] && return 1
 
-    # Traverse upward looking for LICENSE/COPYING
+    # Walk up from the .so location; at the first directory containing license
+    # file(s), collect all of them and join with LICENSE_SEPARATOR.
     local dir
     dir=$(dirname "$lib_path")
     local depth=0
     local max_depth=10
 
     while [[ "$dir" != "/" ]] && [[ $depth -lt $max_depth ]]; do
+        local license_files=()
         for file in "$dir"/*; do
             [[ ! -f "$file" ]] && continue
             local fname
             fname=$(basename "$file")
-            if [[ "$fname" =~ ^(LICENSE|COPYING|LICENCE|COPYRIGHT|license|copying|licence|copyright)(\..*)?$ ]]; then
-                cat "$file"
-                return 0
-            fi
+            [[ "$fname" =~ $LICENSE_PATTERN ]] \
+                && license_files+=("$file")
         done
+
+        if [[ ${#license_files[@]} -gt 0 ]]; then
+            local first=true
+            for lf in "${license_files[@]}"; do
+                [[ "$first" == "true" ]] && first=false || printf '\n\n%s\n\n' "$LICENSE_SEPARATOR"
+                cat "$lf"
+            done
+            return 0
+        fi
+
         dir=$(dirname "$dir")
         ((depth++))
     done
 
-    return 1
-}
-
-# =============================================================================
-# MAIN LICENSE RESOLUTION
-# =============================================================================
-
-# _resolve_library_license: Try all methods to resolve license for a .so
-# Arguments: original_name normalized_name
-# Returns: license text on stdout, return code indicates success
-_resolve_library_license() {
-    local original="$1"
-    local normalized="$2"
-    local license_text=""
-    local source=""
-
-    # Try artifact system first (highest priority for custom builds)
-    if license_text=$(_resolve_license_from_artifact "$original" "$normalized"); then
-        echo "$license_text"
-        return 0
-    fi
-
-    # Try RPM lookup (for system libraries on UBI/RHEL)
-    if license_text=$(_resolve_license_from_rpm "$original" "$normalized"); then
-        echo "$license_text"
-        return 0
-    fi
-
-    # Try filesystem search (for bundled project licenses)
-    if license_text=$(_resolve_license_from_filesystem "$original" "$normalized"); then
-        echo "$license_text"
-        return 0
-    fi
-
-    # No license found
     return 1
 }
 
@@ -252,7 +222,35 @@ _find_bundled_libs() {
     done
 }
 
+# _append_license_entry: Write a single grouped license entry to an output file.
+# Separator and single/multi-line formatting match append_license_entry() in post_process_wheel.py.
+# Arguments: out_file files_csv text_file
+_append_license_entry() {
+    local out_file="$1" files_val="$2" text_file="$3"
+    local license_text
+    license_text=$(cat "$text_file")
+
+    [[ -s "$out_file" ]] && printf '\n\n\n%s\n\n\n\n' "$LICENSE_SEPARATOR" >> "$out_file"
+
+    local stripped
+    stripped=$(printf '%s' "$license_text" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    local line_count
+    line_count=$(printf '%s\n' "$stripped" | wc -l)
+
+    {
+        printf 'Files: %s\n' "$files_val"
+        if [[ $line_count -gt 1 ]]; then
+            printf '\n%s' "$license_text"
+            [[ "$license_text" != *$'\n' ]] && printf '\n'
+        else
+            printf 'License: %s\n' "$stripped"
+        fi
+    } >> "$out_file"
+}
+
 # _generate_license_files: Create license files in .dist-info
+# Groups .so files sharing identical license text into a single entry,
+# avoiding duplicate content across UBI_BUNDLED_LICENSES.txt and BUNDLED_LICENSES.txt.
 # Arguments: wheel_dir dist_info_dir
 _generate_license_files() {
     local wheel_dir="$1"
@@ -261,21 +259,21 @@ _generate_license_files() {
     local ubi_licenses="${dist_info}/UBI_BUNDLED_LICENSES.txt"
     local bundled_licenses="${dist_info}/BUNDLED_LICENSES.txt"
 
-    # Initialize files
-    cat > "$ubi_licenses" << 'EOF'
-# UBI/RPM-derived licenses for bundled shared libraries
-# Generated by bundled-license-utils.sh
-EOF
-
-    cat > "$bundled_licenses" << 'EOF'
-# Bundled shared library licenses
-# Generated by bundled-license-utils.sh
-EOF
+    # Start both files empty so the first entry gets no leading separator.
+    > "$ubi_licenses"
+    > "$bundled_licenses"
 
     local has_ubi_licenses=false
     local has_bundled_licenses=false
 
-    # Process each bundled library
+    # Keyed by SHA256 of license text; values are space-separated .so filenames.
+    # License text blobs are written to tmpdir/<prefix>_<key> to avoid multiline key issues.
+    declare -A _ubi_files
+    declare -A _bundled_files
+    local tmpdir
+    tmpdir=$(mktemp -d)
+
+    # Pass 1: resolve each .so and accumulate filenames under the license text key.
     while IFS= read -r so_file; do
         [[ -z "$so_file" ]] && continue
 
@@ -286,49 +284,44 @@ EOF
 
         log_info "Processing bundled library: ${so_name}"
 
-        local license_text
-        if license_text=$(_resolve_library_license "$so_name" "$normalized"); then
-            # Determine if RPM-derived or bundled
-            if echo "$license_text" | grep -q "Source: RPM"; then
-                has_ubi_licenses=true
-                {
-                    echo ""
-                    echo "----"
-                    echo "Files: ${so_name}"
-                    echo "$license_text"
-                } >> "$ubi_licenses"
-            else
-                has_bundled_licenses=true
-                {
-                    echo ""
-                    echo "----"
-                    echo "Files: ${so_name}"
-                    echo "$license_text"
-                } >> "$bundled_licenses"
-            fi
+        local license_text key
+        # Try RPM first — maps to rpm_licenses dict in post_process_wheel.py.
+        if license_text=$(_resolve_license_from_rpm "$normalized"); then
+            key=$(printf '%s' "$license_text" | sha256sum | cut -d' ' -f1)
+            has_ubi_licenses=true
+            [[ -z "${_ubi_files[$key]+x}" ]] && printf '%s' "$license_text" > "${tmpdir}/ubi_${key}"
+            _ubi_files[$key]+="${_ubi_files[$key]:+, }${so_name}"
+        # Try artifact system and filesystem — maps to bundled_licenses dict.
+        elif license_text=$(_resolve_license_from_artifact "$so_name" "$normalized") || \
+             license_text=$(_resolve_license_from_filesystem "$normalized"); then
+            key=$(printf '%s' "$license_text" | sha256sum | cut -d' ' -f1)
+            has_bundled_licenses=true
+            [[ -z "${_bundled_files[$key]+x}" ]] && printf '%s' "$license_text" > "${tmpdir}/bundled_${key}"
+            _bundled_files[$key]+="${_bundled_files[$key]:+, }${so_name}"
         else
-            # No license found - record as missing
             _MISSING_LICENSES+=("$so_name")
             has_bundled_licenses=true
-            {
-                echo ""
-                echo "----"
-                echo "Files: ${so_name}"
-                echo "${so_name}_license_not_found"
-            } >> "$bundled_licenses"
+            key=$(printf '%s' "${so_name}_license_not_found" | sha256sum | cut -d' ' -f1)
+            printf '%s' "${so_name}_license_not_found" > "${tmpdir}/bundled_${key}"
+            _bundled_files[$key]="$so_name"
             log_warn "License not found for: ${so_name}"
         fi
     done < <(_find_bundled_libs "$wheel_dir")
 
-    # Remove empty license files
-    if [[ "$has_ubi_licenses" != "true" ]]; then
-        rm -f "$ubi_licenses"
-    fi
-    if [[ "$has_bundled_licenses" != "true" ]]; then
-        rm -f "$bundled_licenses"
-    fi
+    # Pass 2: write one grouped entry per unique license text.
+    for key in "${!_ubi_files[@]}"; do
+        _append_license_entry "$ubi_licenses" "${_ubi_files[$key]}" "${tmpdir}/ubi_${key}"
+    done
 
-    # Report any missing licenses
+    for key in "${!_bundled_files[@]}"; do
+        _append_license_entry "$bundled_licenses" "${_bundled_files[$key]}" "${tmpdir}/bundled_${key}"
+    done
+
+    rm -rf "$tmpdir"
+
+    [[ "$has_ubi_licenses" != "true" ]] && rm -f "$ubi_licenses"
+    [[ "$has_bundled_licenses" != "true" ]] && rm -f "$bundled_licenses"
+
     if [[ ${#_MISSING_LICENSES[@]} -gt 0 ]]; then
         log_warn "========================================"
         log_warn "LICENSE GAPS DETECTED"
@@ -343,4 +336,3 @@ EOF
 }
 
 log_info "Bundled license utilities loaded"
-

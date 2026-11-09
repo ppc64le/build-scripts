@@ -1,24 +1,22 @@
 {
-    "maintainer": "kiranNukal",
-    "package_name": "tf2onnx",
-    "github_url": "https://github.com/onnx/tensorflow-onnx",
-    "version": "1.16.1",
-    "wheel_build" : true,
-    "default_branch": "main",
-    "package_dir": "t/tf2onnx",
-    "build_script": "tf2onnx_ubi_9.3.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    "auditwheel_exclude": [
-      "libtensorflow_framework.so.2",
-      "libpython3.10.so.1.0",
-      "libpython3.11.so.1.0",
-      "libpython3.12.so.1.0",
-      "libpython3.13.so.1.0",
-      "libpython3.14.so.1.0"
-    ],
-    "*": {
-        "build_script": "tf2onnx_ubi_9.3.sh"
-     }
+  "maintainer": "kiranNukal",
+  "package_name": "tf2onnx",
+  "github_url": "https://github.com/onnx/tensorflow-onnx",
+  "version": "v1.16.1",
+  "build_deps": [
+    "libprotobuf"
+  ],
+  "language": "Python",
+  "resource_class": "heavy",
+  "wheel_build": true,
+  "default_branch": "main",
+  "package_dir": "t/tf2onnx",
+  "build_script": "tf2onnx.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v2-enabled": true,
+  "*": {
+    "build_script": "tf2onnx.sh"
+  }
 }

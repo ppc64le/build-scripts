@@ -1,16 +1,20 @@
 {
-   "maintainer": "bhagyashrigais",
-   "package_name": "scikit-network",
-   "github_url": " https://github.com/sknetwork-team/scikit-network.git",
-   "version": "v0.33.5",
-   "default_branch": "master",
-   "build_script": "scikit-network_ubi_9.6",
-   "package_dir": "s/scikit-network",
-   "docker_build": false,
-   "wheel_build": true,
-   "validate_build_script": true,
-   "use_non_root_user": false,
-   "*": {
-     "build_script":"scikit-network_ubi_9.6.sh"
+  "maintainer": "kiranNukal",
+  "package_name": "scikit-network",
+  "github_url": "https://github.com/sknetwork-team/scikit-network",
+  "version": "v0.33.5",
+  "default_branch": "master",
+  "build_script": "scikit-network.sh",
+  "package_dir": "s/scikit-network",
+  "language": "Python",
+  "docker_build": false,
+  "wheel_build": true,
+  "validate_build_script": true,
+  "v2-enabled": true,
+  "use_non_root_user": false,
+  "build_deps": ["numpy:v2.2.5", "scipy:v1.17.1"],
+  "*": {
+    "build_script": "scikit-network.sh"
   }
 }
+

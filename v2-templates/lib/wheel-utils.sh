@@ -476,7 +476,7 @@ generate_sha() {
     local b_file
     b_file="$(basename "$build_script")"
     local build_script_date
-    build_script_date=$(git -C "$b_dir" log -1 --format=%ci -- "$b_file" 2>/dev/null)
+    build_script_date=$(git -c safe.directory='*' -C "$b_dir" log -1 --format=%ci -- "$b_file" 2>/dev/null)
     : "${build_script_date:?Failed to determine BUILD_SCRIPT_DATE from git log for ${build_script}}"
 
     local package_language="${PACKAGE_LANGUAGE:-python}"
