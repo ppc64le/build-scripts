@@ -20,14 +20,14 @@
 
 PACKAGE_DIR="litellm"
 PACKAGE_NAME="litellm"
-PACKAGE_VERSION=${1:-v1.93.0}
+PACKAGE_VERSION=${1:-v1.106.6}
 PACKAGE_URL="https://github.com/BerriAI/litellm.git"
 SOURCE_ROOT="$(pwd)"
 
 echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION}"
 
 # Install system dependencies
-dnf install -y gcc-toolset-13 git python3.12 python3.12-devel python3.12-pip
+dnf install -y gcc gcc-toolset-13 git python3.12 python3.12-devel python3.12-pip libsndfile
 
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:$PATH"
 
@@ -44,6 +44,21 @@ git clone "$PACKAGE_URL"
 cd "${PACKAGE_DIR}"
 git checkout "$PACKAGE_VERSION"
 git submodule update --init --depth 1
+
+# Apply patch to run the post-call success hook (guardrails/callbacks) on pass-through responses (used for watsonx pass-through).
+if wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/l/litellm/watsonx-passthrough.patch; then
+    git apply watsonx-passthrough.patch || echo "ERROR: failed to apply watsonx-passthrough.patch, continuing without it"
+else
+    echo "ERROR: failed to download watsonx-passthrough.patch, continuing without it"
+fi
+
+# Update pyproject.toml file:
+# - Remove litellm-enterprise package as it is an enterprise package.
+# - Remove pyroscope-io package because the Pyroscope core profiling engine only supports x86_64 and aarch64 architectures and does not support PowerPC 64-bit Little Endian (ppc64le).
+# - Add prisma dependency in place of the removed pyroscope-io line.
+sed -i.bak '/"litellm-enterprise/d' pyproject.toml
+sed -i.bak 's|.*pyroscope-io.*|    "prisma>=0.11.0,<1.0",|' pyproject.toml
+rm -f pyproject.toml.bak
 
 # Build wheel
 python3.12 -m build --wheel --outdir "${SOURCE_ROOT}/dist/"
@@ -63,7 +78,11 @@ cd "${SOURCE_ROOT}"
 # Install wheel + test dependencies
 echo "=== Installing Wheel ==="
 python3.12 -m pip install "${WHEEL}"
-python3.12 -m pip install pytest pytest-asyncio pytest-timeout
+python3.12 -m pip install numpy pynacl uvloop orjson polars-runtime-32 \
+    --index-url https://wheels.developerfirst.ibm.com/ppc64le/linux \
+    --extra-index-url https://pypi.org/simple
+
+python3.12 -m pip install maturin pytest pytest-asyncio pytest-timeout pytest-socket respx websockets litellm[proxy]
 
 # Run tests
 echo "=== Running Tests ==="
@@ -73,13 +92,14 @@ python3.12 -c "import importlib.metadata; print('litellm version:', importlib.me
 
 # 2. Upstream unit tests — skip any that require live API keys or external services.
 #    The marker filter avoids integration test functions that call real LLM endpoints.
+#    Note: Unit test case path has changed from tests/test_litellm/ to tests/unit/.
 cd "${PACKAGE_DIR}"
 python3.12 -m pytest \
-    tests/test_litellm/test_filter_out_litellm_params.py \
-    tests/test_litellm/test_model_cost_aliases.py \
-    tests/test_litellm/test_count_tokens_public_api.py \
-    tests/test_litellm/test_cost_calculator.py \
-    tests/test_litellm/test_exception_mapping_request_attribute.py \
+    tests/unit/test_filter_out_litellm_params.py \
+    tests/unit/test_model_cost_aliases.py \
+    tests/unit/test_count_tokens_public_api.py \
+    tests/unit/test_cost_calculator.py \
+    tests/unit/test_exception_mapping_request_attribute.py \
     -v \
     --timeout=60 \
     -k "not test_extract_cache" \

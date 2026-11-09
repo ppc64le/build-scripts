@@ -22,29 +22,34 @@
 set -ex 
 
 PACKAGE_NAME=vision
-PACKAGE_VERSION=${1:-v0.27.0}
+PACKAGE_VERSION=${1:-v0.29.0}
 PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
 VERSION=${PACKAGE_VERSION#v}
-PYTHON_VERSION=${2:-3.12}
-if [[ "$PACKAGE_VERSION" == "v0.28.0" ]]; then
-    PYTORCH_VERSION=${3:-v2.13.0}
+# The wrapper (create_wheel_wrapper.sh) passes the Python version (eg: 3.12) as $2.
+# Accept $2 as the PyTorch tag only if it looks like one (eg: v2.14.0).
+PYTORCH_VERSION_ARG=${2:-}
+[[ "$PYTORCH_VERSION_ARG" =~ ^v[0-9]+\.[0-9]+(\.[0-9]+)?$ ]] || PYTORCH_VERSION_ARG=""
+if [[ "$PACKAGE_VERSION" == "v0.29.0" ]]; then
+    PYTORCH_VERSION=${PYTORCH_VERSION_ARG:-v2.14.0}
+elif [[ "$PACKAGE_VERSION" == "v0.28.0" ]]; then
+    PYTORCH_VERSION=${PYTORCH_VERSION_ARG:-v2.13.0}
 elif [[ "$PACKAGE_VERSION" == "v0.27.1" ]]; then
-    PYTORCH_VERSION=${3:-v2.12.1}
+    PYTORCH_VERSION=${PYTORCH_VERSION_ARG:-v2.12.1}
 elif [[ "$PACKAGE_VERSION" == "v0.27.0" ]]; then
-    PYTORCH_VERSION=${3:-v2.12.0}
+    PYTORCH_VERSION=${PYTORCH_VERSION_ARG:-v2.12.0}
 else
-    PYTORCH_VERSION=${3:-v2.11.0}
+    PYTORCH_VERSION=${PYTORCH_VERSION_ARG:-v2.11.0}
 fi
 
 CURRENT_DIR=$(pwd)
 
-yum install -y git make wget python$PYTHON_VERSION python$PYTHON_VERSION-devel python$PYTHON_VERSION-pip pkgconfig atlas libjpeg-devel openblas-devel
+yum install -y git make wget python3 python3-devel python3-pip pkgconfig atlas libjpeg-devel openblas-devel
 yum install gcc-toolset-13 -y
 yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config  gmp-devel  freetype-devel
 
-ln -sf /usr/bin/pip$PYTHON_VERSION /usr/bin/pip3 && ln -sf /usr/bin/python$PYTHON_VERSION /usr/bin/python3 && ln -sf /usr/bin/pip$PYTHON_VERSION /usr/bin/pip && ln -sf /usr/bin/python$PYTHON_VERSION /usr/bin/python
+ln -sf /usr/bin/pip3 /usr/bin/pip && ln -sf /usr/bin/python3 /usr/bin/python
 
 export PYTHON_SITE_PACKAGES=$(python - <<'EOF'
 import sysconfig, os
@@ -297,8 +302,23 @@ sed -i "s/cmake/cmake==3.*/g" requirements.txt
 python3 -m pip install -r requirements.txt
 
 echo "----------Installing pytorch------------"
-MAX_JOBS=$(nproc) python3 setup.py install
-MAX_JOBS=$(nproc) python3 setup.py bdist_wheel
+if [[ "$(printf '%s\n' "$ver" "2.14.0" | sort -V | tail -n1)" == "$ver" ]]; then
+    # PyTorch >= 2.14: setup.py bdist_wheel is removed in favour of the PEP 517 build (scikit-build-core).
+    # Install build requirements (except cmake, already pinned above), then build and install the wheel.
+    python3 -m pip install build
+    python3 - <<'EOF' | xargs -r -d '\n' python3 -m pip install
+import tomllib
+with open("pyproject.toml", "rb") as f:
+    for req in tomllib.load(f)["build-system"]["requires"]:
+        if not req.lower().startswith("cmake"):
+            print(req)
+EOF
+    MAX_JOBS=$(nproc) python3 -m build --wheel --no-isolation
+    python3 -m pip install --no-deps --force-reinstall dist/torch-*.whl
+else
+    MAX_JOBS=$(nproc) python3 setup.py install
+    MAX_JOBS=$(nproc) python3 setup.py bdist_wheel
+fi
 cd $CURRENT_DIR
 
 echo "--------------------------------- Installing Opus ---------------------------------"
@@ -420,7 +440,7 @@ cd $CURRENT_DIR
 
 echo "---------------------------Installing FFmpeg------------------"
 #Cloning Source Code
-FFMPEG_PACKAGE_VERSION=${4:-n7.1}
+FFMPEG_PACKAGE_VERSION=${3:-n7.1}
 
 git clone https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
@@ -597,11 +617,18 @@ git checkout $PACKAGE_VERSION
 
 # Below patch is needed to exclude the models that come under SWAG license (CC-BY-NC-4.0)
 # Using patch file v0.25.0 for PACKAGE_VERSION >= v0.25.0 (eg: v0.26.0).
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license_v0.25.0.patch
-git apply 0001-Exclude-source-that-has-commercial-license_v0.25.0.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license_v0.29.0.patch
+git apply 0001-Exclude-source-that-has-commercial-license_v0.29.0.patch
 
 
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
+
+# The v0.29.0 tag still carries version.txt = 0.29.0a0, so pin the version
+# explicitly to get torchvision-0.29.0-* instead of torchvision-0.29.0a0-*.
+export BUILD_VERSION="${VERSION}"
+# CPU-only build: don't enable NVJPEG support
+export FORCE_CUDA=0
+export TORCHVISION_USE_NVJPEG=0
 
 if ! python3 setup.py build; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -611,7 +638,8 @@ if ! python3 setup.py build; then
 fi
 
 cd build
-export CMAKE_PREFIX_PATH=$CURRENT_DIR/pytorch/torch/share/cmake/Torch:$LIBPROTO_INSTALL
+# PyTorch >= 2.14 is built as a PEP 517 wheel, so TorchConfig.cmake exists only in the installed package.
+export CMAKE_PREFIX_PATH=$PYTHON_SITE_PACKAGES/torch/share/cmake/Torch:$CURRENT_DIR/pytorch/torch/share/cmake/Torch:$LIBPROTO_INSTALL
 cmake ..
 make install
 cp libtorchvision.so $CURRENT_DIR/vision/torchvision/libtorchvision.so

@@ -2,7 +2,7 @@
   "maintainer": "puneetsharma21",
   "package_name": "snowflake-connector-python",
   "github_url": "https://github.com/snowflakedb/snowflake-connector-python",
-  "version": "v4.3.0",
+  "version": "v4.8.0",
   "language": "Python",
   "v2-enabled": true,
   "wheel_build": true,

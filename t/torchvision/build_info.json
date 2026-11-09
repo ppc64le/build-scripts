@@ -10,6 +10,7 @@
   "validate_build_script": true,
   "use_non_root_user": false,
   "wheel_build": true,
+  "skip_python_versions": ["3.10"],
   "auditwheel_exclude": [
     "libc10.so",
     "libtorch.so",
@@ -36,6 +37,9 @@
     "build_script": "torchvision_0.24.1_ubi_9.6.sh"
   },
   "v0.29.0": {
-    "build_script": "torchvision_0.29.0_ubi_10.2.sh"
+    "build_script": [
+      "torchvision_0.26.0_ubi_9.6.sh",
+      "torchvision_0.29.0_ubi_10.2.sh"
+    ]
   }
 }

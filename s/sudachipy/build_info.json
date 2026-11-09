@@ -1,0 +1,17 @@
+{
+   "maintainer": "irapandey",
+   "package_name": "sudachipy",
+   "github_url": "https://github.com/WorksApplications/sudachi.rs",
+   "version": "v0.7.0",
+   "default_branch": "develop",
+   "build_script": "sudachipy_v0.7.0_ubi_9.8.sh",
+   "package_dir": "s/sudachipy",
+   "docker_build": false,
+   "wheel_build": true,
+   "wheel_name": "sudachipy",
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script": "sudachipy_v0.7.0_ubi_9.8.sh"
+   }
+}

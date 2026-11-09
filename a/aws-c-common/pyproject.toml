@@ -1,0 +1,41 @@
+[build-system]
+# Minimum requirements for the build system to execute.
+# Do not include sys,subprocess and os as they are default packages
+requires = [
+    "setuptools",
+    "wheel",
+]
+
+# Set build backend to setuptools
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aws-c-common"
+version = "{PACKAGE_VERSION}"
+description = "AWS C Common native library packaging"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: C",
+  "License :: OSI Approved :: Apache Software License",
+]
+
+[project.urls]
+homepage = "https://github.com/awslabs/aws-c-common"
+upstream = "https://github.com/awslabs/aws-c-common"
+
+# Find package files in local folder — not following standard setuptools directory structure
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["local"]
+
+# Package data: shared lib, headers, cmake config and modules
+[tool.setuptools.package-data]
+"aws_c_common" = [
+    "lib64/libaws-c-common*",
+    "lib64/cmake/**/*",
+    "include/aws/**/*",
+]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_ppc64le"   # Explicitly set the platform tag
+universal = false              # Disable universal wheel (forces platform-specific build)

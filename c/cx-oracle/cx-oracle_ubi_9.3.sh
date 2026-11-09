@@ -18,7 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-
 # Variables
 PACKAGE_NAME=python-cx_Oracle
 PACKAGE_VERSION=${1:-8.3.0}
@@ -68,8 +67,11 @@ git submodule update --init --recursive
 
 ln -sf /opt/rh/gcc-toolset-13/root/usr/lib64/libctf.so.0 /usr/lib64/libctf.so.0
 
+# setup.py of cx_Oracle 8.3.0 imports pkg_resources, which is absent in newer setuptools (>=72)
+pip install --upgrade pip "setuptools<72" wheel
+
 #Install
-if ! (pip install .) ; then
+if ! (pip install . --no-build-isolation) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

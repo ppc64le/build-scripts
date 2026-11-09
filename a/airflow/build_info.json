@@ -5,7 +5,11 @@
   "wheel_name": "apache-airflow",
   "v2-enabled": true,
   "github_url": "https://github.com/apache/airflow",
-  "version": "3.0.2",
+  "version": "3.3.2",
+  "required_versions": {
+    "Releases": ["*"],
+    "Tags": ["*"]
+  },
   "default_branch": "main",
   "build_script": "airflow.sh",
   "package_dir": "a/airflow",

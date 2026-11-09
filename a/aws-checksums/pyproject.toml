@@ -1,0 +1,42 @@
+[build-system]
+# Minimum requirements for the build system to execute.
+# Do not include sys,subprocess and os as they are default packages
+requires = [
+    "setuptools",
+    "wheel",
+]
+
+# Set build backend to setuptools
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aws-checksums"
+version = "{PACKAGE_VERSION}"
+dependencies = ["aws-c-common"]
+description = "AWS Checksums (CRC32, CRC32C, CRC64-NVME, xxHash) native library packaging"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: C",
+  "License :: OSI Approved :: Apache Software License",
+]
+
+[project.urls]
+homepage = "https://github.com/awslabs/aws-checksums"
+upstream = "https://github.com/awslabs/aws-checksums"
+
+# Find package files in local folder — not following standard setuptools directory structure
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["local"]
+
+# Package data: shared lib, headers, cmake config
+[tool.setuptools.package-data]
+"aws_checksums" = [
+    "lib64/libaws-checksums*",
+    "lib64/cmake/**/*",
+    "include/aws/**/*",
+]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_ppc64le"   # Explicitly set the platform tag
+universal = false              # Disable universal wheel (forces platform-specific build)
