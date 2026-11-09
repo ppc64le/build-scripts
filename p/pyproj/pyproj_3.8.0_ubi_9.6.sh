@@ -33,6 +33,14 @@ PROJ_PREFIX=${HOME_DIR}/proj-install
 # Upstream tags have no 'v' prefix (accept both forms)
 VERSION_NUM="${PACKAGE_VERSION#v}"
 
+# pyproj 3.8.0 declares requires-python >= 3.12, so it cannot be built on older interpreters.
+# The wheel wrapper passes the Python version as $2 (e.g. 3.11); direct runs default to 3.12.
+PY_VER=${2:-3.12}
+if [[ "$(printf '%s\n' "3.12" "${PY_VER}" | sort -V | head -n1)" != "3.12" ]]; then
+    echo "Skipping: ${PACKAGE_NAME} ${PACKAGE_VERSION} requires Python >= 3.12 (got ${PY_VER})"
+    exit 0  # early exit; the trailing comment keeps the wheel wrapper from stripping this line
+fi
+
 # Install dependencies and tools.
 # PROJ needs the sqlite3 binary (to build proj.db), libsqlite3, libtiff and libcurl.
 yum install -y git make cmake python3.12 python3.12-devel python3.12-pip \
