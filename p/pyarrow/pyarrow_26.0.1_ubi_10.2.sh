@@ -23,6 +23,8 @@ set -e
 PACKAGE_NAME=pyarrow
 PACKAGE_DIR=arrow/python
 PACKAGE_VERSION=${1:-apache-arrow-26.0.1}
+# Upstream tags are prefixed with apache-arrow- (accept a bare version too)
+[[ "$PACKAGE_VERSION" == apache-arrow-* ]] || PACKAGE_VERSION="apache-arrow-${PACKAGE_VERSION#v}"
 PACKAGE_URL=https://github.com/apache/arrow
 version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
 build_type=$2
@@ -657,6 +659,10 @@ EXTRA_CMAKE_ARGS="${EXTRA_CMAKE_ARGS} -DARROW_GANDIVA=OFF"
 # SIMD
 
 EXTRA_CMAKE_ARGS="${EXTRA_CMAKE_ARGS} -DARROW_SIMD_LEVEL=SSE4_2"
+
+# Arrow 26 forces simdjson when Parquet/JSON is on; no system package exists, so bundle it
+
+EXTRA_CMAKE_ARGS="${EXTRA_CMAKE_ARGS} -Dsimdjson_SOURCE=BUNDLED"
 
 sed -ie \
     's;"--with-jemalloc-prefix=je_arrow_";"--with-jemalloc-prefix=je_arrow_" "--with-lg-page=16";g' \
