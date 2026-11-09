@@ -21,6 +21,8 @@
 # Variables
 PACKAGE_NAME=pywt
 PACKAGE_VERSION=${1:-v1.10.0}
+# The wheel wrapper passes the Python version as $2 (e.g. 3.11); direct runs default to 3.12.
+PY_VER=${2:-3.12}
 PACKAGE_URL=https://github.com/PyWavelets/pywt
 
 # Install dependencies
@@ -43,8 +45,18 @@ cd $PACKAGE_NAME
 # Upstream tags are prefixed with 'v' (the validator may pass the version without it)
 git checkout "v${PACKAGE_VERSION#v}"
 
+# pywt 1.10.0 declares requires-python >= 3.12, so pip refuses to build it on Python 3.11.
+# The sources parse and build on 3.11, so relax the metadata check and use a NumPy that supports 3.11.
+NUMPY_SPEC="numpy==2.5.0"
+if [[ "$(printf '%s\n' "3.12" "${PY_VER}" | sort -V | head -n1)" != "3.12" ]]; then
+    echo "Python ${PY_VER} < 3.12: relaxing requires-python in pyproject.toml"
+    sed -i 's/^requires-python = ">=3.12"/requires-python = ">=3.11"/' pyproject.toml
+    grep -n "^requires-python" pyproject.toml
+    NUMPY_SPEC="numpy<2.5"  # NumPy 2.5 requires Python >= 3.12
+fi
+
 # Install Python dependencies
-python3.12 -m pip install numpy==2.5.0 pillow "pytest<9" "cython>=3.2.5" "meson-python>=0.18.0"
+python3.12 -m pip install "${NUMPY_SPEC}" pillow "pytest<9" "cython>=3.2.5" "meson-python>=0.18.0"
 
 # Install package
 if ! python3.12 -m pip install .; then
