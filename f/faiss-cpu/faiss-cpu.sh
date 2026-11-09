@@ -18,21 +18,15 @@ PACKAGE_NAME="faiss-cpu"
 PACKAGE_VERSION="${1:-1.9.0.post1}"
 PACKAGE_URL="https://github.com/faiss-wheels/faiss-wheels"
 
-# =============================================================================
-# Artifact Declaration (Tier 1 - depends on openblas system package)
-# =============================================================================
+BUILD_DEPS=${BUILD_DEPS:-"scipy:v1.17.1"}
 PROVIDES_ARTIFACT="faiss-cpu"
-
-# scipy is only needed by app.py at test time; consumed from the scipy artifact
-SCIPY_ARTIFACT_VERSION="${SCIPY_ARTIFACT_VERSION:-v1.17.0}"
-BUILD_DEPS=${BUILD_DEPS:-"scipy:${SCIPY_ARTIFACT_VERSION}"}
 
 # =============================================================================
 # REQUIRED: Dependencies
 # =============================================================================
 RH_DEP_PKGS="git gcc gcc-c++ cmake automake autoconf openblas-devel python3 python3-devel python3-pip"
-DEB_DEP_PKGS="git gcc g++ cmake automake autoconf libopenblas-dev python3 python3-dev python3-pip python3-venv"
-SLES_DEP_PKGS="git gcc gcc-c++ cmake automake autoconf openblas-devel python3 python3-devel python3-pip"
+DEB_DEP_PKGS=""
+SLES_DEP_PKGS=""
 
 # =============================================================================
 # CALLBACK: pre_clone — clone main branch, not the v1.9.0.post1 tag
@@ -100,10 +94,10 @@ custom_install() {
 }
 
 # =============================================================================
-# CALLBACK: post_build — copy wheel into the artifact directory
+# CALLBACK: post_build
 # =============================================================================
 post_build() {
-    log_info "Packaging faiss-cpu wheel into artifact directory..."
+    log_info "Packaging faiss-cpu artifact..."
 
     local ARTIFACT_DIR
     ARTIFACT_DIR="$(artifact_dir "${PROVIDES_ARTIFACT}" "${PACKAGE_VERSION}")"
@@ -118,13 +112,42 @@ post_build() {
         wheel_file=$(ls dist/faiss_cpu-*.whl 2>/dev/null | head -1)
     fi
 
-    if [[ -n "${wheel_file}" ]]; then
-        log_info "Copying faiss-cpu wheel to artifact: ${ARTIFACT_DIR}/wheels/"
+    if [[ -z "${wheel_file}" ]]; then
+        log_warn "No faiss-cpu wheel found — artifact will not be created"
+    else
+        local python_version
+        python_version=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+
+        log_info "Packaging faiss-cpu artifact to ${ARTIFACT_DIR} for Python ${python_version}..."
+        mkdir -p "${ARTIFACT_DIR}"
+
+        local site_packages="${ARTIFACT_DIR}/lib/python${python_version}/site-packages"
+        mkdir -p "${site_packages}"
+        python -m pip install --target="${site_packages}" --no-deps "${wheel_file}"
+
         mkdir -p "${ARTIFACT_DIR}/wheels"
         cp "${wheel_file}" "${ARTIFACT_DIR}/wheels/"
-        log_info "faiss-cpu artifact wheel saved: $(basename "${wheel_file}")"
-    else
-        log_warn "No faiss-cpu wheel found to copy into artifact — skipping wheels/ dir"
+
+        if [[ -f "LICENSE.txt" ]]; then
+            cp LICENSE.txt "${ARTIFACT_DIR}/LICENSE"
+        elif [[ -f "LICENSE" ]]; then
+            cp LICENSE "${ARTIFACT_DIR}/LICENSE"
+        fi
+
+        cat > "${ARTIFACT_DIR}/env.sh" << 'EOF'
+# faiss-cpu environment
+export FAISS_CPU_PREFIX="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_faiss_cpu_python_version="$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")"
+export PYTHONPATH="${FAISS_CPU_PREFIX}/lib/python${_faiss_cpu_python_version}/site-packages:${PYTHONPATH:-}"
+unset _faiss_cpu_python_version
+EOF
+
+        generate_artifact_manifest "${ARTIFACT_DIR}" \
+            "${PROVIDES_ARTIFACT}" "${PACKAGE_VERSION}" \
+            "${PACKAGE_URL}" "${LICENSE_SPDX}" \
+            "openblas" "numpy"
+
+        log_info "faiss-cpu artifact created at ${ARTIFACT_DIR} for Python ${python_version}"
     fi
 }
 
@@ -135,32 +158,34 @@ custom_test_command() {
     log_info "Installing test dependencies"
     export INDEX_URL_DEVPY="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple"
 
-    # Locate the SciPy artifact. scipy.sh post_build stores its wheel at
-    local scipy_artifact_dir="" _v
-    for _v in "${SCIPY_ARTIFACT_VERSION}" "${SCIPY_ARTIFACT_VERSION#v}"; do
-        if [[ -d "$(artifact_dir "scipy" "${_v}")/wheels" ]]; then
-            scipy_artifact_dir="$(artifact_dir "scipy" "${_v}")"
-            break
-        fi
-    done
-    if [[ -z "${scipy_artifact_dir}" ]]; then
-        log_error "Required SciPy artifact is missing: $(artifact_dir "scipy" "${SCIPY_ARTIFACT_VERSION}")/wheels"
-        log_error "Expected build order: openblas -> numpy -> scipy:${SCIPY_ARTIFACT_VERSION} -> faiss-cpu"
-        return 1
-    fi
-    export SCIPY_PREFIX="${scipy_artifact_dir}"
-    log_info "Using SciPy from artifact: ${SCIPY_PREFIX}"
-
-    # Pick the wheel matching the active Python ABI (cp311, cp312, ...) 
-    local python_abi scipy_wheel
+    local scipy_wheel
+    local python_abi
     python_abi=$(python -c "import sys; print(f'cp{sys.version_info.major}{sys.version_info.minor}')")
+    log_info "Looking for SciPy artifact wheel matching Python ABI ${python_abi}"
     scipy_wheel=$(find "${SCIPY_PREFIX}/wheels" -name "scipy-*-${python_abi}-${python_abi}-*.whl" -print 2>/dev/null | head -1)
     if [[ -z "${scipy_wheel}" ]]; then
-        log_error "No SciPy ${python_abi} wheel found under ${SCIPY_PREFIX}/wheels"
-        return 1
+        log_warn "SciPy ${python_abi} wheel was not found under ${SCIPY_PREFIX}/wheels; using artifact PYTHONPATH"
+        log_info "Verifying SciPy is importable from the sourced artifact environment"
+        if ! python -c "import scipy; print('SciPy version:', scipy.__version__)" ; then
+            log_error "SciPy artifact is not importable from ${SCIPY_PREFIX}"
+            false
+        fi
+    else
+        log_info "Installing SciPy wheel from artifact: ${scipy_wheel}"
+        python -m pip install --force-reinstall --no-deps "${scipy_wheel}"
+
+        local scipy_artifact_site
+        scipy_artifact_site="${SCIPY_PREFIX}/lib/python$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")/site-packages"
+        log_info "Removing artifact site-packages from PYTHONPATH after wheel install: ${scipy_artifact_site}"
+        while [[ "${PYTHONPATH:-}" == "${scipy_artifact_site}" || "${PYTHONPATH:-}" == "${scipy_artifact_site}:"* ]]; do
+            if [[ "${PYTHONPATH}" == "${scipy_artifact_site}" ]]; then
+                unset PYTHONPATH
+                break
+            fi
+            export PYTHONPATH="${PYTHONPATH#${scipy_artifact_site}:}"
+        done
+        python -c "import scipy; print('SciPy import path:', scipy.__file__)"
     fi
-    log_info "Installing SciPy wheel from artifact: ${scipy_wheel}"
-    python -m pip install --force-reinstall --no-deps "${scipy_wheel}"
 
     python -m pip install sentence-transformers \
         --extra-index-url "${INDEX_URL_DEVPY}"

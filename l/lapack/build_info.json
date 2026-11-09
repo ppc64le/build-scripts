@@ -13,6 +13,10 @@
   "v2-enabled": true,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "auditwheel_exclude": [
+    "libblas*",
+    "liblapack*"
+  ],
   "provides_artifact": "lapack",
   "*": {
     "build_script": "lapack.sh"

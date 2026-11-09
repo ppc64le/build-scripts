@@ -53,4 +53,4 @@ export PYVERSION=${PYVERSION:-"39"}
 # =============================================================================
 # Execute the build (invokes the Python template)
 # =============================================================================
-source "${SCRIPT_DIR}/../../templates/python.sh"
+source "${SCRIPT_DIR}/../../v2-templates/python.sh"

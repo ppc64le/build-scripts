@@ -12,6 +12,9 @@
   "v2-enabled": true,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "auditwheel_exclude": [
+    "libabsl_*"
+  ],
   "provides_artifact": "abseil-cpp",
   "*": {
     "build_script": "abseil-cpp.sh"

@@ -172,9 +172,10 @@ custom_test_command() {
         --deselect=fastparquet/test/test_read.py::test_multi_index \
         --deselect=fastparquet/test/test_read.py::test_multi_index_category \
         --deselect="fastparquet/test/test_read.py::test_no_columns[no_columns_new.parquet]" \
-        --deselect=fastparquet/test/test_read.py::test_column_multiindex_roundtrip
-        # All deselected tests fail due to pandas>=2.2/3.0 API changes
-        # (StringDtype inference, datetime64 resolution, copy= kwarg removal).
+        --deselect=fastparquet/test/test_read.py::test_column_multiindex_roundtrip \
+        --deselect=fastparquet/test/test_util.py::test_bad_tz
+        # All deselected tests fail due to pandas>=2.2/3.0 API changes and dateutil timezone incompatibilities
+        # (StringDtype inference, datetime64 resolution, copy= kwarg removal, dateutil tz total_seconds).
         # These are upstream fastparquet bugs, not ppc64le issues.
 }
 

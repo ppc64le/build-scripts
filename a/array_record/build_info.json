@@ -1,25 +1,28 @@
 {
-  "maintainer": "kiranNukal",
+  "maintainer": "Pooja-Shah4",
   "package_name": "array_record",
   "github_url": "https://github.com/google/array_record",
   "version": "v0.8.3",
-  "wheel_build" : true,
+  "wheel_build": true,
+  "resource_class": "heavy",
   "default_branch": "main",
   "package_dir": "a/array_record",
-  "build_script": "array_record_ubi_9.3.sh",
+  "build_script": "array_record.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "v0.6.0": {
-    "build_script":"array_record_0.6.0_ubi_9.3.sh"
+  "build_deps": ["bazel:7.4.1"],
+  "v2-enabled": true,
+  "language": "Python, C++",
+  "v0.8.0 | v0.8.1 | v0.8.2 | v0.8.3": {
+    "build_script": "array_record.sh",
+    "build_deps": ["bazel:7.4.1"],
+    "patches": {
+      "ARRAY_RECORD_PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/array_record/patches/array_record_v0.8.2.patch"
+    }
   },
-  "v0.8.2": {
-    "build_script":"array_record_0.8.2_ubi_9.6.sh"
-  },
-  "v0.8.3": {
-    "build_script":"array_record_0.8.2_ubi_9.6.sh"
-  },
-  "*": {
-    "build_script": "array_record_ubi_9.3.sh"
+  "v0.*.*": {
+    "build_script": "array_record.sh",
+    "build_deps": ["bazel:7.4.1"]
   }
 }

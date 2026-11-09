@@ -17,6 +17,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # =============================================================================
 PACKAGE_NAME="arrow"
 PACKAGE_VERSION="${1:-apache-arrow-19.0.1}"
+# Accept a bare version (21.0.0) as well as the git tag (apache-arrow-21.0.0)
+[[ "${PACKAGE_VERSION}" == apache-arrow-* ]] || PACKAGE_VERSION="apache-arrow-${PACKAGE_VERSION#v}"
 PACKAGE_URL="https://github.com/apache/arrow"
 
 # =============================================================================
@@ -28,7 +30,7 @@ PROVIDES_ARTIFACT="arrow"
 # BUILD_DEPS env var; the value below is the fallback for local runs.
 # build_info.json lists the thrift package as "thrift-cpp" but it provides the
 # artifact "thrift", so normalise the name.
-BUILD_DEPS="${BUILD_DEPS:-grpc_cpp:v1.68.0 orc:v2.0.3 boost thrift utf8proc snappy zstd re2:2024-07-02 xsimd rapidjson gflags c-ares:v1.33.1 libprotobuf:v28.2 abseil-cpp:20240722.0}"
+BUILD_DEPS="${BUILD_DEPS:-grpc_cpp:v1.68.0 boost thrift utf8proc snappy zstd re2:2024-07-02 xsimd rapidjson gflags c-ares:v1.33.1 libprotobuf:v28.2 abseil-cpp:20240722.0}"
 BUILD_DEPS="${BUILD_DEPS//thrift-cpp/thrift}"
 
 # =============================================================================
@@ -82,28 +84,6 @@ custom_install() {
     done
 
     # -------------------------------------------------------------------------
-    # ORC stale-artifact guard: the old pipeline stored orc under "v2.0.3/"
-    # (with v-prefix) but orc.sh uses ARTIFACT_VERSION="${PACKAGE_VERSION#v}",
-    # so valid artifacts live at "2.0.3/". source_artifact hits the stale dir
-    # first (exact version match "v2.0.3") and sets ORC_PREFIX to a path with
-    # only env.sh and no headers/libs. Detect this and re-source from 2.0.3.
-    # -------------------------------------------------------------------------
-    if [[ -n "${ORC_PREFIX:-}" ]] && \
-       [[ ! -f "${ORC_PREFIX}/include/orc/orc-config.hh" ]]; then
-        log_warn "ORC_PREFIX=${ORC_PREFIX} is missing orc-config.hh (stale artifact)"
-        log_warn "Falling back to orc:2.0.3 (v-stripped version)..."
-        if ! source_artifact "orc" "2.0.3"; then
-            log_error "orc:2.0.3 artifact not found either — build orc first"
-            false
-        fi
-        if [[ ! -f "${ORC_PREFIX}/include/orc/orc-config.hh" ]]; then
-            log_error "orc:2.0.3 artifact also missing orc-config.hh at ${ORC_PREFIX}"
-            false
-        fi
-        log_info "Using ORC_PREFIX=${ORC_PREFIX}"
-    fi
-
-    # -------------------------------------------------------------------------
     # Build CMAKE_PREFIX_PATH from all dependency prefixes
     # Each artifact's env.sh should set *_PREFIX variables
     # -------------------------------------------------------------------------
@@ -120,7 +100,6 @@ custom_install() {
     CMAKE_PREFIX_PARTS="${CMAKE_PREFIX_PARTS};${RE2_PREFIX:-}"
     CMAKE_PREFIX_PARTS="${CMAKE_PREFIX_PARTS};${ABSEIL_CPP_PREFIX:-}"
     CMAKE_PREFIX_PARTS="${CMAKE_PREFIX_PARTS};${GRPC_CPP_PREFIX:-}"
-    CMAKE_PREFIX_PARTS="${CMAKE_PREFIX_PARTS};${ORC_PREFIX:-}"
     CMAKE_PREFIX_PARTS="${CMAKE_PREFIX_PARTS};${BOOST_PREFIX:-}"
     CMAKE_PREFIX_PARTS="${CMAKE_PREFIX_PARTS};${UTF8PROC_PREFIX:-}"
     CMAKE_PREFIX_PARTS="${CMAKE_PREFIX_PARTS};${THRIFT_PREFIX:-}"
@@ -234,6 +213,20 @@ custom_install() {
     mkdir -p cpp/build
     cd cpp/build
 
+    # ORC is built from Arrow's bundled source (-Dorc_SOURCE=BUNDLED below), and
+    # the orc artifact is deliberately NOT a dependency of this build:
+    #  1. The artifact's liborc.a is compiled against ORC's vendored protobuf 3.5.1
+    #     headers, so it references MessageLite::ParseFromString(const std::string&),
+    #     which the libprotobuf artifact (25.x/27.x/28.x) does not export.  Importing
+    #     pyarrow then fails with "undefined symbol: ..MessageLite15ParseFromString..".
+    #  2. If the orc artifact is sourced, its include dir lands on CPATH.  CPATH is
+    #     searched before the -isystem dirs CMake adds for the bundled ORC, so
+    #     Arrow's ORC adapter is compiled against the artifact's ORC headers (2.0.3)
+    #     while linking the bundled ORC library (2.2.x).  ORC 2.2.0 added virtual
+    #     methods (Type::getCrs/getAlgorithm), shifting vtable slots, so
+    #     orc::Type::createRowBatch jumps to a garbage address: the segfault in
+    #     orc.write_table / test_orc_format.
+
     log_info "Running CMake to configure Arrow build..."
     cmake \
         -GNinja \
@@ -278,8 +271,8 @@ custom_install() {
         -DProtobuf_PROTOC_EXECUTABLE="${LIBPROTOBUF_PREFIX:-}/bin/protoc" \
         -Dprotobuf_ROOT="${LIBPROTOBUF_PREFIX:-}" \
         -DProtobuf_ROOT="${LIBPROTOBUF_PREFIX:-}" \
-        -DORC_ROOT="${ORC_PREFIX:-}" \
-        -DORC_INCLUDE_DIR="${ORC_PREFIX:-}/include" \
+        -Dorc_SOURCE=BUNDLED \
+        -DORC_SOURCE=BUNDLED \
         -DgRPC_DIR="${GRPC_CPP_PREFIX:-}" \
         -DBoost_ROOT="${BOOST_PREFIX:-}" \
         -DBOOST_ROOT="${BOOST_PREFIX:-}" \
@@ -301,16 +294,19 @@ custom_install() {
         -DCMAKE_RANLIB="${RANLIB}" \
         \
         ${EXTRA_CMAKE_ARGS} \
-        ..
+        .. || { log_error "Arrow CMake configure failed"; return 1; }
 
     # -------------------------------------------------------------------------
     # Build and install
     # -------------------------------------------------------------------------
+    # custom_install runs under "if !", which disables errexit, so a failing
+    # step must be propagated explicitly.  Otherwise a failed configure still
+    # ends in a hollow artifact (env.sh only) reported as install_success.
     log_info "Building Arrow (this may take a while)..."
-    ninja -j"$(nproc)"
+    ninja -j"$(nproc)" || { log_error "Arrow build failed"; return 1; }
 
     log_info "Installing Arrow..."
-    ninja install
+    ninja install || { log_error "Arrow install failed"; return 1; }
 
     cd ../..
 
@@ -345,7 +341,7 @@ EOF
     generate_artifact_manifest "${ARTIFACT_DIR}" \
         "arrow" "${ARTIFACT_VERSION}" \
         "${PACKAGE_URL}" "Apache-2.0" \
-        "grpc_cpp" "orc" "boost" "thrift" "utf8proc" "snappy" "zstd" "re2" \
+        "grpc_cpp" "boost" "thrift" "utf8proc" "snappy" "zstd" "re2" \
         "xsimd" "rapidjson" "gflags" "c-ares" "libprotobuf" "abseil-cpp"
 
     log_info "Arrow installed to ${ARTIFACT_DIR}"
@@ -359,4 +355,6 @@ SKIP_TESTS=true
 # =============================================================================
 LICENSE_SPDX="Apache-2.0"
 source "${SCRIPT_DIR}/../../v2-templates/base.sh"
+
+
 

@@ -266,6 +266,17 @@ generate_artifact_manifest() {
     local recipe_sha
     recipe_sha=$(compute_artifact_recipe_sha "${name}" "${version}" "${depends_on[@]}")
 
+    # Build license_files JSON array from files present in artifact_dir
+    local lf_list=""
+    for f in "${artifact_dir}"/*; do
+        [[ ! -f "$f" ]] && continue
+        local fname
+        fname="${f##*/}"
+        [[ "$fname" =~ ^(LICENSE|COPYING)(\..*)?$ ]] && lf_list+="\"${fname}\","
+    done
+    local license_files_json
+    [[ -n "$lf_list" ]] && license_files_json="[${lf_list%,}]" || license_files_json='["LICENSE"]'
+
     # Generate manifest
     cat > "${manifest_file}" << EOF
 {
@@ -279,7 +290,7 @@ generate_artifact_manifest() {
   "arch": "$(uname -m)",
   "distro": "${UBI_VERSION:-unknown}",
   "license_spdx": "${license_spdx}",
-  "license_files": ["LICENSE"],
+  "license_files": ${license_files_json},
   "depends_on": ${deps_json}
 }
 EOF
@@ -402,39 +413,27 @@ collect_dependency_licenses() {
 log_info "Artifact system loaded (ARTIFACT_WORKSPACE=${ARTIFACT_WORKSPACE})"
 
 # =============================================================================
-# AUTO-DETECT AND FIND LICENSE FILE
+# AUTO-DETECT AND FIND LICENSE FILES
 # =============================================================================
-_find_license_file() {
-    # If user specified a license file, use it
+_find_license_files() {
+    # If user specified a license file, use only that
     if [[ -n "${LICENSE_FILE:-}" ]]; then
-        if [[ -f "${LICENSE_FILE}" ]]; then
-            echo "${LICENSE_FILE}"
-            return 0
-        fi
+        [[ -f "${LICENSE_FILE}" ]] && echo "${LICENSE_FILE}" && return 0
+        return 1
     fi
 
-    # Auto-detect common license file names
-    local license_names=(
-        "LICENSE"
-        "LICENSE.txt"
-        "LICENSE.md"
-        "LICENSE.MIT"
-        "LICENSE.BSD"
-        "LICENSE.APACHE"
-        "COPYING"
-        "COPYING.txt"
-        "COPYING.md"
-        "COPYING.LIB"
-    )
-
-    for name in "${license_names[@]}"; do
-        if [[ -f "${name}" ]]; then
-            echo "${name}"
-            return 0
+    local found=false
+    for f in ./*; do
+        [[ ! -f "$f" ]] && continue
+        local fname
+        fname="${f##*/}"
+        if [[ "$fname" =~ ^(LICENSE|COPYING)(\..*)?$ ]]; then
+            echo "$f"
+            found=true
         fi
     done
 
-    return 1
+    [[ "$found" == "true" ]]
 }
 
 # =============================================================================
@@ -451,18 +450,19 @@ _cleanup_artifact() {
 }
 
 # =============================================================================
-# COPY LICENSE FILE TO ARTIFACT
+# COPY LICENSE FILES TO ARTIFACT
 # =============================================================================
 _copy_license() {
     local artifact_dir="$1"
+    local found=false
 
-    local license_file
-    if license_file="$(_find_license_file)"; then
+    while IFS= read -r license_file; do
         log_info "Copying license file: ${license_file}"
-        cp "${license_file}" "${artifact_dir}/LICENSE"
-    else
-        log_warn "No license file found. Create LICENSE manually if needed."
-    fi
+        cp "${license_file}" "${artifact_dir}/$(basename "${license_file}")"
+        found=true
+    done < <(_find_license_files)
+
+    [[ "$found" == "false" ]] && log_warn "No license file found. Create LICENSE manually if needed."
 }
 
 # =============================================================================
@@ -516,4 +516,3 @@ export PATH="${artifact_dir}/bin:\${PATH}"
 EOF
     fi
 }
-
