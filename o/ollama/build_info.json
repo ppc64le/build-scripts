@@ -5,7 +5,7 @@
   "wheel_name": "ollama-python-package",
   "v2-enabled": true,
   "github_url": "https://github.com/ollama/ollama",
-  "version": "v0.33.3",
+  "version": "v0.40.11",
   "language": "Python",
   "wheel_build": true,
   "v2-enabled": true,

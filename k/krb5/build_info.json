@@ -2,7 +2,7 @@
   "maintainer": "kiranNukal",
   "package_name": "krb5",
   "github_url": "https://github.com/jborean93/pykrb5",
-  "version": "v0.5.1",
+  "version": "v0.10.0",
   "default_branch": "main",
   "package_dir": "k/krb5",
   "build_script": "krb5.sh",
@@ -11,6 +11,9 @@
   "use_non_root_user": false,
   "v2-enabled": true,
   "wheel_build": true,
+  "v0.10.0": {
+    "build_script": "krb5_0.10.0_ubi_9.6.sh"
+  },
   "v*.*.*": {
     "build_script": "krb5.sh"
   }

@@ -55,31 +55,64 @@ git clone "$PACKAGE_URL"
 cd "$PACKAGE_NAME"
 git fetch --tags
 
+###############################################################################
+# Clone repository and identify release/build tags
+###############################################################################
+
+cd "$CURRENT_DIR"
+rm -rf "$PACKAGE_NAME"
+
+echo "Cloning llama.cpp..."
+git clone "$PACKAGE_URL"
+cd "$PACKAGE_NAME"
+
+git fetch --tags
+
 if [[ "$PACKAGE_VERSION" == "Release" ]]; then
-    LLAMA_CPP_VERSION=$(git describe --tags --match "b*" --abbrev=0)
-    echo "PACKAGE_VERSION is Release. Using latest build tag: $LLAMA_CPP_VERSION"
+
+    # Find the latest official release
+    LLAMA_CPP_VERSION=$(git tag --list 'v[0-9]*' \
+        --sort=-version:refname | head -n 1)
+
+    if [[ -z "$LLAMA_CPP_VERSION" ]]; then
+        echo "ERROR: No official release tags found."
+        exit 1
+    fi
+
 else
     LLAMA_CPP_VERSION="$PACKAGE_VERSION"
 fi
 
-echo "Checking out $LLAMA_CPP_VERSION"
-git checkout "$LLAMA_CPP_VERSION"
+echo "Selected release: $LLAMA_CPP_VERSION"
+
+# Find the closest build tag associated with this release commit
+BUILD_TAG=$(git describe \
+    --tags \
+    --match "b[0-9]*" \
+    --abbrev=0 \
+    "$LLAMA_CPP_VERSION" 2>/dev/null || true)
+
+if [[ -z "$BUILD_TAG" ]]; then
+    echo "ERROR: No corresponding build tag found for $LLAMA_CPP_VERSION"
+    exit 1
+fi
+
+echo "Corresponding build tag: $BUILD_TAG"
+
+# Check out the official release commit
+echo "Release version : $LLAMA_CPP_VERSION"
+echo "Build tag       : $BUILD_TAG"
+echo "Checking out release: $BUILD_TAG"
+git checkout "$BUILD_TAG"
 
 ###############################################################################
 # Determine build number for wheel version
 ###############################################################################
+WHEEL_VERSION="${LLAMA_CPP_VERSION#v}"
 
-if [[ "$LLAMA_CPP_VERSION" =~ ^b[0-9]+$ ]]; then
-    BUILD_TAG="$LLAMA_CPP_VERSION"
-else
-    BUILD_TAG=$(git describe --tags --match "b*" --abbrev=0)
-fi
-
-WHEEL_VERSION="${BUILD_TAG#b}"
-
-echo "Repository Version : $PACKAGE_VERSION"
+echo "llama.cpp Version : $LLAMA_CPP_VERSION"
 echo "Build Tag          : $BUILD_TAG"
-echo "Wheel Version      : 1.0+${WHEEL_VERSION}"
+echo "Wheel Version      : ${LLAMA_CPP_VERSION#v}"
 
 ###############################################################################
 # Build llama.cpp
@@ -211,7 +244,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="llama_cpp_python_package",
-    version="1.0+${WHEEL_VERSION}",
+    version="${WHEEL_VERSION}",
     description="Standalone llama.cpp binaries",
     author="Shalini Salomi Bodapati",
     author_email="Shalini.Salomi.Bodapati@ibm.com",
@@ -270,5 +303,5 @@ else
     echo "============ Wheel successfully built ================="
     ls -lh "$CURRENT_DIR"/*.whl
     echo "Wheel version:"
-    echo "1.0+${WHEEL_VERSION}"
+    echo "${LLAMA_CPP_VERSION#v}"
 fi

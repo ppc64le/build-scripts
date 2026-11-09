@@ -4,7 +4,7 @@
 FROM registry.access.redhat.com/ubi10/ubi:10.0 AS base
 
 ARG PACKAGE_NAME=ollama
-ARG PACKAGE_VERSION=v0.33.3
+ARG PACKAGE_VERSION=v0.40.11
 ARG PACKAGE_URL=https://github.com/ollama/ollama
 
 # Install system dependencies with GCC toolset 15
@@ -79,7 +79,7 @@ RUN git clone --depth 1 --branch ${OPENBLAS_VERSION} ${OPENBLAS_URL} /tmp/openbl
 FROM base AS build
 
 ARG PACKAGE_NAME=ollama
-ARG PACKAGE_VERSION=v0.33.3
+ARG PACKAGE_VERSION=v0.40.11
 
 # Copy OpenBLAS artifacts
 COPY --from=openblas /usr/local/include/ /usr/local/include/
