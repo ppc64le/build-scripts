@@ -660,9 +660,9 @@ EXTRA_CMAKE_ARGS="${EXTRA_CMAKE_ARGS} -DARROW_GANDIVA=OFF"
 
 EXTRA_CMAKE_ARGS="${EXTRA_CMAKE_ARGS} -DARROW_SIMD_LEVEL=SSE4_2"
 
-# Arrow 26 forces simdjson when Parquet/JSON is on; no system package exists, so bundle it
+# Arrow 26 added simdjson and uriparser as mandatory deps; no system packages exist, so bundle them
 
-EXTRA_CMAKE_ARGS="${EXTRA_CMAKE_ARGS} -Dsimdjson_SOURCE=BUNDLED"
+EXTRA_CMAKE_ARGS="${EXTRA_CMAKE_ARGS} -Dsimdjson_SOURCE=BUNDLED -Duriparser_SOURCE=BUNDLED"
 
 sed -ie \
     's;"--with-jemalloc-prefix=je_arrow_";"--with-jemalloc-prefix=je_arrow_" "--with-lg-page=16";g' \
