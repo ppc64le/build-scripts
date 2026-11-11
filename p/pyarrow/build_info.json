@@ -55,9 +55,14 @@
       "pyarrow_24.0.0_ubi_10.2.sh"
     ]
   },
-  "*": {
-    "build_script": 
+  "apache-arrow-26.0.1": {
+    "build_script": [
+      "pyarrow_24.0.0_ubi_9.6.sh",
       "pyarrow_25.0.0_ubi_10.2.sh"
+    ]
+  },
+  "*": {
+    "build_script": "pyarrow_23.0.1_ubi_9.3.sh"
   }
 }
 
