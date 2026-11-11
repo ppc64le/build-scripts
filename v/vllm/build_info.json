@@ -17,7 +17,6 @@
     "libtorch_python.so",
     "libshm.so"
   ],
-  "required_versions":{"Releases": ["*"], "Tags": ["*"]},
   "v0.8.4": {
     "build_script": "vllm_ubi_9.3.sh"
   },
