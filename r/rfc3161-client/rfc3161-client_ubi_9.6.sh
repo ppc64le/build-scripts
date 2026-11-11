@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : rfc3161-client
-# Version          : v1.0.6
+# Version          : v1.0.9
 # Source repo      : https://github.com/trailofbits/rfc3161-client.git
 # Tested on        : UBI:9.6
 # Language         : Python
@@ -20,12 +20,17 @@ set -ex
 
 # Variables
 PACKAGE_NAME=rfc3161-client
-PACKAGE_VERSION=${1:-"v1.0.6"}
+PACKAGE_VERSION=${1:-"v1.0.9"}
 PACKAGE_URL=https://github.com/trailofbits/rfc3161-client.git
 PACKAGE_DIR=rfc3161-client
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make python3.11 python3.11-devel python3.11-pip python3.11-setuptools openssl-devel perl perl-core rust cargo
+yum install -y git gcc gcc-c++ make python3.11 python3.11-devel python3.11-pip python3.11-setuptools openssl-devel perl perl-core
+
+# Rust toolchain via rustup: 1.0.9 moved to cryptography-x509 50.0.1 / asn1 0.24, which need a recent Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+source "$HOME/.cargo/env"
+rustc --version
 
 python3.11 -m pip install --upgrade pip
 python3.11 -m pip install pytest maturin pretend
@@ -41,7 +46,8 @@ export OPENSSL_NO_VENDOR=1
 # Clone the repo
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
-git checkout $PACKAGE_VERSION
+# Upstream tags are prefixed with 'v' (the validator may pass the version without it)
+git checkout "v${PACKAGE_VERSION#v}"
 
 git submodule update --init --recursive
 
