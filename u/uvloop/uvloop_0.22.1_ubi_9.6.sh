@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 # Package          : uvloop
-# Version          : v0.22.1
+# Version          : v0.23.0
 # Source repo      : https://github.com/MagicStack/uvloop.git
 # Tested on        : UBI 9.6
 # Language         : Python
