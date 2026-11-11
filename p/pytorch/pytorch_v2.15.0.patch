@@ -1,0 +1,32 @@
+diff --git a/aten/src/ATen/cpu/vec/vec256/vsx/vec256_double_vsx.h b/aten/src/ATen/cpu/vec/vec256/vsx/vec256_double_vsx.h
+index 68cd8f7ce75..c401cacc0a3 100644
+--- a/aten/src/ATen/cpu/vec/vec256/vsx/vec256_double_vsx.h
++++ b/aten/src/ATen/cpu/vec/vec256/vsx/vec256_double_vsx.h
+@@ -446,6 +446,10 @@ class Vectorized<double> {
+   DEFINE_MEMBER_OP(operator|, double, vec_or)
+   DEFINE_MEMBER_OP(operator^, double, vec_xor)
+   DEFINE_MEMBER_TERNARY_OP(madd, double, vec_madd)
++  double reduce_max() const {
++    vfloat64 max_vec = vec_max(_vec0, _vec1);
++    return vec_extract(max_vec, 0) > vec_extract(max_vec, 1) ? vec_extract(max_vec, 0) : vec_extract(max_vec, 1);
++  }
+ };
+ template <>
+ Vectorized<double> inline maximum(
+diff --git a/aten/src/ATen/cpu/vec/vec256/vsx/vec256_float_vsx.h b/aten/src/ATen/cpu/vec/vec256/vsx/vec256_float_vsx.h
+index 9e22f65f17c..ffd3acb6ecc 100644
+--- a/aten/src/ATen/cpu/vec/vec256/vsx/vec256_float_vsx.h
++++ b/aten/src/ATen/cpu/vec/vec256/vsx/vec256_float_vsx.h
+@@ -481,6 +481,12 @@ class Vectorized<float> {
+   DEFINE_MEMBER_OP(operator|, float, vec_or)
+   DEFINE_MEMBER_OP(operator^, float, vec_xor)
+   DEFINE_MEMBER_TERNARY_OP(madd, float, vec_madd)
++  float reduce_max() const {
++    vfloat32 max_vec = vec_max(_vec0, _vec1);
++    return vec_extract(max_vec, 0) > vec_extract(max_vec, 1) ?
++           (vec_extract(max_vec, 0) > vec_extract(max_vec, 2) ? (vec_extract(max_vec, 0) > vec_extract(max_vec, 3) ? vec_extract(max_vec, 0) : vec_extract(max_vec, 3)) : (vec_extract(max_vec, 2) > vec_extract(max_vec, 3) ? vec_extract(max_vec, 2) : vec_extract(max_vec, 3))) :
++           (vec_extract(max_vec, 1) > vec_extract(max_vec, 2) ? (vec_extract(max_vec, 1) > vec_extract(max_vec, 3) ? vec_extract(max_vec, 1) : vec_extract(max_vec, 3)) : (vec_extract(max_vec, 2) > vec_extract(max_vec, 3) ? vec_extract(max_vec, 2) : vec_extract(max_vec, 3)));
++  }
+ };
+ 
+ template <>

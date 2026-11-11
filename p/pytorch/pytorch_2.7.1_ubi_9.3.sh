@@ -177,8 +177,16 @@ if [[ "$(printf '%s\n' "$ver" "2.12.0" | sort -V | tail -n1)" == "$ver" ]]; then
     PATCH_FILE="pytorch_v2.12.0.patch"
 fi
 
-wget -q --spider "$PATCH_URL" && wget -q "$PATCH_URL" && git apply "$PATCH_FILE" || echo "Patch missing, skipped"
+if [[ "$(printf '%s\n' "$ver" "2.15.0" | sort -V | tail -n1)" == "$ver" ]]; then
+    PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.15.0.patch"
+    PATCH_FILE="pytorch_v2.15.0.patch"
+fi
 
+if [ -f "$SCRIPT_DIR/$PATCH_FILE" ]; then
+    git apply "$SCRIPT_DIR/$PATCH_FILE"
+else
+    wget -q --spider "$PATCH_URL" && wget -q "$PATCH_URL" && git apply "$PATCH_FILE" || echo "Patch missing, skipped"
+fi
 
 # -------------------- ENV --------------------
 ARCH=`uname -p`
