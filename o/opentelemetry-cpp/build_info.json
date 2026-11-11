@@ -1,15 +1,19 @@
 {
-    "maintainer": "vinodk99",
-    "package_name" : "opentelemetry-cpp",
-    "github_url":"https://github.com/open-telemetry/opentelemetry-cpp",
-    "version": "v1.15.0",
+    "maintainer": "Shivender-Singh",
+    "package_name": "opentelemetry-cpp",
+    "github_url": "https://github.com/open-telemetry/opentelemetry-cpp",
+    "version": "v1.27.0",
     "default_branch": "main",
     "package_dir": "o/opentelemetry-cpp",
-    "build_script" : "opentelemetry-cpp_ubi_9.3.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
+    "build_script": "opentelemetry-cpp_ubi_10.2.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
     "docker_build": false,
-    "v*.*.*" : {
-        "build_script" : "opentelemetry-cpp_ubi_9.3.sh"
+    "wheel_build": true,
+    "v1.27.0": {
+        "build_script": "opentelemetry-cpp_ubi_10.2.sh"
+    },
+    "*": {
+        "build_script": "opentelemetry-cpp_ubi_10.2.sh"
     }
 }
