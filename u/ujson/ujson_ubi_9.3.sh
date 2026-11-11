@@ -1,8 +1,9 @@
 #!/bin/bash -e
+
 # -----------------------------------------------------------------------------
 #
 # Package          : ujson
-# Version          : 5.10.0
+# Version          : 6.0.0
 # Source repo      : https://github.com/ultrajson/ultrajson
 # Tested on        : UBI:9.3
 # Language         : Python
