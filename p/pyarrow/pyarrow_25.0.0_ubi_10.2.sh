@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : pyarrow
-# Version       : 25.0.0
+# Version       : 26.0.1
 # Source repo   : https://github.com/apache/arrow
 # Tested on     : UBI:10.2
 # Language      : Python, C++
