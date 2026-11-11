@@ -23,7 +23,7 @@ set -e
 WORKDIR=$(pwd)
 PACKAGE_NAME=pyarrow
 PACKAGE_DIR=arrow/python
-PACKAGE_VERSION=${1:-apache-arrow-24.0.0}
+PACKAGE_VERSION=${1:-apache-arrow-26.0.1}
 PACKAGE_URL=https://github.com/apache/arrow
 
 echo "Install dependencies and tools."
