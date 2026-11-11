@@ -56,10 +56,8 @@
     ]
   },
   "*": {
-    "build_script": [
-      "pyarrow_24.0.0_ubi_9.6.sh",
+    "build_script": 
       "pyarrow_25.0.0_ubi_10.2.sh"
-    ]
   }
 }
 
