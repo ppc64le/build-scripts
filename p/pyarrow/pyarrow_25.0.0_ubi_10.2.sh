@@ -23,7 +23,7 @@ set -e
 
 PACKAGE_NAME=pyarrow
 PACKAGE_DIR=arrow/python
-PACKAGE_VERSION=${1:-apache-arrow-25.0.0}
+PACKAGE_VERSION=${1:-apache-arrow-26.0.1}
 PACKAGE_URL=https://github.com/apache/arrow
 version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
 build_type=$2
