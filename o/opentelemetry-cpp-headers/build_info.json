@@ -1,0 +1,16 @@
+{
+    "maintainer": "Shivender-Singh",
+    "package_name" : "opentelemetry-cpp-headers",
+    "github_url":"https://github.com/open-telemetry/opentelemetry-cpp",
+    "version": "v1.27.0",
+    "default_branch": "main",
+    "package_dir": "o/opentelemetry-cpp-headers",
+    "build_script" : "opentelemetry-cpp-headers_ubi_10.2.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+    "wheel_build": true,
+    "v*.*.*" : {
+        "build_script" : "opentelemetry-cpp-headers_ubi_10.2.sh"
+    }
+}
