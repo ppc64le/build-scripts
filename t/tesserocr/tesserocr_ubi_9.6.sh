@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 # ----------------------------------------------------------------------------
 # Package        : tesserocr
-# Version        : v2.9.1
+# Version        : v2.12.0
 # Source repo    : https://github.com/sirfz/tesserocr
 # Tested on      : UBI 9.6
 # Language       : Python
