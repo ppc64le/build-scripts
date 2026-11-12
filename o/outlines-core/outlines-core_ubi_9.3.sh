@@ -21,7 +21,7 @@
 
 # Variables
 PACKAGE_NAME=outlines-core
-PACKAGE_VERSION=${1:-0.1.26}
+PACKAGE_VERSION=${1:-0.2.14}
 PACKAGE_URL=https://github.com/dottxt-ai/outlines-core
 PACKAGE_DIR=outlines-core
 CURRENT_DIR=$(pwd)
@@ -732,9 +732,6 @@ python3.12 -m pip install llvmlite==0.46.0 numba==0.63.1 --prefer-binary --extra
 # The wheel version comes from Cargo.toml, not setuptools or SCM,
 # so we must update the [package] version here explicitly.
 sed -i "/^\[package\]/,/^\[/{/name = \"outlines-core\"/,/^\[/{s/^version = \".*\"/version = \"${PACKAGE_VERSION}\"/}}" Cargo.toml
-
-# PyO3 0.22 (outlines-core 0.1.x) only knows Python <= 3.13; build against the stable ABI on 3.14
-export PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
 
 #install
 if ! (python3.12 -m pip install -e .) ; then
