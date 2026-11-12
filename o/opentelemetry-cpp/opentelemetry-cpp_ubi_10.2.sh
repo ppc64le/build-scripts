@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/open-telemetry/opentelemetry-cpp
 # Tested on     : UBI:10.2
 # Language      : C++
-# Ci-Check  : True
+# Ci-Check      : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shivender Singh <shivender.singh2@ibm.com>
 #
