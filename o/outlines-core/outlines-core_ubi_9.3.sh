@@ -135,7 +135,7 @@ git clone https://github.com/pytorch/pytorch.git
 cd pytorch
 PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 if [ "$PYTHON_VERSION" = "3.14" ]; then
-    git checkout v2.10.0 || git checkout release/2.10
+    git checkout v2.12.0 || git checkout release/2.10
     wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.12.0.patch
     git apply pytorch_v2.12.0.patch || true
 else
