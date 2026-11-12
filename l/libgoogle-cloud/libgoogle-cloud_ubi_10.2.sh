@@ -8,7 +8,7 @@
 # Language      : C++
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : ICH <ich@us.ibm.com>
+# Maintainer    : Shivender Singh <shivender.singh2@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
