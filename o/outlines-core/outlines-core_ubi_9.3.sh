@@ -133,11 +133,18 @@ source "$HOME/.cargo/env"
 # --------------------- Build PyTorch ---------------------
 git clone https://github.com/pytorch/pytorch.git
 cd pytorch
-git checkout v2.9.1
+PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+if [ "$PYTHON_VERSION" = "3.14" ]; then
+    git checkout v2.10.0 || git checkout release/2.10
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.12.0.patch
+    git apply pytorch_v2.12.0.patch || true
+else
+    git checkout v2.9.1
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch
+    git apply pytorch_v2.9.1.patch
+fi
 git submodule sync
 git submodule update --init --recursive
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch
-git apply pytorch_v2.9.1.patch
 
 # Set environment variables
 ARCH=`uname -p`
