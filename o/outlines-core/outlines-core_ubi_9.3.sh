@@ -135,11 +135,13 @@ git clone https://github.com/pytorch/pytorch.git
 cd pytorch
 PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 if [ "$PYTHON_VERSION" = "3.14" ]; then
-    git checkout v2.12.0 || git checkout release/2.10
+    git checkout v2.12.0
+    export PYTORCH_BUILD_VERSION=2.12.0
     wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.12.0.patch
     git apply pytorch_v2.12.0.patch || true
 else
     git checkout v2.9.1
+    export PYTORCH_BUILD_VERSION=2.9.1
     wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch
     git apply pytorch_v2.9.1.patch
 fi
@@ -174,7 +176,7 @@ export USE_OPENMP=1
 export USE_TBB=0
 export BUILD_CUSTOM_PROTOBUF=OFF
 export BUILD_CAFFE2=1
-export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION}
+#export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION}
 export PYTORCH_BUILD_NUMBER=${BUILD_NUM}
 export USE_CUDA=0
 export USE_CUDNN=0
