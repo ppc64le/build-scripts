@@ -1,0 +1,19 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "confluent-kafka-python",
+  "github_url": "https://github.com/confluentinc/confluent-kafka-python",
+  "version": "v2.10.0",
+  "default_branch": "master",
+  "package_dir": "c/confluent-kafka-python",
+  "wheel_build": true,
+  "validate_build_script": true,
+  "v2-enabled": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "language": "Python",
+  "build_deps": ["librdkafka:v2.10.0"],
+  "*": {
+    "build_script": "confluent-kafka-python.sh"
+  }
+}
+

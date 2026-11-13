@@ -297,7 +297,8 @@ def compute_recipe_sha(pkg, ver, py_tag, abi_tag, remainder, wheel_path=None):
     build_script_date = ""
     try:
         res = subprocess.run(
-            ["git", "-C", script_dir, "log", "-1", "--format=%ci", "--", script_file],
+            # safe.directory=* avoids "dubious ownership" errors when the repo is bind-mounted in a container
+            ["git", "-c", "safe.directory=*", "-C", script_dir, "log", "-1", "--format=%ci", "--", script_file],
             capture_output=True,
             text=True,
             check=False,

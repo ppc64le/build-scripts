@@ -37,7 +37,7 @@ LICENSE_SPDX="BSD-2-Clause"
 SETUPTOOLS_VERSION=">=60,<74"
 
 # =============================================================================
-# CALLBACK: pre_build — validate LLVM dependency and export LLVM_CONFIG
+# CALLBACK: pre_build — validate that LLVM_CONFIG points to the LLVM major version required by this llvmlite release
 # =============================================================================
 pre_build() {
     log_info "Validating LLVM dependency version"
@@ -59,8 +59,8 @@ pre_build() {
         required_llvm_major=14
     fi
 
-    # Locate llvm-config: prefer LLVM_CONFIG if already set, then LLVM_PREFIX/bin,
-    # then versioned binary inside LLVM_PREFIX/bin.
+    # Locate llvm-config: prefer LLVM_CONFIG (exported by the llvm artifact's env.sh),
+    # then LLVM_PREFIX/bin, then a versioned binary inside LLVM_PREFIX/bin.
     # Never fall back to a system llvm-config — it may be the wrong version.
     if [[ -z "${LLVM_CONFIG:-}" ]]; then
         if [[ -n "${LLVM_PREFIX:-}" && -x "${LLVM_PREFIX}/bin/llvm-config" ]]; then
@@ -73,8 +73,8 @@ pre_build() {
                 export LLVM_CONFIG="${versioned}"
             else
                 log_error "llvm-config not found in LLVM_PREFIX=${LLVM_PREFIX}/bin"
-                    log_error "Ensure the llvm artifact for LLVM ${required_llvm_major} was built correctly"
-                    false
+                log_error "Ensure the llvm artifact for LLVM ${required_llvm_major} was built correctly"
+                false
             fi
         else
             log_error "Neither LLVM_CONFIG nor LLVM_PREFIX is set"
@@ -108,15 +108,14 @@ pre_build() {
 }
 
 # =============================================================================
-# CALLBACK: post_build
-# Package llvmlite artifact for downstream consumers (e.g. numba)
+# CALLBACK: post_build — package llvmlite artifact for downstream consumers (e.g. numba)
 # =============================================================================
 post_build() {
     local ARTIFACT_DIR
     ARTIFACT_DIR="$(artifact_dir "${PROVIDES_ARTIFACT}" "${PACKAGE_VERSION}")"
 
     local python_version
-    python_version="$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")"
+    python_version="$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")"
 
     local wheel_file
     wheel_file="$(ls "${OUTPUT_DIR:-/tmp}/artifacts"/llvmlite-*.whl 2>/dev/null | head -1)"
@@ -146,7 +145,7 @@ post_build() {
     cat > "${ARTIFACT_DIR}/env.sh" << 'EOF'
 # llvmlite environment
 export LLVMLITE_PREFIX="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-_llvmlite_python_version="$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")"
+_llvmlite_python_version="$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")"
 export PYTHONPATH="${LLVMLITE_PREFIX}/lib/python${_llvmlite_python_version}/site-packages:${PYTHONPATH:-}"
 unset _llvmlite_python_version
 EOF
@@ -155,7 +154,6 @@ EOF
         "${PROVIDES_ARTIFACT}" "${PACKAGE_VERSION}" \
         "${PACKAGE_URL}" "${LICENSE_SPDX}" \
         "llvm"
-
 }
 
 # =============================================================================
@@ -184,3 +182,4 @@ custom_test_command() {
 # Execute the build
 # =============================================================================
 source "${SCRIPT_DIR}/../../v2-templates/python.sh"
+

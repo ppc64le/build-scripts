@@ -14,6 +14,7 @@ cat variable.sh
 echo "======================="
 
 while IFS='=' read -r key value; do
+  key="${key#export}"
   key="${key// /}"
   [[ -z "$key" || "$key" == \#* ]] && continue
   # UBI_VERSION and PYTHON_VERSION are set at job level — do not overwrite

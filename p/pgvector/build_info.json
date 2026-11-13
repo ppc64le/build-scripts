@@ -1,16 +1,18 @@
 {
-    "maintainer": "bhagyashrigais",
-    "package_name": "pgvector",
-    "github_url": "https://github.com/pgvector/pgvector-python",
-    "version": "v0.4.2",
-    "wheel_build": true,
-    "default_branch": "master",
-    "build_script": "pgvector_ubi_9.6.sh",
-    "package_dir": "p/pgvector",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    "*.*.*": {
-      "build_script": "pgvector_ubi_9.6.sh"
-    }
- }
+  "maintainer": "onkar-kubal",
+  "package_name": "pgvector",
+  "github_url": "https://github.com/pgvector/pgvector",
+  "version": "v0.4.2",
+  "language": "Python",
+  "default_branch": "master",
+  "build_script": "pgvector.sh",
+  "package_dir": "p/pgvector",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v2-enabled": true,
+  "build_deps": ["numpy:v2.2.5", "scipy:v1.17.1"],
+  "*.*.*": {
+    "build_script": "pgvector.sh"
+  }
+}

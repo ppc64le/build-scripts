@@ -61,8 +61,17 @@ echo "OK: IAM token obtained"
 BUCKET_URL="https://s3.us.cloud-object-storage.appdomain.cloud/powercore-builds"
 found_any=false
 
+# For non-Python packages the scan-result tarball is suffixed with the
+# technology name (e.g. ...-ubi9-java.tar.gz) instead of a Python version.
+NON_PYTHON_TECH=""
+if [[ -n "${TECHNOLOGY:-}" && "${TECHNOLOGY}" != "python" ]]; then
+  NON_PYTHON_TECH="${TECHNOLOGY}"
+fi
+
 for UBI_VER in ubi9 ubi10; do
-  if [[ "${UBI_VER}" == "ubi9" ]]; then
+  if [[ -n "${NON_PYTHON_TECH}" ]]; then
+    PY_VERS="${NON_PYTHON_TECH}"
+  elif [[ "${UBI_VER}" == "ubi9" ]]; then
     PY_VERS="3.10 3.11 3.12 3.13 3.14"
   else
     PY_VERS="3.12 3.13 3.14"
@@ -90,8 +99,12 @@ for UBI_VER in ubi9 ubi10; do
 
       echo ""
       echo "  Wheel scan files:"
-      PY_TAG="cp${PY_VER/./}"
-      wheel_files=$(find "${WORKSPACE_DIR}/wheel" -maxdepth 1 -name "*${PY_TAG}*" 2>/dev/null | sort)
+      if [[ -n "${NON_PYTHON_TECH}" ]]; then
+        wheel_files=$(find "${WORKSPACE_DIR}/wheel" -maxdepth 1 -type f 2>/dev/null | sort)
+      else
+        PY_TAG="cp${PY_VER/./}"
+        wheel_files=$(find "${WORKSPACE_DIR}/wheel" -maxdepth 1 -name "*${PY_TAG}*" 2>/dev/null | sort)
+      fi
       if [ -n "${wheel_files}" ]; then
         while IFS= read -r f; do
           SIZE=$(du -sh "$f" | cut -f1)

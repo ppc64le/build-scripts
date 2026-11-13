@@ -107,6 +107,10 @@ custom_test_command() {
     #
     # Source Code Linting Tests (2 tests) - Development-time checks only:
     #   test_flake8 and test_mypy require config files not available at runtime.
+    # Fork Regression Test (1 test) - Python 3.14+ multiprocessing default:
+    #   test_issue39_regression assumes the 'fork' start method; Python 3.14
+    #   defaults to 'forkserver' on Linux (only 'spawn' is skipped by the test),
+    #   so the child never reports back and the test hits its alarm timeout.
     #
 
     local py313_deselects=()
@@ -114,6 +118,13 @@ custom_test_command() {
         py313_deselects=(
             --deselect=tests/test_process.py::TestAsyncio_AIO_Process::test_cancel_post_init
             --deselect=tests/test_tcp.py::Test_AIO_TCP::test_create_connection_open_con_addr
+        )
+    fi
+
+    local py314_deselects=()
+    if [[ "$py_minor" -ge 14 ]]; then
+        py314_deselects=(
+            --deselect=tests/test_regr1.py::TestIssue39Regr::test_issue39_regression
         )
     fi
 
@@ -137,6 +148,7 @@ custom_test_command() {
         --deselect=tests/test_process.py::Test_UV_Process::test_process_streams_redirect \
         --deselect=tests/test_process.py::Test_AIO_Process::test_process_streams_redirect \
         "${py313_deselects[@]}" \
+        "${py314_deselects[@]}" \
         --deselect=tests/test_sourcecode.py::TestSourceCode::test_flake8 \
         --deselect=tests/test_sourcecode.py::TestSourceCode::test_mypy \
         -v || test_status=$?

@@ -16,6 +16,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # =============================================================================
 PACKAGE_NAME="pyarrow"
 PACKAGE_VERSION="${1:-apache-arrow-19.0.1}"
+# Accept a bare version (21.0.0) as well as the git tag (apache-arrow-21.0.0)
+[[ "${PACKAGE_VERSION}" == apache-arrow-* ]] || PACKAGE_VERSION="apache-arrow-${PACKAGE_VERSION#v}"
 PACKAGE_URL="https://github.com/apache/arrow"
 
 # Clone into 'arrow' directory
@@ -38,8 +40,11 @@ SLES_DEP_PKGS=""
 #   provided ARROW_HOME and set build-time env vars for PyArrow feature flags
 # =============================================================================
 pre_clone() {
-    # BUILD_DEPS already sourced the arrow artifact; fail loudly if it was missing
-    : "${ARROW_HOME:?Arrow C++ artifact not found - build a/arrow/arrow.sh ${PACKAGE_VERSION} first}"
+    # BUILD_DEPS already sourced the arrow artifact; its env.sh exports ARROW_PREFIX
+    # (not ARROW_HOME).  Fail loudly if it was missing, then expose it as ARROW_HOME,
+    # which pyarrow's CMake build expects.
+    : "${ARROW_PREFIX:?Arrow C++ artifact not found - build a/arrow/arrow.sh ${PACKAGE_VERSION} first}"
+    export ARROW_HOME="${ARROW_PREFIX}"
     log_info "Arrow C++ artifact found at ${ARROW_HOME}"
 
     # Extract version number from tag (apache-arrow-19.0.0 -> 19.0.0)
@@ -129,7 +134,10 @@ if new_content != content:
 #     Affected: 15.x, 18.x, 19.x, 20.x, 21.x, 22.x, 23.0.0
 #     Fixed in: 23.0.1 (assignment moved before the nogil block)
 #     See: apache/arrow#49138
-#   Python < 3.13, pyarrow ≥ 23.0.1 → Cython ≥ 3.1, numpy 1.26.4
+#   Python < 3.13, pyarrow ≥ 23.0.1 → Cython ≥ 3.1
+#   Python < 3.13, pyarrow ≥ 20     → numpy ≥ 2.0 (built against numpy 2 so the
+#                                     wheel imports under pandas 3's numpy 2)
+#   Python < 3.13, pyarrow < 20     → numpy 1.26.4
 # =============================================================================
 _install_cython_deps() {
     # Integer python version: 3.13 → 313, 3.11 → 311
@@ -151,8 +159,18 @@ _install_cython_deps() {
         if [[ ${_pkg_ver[0]} -lt 23 ]] || [[ ${_pkg_ver[0]} -eq 23 && ${_pkg_ver[1]} -eq 0 && ${_pkg_ver[2]} -lt 1 ]]; then
             _cython_spec="cython<3.1"
         fi
-        log_info "Python < 3.13 — ${_cython_spec}, numpy 1.26.4"
-        python -m pip install "${_cython_spec}" "numpy==1.26.4" setuptools-scm ninja
+        # Tags >= 20 leave pandas unpinned (see pre_test), so the test venv gets
+        # pandas 3, which requires numpy >= 2.0.2 and upgrades numpy there.  A wheel
+        # compiled against numpy 1.x then fails to import ("A module that was
+        # compiled using NumPy 1.x cannot be run in NumPy 2").  A wheel compiled
+        # against numpy 2 works with both 1.x and 2.x at runtime.  Tags < 20 keep
+        # numpy 1.26.4: they pin pandas<2.3 and 15.x is not numpy-2 compatible.
+        local _numpy_spec="numpy==1.26.4"
+        if [[ ${_pkg_ver[0]} -ge 20 ]]; then
+            _numpy_spec="numpy>=2.0"
+        fi
+        log_info "Python < 3.13 — ${_cython_spec}, ${_numpy_spec}"
+        python -m pip install "${_cython_spec}" "${_numpy_spec}" setuptools-scm ninja
     fi
 }
 
@@ -167,7 +185,7 @@ _install_cython_deps() {
 # =============================================================================
 _source_transitive_artifacts() {
     local _dep
-    for _dep in grpc_cpp orc boost thrift utf8proc snappy zstd re2 \
+    for _dep in grpc_cpp boost thrift utf8proc snappy zstd re2 \
                 gflags c-ares abseil-cpp; do
         source_artifact "${_dep}" || log_warn "${_dep} artifact not found"
     done
@@ -195,6 +213,7 @@ _source_transitive_artifacts() {
 
     # Arrow last — keeps ARROW_HOME / CMAKE_PREFIX_PATH authoritative
     source_artifact arrow "${PACKAGE_VERSION}" || log_warn "arrow artifact not found"
+    export ARROW_HOME="${ARROW_PREFIX:-${ARROW_HOME:-}}"
     log_info "LD_LIBRARY_PATH: ${LD_LIBRARY_PATH:-not set}"
 }
 
@@ -231,9 +250,15 @@ pre_build() {
     # satisfied by them (otherwise pip would fetch and build the latest numpy).
     _install_cython_deps
 
+    # Arrow >= 24 builds with scikit-build-core (build-backend "_build_backend")
+    # and needs libcst, which has no ppc64le wheel and is built from sdist.
+    # SETUPTOOLS_SCM_PRETEND_VERSION (exported in pre_clone for pyarrow itself)
+    # would leak into that sdist build and stamp libcst with the pyarrow version,
+    # so pip rejects it: "inconsistent version: expected '1.9.0', but metadata
+    # has '24.0.0'".  Run the requirements install without it.
     if [[ -f "requirements-build.txt" ]]; then
         log_info "Installing build requirements from requirements-build.txt"
-        python -m pip install -r requirements-build.txt
+        env -u SETUPTOOLS_SCM_PRETEND_VERSION python -m pip install -r requirements-build.txt
     fi
 
     # Re-source all transitive C++ artifacts so auditwheel repair can locate
@@ -350,10 +375,14 @@ print(int(int(pandas.__version__.split('.')[0]) >= 3 and not hasattr(pc._pandas_
     local _pandas_major
     _pandas_major=$(cd /tmp && python -c "import pandas; print(pandas.__version__.split('.')[0])" 2>/dev/null || echo 0)
     if [[ "${_pandas_major}" -ge 3 ]]; then
-        log_warn "pandas ≥ 3: skipping 2 tz datetime64 resolution tests"
+        log_warn "pandas ≥ 3: skipping tz datetime64 resolution / index freq tests"
+        # test_table_column_subset_metadata (<= 24.0.0) clears df.index.freq AFTER
+        # building `expected = df[['a']]`; pandas 3 gives `expected` its own index
+        # copy, so it keeps freq=<Day> and assert_frame_equal fails on "freq".
+        # Test bug, fixed upstream on main (clears expected.index.freq instead).
         # -k with spaces word-splits when unquoted; PYTEST_ADDOPTS is parsed by
         # pytest itself as a single shell-quoted string so quoting is preserved.
-        export PYTEST_ADDOPTS="-k 'not test_column_index_names_with_tz and not test_mismatch_metadata_schema'"
+        export PYTEST_ADDOPTS="-k 'not test_column_index_names_with_tz and not test_mismatch_metadata_schema and not test_table_column_subset_metadata'"
     fi
 
     # Test data (flight TLS certs, parquet fixtures) comes from the arrow repo

@@ -3,6 +3,9 @@
   "package_name": "arrow",
   "github_url": "https://github.com/apache/arrow",
   "version": "apache-arrow-19.0.1",
+  "wheel_build": false,
+  "package_dir": "a/arrow",
+  "default_branch": "main",
   "provides_artifact": "arrow",
   "build_script": "arrow.sh",
   "language": "C++",
@@ -14,7 +17,6 @@
   "resource_class": "heavy",
   "build_deps": [
     "grpc_cpp:v1.68.0",
-    "orc:v2.0.3",
     "boost",
     "thrift-cpp",
     "utf8proc",
@@ -28,6 +30,42 @@
     "libprotobuf:v28.2",
     "abseil-cpp:20240722.0"
   ],
+  "apache-arrow-24.*": {
+    "build_deps": [
+      "grpc_cpp:v1.68.0",
+      "boost",
+      "thrift-cpp",
+      "utf8proc",
+      "snappy",
+      "zstd",
+      "re2:2024-07-02",
+      "xsimd:14.0.0",
+      "rapidjson",
+      "gflags",
+      "c-ares:v1.33.1",
+      "libprotobuf:v28.2",
+      "abseil-cpp:20240722.0"
+    ],
+    "build_script": "arrow.sh"
+  },
+  "apache-arrow-18.0.0 | apache-arrow-18.1.0": {
+    "build_deps": [
+      "grpc_cpp:v1.62.3",
+      "boost",
+      "thrift-cpp",
+      "utf8proc",
+      "snappy",
+      "zstd",
+      "re2:2023-09-01",
+      "xsimd",
+      "rapidjson",
+      "gflags",
+      "c-ares:cares-1_27_0",
+      "libprotobuf:v25.3",
+      "abseil-cpp:20240116.1"
+    ],
+    "build_script": "arrow.sh"
+  },
   "*": {
     "build_script": "arrow.sh"
   }

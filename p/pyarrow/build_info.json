@@ -75,8 +75,13 @@
     ],
     "build_script": "pyarrow.sh"
   },
+  "apache-arrow-24.0.0": {
+    "build_deps": [
+      "arrow:apache-arrow-24.0.0"
+    ],
+    "build_script": "pyarrow.sh"
+  },
   "*": {
     "build_script": "pyarrow.sh"
   }
 }
-

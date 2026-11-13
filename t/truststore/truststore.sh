@@ -45,14 +45,28 @@ pre_test() {
 # Cloudflare's 1.1.1.1 DNS service over HTTPS. The failures are environment-
 # specific and may be caused by network restrictions, firewall rules, or
 # certificate validation issues that are not reproducible across all platforms
+#
+# test_failures_without_revocation_checks[untrusted-root.badssl.com] opens a raw
+# socket to untrusted-root.badssl.com:443 and fails with a connect TimeoutError
+# in the build environment (host not reachable); it is a network failure, not a
+# truststore bug.
+#
+# asyncio_default_fixture_loop_scope is set explicitly because the project's
+# pytest config uses filterwarnings=error, which turns pytest-asyncio's
+# "option is unset" PytestDeprecationWarning into an INTERNALERROR during
+# pytest_configure. --disable-warnings does not prevent this.
 # =============================================================================
 custom_test_command() {
   # Deselect tests that fail with SSL handshake errors to 1.1.1.1
   # Reason: Environment-specific SSL/TLS handshake failures with Cloudflare DNS
+  log_info "Running truststore test suite"
   python -m pytest \
     --deselect=tests/test_api.py::test_sslcontext_api_success_async[1.1.1.1] \
     --deselect=tests/test_inject.py::test_success_with_inject[1.1.1.1] \
-    --import-mode=importlib -o "addopts=" --disable-warnings
+    --deselect="tests/test_api.py::test_failures_without_revocation_checks[untrusted-root.badssl.com]" \
+    --import-mode=importlib -o "addopts=" \
+    -o asyncio_default_fixture_loop_scope=function \
+    --disable-warnings
 }
 
 # =============================================================================

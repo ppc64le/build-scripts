@@ -11,6 +11,11 @@
   "language": "C++",
   "validate_build_script": true,
   "use_non_root_user": false,
+  "auditwheel_exclude": [
+    "libbenchmark*",
+    "libgmock*",
+    "libgtest*"
+  ],
   "v2-enabled": true,
   "provides_artifact": "snappy",
   "*": {

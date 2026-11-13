@@ -13,6 +13,9 @@
   "validate_build_script": true,
   "v2-enabled": true,
   "use_non_root_user": false,
+  "auditwheel_exclude": [
+    "liborc*"
+  ],
   "provides_artifact": "orc",
   "*": {
     "build_script": "orc.sh"
