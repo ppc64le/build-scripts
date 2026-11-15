@@ -1,0 +1,16 @@
+{
+  "maintainer": "Pratik Tonage",
+  "package_name": "connectorx",
+  "github_url": "https://github.com/sfu-db/connector-x.git",
+  "version": "v0.4.6",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "package_dir": "c/connectorx",
+  "build_script": "connectorx_v0.4.6_ubi9.8.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "*": {
+    "build_script": "connectorx_v0.4.6_ubi9.8.sh"
+  }
+}
