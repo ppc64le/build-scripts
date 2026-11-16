@@ -40,7 +40,8 @@ yum install -y --allowerasing git wget make cmake ninja-build \
     gcc-toolset-13-gcc-gfortran gcc-toolset-13-libatomic-devel \
     python3.12 python3.12-devel python3.12-pip openssl-devel \
     libffi-devel zlib-devel bzip2-devel xz-devel lz4-devel \
-    libevent libtool patch tzdata binutils which tar graphviz
+    libevent libtool patch tzdata binutils which tar graphviz \
+    libjpeg-turbo-devel freetype-devel
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:${LD_LIBRARY_PATH:-}
@@ -68,15 +69,15 @@ python3.12 -m pip install --upgrade pip setuptools wheel build
 python3.12 -m pip install \
     "meson-python>=0.17.0" "Cython>=3.0.6" meson ninja patchelf \
     packaging pathspec pluggy trove-classifiers scikit-build-core \
-    pytest hypothesis pandas graphviz Pillow matplotlib \
-    joblib threadpoolctl "numpy==2.0.2"
+    pytest hypothesis graphviz joblib threadpoolctl
 
-# scipy / scikit-learn from the IBM devpi wheel index (ppc64le prebuilt wheels)
+# Compiled packages from the IBM devpi wheel index (ppc64le prebuilt wheels)
+# so numpy/pandas/Pillow/matplotlib/scipy/scikit-learn are not built from source.
 python3.12 -m pip install \
     --trusted-host "${IBM_WHEELS_HOST}" \
     --extra-index-url "${IBM_WHEELS}" \
     --prefer-binary \
-    "numpy==2.0.2" "scipy==1.15.2" scikit-learn
+    "numpy==2.0.2" "scipy==1.15.2" pandas Pillow matplotlib scikit-learn
 
 # ===========================================================================
 # Clone xgboost and build C++ / Python wheel from source
