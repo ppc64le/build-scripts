@@ -1,5 +1,5 @@
 {
-    "maintainer": "vrushanaik",
+  "maintainer": "vrushanaik",
   "package_name": "xgboost",
   "github_url": "https://github.com/dmlc/xgboost",
   "version": "v3.4.2",
@@ -22,13 +22,13 @@
    },
   "v3.4.2": {
     "build_script": [
-      "xgboost_3.0.1_ubi_9.3.sh",
+      "xgboost_3.4.2_ubi_9.3.sh",
       "xgboost_3.4.2_ubi_10.2.sh"
     ]
    },
   "*": {
     "build_script": [
-      "xgboost_3.0.1_ubi_9.3.sh",
+      "xgboost_3.4.2_ubi_9.3.sh",
       "xgboost_3.4.2_ubi_10.2.sh"
     ]
    }
