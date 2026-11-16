@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : xgboost
-# Version          : v3.4.0
+# Version          : v3.4.2
 # Source repo      : https://github.com/dmlc/xgboost
 # Tested on        : UBI:10.2
 # Language         : Python
