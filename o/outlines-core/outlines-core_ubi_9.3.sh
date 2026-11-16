@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : outlines-core
-# Version          : 0.1.26
+# Version          : 0.2.14
 # Source repo      : https://github.com/dottxt-ai/outlines-core
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -117,11 +117,14 @@ export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
-git apply set_cpp_to_17_v4.25.3.patch
-cd python
-python3.12 -m pip install . --no-build-isolation
-cd ../..
+# NOTE: Skip protobuf Python package installation as it creates namespace package
+# conflicts that corrupt the Python environment. The C++ libraries are sufficient
+# for PyTorch build.
+# wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
+# git apply set_cpp_to_17_v4.25.3.patch
+# cd python
+# python3.12 -m pip install . --no-build-isolation
+# cd ../..
 
 # --------------------- Install Rust ---------------------
 curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -130,11 +133,14 @@ source "$HOME/.cargo/env"
 # --------------------- Build PyTorch ---------------------
 git clone https://github.com/pytorch/pytorch.git
 cd pytorch
-git checkout v2.6.0
+PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+git checkout v2.9.1
+export PYTORCH_BUILD_VERSION=2.9.1
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch
+git apply pytorch_v2.9.1.patch
 git submodule sync
 git submodule update --init --recursive
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.6.0.patch
-git apply pytorch_v2.6.0.patch
+
 
 # Set environment variables
 ARCH=`uname -p`
@@ -164,7 +170,7 @@ export USE_OPENMP=1
 export USE_TBB=0
 export BUILD_CUSTOM_PROTOBUF=OFF
 export BUILD_CAFFE2=1
-export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION}
+#export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION}
 export PYTORCH_BUILD_NUMBER=${BUILD_NUM}
 export USE_CUDA=0
 export USE_CUDNN=0
@@ -183,6 +189,8 @@ export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${L
 
 # Fix CMake version requirement
 sed -i "s/cmake/cmake==3.31.6/g" requirements.txt
+# PyTorch >= 2.9 pulls cmake via requirements-build.txt (cmake>=3.27) -> pip installs CMake 4.x, which breaks older projects (c-ares, ...)
+sed -i "s/cmake>=3.27/cmake==3.31.6/g" requirements-build.txt
 python3.12 -m pip install -r requirements.txt
 
 MAX_JOBS=$(nproc) python3.12 setup.py install
@@ -707,7 +715,14 @@ cd $PACKAGE_NAME
 export LD_LIBRARY_PATH="${RE2_PREFIX}/lib:$LD_LIBRARY_PATH"
 
 python3.12 -m pip install setuptools pytest pydantic pytest-cov pandas
-python3.12 -m pip install sentencepiece --no-build-isolation
+# Patch sentencepiece pyproject.toml to fix license field (PEP 621 compliance)
+python3.12 -m pip download sentencepiece --no-deps --no-binary sentencepiece -d /tmp/sentencepiece_patch
+cd /tmp/sentencepiece_patch
+tar -xzf sentencepiece-*.tar.gz
+cd $(ls -d sentencepiece-* | head -1)
+sed -i 's/license = "Apache-2.0"/license = {text = "Apache-2.0"}/' pyproject.toml
+python3.12 -m pip install . --no-build-isolation
+cd $CURRENT_DIR/$PACKAGE_NAME
 python3.12 -m pip install datasets==2.14.7 --no-build-isolation --no-deps
 python3.12 -m pip install "multiprocess==0.70.15"
 python3.12 -m pip install "xxhash==3.4.1"
