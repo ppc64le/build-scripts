@@ -25,7 +25,7 @@
          "xgboost_3.0.1_ubi_9.3.sh",
          "xgboost_3.4.0_ubi_10.2.sh"
         ]
-    }
+    },
   "*": {
     "build_script": [
          "xgboost_3.0.1_ubi_9.3.sh",
