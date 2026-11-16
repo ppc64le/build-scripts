@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : triton
-# Version       : 3.9.0
+# Version       : 3.6.0
 # Source repo   : https://github.com/triton-lang/triton
 # Tested on     : UBI:10.2
 # Language      : Python, C++
