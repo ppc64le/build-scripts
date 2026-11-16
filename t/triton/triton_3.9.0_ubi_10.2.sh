@@ -138,10 +138,38 @@ export LLVM_SYSPATH="$LLVM_INSTALL_DIR"
 
 echo "LLVM installed at: $LLVM_SYSPATH"
 
+# Install nlohmann/json dependency
+JSON_VERSION=$(cat "$CURRENT_DIR/$PACKAGE_DIR/cmake/json-version.txt")
+
+JSON_INSTALL_DIR="$CURRENT_DIR/json"
+JSON_URL="https://github.com/nlohmann/json/releases/download/${JSON_VERSION}/include.zip"
+
+echo "Installing nlohmann/json version: $JSON_VERSION"
+
+yum install -y curl unzip
+
+mkdir -p "$JSON_INSTALL_DIR"
+
+curl -fL "$JSON_URL" -o "$CURRENT_DIR/json-include.zip"
+
+unzip -q -o "$CURRENT_DIR/json-include.zip" -d "$JSON_INSTALL_DIR"
+
+# Configure JSON path for Triton
+export JSON_SYSPATH="$JSON_INSTALL_DIR"
+
+# Verify installation
+if [[ ! -f "$JSON_SYSPATH/include/nlohmann/json.hpp" ]]; then
+    echo "ERROR: nlohmann/json headers not found"
+    exit 1
+fi
+
+echo "JSON installed to $JSON_SYSPATH"
+
 # Configure Triton build
 cd "$CURRENT_DIR/$PACKAGE_DIR"
 
 export LLVM_SYSPATH
+export JSON_SYSPATH
 export TRITON_BUILD_WITH_CLANG_LLD=0
 export TRITON_OFFLINE_BUILD=1
 export TRITON_BUILD_PROTON=0
