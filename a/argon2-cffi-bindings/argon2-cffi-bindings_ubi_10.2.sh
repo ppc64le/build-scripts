@@ -62,7 +62,9 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
-python3.14 -m pip install tox wheel build argon2-cffi setuptools setuptools-scm
+# 26.1.0 builds with scikit-build-core + CMake (pulled in via build isolation);
+# setuptools/setuptools-scm are no longer needed, setuptools-scm is still used for the version.
+python3.14 -m pip install tox wheel build argon2-cffi scikit-build-core setuptools-scm
 
 if ! python3.14 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
@@ -72,7 +74,7 @@ if ! python3.14 -m pip install . ; then
 fi
 
 # Run test cases
-if ! tox -e py3 ; then
+if ! tox -e py314 ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

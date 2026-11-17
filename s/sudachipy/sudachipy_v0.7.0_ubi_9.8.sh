@@ -22,7 +22,7 @@ set -ex
 
 # Variables
 PACKAGE_NAME=SudachiPy
-PACKAGE_VERSION=${1:-v0.7.0}
+PACKAGE_VERSION=${1:-v0.6.11}
 PACKAGE_URL=https://github.com/WorksApplications/sudachi.rs
 PACKAGE_DIR=sudachi.rs
 WORKDIR=$(pwd)
@@ -41,8 +41,10 @@ rustc --version
 cargo --version
 
 python3.12 -m pip install --upgrade pip setuptools wheel
-# Must satisfy pyproject.toml: maturin>=1.9.4,<2
+# Must satisfy pyproject.toml: maturin>=1.9.4,<2 (v0.7.x)
 python3.12 -m pip install "maturin>=1.9.4,<2"
+# v0.6.x builds with setuptools-rust (python/setup.py)
+python3.12 -m pip install setuptools-rust
 
 # Clone the repo
 cd "$WORKDIR"
@@ -50,8 +52,14 @@ git clone "$PACKAGE_URL" "$PACKAGE_DIR"
 cd "$PACKAGE_DIR"
 git checkout "$PACKAGE_VERSION"
 
-# Build the wheel (pyproject.toml is at the repo root; the crate lives in python/)
-if ! python3.12 -m pip wheel --no-cache-dir --no-deps . -w "$WORKDIR/dist"; then
+# Build the wheel.
+# v0.7.x: pyproject.toml (maturin) is at the repo root.
+# v0.6.x: no root pyproject.toml; setup.py/pyproject.toml (setuptools-rust) are in python/.
+BUILD_DIR=.
+if [ ! -f pyproject.toml ] && [ ! -f setup.py ]; then
+    BUILD_DIR=python
+fi
+if ! python3.12 -m pip wheel --no-cache-dir --no-deps "$BUILD_DIR" -w "$WORKDIR/dist"; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"

@@ -1,0 +1,21 @@
+diff --git a/litellm/proxy/pass_through_endpoints/pass_through_endpoints.py b/litellm/proxy/pass_through_endpoints/pass_through_endpoints.py
+index be669502..e63c75d0 100644
+--- a/litellm/proxy/pass_through_endpoints/pass_through_endpoints.py
++++ b/litellm/proxy/pass_through_endpoints/pass_through_endpoints.py
+@@ -1590,6 +1590,16 @@ async def pass_through_request(
+                     request.method,
+                 )
+ 
++        response_body = await proxy_logging_obj.post_call_success_hook(
++            data=kwargs,
++            user_api_key_dict=user_api_key_dict,
++            response=response_body,  # type: ignore[arg-type]
++        )
++        post_hook_content = json.dumps(response_body).encode("utf-8")
++        if content != post_hook_content:
++            content = post_hook_content
++            _content_modified = True
++
+         ## LOG SUCCESS
+         # Upstream errors are already logged via _log_passthrough_upstream_failure
+         # above; the success handler has no status-code awareness of its own; so
