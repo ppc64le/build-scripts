@@ -83,49 +83,22 @@ python3.12 -m pip install --no-build-isolation .
 echo "-------------------Successfully installed llvmlite----------------------"
 
 # -----------------------------------------------------------------------------
-# Build and install OpenBLAS from source (POWER9-optimised)
+# Install OpenBLAS from the IBM DeveloperFirst (devpi) index
 # -----------------------------------------------------------------------------
-echo "---------------------------------Installing OpenBLAS from source----------------"
-cd $CURRENT_DIR
-git clone https://github.com/OpenMathLib/OpenBLAS
-cd OpenBLAS
-git checkout v0.3.33
-git submodule update --init
+echo "---------------------------------Installing OpenBLAS from devpi----------------"
+IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
+python3.12 -m pip install --prefer-binary --extra-index-url ${IBM_WHEELS} openblas==0.3.33
 
-LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
-export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
-unset CFLAGS
-export USE_OPENMP=1
-export PREFIX=/usr/local
-
-declare -a build_opts
-build_opts+=(USE_OPENMP=${USE_OPENMP})
-
-if [ -n "$FFLAGS" ]; then
-    export FFLAGS="${FFLAGS/-fopenmp/ }"
-    export FFLAGS="${FFLAGS} -frecursive"
-    export LAPACK_FFLAGS="${FFLAGS}"
-fi
-
-build_opts+=(BINARY=64 DYNAMIC_ARCH=1 TARGET="POWER9" BUILD_BFLOAT16=1)
-build_opts+=(INTERFACE64=0 SYMBOLSUFFIX="" NO_LAPACK=0)
-build_opts+=(USE_THREAD=1 NUM_THREADS=120 NO_AFFINITY=1)
-
-make -j"$(nproc)" "${build_opts[@]}" CFLAGS="${CF}" FFLAGS="${FFLAGS}"
-CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" "${build_opts[@]}"
-
-export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/lib64:/usr/local/lib"
-ldconfig
+SITE_PACKAGES=$(python3.12 -c "import sysconfig; print(sysconfig.get_paths()['purelib'])")
+export OpenBLAS_HOME=${SITE_PACKAGES}/openblas
+export OpenBLAS_DIR=${OpenBLAS_HOME}
+export LD_LIBRARY_PATH=${OpenBLAS_HOME}/lib:${LD_LIBRARY_PATH}
+export PKG_CONFIG_PATH=${OpenBLAS_HOME}/lib/pkgconfig:${PKG_CONFIG_PATH}
 cd $CURRENT_DIR
 echo "--------------------OpenBLAS installed-------------------------------"
 
-# Install Python dependencies (numba 0.68.1 supports numpy < 2.6; numpy 2.5 needs Python >= 3.12)
-if python3.12 -c "import sys; sys.exit(0 if sys.version_info >= (3, 12) else 1)"; then
-    NUMPY_SPEC="numpy==2.5.0"
-else
-    NUMPY_SPEC="numpy<2.5"
-fi
-python3.12 -m pip install "${NUMPY_SPEC}" setuptools
+# Install Python dependencies (numba 0.68.1 supports numpy < 2.6)
+python3.12 -m pip install numpy==2.5.0 setuptools
 
 # Clone and checkout numba
 cd $CURRENT_DIR
