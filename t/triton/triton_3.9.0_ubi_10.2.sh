@@ -30,6 +30,36 @@ CURRENT_DIR=$(pwd)
 LLVM_BUILD_DIR="${CURRENT_DIR}/llvm-project"
 LLVM_INSTALL_DIR="${CURRENT_DIR}/llvm-install"
 
+# Separate LLVM build required for AMD code generation
+AMD_LLVM_BUILD_DIR="${CURRENT_DIR}/amd-llvm-project"
+AMD_LLVM_INSTALL_DIR="${CURRENT_DIR}/amd-llvm-install"
+
+AMD_CODEGEN_BUILD_DIR="${CURRENT_DIR}/amd-codegen-build"
+AMD_CODEGEN_INSTALL_DIR="${CURRENT_DIR}/amd-codegen-install"
+
+AMD_LLVM_INFO_FILE="$CURRENT_DIR/$PACKAGE_DIR/cmake/amd-llvm-info.json"
+
+if [[ ! -f "$AMD_LLVM_INFO_FILE" ]]; then
+    echo "ERROR: AMD LLVM metadata file not found"
+    exit 1
+fi
+
+AMD_LLVM_COMMIT=$(python3.12 -c \
+    "import json; print(json.load(open('$AMD_LLVM_INFO_FILE'))['llvm_hash'])")
+
+AMD_LLVM_BUILD_NUMBER=$(python3.12 -c \
+    "import json; print(json.load(open('$AMD_LLVM_INFO_FILE'))['build_number'])")
+
+if [[ ! "$AMD_LLVM_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "ERROR: Invalid AMD LLVM commit: $AMD_LLVM_COMMIT"
+    exit 1
+fi
+
+AMD_LLVM_REVISION="${AMD_LLVM_COMMIT}-${AMD_LLVM_BUILD_NUMBER}"
+
+echo "AMD LLVM commit: $AMD_LLVM_COMMIT"
+echo "AMD LLVM revision: $AMD_LLVM_REVISION"
+
 # Install system dependencies
 yum install -y \
     python3.12 python3.12-devel python3.12-pip \
@@ -165,11 +195,103 @@ fi
 
 echo "JSON installed to $JSON_SYSPATH"
 
+# ------------------------------------------------------------
+# Build separate AMD LLVM required by Triton 3.9.0
+# ------------------------------------------------------------
+
+echo "Building AMD-specific LLVM: $AMD_LLVM_COMMIT"
+
+cd "$CURRENT_DIR"
+
+git clone https://github.com/triton-lang/llvm-project.git \
+    "$AMD_LLVM_BUILD_DIR"
+
+cd "$AMD_LLVM_BUILD_DIR"
+
+git fetch origin "$AMD_LLVM_COMMIT"
+git checkout "$AMD_LLVM_COMMIT"
+
+mkdir -p build
+cd build
+
+cmake ../llvm \
+    -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX="$AMD_LLVM_INSTALL_DIR" \
+    -DLLVM_TARGETS_TO_BUILD="AMDGPU" \
+    -DLLVM_ENABLE_PROJECTS="" \
+    -DLLVM_BUILD_LLVM_DYLIB=OFF \
+    -DLLVM_LINK_LLVM_DYLIB=OFF \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DLLVM_ENABLE_PIC=ON \
+    -DLLVM_ENABLE_RTTI=OFF \
+    -DLLVM_ENABLE_EH=OFF \
+    -DLLVM_ENABLE_ASSERTIONS=OFF \
+    -DLLVM_INCLUDE_TESTS=OFF \
+    -DLLVM_INCLUDE_EXAMPLES=OFF \
+    -DLLVM_INCLUDE_BENCHMARKS=OFF \
+    -DLLVM_PARALLEL_LINK_JOBS=2 \
+    -DCMAKE_C_COMPILER=gcc \
+    -DCMAKE_CXX_COMPILER=g++
+
+ninja -j"$MAX_JOBS" install
+
+# Verify AMD LLVM installation
+AMD_LLVM_CONFIG="$AMD_LLVM_INSTALL_DIR/lib/cmake/llvm/LLVMConfig.cmake"
+
+if [[ ! -f "$AMD_LLVM_CONFIG" ]]; then
+    echo "ERROR: AMD LLVMConfig.cmake not found"
+    exit 1
+fi
+
+echo "AMD LLVM installed at: $AMD_LLVM_INSTALL_DIR"
+
+
+# ------------------------------------------------------------
+# Build Triton AMD code-generation shared library
+# ------------------------------------------------------------
+
+echo "Building Triton AMD code-generation library"
+
+cd "$CURRENT_DIR/$PACKAGE_DIR"
+
+cmake \
+    -G Ninja \
+    -S third_party/amd/backend/codegen \
+    -B "$AMD_CODEGEN_BUILD_DIR" \
+    -DLLVM_DIR="$AMD_LLVM_INSTALL_DIR/lib/cmake/llvm" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX="$AMD_CODEGEN_INSTALL_DIR" \
+    -DTRITON_AMD_LLVM_REVISION="$AMD_LLVM_REVISION"
+    
+cmake --build "$AMD_CODEGEN_BUILD_DIR" \
+    --target triton_amd_codegen \
+    --parallel "$MAX_JOBS"
+
+cmake --install "$AMD_CODEGEN_BUILD_DIR"
+
+# Configure AMD code-generation library path
+export TRITON_AMD_CODEGEN_PATH="$AMD_CODEGEN_INSTALL_DIR/lib/libtriton_amd_codegen.so"
+
+# Verify library
+echo "Checking AMD codegen library dependencies"
+
+ldd "$TRITON_AMD_CODEGEN_PATH"
+
+if ldd "$TRITON_AMD_CODEGEN_PATH" | grep -q "not found"; then
+    echo "ERROR: Missing shared-library dependencies for AMD codegen"
+    exit 1
+fi
+
+echo "AMD code-generation library: $TRITON_AMD_CODEGEN_PATH"
+
 # Configure Triton build
 cd "$CURRENT_DIR/$PACKAGE_DIR"
 
-export LLVM_SYSPATH
-export JSON_SYSPATH
+export LLVM_SYSPATH="$LLVM_INSTALL_DIR"
+export JSON_SYSPATH="$JSON_INSTALL_DIR"
+export TRITON_AMD_CODEGEN_PATH
+
 export TRITON_BUILD_WITH_CLANG_LLD=0
 export TRITON_OFFLINE_BUILD=1
 export TRITON_BUILD_PROTON=0
