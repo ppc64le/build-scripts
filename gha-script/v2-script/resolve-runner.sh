@@ -5,14 +5,11 @@
 # Usage:
 #   resolve-runner.sh <package_json> [large_runner_label]
 #
-# Rules (runner can only be moved up, never down):
+# Rules (a requested runner is never lowered; there is no 4xlarge runner):
 #   requested runner        resource_class         -> runner
-#   default (or p10)        absent / light         -> default
-#   default (or p10)        medium                 -> 2xlarge
-#   default (or p10)        heavy                  -> 4xlarge
-#   2xlarge                 heavy                  -> 4xlarge
-#   2xlarge                 absent/light/medium    -> 2xlarge
-#   4xlarge                 any                    -> 4xlarge
+#   default                 absent / light         -> default
+#   default                 medium / heavy         -> 2xlarge
+#   anything else           any                    -> as requested
 #
 # Output: runner_label=<label> appended to $GITHUB_OUTPUT (or printed if unset)
 set -euo pipefail
@@ -22,7 +19,6 @@ REQUESTED="${2:-}"
 
 DEFAULT_RUNNER="ubuntu-24.04-ppc64le-p10"
 XL2_RUNNER="ubuntu-24.04-ppc64le-2xlarge-p10"
-XL4_RUNNER="ubuntu-24.04-ppc64le-4xlarge-p10"
 
 PKG_NAME=$(echo "$PKG_JSON" | jq -r '.package_name // empty')
 PKG_NAME_LOWER=$(echo "$PKG_NAME" | tr '[:upper:]' '[:lower:]')
@@ -41,19 +37,13 @@ if [ -f "${PKG_DIR}/build_info.json" ]; then
   RESOURCE_CLASS=$(echo "$RESOURCE_CLASS" | tr '[:upper:]' '[:lower:]' | xargs)
 fi
 
-# Normalise the requested runner: empty and the plain p10 runner both mean "default"
-case "$REQUESTED" in
-  ""|"$DEFAULT_RUNNER")               LEVEL=default ;;
-  "$XL2_RUNNER")                      LEVEL=2xl ;;
-  "$XL4_RUNNER")                      LEVEL=4xl ;;
-  *)                                  LEVEL=other ;;
-esac
-
+# Only a default trigger (empty, or the default runner itself) is upgraded
 RUNNER="${REQUESTED:-$DEFAULT_RUNNER}"
-case "$LEVEL:$RESOURCE_CLASS" in
-  default:medium)       RUNNER="$XL2_RUNNER" ;;
-  default:heavy|2xl:heavy) RUNNER="$XL4_RUNNER" ;;
-esac
+if [ "$RUNNER" = "$DEFAULT_RUNNER" ]; then
+  case "$RESOURCE_CLASS" in
+    medium|heavy) RUNNER="$XL2_RUNNER" ;;
+  esac
+fi
 
 echo "package=${PKG_NAME} dir=${PKG_DIR} resource_class='${RESOURCE_CLASS:-<absent>}' requested='${REQUESTED:-<default>}' -> runner=${RUNNER}"
 
