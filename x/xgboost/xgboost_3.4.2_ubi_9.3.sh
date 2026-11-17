@@ -77,7 +77,7 @@ python3.12 -m pip install \
     --trusted-host "${IBM_WHEELS_HOST}" \
     --extra-index-url "${IBM_WHEELS}" \
     --prefer-binary \
-    "numpy==2.5.0" "scipy==1.18.0" pandas Pillow matplotlib scikit-learn pyarrow
+    "numpy==2.4.6" "scipy==1.17.1" pandas Pillow matplotlib scikit-learn pyarrow
 
 # ===========================================================================
 # Clone xgboost and build C++ / Python wheel from source
