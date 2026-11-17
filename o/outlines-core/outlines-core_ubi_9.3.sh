@@ -18,13 +18,18 @@
 #
 # ---------------------------------------------------------------------------
 
-
 # Variables
 PACKAGE_NAME=outlines-core
 PACKAGE_VERSION=${1:-0.1.26}
 PACKAGE_URL=https://github.com/dottxt-ai/outlines-core
 PACKAGE_DIR=outlines-core
 CURRENT_DIR=$(pwd)
+
+# This UBI 9.3 build currently targets Python 3.12.
+PYTHON_BIN=python3.12
+PYTHON_VERSION=$($PYTHON_BIN -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+PYTHON_MINOR=$($PYTHON_BIN -c "import sys; print(sys.version_info.minor)")
+echo "Using Python ${PYTHON_VERSION} (${PYTHON_BIN})"
 
 # Install necessary system dependencies
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas \
@@ -780,3 +785,4 @@ else
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
+
