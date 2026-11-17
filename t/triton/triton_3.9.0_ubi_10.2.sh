@@ -37,29 +37,6 @@ AMD_LLVM_INSTALL_DIR="${CURRENT_DIR}/amd-llvm-install"
 AMD_CODEGEN_BUILD_DIR="${CURRENT_DIR}/amd-codegen-build"
 AMD_CODEGEN_INSTALL_DIR="${CURRENT_DIR}/amd-codegen-install"
 
-AMD_LLVM_INFO_FILE="$CURRENT_DIR/$PACKAGE_DIR/cmake/amd-llvm-info.json"
-
-if [[ ! -f "$AMD_LLVM_INFO_FILE" ]]; then
-    echo "ERROR: AMD LLVM metadata file not found"
-    exit 1
-fi
-
-AMD_LLVM_COMMIT=$(python3.12 -c \
-    "import json; print(json.load(open('$AMD_LLVM_INFO_FILE'))['llvm_hash'])")
-
-AMD_LLVM_BUILD_NUMBER=$(python3.12 -c \
-    "import json; print(json.load(open('$AMD_LLVM_INFO_FILE'))['build_number'])")
-
-if [[ ! "$AMD_LLVM_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
-    echo "ERROR: Invalid AMD LLVM commit: $AMD_LLVM_COMMIT"
-    exit 1
-fi
-
-AMD_LLVM_REVISION="${AMD_LLVM_COMMIT}-${AMD_LLVM_BUILD_NUMBER}"
-
-echo "AMD LLVM commit: $AMD_LLVM_COMMIT"
-echo "AMD LLVM revision: $AMD_LLVM_REVISION"
-
 # Install system dependencies
 yum install -y \
     python3.12 python3.12-devel python3.12-pip \
@@ -106,6 +83,29 @@ git checkout -b "release/${PACKAGE_VERSION}"
 # Initialize submodules
 git submodule sync --recursive
 git submodule update --init --recursive
+
+AMD_LLVM_INFO_FILE="$CURRENT_DIR/$PACKAGE_DIR/cmake/amd-llvm-info.json"
+
+if [[ ! -f "$AMD_LLVM_INFO_FILE" ]]; then
+    echo "ERROR: AMD LLVM metadata file not found"
+    exit 1
+fi
+
+AMD_LLVM_COMMIT=$(python3.12 -c \
+    "import json; print(json.load(open('$AMD_LLVM_INFO_FILE'))['llvm_hash'])")
+
+AMD_LLVM_BUILD_NUMBER=$(python3.12 -c \
+    "import json; print(json.load(open('$AMD_LLVM_INFO_FILE'))['build_number'])")
+
+if [[ ! "$AMD_LLVM_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "ERROR: Invalid AMD LLVM commit: $AMD_LLVM_COMMIT"
+    exit 1
+fi
+
+AMD_LLVM_REVISION="${AMD_LLVM_COMMIT}-${AMD_LLVM_BUILD_NUMBER}"
+
+echo "AMD LLVM commit: $AMD_LLVM_COMMIT"
+echo "AMD LLVM revision: $AMD_LLVM_REVISION"
 
 # Read LLVM commit from Triton 3.9.0 metadata
 LLVM_INFO_FILE="$CURRENT_DIR/$PACKAGE_DIR/cmake/llvm-info.json"
