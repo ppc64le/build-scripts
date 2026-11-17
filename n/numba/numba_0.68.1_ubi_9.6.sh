@@ -98,7 +98,7 @@ cd $CURRENT_DIR
 echo "--------------------OpenBLAS installed-------------------------------"
 
 # Install Python dependencies (numba 0.68.1 supports numpy < 2.6)
-python3.12 -m pip install numpy==2.5.0 setuptools
+python3.12 -m pip install "numpy<2.6" setuptools
 
 # Clone and checkout numba
 cd $CURRENT_DIR
