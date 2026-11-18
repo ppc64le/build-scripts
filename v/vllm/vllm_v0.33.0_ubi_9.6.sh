@@ -208,45 +208,12 @@ cd ${CURRENT_DIR}
 python3.12 -c "import torchvision; print(torchvision.__version__)"
 
 # ===============================================================
-# XGRAMMAR (SOURCE BUILD v0.2.8)
+# XGRAMMAR (PyPI INSTALL v0.2.8)
 # ===============================================================
 
-echo "-------------------- Building xgrammar from source ----------------------"
+echo "-------------------- Installing xgrammar from PyPI ----------------------"
 
-cd ${CURRENT_DIR}
-
-git clone --recursive https://github.com/mlc-ai/xgrammar.git xgrammar
-cd xgrammar
-
-git checkout v0.2.8
-git submodule update --init --recursive
-
-export CFLAGS="-fno-lto -Wno-error=odr -Wno-odr"
-export CXXFLAGS="-fno-lto -Wno-error=odr -Wno-odr"
-export LDFLAGS="-fno-lto -Wno-error=odr -Wno-odr"
-export CMAKE_ARGS="-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF -DCMAKE_BUILD_TYPE=Release"
-
-mkdir -p build
-cd build
-
-cmake .. \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF \
-    -DCMAKE_CXX_FLAGS="-fno-lto -Wno-error=odr -Wno-odr" \
-    -DCMAKE_C_FLAGS="-fno-lto" \
-    -DCMAKE_SHARED_LINKER_FLAGS="-fno-lto -Wno-error=odr -Wno-odr"
-
-make -j$(nproc)
-
-cd ..
-
-export SKBUILD_BUILD_DIR=/tmp/xgrammar_skbuild
-rm -rf "${SKBUILD_BUILD_DIR}"
-export CMAKE_GENERATOR=Ninja
-
-python3.12 -m pip install --no-build-isolation .
-
-cd ${CURRENT_DIR}
+python3.12 -m pip install --no-build-isolation xgrammar==0.2.8
 
 python3.12 -c "import xgrammar; print('xgrammar imported successfully')"
 
