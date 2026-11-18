@@ -213,6 +213,8 @@ python3.12 -c "import torchvision; print(torchvision.__version__)"
 
 echo "-------------------- Installing xgrammar from PyPI ----------------------"
 
+CFLAGS="-fno-lto -Wno-error=odr -Wno-odr" \
+CXXFLAGS="-fno-lto -Wno-error=odr -Wno-odr" \
 python3.12 -m pip install --no-build-isolation xgrammar==0.2.8
 
 python3.12 -c "import xgrammar; print('xgrammar imported successfully')"
