@@ -37,7 +37,7 @@ IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 IBM_WHEELS_HOST="wheels.developerfirst.ibm.com"
 
 # ---------------------------------------------------------------------------
-# System dependencies
+# System dependencies (curl is already provided by curl-minimal; installing curl conflicts with it)
 # ---------------------------------------------------------------------------
 yum install -y python3.14 python3.14-devel python3.14-pip \
     git gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ \
@@ -47,7 +47,7 @@ yum install -y python3.14 python3.14-devel python3.14-pip \
     libatomic \
     pkg-config \
     openssl-devel libffi-devel zlib-devel libjpeg-turbo-devel \
-    which curl tar
+    which tar
 
 # UBI 10 dropped SCL — guard block
 if [[ -f /opt/rh/gcc-toolset-15/enable ]]; then
