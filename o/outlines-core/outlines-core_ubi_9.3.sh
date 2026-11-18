@@ -58,6 +58,8 @@ make install
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib
 cd $CURRENT_DIR
 
+# Note: All version pins and dependency changes in this script
+# are adjusted based on what currently works with Python 3.14.
 
 # --------------------- Install Python Packages ---------------------
 python3.12 -m pip install -U pip
