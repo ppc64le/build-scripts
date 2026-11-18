@@ -106,7 +106,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-export CXXFLAGS=-I/usr/include
+export CXXFLAGS=-I/usr/include 
 
 # Install numba
 if ! python3.12 -m pip install . ; then
