@@ -221,12 +221,20 @@ cd xgrammar
 git checkout v0.2.8
 git submodule update --init --recursive
 
+export CFLAGS="-fno-lto -Wno-error=odr -Wno-odr"
+export CXXFLAGS="-fno-lto -Wno-error=odr -Wno-odr"
+export LDFLAGS="-fno-lto -Wno-error=odr -Wno-odr"
+export CMAKE_ARGS="-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF -DCMAKE_BUILD_TYPE=Release"
+
 mkdir -p build
 cd build
 
 cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
-    -Dnanobind_DIR=$(python3.12 -c "import nanobind; print(nanobind.cmake_dir())")
+    -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF \
+    -DCMAKE_CXX_FLAGS="-fno-lto -Wno-error=odr -Wno-odr" \
+    -DCMAKE_C_FLAGS="-fno-lto" \
+    -DCMAKE_SHARED_LINKER_FLAGS="-fno-lto -Wno-error=odr -Wno-odr"
 
 make -j$(nproc)
 
