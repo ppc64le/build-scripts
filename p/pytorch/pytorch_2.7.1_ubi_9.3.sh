@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : pytorch
-# Version          : v2.7.1
+# Version          : v2.15.0
 # Source repo      : https://github.com/pytorch/pytorch.git
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -22,7 +22,7 @@ set -e
 # Variables
 PACKAGE_NAME=pytorch
 PACKAGE_URL=https://github.com/pytorch/pytorch.git
-PACKAGE_VERSION=${1:-v2.7.1}
+PACKAGE_VERSION=${1:-v2.15.0}
 SCRIPT_DIR=$(pwd)
 
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
@@ -219,6 +219,7 @@ export USE_QNNPACK=0
 export USE_XNNPACK=0
 export USE_PYTORCH_QNNPACK=0
 export TH_BINARY_BUILD=1
+export BUILD_TEST=0
 export USE_LMDB=1
 export USE_LEVELDB=1
 export USE_NINJA=0
@@ -237,6 +238,9 @@ export Protobuf_LIBRARIES=${LIBPROTO_INSTALL}/lib64
 export Protobuf_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf.so
 export Protobuf_LITE_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf-lite.so
 export Protobuf_PROTOC_EXECUTABLE=${LIBPROTO_INSTALL}/bin/protoc
+export CMAKE_PREFIX_PATH="${LIBPROTO_INSTALL}:${CMAKE_PREFIX_PATH}"
+export CMAKE_ARGS="${CMAKE_ARGS} -DProtobuf_ROOT=${LIBPROTO_INSTALL} -DProtobuf_DIR=${LIBPROTO_INSTALL}/lib64/cmake/protobuf -Dabsl_DIR=${LIBPROTO_INSTALL}/lib64/cmake/absl -DProtobuf_INCLUDE_DIR=${LIBPROTO_INSTALL}/include -DProtobuf_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf.so -DProtobuf_LITE_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf-lite.so -DProtobuf_PROTOC_EXECUTABLE=${LIBPROTO_INSTALL}/bin/protoc"
+
 export PATH="/protobuf/local/libprotobuf/bin/protoc:${PATH}"
 export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
@@ -249,6 +253,28 @@ echo "required env variables got set"
 
 sed -i "s/cmake/cmake==3.*/g" requirements.txt
 python3.12 -m pip install -r requirements.txt
+
+# -------------------- Protobuf preflight --------------------
+# Fail fast (seconds) if CMake cannot resolve the custom protobuf. Otherwise
+# PyTorch silently falls back to its bundled protobuf and the failure only
+# shows up after the multi-hour build, as an import error.
+PREFLIGHT_DIR=$(mktemp -d)
+cat > ${PREFLIGHT_DIR}/CMakeLists.txt <<'EOF'
+cmake_minimum_required(VERSION 3.18)
+project(protobuf_preflight LANGUAGES CXX)
+find_package(Protobuf CONFIG REQUIRED)
+if(NOT TARGET protobuf::libprotobuf OR NOT TARGET protobuf::protoc)
+  message(FATAL_ERROR "protobuf::libprotobuf or protobuf::protoc target missing")
+endif()
+message(STATUS "Preflight Protobuf_VERSION: ${Protobuf_VERSION}")
+EOF
+if ! (cmake -S ${PREFLIGHT_DIR} -B ${PREFLIGHT_DIR}/build ${CMAKE_ARGS}); then
+    echo "CMake cannot find custom protobuf at ${LIBPROTO_INSTALL}"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Protobuf_Preflight_Fails"
+    exit 1
+fi
+rm -rf ${PREFLIGHT_DIR}
 
 # -------------------- Build --------------------
 if ! (MAX_JOBS=$(nproc) python3.12 setup.py install); then
