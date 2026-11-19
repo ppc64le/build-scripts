@@ -3,7 +3,7 @@
 #
 # Package          : pyzmq
 # Version          : v27.3.0
-# Source repo      : https://github.com/zeromq/pyzmq.git
+# Source repo      : https://github.com/zeromq/pyzmq
 # Tested on        : UBI:10.2
 # Language         : Python
 # Ci-Check         : True
@@ -22,7 +22,7 @@
 PACKAGE_NAME=pyzmq
 SCRIPT_PACKAGE_VERSION=v27.3.0
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
-PACKAGE_URL=https://github.com/zeromq/pyzmq.git
+PACKAGE_URL=https://github.com/zeromq/pyzmq
 PACKAGE_DIR=pyzmq
 
 BUILD_HOME=$(pwd)
@@ -110,7 +110,49 @@ fi
 if ! python3 -m build --wheel --no-isolation --outdir="$BUILD_HOME"; then
     echo "------------------$PACKAGE_NAME: Wheel Build Failed ---------------------"
     exit 2
-else
-    echo "------------------$PACKAGE_NAME: Wheel Build Success -------------------------"
-    exit 0
 fi
+echo "------------------$PACKAGE_NAME: Wheel Build Success -------------------------"
+
+# Smoke test: install the built wheel (replacing the editable install) and use it
+# from outside the source tree so the installed package is what gets imported
+WHEEL=$(ls "$BUILD_HOME"/pyzmq-*.whl | head -1)
+echo "Wheel: $WHEEL"
+if ! python3 -m pip install --force-reinstall --no-deps "$WHEEL"; then
+    echo "------------------$PACKAGE_NAME:wheel_install_fails---------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Wheel_Install_Fails"
+    exit 1
+fi
+
+cd "$BUILD_HOME"
+if ! python3 - <<'PYEOF'
+import zmq
+from importlib.metadata import version
+
+print("Import successful:", zmq.__file__)
+print("pyzmq version:", version("pyzmq"), "| libzmq version:", zmq.zmq_version())
+assert zmq.__file__.startswith(("/usr", "/opt")) and "site-packages" in zmq.__file__
+
+# Send a message over TCP between a REQ and a REP socket
+ctx = zmq.Context()
+rep = ctx.socket(zmq.REP)
+port = rep.bind_to_random_port("tcp://127.0.0.1")
+req = ctx.socket(zmq.REQ)
+req.connect(f"tcp://127.0.0.1:{port}")
+req.send(b"ping")
+assert rep.recv() == b"ping"
+rep.send(b"pong")
+assert req.recv() == b"pong"
+req.close()
+rep.close()
+ctx.term()
+print("REQ/REP round trip: OK")
+PYEOF
+then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_success_but_test_Fails"
+    exit 2
+fi
+echo "------------------$PACKAGE_NAME: Smoke Test Success -------------------------"
+exit 0

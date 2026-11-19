@@ -1,7 +1,7 @@
 {
   "maintainer": "tejasBadjateIBM",
   "package_name": "pyzmq",
-  "github_url": "https://github.com/zeromq/pyzmq.git",
+  "github_url": "https://github.com/zeromq/pyzmq",
   "required_versions":{"Releases": ["*"], "Tags": ["v25.1.2","v27.2.0","v27.3.0"]}, 
   "version": "v27.3.0",
   "wheel_build" : true,
