@@ -1,0 +1,515 @@
+From 02d1e527c451387bfa3413a21cce9a32dc8157e6 Mon Sep 17 00:00:00 2001
+From: irapandey <ira.pandey2001@gmail.com>
+Date: Tue, 27 Oct 2026 18:09:09 +0530
+Subject: [PATCH] patch
+
+Signed-off-by: irapandey <ira.pandey2001@gmail.com>
+---
+ scripts/components/OpenSearch/build.sh        |   8 +-
+ scripts/components/OpenSearch/integtest.sh    |   2 +-
+ .../components/core-plugins-sandbox/build.sh  |   4 +-
+ scripts/components/k-NN/build.sh              | 203 ++++++++++++++++++
+ scripts/components/k-NN/integtest.sh          |   4 +-
+ scripts/default/bwctest.sh                    |   2 +-
+ scripts/default/integtest.sh                  |   2 +-
+ scripts/default/opensearch/build.sh           |   6 +-
+ src/build_workflow/build_args.py              |   1 +
+ src/build_workflow/builder_from_source.py     |  77 ++++++-
+ .../component_opensearch.py                   |   2 +-
+ 11 files changed, 295 insertions(+), 16 deletions(-)
+ create mode 100644 scripts/components/k-NN/build.sh
+
+diff --git a/scripts/components/OpenSearch/build.sh b/scripts/components/OpenSearch/build.sh
+index 0797262e..80b201d2 100755
+--- a/scripts/components/OpenSearch/build.sh
++++ b/scripts/components/OpenSearch/build.sh
+@@ -75,11 +75,11 @@ mkdir -p $OUTPUT/maven/org/opensearch
+ 
+ # Build project and publish to maven local.
+ echo "Building and publishing OpenSearch project to Maven Local"
+-./gradlew publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ 
+ # Publish to existing test repo, using this to stage release versions of the artifacts that can be released from the same build.
+ echo "Publishing OpenSearch to Test Repository"
+-./gradlew publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishNebulaPublicationToTestRepository -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ 
+ # Copy maven publications to be promoted
+ echo "Copying Maven publications to $OUTPUT/maven/org"
+@@ -164,7 +164,7 @@ esac
+ 
+ echo "Building OpenSearch for $PLATFORM-$DISTRIBUTION-$ARCHITECTURE"
+ 
+-./gradlew :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain :distribution:$TYPE:$TARGET:assemble -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ 
+ # Copy artifact to dist folder in bundle build output
+ echo "Copying artifact to ${OUTPUT}/dist"
+@@ -176,7 +176,7 @@ cp -v distribution/$TYPE/$TARGET/build/distributions/$ARTIFACT_BUILD_NAME "${OUT
+ echo "Building core plugins..."
+ mkdir -p "${OUTPUT}/core-plugins"
+ cd plugins
+-../gradlew assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER
+ cd ..
+ for plugin in plugins/*; do
+   PLUGIN_NAME=$(basename "$plugin")
+diff --git a/scripts/components/OpenSearch/integtest.sh b/scripts/components/OpenSearch/integtest.sh
+index dce75c86..3be5ee8d 100644
+--- a/scripts/components/OpenSearch/integtest.sh
++++ b/scripts/components/OpenSearch/integtest.sh
+@@ -13,7 +13,7 @@ echo "Check if distribution is deb or rpm on linux"
+ if [ "$OSTYPE" = "linux-gnu" ]; then
+     if (dpkg -s opensearch > /dev/null 2>&1) || (rpm -q opensearch > /dev/null 2>&1); then
+         echo "Run systemd integTest for OpenSearch core engine"
+-        ./gradlew qa:systemd-test:integTest --tests org.opensearch.systemdinteg.SystemdIntegTests --console=plain
++        ./gradlew --console=plain qa:systemd-test:integTest --tests org.opensearch.systemdinteg.SystemdIntegTests --console=plain
+     else
+         echo "No deb or rpm installed detected, skip test"
+     fi
+diff --git a/scripts/components/core-plugins-sandbox/build.sh b/scripts/components/core-plugins-sandbox/build.sh
+index 71d60f9a..2fa77a38 100755
+--- a/scripts/components/core-plugins-sandbox/build.sh
++++ b/scripts/components/core-plugins-sandbox/build.sh
+@@ -93,7 +93,7 @@ cd -
+ 
+ # Sandbox Plugins
+ echo "Building sandbox plugins..."
+-../../gradlew assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++../../gradlew --console=plain assemble -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease
+ INSTALL_ORDER=1
+ for plugin in ./*; do
+   PLUGIN_NAME=$(basename "$plugin")
+@@ -127,7 +127,7 @@ done
+ # Rustlib
+ cd ../
+ echo "Specifically saving rustlib..."
+-../gradlew :sandbox:libs:dataformat-native:buildRustLibrary -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease -Pcrypto.standard=FIPS-140-3
++../gradlew --console=plain :sandbox:libs:dataformat-native:buildRustLibrary -Dbuild.snapshot="$SNAPSHOT" -Dbuild.version_qualifier=$QUALIFIER -Dsandbox.enabled=true -PrustRelease
+ for libext in so dylib dll; do
+   cp -v ./libs/dataformat-native/rust/target/release/libopensearch_native."$libext" "${OUTPUT_REAL}"/dist/ || echo "$libext not found"
+ done
+diff --git a/scripts/components/k-NN/build.sh b/scripts/components/k-NN/build.sh
+new file mode 100644
+index 00000000..d2aa3aa9
+--- /dev/null
++++ b/scripts/components/k-NN/build.sh
+@@ -0,0 +1,203 @@
++#!/bin/bash
++
++# Copyright OpenSearch Contributors
++# SPDX-License-Identifier: Apache-2.0
++#
++# The OpenSearch Contributors require contributions made to
++# this file be licensed under the Apache-2.0 license or a
++# compatible open source license.
++#
++# This script overrides the upstream k-NN build.sh to add ppc64le support.
++# On ppc64le the cmake/JNI native library build is skipped because:
++#   - The upstream CMakeLists.txt has no ppc64le MACH_ARCH mapping
++#   - AVX2/AVX512 SIMD instructions do not exist on ppc64le (VSX/VMX are different ISA)
++#   - The standard CI runner for ppc64le does not install cmake
++# The Java plugin artifact is built normally; the native JNI libs are simply absent.
++
++set -ex
++
++function usage() {
++    echo "Usage: $0 [args]"
++    echo ""
++    echo "Arguments:"
++    echo -e "-v VERSION\t[Required] OpenSearch version."
++    echo -e "-q QUALIFIER\t[Optional] Version qualifier."
++    echo -e "-s SNAPSHOT\t[Optional] Build a snapshot, default is 'false'."
++    echo -e "-p PLATFORM\t[Optional] Platform, ignored."
++    echo -e "-a ARCHITECTURE\t[Optional] Build architecture."
++    echo -e "-o OUTPUT\t[Optional] Output path, default is 'artifacts'."
++    echo -e "-j NPROC_COUNT\t[Optional] Number of CPUs to use when building JNI library. Default is 1."
++    echo -e "-h help"
++}
++
++while getopts ":h:v:q:s:o:p:a:j:" arg; do
++    case $arg in
++        h)
++            usage
++            exit 1
++            ;;
++        v)
++            VERSION=$OPTARG
++            ;;
++        s)
++            SNAPSHOT=$OPTARG
++            ;;
++        q)
++            QUALIFIER=$OPTARG
++            ;;
++        o)
++            OUTPUT=$OPTARG
++            ;;
++        p)
++            PLATFORM=$OPTARG
++            ;;
++        a)
++            ARCHITECTURE=$OPTARG
++            ;;
++        j)
++            NPROC_COUNT=$OPTARG
++            ;;
++        :)
++            echo "Error: -${OPTARG} requires an argument"
++            usage
++            exit 1
++            ;;
++        ?)
++            echo "Invalid option: -${arg}"
++            exit 1
++            ;;
++    esac
++done
++
++if [ -z "$VERSION" ]; then
++    echo "Error: You must specify the OpenSearch version"
++    usage
++    exit 1
++fi
++
++[[ ! -z "$QUALIFIER" ]] && VERSION=$VERSION-$QUALIFIER
++[[ "$SNAPSHOT" == "true" ]] && VERSION=$VERSION-SNAPSHOT
++[ -z "$OUTPUT" ] && OUTPUT=artifacts
++
++work_dir=$PWD
++
++# Pull library submodule explicitly. While "cmake ." actually pulls the submodule if its not there, we
++# need to pull it before calling cmake. Also, we need to call it from the root git directory.
++# Otherwise, the submodule update call may fail on earlier versions of git.
++git submodule update --init -- jni/external/nmslib
++git submodule update --init -- jni/external/faiss
++
++if [ "$JAVA_HOME" = "" ]; then
++    export JAVA_HOME=`/usr/libexec/java_home`
++    echo "SET JAVA_HOME=$JAVA_HOME"
++fi
++
++# ppc64le: skip cmake/JNI native library compilation entirely.
++# The upstream CMakeLists.txt does not define MACH_ARCH for ppc64le and the AVX/NEON
++# SIMD flags used by the faiss/nmslib targets are x64/arm64-only.  cmake is also
++# not guaranteed to be installed on the ppc64le CI runner.
++if [ "$ARCHITECTURE" = "ppc64le" ]; then
++    echo "ppc64le detected: skipping JNI native library build (cmake not required)"
++
++    # Use bundlePlugin directly (not assemble or build) so the zip is produced by the
++    # opensearchplugin Gradle plugin's own packaging task, which correctly assembles only
++    # the runtime classpath into the plugin zip.  assemble also invokes bundlePlugin but
++    # chains additional tasks that can pull in test-fixture or remote-index-build-client
++    # artifacts that end up as a second copy of KNNVectorScriptDocValues inside the zip,
++    # triggering the "multiple java classes ... from different class loaders" Painless error.
++    ./gradlew --no-daemon --refresh-dependencies bundlePlugin \
++        -Dopensearch.version=$VERSION \
++        -Dbuild.snapshot=$SNAPSHOT \
++        -Dbuild.version_qualifier=$QUALIFIER \
++        -Dbuild.lib.commit_patches=false
++
++else
++    # x64/arm64: use the full upstream build path
++
++    # Setup knnlib build params
++    cd jni
++
++    # For x64, generalize arch so library is compatible for processors without simd instruction extensions
++    if [ "$ARCHITECTURE" = "x64" ]; then
++        NMSLIB_SIMD_FLAGS="x86-64"
++    fi
++
++    # For arm, march=native is broken in centos 7. Manually override to lowest version of armv8.
++    if [ "$ARCHITECTURE" = "arm64" ]; then
++        NMSLIB_SIMD_FLAGS="armv8-a"
++    fi
++
++    # Ensure gcc version is above the minimum required
++    GCC_VERSION=`gcc --version | head -n 1 | cut -d ' ' -f3`
++    if [ "$ARCHITECTURE" = "x64" ]; then
++        GCC_REQUIRED_VERSION=12.4
++    else
++        GCC_REQUIRED_VERSION=9.0.0
++    fi
++    COMPARE_VERSION=`echo $GCC_REQUIRED_VERSION $GCC_VERSION | tr ' ' '\n' | sort -V | uniq | head -n 1`
++    if [ "$COMPARE_VERSION" != "$GCC_REQUIRED_VERSION" ]; then
++        echo "gcc version on this env is older than $GCC_REQUIRED_VERSION, exit 1"
++        exit 1
++    fi
++
++    cd $work_dir
++    ./gradlew build --no-daemon --refresh-dependencies -x integTest -x test -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dbuild.lib.commit_patches=false -Dnmslib_simd_flags=$NMSLIB_SIMD_FLAGS
++    ./gradlew :buildJniLib -Pknn_libs=opensearchknn_faiss,opensearchknn_simd -Davx512.enabled=false -Davx512_spr.enabled=false -Davx2.enabled=false -Dbuild.lib.commit_patches=false -Dnproc.count=${NPROC_COUNT:-1} -Dbuild.snapshot=$SNAPSHOT
++
++    if [ "$PLATFORM" != "windows" ] && [ "$ARCHITECTURE" = "x64" ]; then
++        echo "Building k-NN library nmslib with gcc 10 on non-windows x64"
++        rm -rf jni/build/CMakeCache.txt jni/build/CMakeFiles
++        env CC=gcc10-gcc CXX=gcc10-g++ FC=gcc10-gfortran ./gradlew :buildJniLib -Pknn_libs=opensearchknn_nmslib -Dbuild.lib.commit_patches=false -Dbuild.lib.apply_patches=false -Dbuild.snapshot=$SNAPSHOT
++
++        echo "Building k-NN library after enabling AVX2"
++        rm -rf jni/build/CMakeCache.txt jni/build/CMakeFiles
++        ./gradlew :buildJniLib -Pknn_libs=opensearchknn_faiss,opensearchknn_simd -Davx2.enabled=true -Davx512.enabled=false -Davx512_spr.enabled=false -Dbuild.lib.commit_patches=false -Dbuild.lib.apply_patches=false -Dbuild.snapshot=$SNAPSHOT
++
++        echo "Building k-NN library after enabling AVX512"
++        ./gradlew :buildJniLib -Pknn_libs=opensearchknn_faiss,opensearchknn_simd -Davx512.enabled=true -Davx512_spr.enabled=false -Dbuild.lib.commit_patches=false -Dbuild.lib.apply_patches=false -Dbuild.snapshot=$SNAPSHOT
++
++        echo "Building k-NN library after enabling AVX512_SPR"
++        ./gradlew :buildJniLib -Pknn_libs=opensearchknn_faiss,opensearchknn_simd -Davx512_spr.enabled=true -Dbuild.lib.commit_patches=false -Dbuild.lib.apply_patches=false -Dbuild.snapshot=$SNAPSHOT
++    else
++        ./gradlew :buildJniLib -Pknn_libs=opensearchknn_nmslib -Dbuild.lib.commit_patches=false -Dbuild.lib.apply_patches=false -Dbuild.snapshot=$SNAPSHOT
++    fi
++fi
++
++./gradlew publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
++./gradlew publishPluginZipPublicationToMavenLocal -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Dopensearch.version=$VERSION
++
++# Add lib to zip (only for platforms that build native libs)
++zipPath=$(find "$(pwd)/build/distributions" -path \*.zip)
++distributions="$(dirname "${zipPath}")"
++
++if [ "$ARCHITECTURE" != "ppc64le" ]; then
++    mkdir -p $distributions/lib
++    libPrefix="libopensearchknn"
++    if [ "$PLATFORM" = "windows" ]; then
++        libPrefix="opensearchknn"
++        cp -v ./src/main/resources/windowsDependencies/libopenblas.dll $distributions/lib
++
++        # Have to define $MINGW_BIN either in ENV VAR or User Provided Var
++        cp -v "$MINGW_BIN/libgcc_s_seh-1.dll" $distributions/lib
++        cp -v "$MINGW_BIN/libwinpthread-1.dll" $distributions/lib
++        cp -v "$MINGW_BIN/libstdc++-6.dll" $distributions/lib
++        cp -v "$MINGW_BIN/libgomp-1.dll" $distributions/lib
++    else
++        ompPath=$(ldconfig -p | grep libgomp | cut -d ' ' -f 4)
++        cp -v $ompPath $distributions/lib
++    fi
++    cp -v ./jni/build/release/${libPrefix}* $distributions/lib
++    ls -l $distributions/lib
++
++    # Add lib directory to the k-NN plugin zip
++    cd $distributions
++    zip -ur $zipPath lib
++    cd $work_dir
++fi
++
++echo "COPY ${distributions}/*.zip"
++mkdir -p $OUTPUT/plugins
++cp -v ${distributions}/*.zip $OUTPUT/plugins
++
++mkdir -p $OUTPUT/maven/org/opensearch
++cp -r ./build/local-staging-repo/org/opensearch/. $OUTPUT/maven/org/opensearch
+diff --git a/scripts/components/k-NN/integtest.sh b/scripts/components/k-NN/integtest.sh
+index 9026e924..1bbbd7ea 100755
+--- a/scripts/components/k-NN/integtest.sh
++++ b/scripts/components/k-NN/integtest.sh
+@@ -111,8 +111,8 @@ if [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "win32" ]
+     echo "Set new tests.path.repo to $REPO_PATH"
+     sed -i 's|^[[:space:]]\+task\.systemProperty\s*"tests\.path\.repo".*|    task.systemProperty "tests.path.repo", System.getProperty("tests.path.repo", "${buildDir}/testSnapshotFolder")|' build.gradle
+     sed -i 's|^[[:space:]]\+systemProperty\s*"tests\.path\.repo".*|    systemProperty "tests.path.repo", System.getProperty("tests.path.repo", "${buildDir}/testSnapshotFolder")|' build.gradle
+-    ./gradlew integTest -Dtests.path.repo="$REPO_PATH" -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
++    ./gradlew --console=plain integTest -Dtests.path.repo="$REPO_PATH" -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
+ 
+ else
+-    ./gradlew integTest -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
++    ./gradlew --console=plain integTest -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
+ fi
+diff --git a/scripts/default/bwctest.sh b/scripts/default/bwctest.sh
+index d1f687f5..3c860036 100755
+--- a/scripts/default/bwctest.sh
++++ b/scripts/default/bwctest.sh
+@@ -35,4 +35,4 @@ while getopts ":h" arg; do
+     esac
+ done
+ 
+-./gradlew bwcTestSuite -Dtests.security.manager=false -PcustomDistributionDownloadType=bundle
++./gradlew --console=plain bwcTestSuite -Dtests.security.manager=false -PcustomDistributionDownloadType=bundle
+diff --git a/scripts/default/integtest.sh b/scripts/default/integtest.sh
+index 7a600d4c..17cfe1f2 100755
+--- a/scripts/default/integtest.sh
++++ b/scripts/default/integtest.sh
+@@ -102,4 +102,4 @@ fi
+ USERNAME=`echo $CREDENTIAL | awk -F ':' '{print $1}'`
+ PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
+ 
+-./gradlew integTest -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
++./gradlew --console=plain integTest -Dopensearch.version=$OPENSEARCH_VERSION -Dbuild.snapshot=$SNAPSHOT -Dtests.rest.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.cluster="$BIND_ADDRESS:$BIND_PORT" -Dtests.clustername="opensearch-integrationtest" -Dhttps=$SECURITY_ENABLED -Duser=$USERNAME -Dpassword=$PASSWORD --console=plain
+diff --git a/scripts/default/opensearch/build.sh b/scripts/default/opensearch/build.sh
+index 518c722a..ea049ea8 100755
+--- a/scripts/default/opensearch/build.sh
++++ b/scripts/default/opensearch/build.sh
+@@ -70,7 +70,7 @@ fi
+ 
+ mkdir -p $OUTPUT
+ 
+-./gradlew assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain assemble --no-daemon --refresh-dependencies -DskipTests=true -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ 
+ zipPath=$(find . -path \*build/distributions/*.zip)
+ distributions="$(dirname "${zipPath}")"
+@@ -80,7 +80,7 @@ mkdir -p $OUTPUT/plugins
+ cp ${distributions}/*.zip ./$OUTPUT/plugins
+ 
+ # Publish plugin zips to maven
+-./gradlew publishPluginZipPublicationToMavenLocal -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
+-./gradlew publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER -Pcrypto.standard=FIPS-140-3
++./gradlew --console=plain publishPluginZipPublicationToMavenLocal -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
++./gradlew --console=plain publishPluginZipPublicationToZipStagingRepository -Dopensearch.version=$VERSION -Dbuild.snapshot=$SNAPSHOT -Dbuild.version_qualifier=$QUALIFIER
+ mkdir -p $OUTPUT/maven/org/opensearch
+ cp -r ./build/local-staging-repo/org/opensearch/. $OUTPUT/maven/org/opensearch
+diff --git a/src/build_workflow/build_args.py b/src/build_workflow/build_args.py
+index d67c27a7..271962ab 100644
+--- a/src/build_workflow/build_args.py
++++ b/src/build_workflow/build_args.py
+@@ -16,6 +16,7 @@ class BuildArgs:
+     SUPPORTED_ARCHITECTURES = [
+         "x64",
+         "arm64",
++        "ppc64le",
+     ]
+     SUPPORTED_DISTRIBUTIONS = ["tar", "zip", "rpm", "deb"]
+ 
+diff --git a/src/build_workflow/builder_from_source.py b/src/build_workflow/builder_from_source.py
+index 2c77c80d..a8091e0d 100644
+--- a/src/build_workflow/builder_from_source.py
++++ b/src/build_workflow/builder_from_source.py
+@@ -6,6 +6,7 @@
+ # compatible open source license.
+ 
+ import os
++import logging
+ 
+ from build_workflow.build_recorder import BuildRecorder
+ from build_workflow.builder import Builder
+@@ -18,7 +19,6 @@ It will notify the build recorder of build information such as repository and gi
+ Artifacts found in "<build root>/artifacts/<maven|plugins|libs|dist|core-plugins>" will be recognized and recorded.
+ """
+ 
+-
+ class BuilderFromSource(Builder):
+     def checkout(self, work_dir: str) -> None:
+         self.git_repo = GitRepository(
+@@ -28,6 +28,109 @@ class BuilderFromSource(Builder):
+             self.component.working_directory,
+         )
+ 
++        self._apply_ppc64le_gradle_fix()
++        self._apply_kotlin_version_fix()
++        self._apply_security_non_fips_fix()
++
++    def _apply_ppc64le_gradle_fix(self) -> None:
++        """
++        Apply ppc64le architecture fix for Gradle builds.
++        Creates gradle.properties to disable native platform support which doesn't work on ppc64le.
++        """
++        gradle_properties_path = os.path.join(self.git_repo.working_directory, "gradle.properties")
++
++        # Check if this is a Gradle project (has gradlew or build.gradle)
++        has_gradlew = os.path.isfile(os.path.join(self.git_repo.working_directory, "gradlew"))
++        has_build_gradle = os.path.isfile(os.path.join(self.git_repo.working_directory, "build.gradle"))
++
++        if not (has_gradlew or has_build_gradle):
++            logging.debug(f"Skipping ppc64le Gradle fix for {self.component.name} - not a Gradle project")
++            return
++
++        gradle_properties_content = (
++            "# Disable native platform support for ppc64le architecture compatibility\n"
++            "# The native-platform library does not support ppc64le; fall back to pure Java implementations.\n"
++            "org.gradle.native=false\n"
++            "# Use plain console output (no rich formatting that requires native platform)\n"
++            "org.gradle.console=plain\n"
++            "# Limit parallel workers to avoid thread exhaustion (pthread_create EAGAIN) on ppc64le\n"
++            "org.gradle.workers.max=4\n"
++        )
++
++        # If gradle.properties already exists, append our settings
++        if os.path.isfile(gradle_properties_path):
++            logging.info(f"Appending ppc64le fix to existing gradle.properties for {self.component.name}")
++            with open(gradle_properties_path, 'a') as f:
++                f.write("\n" + gradle_properties_content)
++        else:
++            logging.info(f"Creating gradle.properties with ppc64le fix for {self.component.name}")
++            with open(gradle_properties_path, 'w') as f:
++                f.write(gradle_properties_content)
++
++    def _apply_kotlin_version_fix(self) -> None:
++        """
++        Update Kotlin version from 2.2.0 to 2.2.20 in build.gradle for specific plugins.
++        Only applies to plugins that use Kotlin and need the version update.
++        """
++        # List of plugins that need Kotlin version update
++        KOTLIN_PLUGINS = ['k-NN', 'cross-cluster-replication', 'opensearch-observability',
++                         'opensearch-reports', 'alerting', 'index-management']
++
++        if self.component.name not in KOTLIN_PLUGINS:
++            logging.debug(f"Skipping Kotlin version fix for {self.component.name} - not in Kotlin plugins list")
++            return
++
++        build_gradle_path = os.path.join(self.git_repo.working_directory, "build.gradle")
++
++        if not os.path.isfile(build_gradle_path):
++            logging.warning(f"build.gradle not found for {self.component.name} at {build_gradle_path}")
++            return
++
++        # Read the current build.gradle content
++        with open(build_gradle_path, 'r') as f:
++            content = f.read()
++
++        # Check if Kotlin 2.2.0 is present
++        if '2.2.0' not in content:
++            logging.debug(f"Kotlin version 2.2.0 not found in build.gradle for {self.component.name}")
++            return
++
++        # Replace Kotlin version 2.2.0 with 2.2.20
++        updated_content = content.replace('2.2.0', '2.2.20')
++
++        # Write the updated content back
++        with open(build_gradle_path, 'w') as f:
++            f.write(updated_content)
++
++        logging.info(f"Updated Kotlin version from 2.2.0 to 2.2.20 in build.gradle for {self.component.name}")
++
++    def _apply_security_non_fips_fix(self) -> None:
++        """
++        The security plugin declares bc-fips, bctls-fips, bcpkix-fips and bcutil-fips as compileOnly
++        (unconditionally in 3.10) and expects a FIPS-mode OpenSearch core to ship them in lib/.
++        Core is built without FIPS here, so nothing provides them and the plugin fails to load with
++        NoClassDefFoundError: BouncyCastleFipsProvider. Make them regular dependencies so they are
++        bundled into the plugin zip.
++        """
++        if self.component.name != "security":
++            return
++
++        gradle_properties_path = os.path.join(self.git_repo.working_directory, "gradle.properties")
++        logging.info(f"Overriding crypto.standard in gradle.properties for {self.component.name}")
++        with open(gradle_properties_path, 'a') as f:
++            f.write("\ncrypto.standard=any-supported\n")
++
++        build_gradle_path = os.path.join(self.git_repo.working_directory, "build.gradle")
++        with open(build_gradle_path, 'r') as f:
++            content = f.read()
++        updated_content = content.replace('compileOnly "org.bouncycastle:', 'implementation "org.bouncycastle:')
++        if updated_content == content:
++            logging.warning(f"No compileOnly bouncycastle dependencies found in build.gradle for {self.component.name}")
++            return
++        with open(build_gradle_path, 'w') as f:
++            f.write(updated_content)
++        logging.info(f"Bundling bouncycastle FIPS jars in plugin zip for {self.component.name}")
++
+     def build(self, build_recorder: BuildRecorder) -> None:
+ 
+         # List of components whose build scripts support `-d` parameter
+diff --git a/src/manifests_workflow/component_opensearch.py b/src/manifests_workflow/component_opensearch.py
+index c382e106..71d5e2af 100644
+--- a/src/manifests_workflow/component_opensearch.py
++++ b/src/manifests_workflow/component_opensearch.py
+@@ -64,6 +64,6 @@ class ComponentOpenSearch(Component):
+ 
+     @classmethod
+     def gradle_cmd(self, target: str, props: dict = {}) -> str:
+-        cmd = [f"./gradlew {target}"]
++        cmd = [f"./gradlew --console=plain {target}"]
+         cmd.extend([f"-D{k}={v}" for k, v in props.items()])
+         return " ".join(cmd)
+-- 
+2.51.2
