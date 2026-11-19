@@ -205,8 +205,8 @@ cd "${CURRENT_DIR}/xgboost_src"
 # hypothesis-based "train metric is non-increasing" assertion fails on tiny
 # floating-point differences (~1e-5) and hypothesis reports it as flaky.
 if ! python3.14 -m pytest tests/ \
-    --deselect tests/python/test_updaters.py::TestTreeMethod::test_approx \
-    --deselect tests/python/test_multi_target.py::TestTreeMethodMulti::test_approx \
+    --deselect=tests/python/test_updaters.py::TestTreeMethod::test_approx \
+    --deselect=tests/python/test_multi_target.py::TestTreeMethodMulti::test_approx \
     --ignore=tests/ci_build/test_r_package.py \
     --ignore=tests/python/test_cli.py \
     --ignore=tests/python/test_demos.py \
