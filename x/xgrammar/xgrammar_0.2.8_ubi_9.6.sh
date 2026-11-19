@@ -69,15 +69,17 @@ python3.12 -m pip install \
     setuptools_scm
 
 # -----------------------------------------------------------------------------
-# Install Apache TVM-FFI v0.1.11 (required by xgrammar v0.2.8)
+# Install Apache TVM-FFI (>=0.1.11 required by xgrammar v0.2.8) from devpi
 # -----------------------------------------------------------------------------
 cd ${CURRENT_DIR}
 
-git clone --recursive https://github.com/apache/tvm-ffi.git
-cd tvm-ffi
-git checkout v0.1.11
+IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 
-python3.12 -m pip install .
+python3.12 -m pip install \
+    --prefer-binary \
+    --trusted-host wheels.developerfirst.ibm.com \
+    --extra-index-url ${IBM_WHEELS} \
+    "apache-tvm-ffi>=0.1.11"
 
 python3.12 -c "import tvm_ffi"
 
@@ -98,8 +100,6 @@ cd ${CURRENT_DIR}
 # -----------------------------------------------------------------------------
 # Install Torch
 # -----------------------------------------------------------------------------
-IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
-
 python3.12 -m pip install \
     --prefer-binary \
     --trusted-host wheels.developerfirst.ibm.com \
