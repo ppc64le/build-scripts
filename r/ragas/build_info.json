@@ -1,0 +1,16 @@
+{
+   "maintainer": "bhagyashrigais",
+   "package_name": "ragas",
+   "github_url": "https://github.com/vibrantlabsai/ragas.git",
+   "version": "v0.4.3",
+   "default_branch": "main",
+   "build_script": "ragas_ubi_9.6.sh",
+   "package_dir": "r/ragas",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"ragas_ubi_9.6.sh"
+  }
+}
