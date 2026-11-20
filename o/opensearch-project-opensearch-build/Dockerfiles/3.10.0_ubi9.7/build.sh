@@ -32,6 +32,14 @@
 #                          (Jenkins PUSH_RELEASE_TAG parameter)
 #     --skip-push          Skip the ICR push stage
 #     --skip-scan          Skip the Trivy scan stage
+#     --update <t>:<k>=<v> Dependency update, repeatable (Jenkins DEPENDENCY_UPDATES
+#                          parameter, comma/space separated, is also read).
+#                          <t> = opensearch | security | opensaml,
+#                          <k> = key in [versions] of gradle/libs.versions.toml.
+#                          e.g. --update security:guava=33.7.3-jre
+#                               --update opensaml:open_saml=5.2.4
+#                          Stage A generates one patch per selected target; Stage B
+#                          applies it when that component is checked out.
 #     --resume-from <N>    Resume from stage N; useful after a failed run
 #                          where earlier stages already succeeded.
 #                          Stages: 1=clean 2=checkout 3=build-env 4=artifacts
@@ -83,6 +91,7 @@ TRIVY_CACHE="${TRIVY_CACHE:-/var/jenkins/trivy-cache}"
 # ---------------------------------------------------------------------------
 # Flag defaults
 # ---------------------------------------------------------------------------
+DEPENDENCY_UPDATES="${DEPENDENCY_UPDATES:-}"
 SKIP_PUSH=false
 SKIP_SCAN=false
 PUSH_RELEASE_TAG=false
@@ -97,10 +106,11 @@ while [[ $# -gt 0 ]]; do
         --push-release-tag)  PUSH_RELEASE_TAG=true;   shift ;;
         --skip-push)         SKIP_PUSH=true;          shift ;;
         --skip-scan)         SKIP_SCAN=true;          shift ;;
+        --update)            DEPENDENCY_UPDATES="${DEPENDENCY_UPDATES:+${DEPENDENCY_UPDATES},}$2"; shift 2 ;;
         --resume-from)       RESUME_FROM="$2";        shift 2 ;;
         *)
             echo "Unknown option: $1" >&2
-            echo "Usage: $0 [--version <v>] [--push-release-tag] [--skip-push] [--skip-scan] [--resume-from <1|2|3|4|5|6|7|8>]" >&2
+            echo "Usage: $0 [--version <v>] [--push-release-tag] [--skip-push] [--skip-scan] [--update <target>:<key>=<version>]... [--resume-from <1|2|3|4|5|6|7|8>]" >&2
             exit 1
             ;;
     esac
@@ -112,6 +122,13 @@ done
 OPENSEARCH_BUILD_BRANCH="${OPENSEARCH_VERSION}"   # checked out as a tag
 DOCKERFILE_DIR="o/opensearch-project-opensearch-build/Dockerfiles/${OPENSEARCH_VERSION}_ubi9.7"
 PATCH_FILE="${DOCKERFILE_DIR}/ppc64le-${OPENSEARCH_VERSION}-ai-services.patch"
+# Hook that applies generated dependency patches per component at checkout time
+# (applied after PATCH_FILE; it does nothing unless dependency updates are selected).
+DEPS_PATCH_FILE="${DOCKERFILE_DIR}/ppc64le-${OPENSEARCH_VERSION}-dependency-patches.patch"
+# Dependency patch scripts (Stage A generate / Stage B apply)
+DEP_SCRIPTS_REL="o/opensearch-project-opensearch-build/scripts"
+# Stage A output, mounted into the build container
+DEP_PATCHES_DIR="${WORK_DIR}/dependency-patches"
 BUILD_ENV_IMAGE="opensearch-build-env:${OPENSEARCH_VERSION}-ppc64le"
 BUILD_ENV_DOCKERFILE="${DOCKERFILE_DIR}/Dockerfile.build-env"
 IMAGE_TAG="${OPENSEARCH_VERSION}-${ARCHITECTURE}-${BUILD_NUMBER}"
@@ -240,10 +257,28 @@ if stage_should_run 4; then
         --whitespace=nowarn \
         "${SCRIPTS_DIR}/${PATCH_FILE}"
 
+    log "  Applying dependency-patch hook..."
+    git -C "${BUILD_DIR}" apply \
+        --whitespace=nowarn \
+        "${SCRIPTS_DIR}/${DEPS_PATCH_FILE}"
+
+    # Stage A — centralized generation. Nothing is applied here; Stage B runs inside
+    # opensearch-build when each component is checked out (BuilderFromSource.checkout).
+    log "  Stage A: generating dependency patches..."
+    export DEPENDENCY_UPDATES
+    bash "${SCRIPTS_DIR}/${DEP_SCRIPTS_REL}/generate-dependency-patches.sh" \
+        --manifest   "${BUILD_DIR}/manifests/${OPENSEARCH_VERSION}/opensearch-${OPENSEARCH_VERSION}.yml" \
+        --output-dir "${DEP_PATCHES_DIR}"
+
     log "  Running OpenSearch build + assemble inside container..."
+    # Scripts and generated patches are mounted read-only.
     podman run --rm \
         --ulimit nproc=65536:65536 \
         -v "${BUILD_DIR}:/opensearch-build:z" \
+        -v "${SCRIPTS_DIR}/${DEP_SCRIPTS_REL}:/ppc-scripts:ro,z" \
+        -v "${DEP_PATCHES_DIR}:/ppc-dependency-patches:ro,z" \
+        -e PPC_DEPENDENCY_PATCHES_DIR=/ppc-dependency-patches \
+        -e PPC_APPLY_DEPENDENCY_PATCHES=/ppc-scripts/apply-dependency-patches.sh \
         -w /opensearch-build \
         --entrypoint '' \
         "${BUILD_ENV_IMAGE}" \

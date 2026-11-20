@@ -1,0 +1,48 @@
+diff --git a/src/build_workflow/builder_from_source.py b/src/build_workflow/builder_from_source.py
+index da593ad..5e04a5f 100644
+--- a/src/build_workflow/builder_from_source.py
++++ b/src/build_workflow/builder_from_source.py
+@@ -7,6 +7,7 @@
+ 
+ import os
+ import logging
++import shlex
+ 
+ from build_workflow.build_recorder import BuildRecorder
+ from build_workflow.builder import Builder
+@@ -28,10 +29,35 @@ class BuilderFromSource(Builder):
+             self.component.working_directory,
+         )
+ 
++        self._apply_dependency_patches()
+         self._apply_ppc64le_gradle_fix()
+         self._apply_kotlin_version_fix()
+         self._apply_security_non_fips_fix()
+ 
++    def _apply_dependency_patches(self) -> None:
++        """
++        Deferred application of the dependency patches generated up front (generate-dependency-patches.sh).
++        Runs for this component only, right after its checkout and before its build script runs
++        ./gradlew, so Gradle reads the patched gradle/libs.versions.toml. Components without a
++        generated patch are left unchanged. A failure raises and stops this component's build.
++        """
++        patches_dir = os.environ.get("PPC_DEPENDENCY_PATCHES_DIR")
++        if not patches_dir:
++            logging.info(f"PPC_DEPENDENCY_PATCHES_DIR not set; no dependency patches for {self.component.name}")
++            return
++
++        script = os.environ.get("PPC_APPLY_DEPENDENCY_PATCHES")
++        if not script:
++            raise RuntimeError("PPC_DEPENDENCY_PATCHES_DIR is set but PPC_APPLY_DEPENDENCY_PATCHES is not")
++
++        command = " ".join([
++            "bash", shlex.quote(script),
++            "--patches-dir", shlex.quote(patches_dir),
++            "--component", shlex.quote(self.component.name),
++            "--repo-dir", shlex.quote(self.git_repo.dir),
++        ])
++        self.git_repo.execute(command)
++
+     def _apply_ppc64le_gradle_fix(self) -> None:
+         """
+         Apply ppc64le architecture fix for Gradle builds.
