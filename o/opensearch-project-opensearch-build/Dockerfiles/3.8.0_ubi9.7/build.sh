@@ -7,19 +7,12 @@
 #   2. Checkout opensearch-build (tag 3.8.0) and build-scripts (opensearch-3.8.0)
 #   3. Build the build-env image
 #   4. Apply patch, run build.sh + assemble.sh inside container, copy dist tar
-#      (jvector and prometheus-exporter are NOT in the main manifest and are
-#       therefore NOT bundled into the assembled tarball)
-#   4b. Build opensearch-jvector and opensearch-prometheus-exporter separately
-#       using extra-plugins-3.8.0.yml; copy their zips to ARTIFACTS_DIR/plugin-zips/
 #   5. Build the final OpenSearch container image
-#      (plugin zips from 4b are placed in the image for optional installation)
 #   6. Run Trivy security scans (JSON + table), save reports to ARTIFACTS_DIR
 #   7. Push image to ICR (requires IBM_CLOUD_APIKEY env var)
 #
 # Artifacts saved to ARTIFACTS_DIR (default: /var/jenkins/artifacts/opensearch):
-#   - opensearch-3.8.0-linux-ppc64le.tar.gz        (assembled dist; no extra plugins)
-#   - plugin-zips/opensearch-jvector-*.zip
-#   - plugin-zips/prometheus-exporter-*.zip
+#   - opensearch-3.8.0-linux-ppc64le.tar.gz        (assembled dist)
 #   - trivy-report/trivy-results.json
 #   - trivy-report/trivy-results.txt
 #
@@ -33,70 +26,8 @@
 #     --resume-from <N>    Resume from stage N; useful after a failed run
 #                          where earlier stages already succeeded.
 #                          Stages: 1=clean 2=checkout 3=build-env 4=artifacts
-#                                  4b=extra-plugins 5=container-image 6=scan 7=push
-#                          Example: --resume-from 4b
-# =============================================================================
-
-set -euo pipefail
-
-# ---------------------------------------------------------------------------
-# Configuration (matches Jenkinsfile environment block)
-# ---------------------------------------------------------------------------
-OPENSEARCH_VERSION="3.8.0"
-ARCHITECTURE="ppc64le"
-PLATFORM="linux"
-
-# Where to persist final artifacts on the host
-ARTIFACTS_DIR="${ARTIFACTS_DIR:-/var/jenkins/artifacts/opensearch}"
-
-# Repositories
-OPENSEARCH_BUILD_REPO="https://github.com/opensearch-project/opensearch-build.git"
-OPENSEARCH_BUILD_BRANCH="3.8.0"   # checked out as a tag
-
-BUILD_SCRIPTS_REPO="https://github.com/irapandey/build-scripts.git"
-BUILD_SCRIPTS_BRANCH="opensearch-3.8.0"
-
-# Working directories (everything lives under WORK_DIR; easy to wipe)
-WORK_DIR="${WORK_DIR:-$(pwd)/workspace}"
-BUILD_DIR="${WORK_DIR}/opensearch-build"
-SCRIPTS_DIR="${WORK_DIR}/build-scripts"
-#!/usr/bin/env bash
-# =============================================================================
-# build.sh — local equivalent of the Jenkinsfile pipeline
-#
-# Stages:
-#   1. Clean workspace + podman prune
-#   2. Checkout opensearch-build (tag 3.8.0) and build-scripts (opensearch-3.8.0)
-#   3. Build the build-env image
-#   4. Apply patch, run build.sh + assemble.sh inside container, copy dist tar
-#      (jvector and prometheus-exporter are NOT in the main manifest and are
-#       therefore NOT bundled into the assembled tarball)
-#   4b. Build opensearch-jvector and opensearch-prometheus-exporter separately
-#       using extra-plugins-3.8.0.yml; copy their zips to ARTIFACTS_DIR/plugin-zips/
-#   5. Build the final OpenSearch container image
-#      (plugin zips from 4b are placed in the image for optional installation)
-#   6. Run Trivy security scans (JSON + table), save reports to ARTIFACTS_DIR
-#   7. Push image to ICR (requires IBM_CLOUD_APIKEY env var)
-#
-# Artifacts saved to ARTIFACTS_DIR (default: /var/jenkins/artifacts/opensearch):
-#   - opensearch-3.8.0-linux-ppc64le.tar.gz        (assembled dist; no extra plugins)
-#   - plugin-zips/opensearch-jvector-*.zip
-#   - plugin-zips/prometheus-exporter-*.zip
-#   - trivy-report/trivy-results.json
-#   - trivy-report/trivy-results.txt
-#
-# Usage:
-#   export IBM_CLOUD_APIKEY="<your-iam-api-key>"
-#   ./build.sh [--skip-push] [--skip-scan] [--resume-from <stage>]
-#
-#   Flags:
-#     --skip-push          Skip the ICR push stage
-#     --skip-scan          Skip the Trivy scan stage
-#     --resume-from <N>    Resume from stage N; useful after a failed run
-#                          where earlier stages already succeeded.
-#                          Stages: 1=clean 2=checkout 3=build-env 4=artifacts
-#                                  4b=extra-plugins 5=container-image 6=scan 7=push
-#                          Example: --resume-from 4b
+#                                  5=container-image 6=scan 7=push
+#                          Example: --resume-from 5
 # =============================================================================
 
 set -euo pipefail
@@ -155,7 +86,7 @@ while [[ $# -gt 0 ]]; do
         --resume-from)  RESUME_FROM="$2"; shift 2 ;;
         *)
             echo "Unknown option: $1" >&2
-            echo "Usage: $0 [--skip-push] [--skip-scan] [--resume-from <1|2|3|4|4b|5|6|7>]" >&2
+            echo "Usage: $0 [--skip-push] [--skip-scan] [--resume-from <1|2|3|4|5|6|7>]" >&2
             exit 1
             ;;
     esac
@@ -170,7 +101,7 @@ warn() { echo -e "\033[1;33m    ⚠ $*\033[0m"; }
 die()  { echo -e "\033[1;31m    ✘ $*\033[0m" >&2; exit 1; }
 
 # Ordered stage list — used to resolve --resume-from comparisons.
-STAGE_ORDER=(1 2 3 4 4b 5 6 7)
+STAGE_ORDER=(1 2 3 4 5 6 7)
 
 stage_index() {
     local s="$1" i=0
@@ -187,7 +118,7 @@ _validate_resume_from() {
     if [[ -z "${_RESUME_IDX}" ]]; then
         _RESUME_IDX=$(stage_index "${RESUME_FROM}")
         [[ "${_RESUME_IDX}" -ge 0 ]] || \
-            die "Invalid --resume-from value '${RESUME_FROM}'. Valid: 1 2 3 4 4b 5 6 7"
+            die "Invalid --resume-from value '${RESUME_FROM}'. Valid: 1 2 3 4 5 6 7"
     fi
 }
 
@@ -319,80 +250,6 @@ if stage_should_run 4; then
 fi
 
 # ---------------------------------------------------------------------------
-# Stage 4b — Build extra plugins by cloning their repos and running build scripts
-# ---------------------------------------------------------------------------
-if stage_should_run 4b; then
-    log "STAGE 4b — Build extra plugins (opensearch-jvector, opensearch-prometheus-exporter)"
-
-    PLUGIN_ZIPS_HOST="${ARTIFACTS_DIR}/plugin-zips"
-    mkdir -p "${PLUGIN_ZIPS_HOST}"
-
-    # ---- opensearch-jvector ------------------------------------------------
-    JVECTOR_DIR="${WORK_DIR}/opensearch-jvector"
-
-    log "  Cloning opensearch-jvector @ tag ${OPENSEARCH_VERSION}.0..."
-    git clone --depth=1 --branch "${OPENSEARCH_VERSION}.0" \
-        https://github.com/opensearch-project/opensearch-jvector.git "${JVECTOR_DIR}"
-
-    log "  Building opensearch-jvector..."
-    podman run --rm \
-        --ulimit nproc=65536:65536 \
-        -v "${JVECTOR_DIR}:/plugin-src:z" \
-        -v "${BUILD_DIR}/scripts:/opensearch-build/scripts:z" \
-        -w /plugin-src \
-        --entrypoint '' \
-        "${BUILD_ENV_IMAGE}" \
-        bash -c 'set -euo pipefail && \
-            /opensearch-build/scripts/components/opensearch-jvector/build.sh \
-                -v '"${OPENSEARCH_VERSION}"' \
-                -s false \
-                -p '"${PLATFORM}"' \
-                -a '"${ARCHITECTURE}"' \
-                -o artifacts'
-
-    found=$(find "${JVECTOR_DIR}/artifacts/plugins" -name "opensearch-jvector-*.zip" 2>/dev/null | head -1)
-    if [[ -n "${found}" ]]; then
-        cp "${found}" "${PLUGIN_ZIPS_HOST}/"
-        ok "  Saved: $(basename "${found}")"
-    else
-        die "opensearch-jvector zip not found after build"
-    fi
-
-    # ---- opensearch-prometheus-exporter ------------------------------------
-    PROMETHEUS_DIR="${WORK_DIR}/opensearch-prometheus-exporter"
-
-    log "  Cloning opensearch-prometheus-exporter @ tag ${OPENSEARCH_VERSION}.0..."
-    git clone --depth=1 --branch "${OPENSEARCH_VERSION}.0" \
-        https://github.com/opensearch-project/opensearch-prometheus-exporter.git "${PROMETHEUS_DIR}"
-
-    log "  Building opensearch-prometheus-exporter..."
-    podman run --rm \
-        --ulimit nproc=65536:65536 \
-        -v "${PROMETHEUS_DIR}:/plugin-src:z" \
-        -v "${BUILD_DIR}/scripts:/opensearch-build/scripts:z" \
-        -w /plugin-src \
-        --entrypoint '' \
-        "${BUILD_ENV_IMAGE}" \
-        bash -c 'set -euo pipefail && \
-            /opensearch-build/scripts/default/opensearch/build.sh \
-                -v '"${OPENSEARCH_VERSION}"' \
-                -s false \
-                -p '"${PLATFORM}"' \
-                -a '"${ARCHITECTURE}"' \
-                -o artifacts'
-
-    found=$(find "${PROMETHEUS_DIR}/artifacts/plugins" -name "prometheus-exporter-*.zip" 2>/dev/null | head -1)
-    if [[ -n "${found}" ]]; then
-        cp "${found}" "${PLUGIN_ZIPS_HOST}/"
-        ok "  Saved: $(basename "${found}")"
-    else
-        die "prometheus-exporter zip not found after build"
-    fi
-
-    ok "Stage 4b complete — plugin zips at ${PLUGIN_ZIPS_HOST}/"
-fi
-
-# ---------------------------------------------------------------------------
 # Stage 5 — Build final container image
 # ---------------------------------------------------------------------------
 if stage_should_run 5; then
@@ -414,22 +271,6 @@ if stage_should_run 5; then
     # Assembled tarball — rename to what the Dockerfile expects
     cp "${BUILD_DIR}/tar/dist/opensearch/opensearch-${OPENSEARCH_VERSION}-linux-${ARCHITECTURE}.tar.gz" \
         "${DOCKER_CONTEXT}/opensearch-ppc64le.tgz"
-
-    # Copy extra plugin zips (built in Stage 4b) into the Docker context so the
-    # Dockerfile can place them in the image for optional/manual installation.
-    # These zips are NOT installed into OpenSearch at image build time; they are
-    # provided for operators who want to install them post-deployment.
-    PLUGIN_ZIPS_DIR="${DOCKER_CONTEXT}/plugin-zips"
-    mkdir -p "${PLUGIN_ZIPS_DIR}"
-    for zip_pattern in "opensearch-jvector-*.zip" "prometheus-exporter-*.zip"; do
-        found=$(find "${ARTIFACTS_DIR}/plugin-zips" -name "${zip_pattern}" 2>/dev/null | head -1)
-        if [[ -n "${found}" ]]; then
-            cp "${found}" "${PLUGIN_ZIPS_DIR}/"
-            ok "  Included plugin zip: $(basename "${found}")"
-        else
-            warn "  Plugin zip not found for pattern '${zip_pattern}' — skipping"
-        fi
-    done
 
     BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 

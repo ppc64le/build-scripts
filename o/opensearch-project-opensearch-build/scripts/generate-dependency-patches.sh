@@ -17,8 +17,11 @@
 #
 # Usage:
 #   generate-dependency-patches.sh --manifest <opensearch-x.y.z.yml> --output-dir <dir> \
-#       [--update <target>:<version-key>=<version>]...
+#       [--update <target>:<version-key>=<version>]... [--base-patch <component>=<file>]...
 #   Updates may also be given in $DEPENDENCY_UPDATES (comma/space/newline separated).
+#   --base-patch: a PPC patch that build applies to <component> BEFORE the dependency patch
+#       (for example 3.8.0 opensearch.patch, which already edits the catalog). Its catalog hunk is
+#       applied to the baseline first, so the generated patch applies on top of it.
 #   <version-key> is a key in the [versions] table of the catalog.
 #   Example: --update security:guava=33.7.3-jre --update opensaml:open_saml=5.2.4
 #
@@ -39,12 +42,14 @@ OPENSAML_KEYS=" open_saml open_saml_shib "
 MANIFEST=""
 OUTPUT_DIR=""
 UPDATES=()
+BASE_PATCHES=()   # "component=file"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --manifest)   [[ $# -ge 2 ]] || usage; MANIFEST="$2";   shift 2 ;;
         --output-dir) [[ $# -ge 2 ]] || usage; OUTPUT_DIR="$2"; shift 2 ;;
         --update)     [[ $# -ge 2 ]] || usage; UPDATES+=("$2");  shift 2 ;;
+        --base-patch) [[ $# -ge 2 ]] || usage; BASE_PATCHES+=("$2"); shift 2 ;;
         -h|--help)    usage ;;
         *)            echo "[ERROR] Unknown option: $1" >&2; usage ;;
     esac
@@ -166,6 +171,23 @@ for component in OpenSearch security; do
     cur="${WORK}/${component}.cur"
     git -C "${WORK}/${component}.git" show "FETCH_HEAD:${CATALOG_REL}" > "${cur}" \
         || fail "${CATALOG_REL} not found in ${repo}@${ref}"
+
+    # Build applies a base patch to this component before the dependency patch. Apply its
+    # catalog hunk to the baseline so the generated patch stacks on top of it.
+    base_patch=""
+    for b in "${BASE_PATCHES[@]:-}"; do
+        [[ "${b}" == "${component}="* ]] && base_patch="${b#*=}"
+    done
+    if [[ -n "${base_patch}" ]]; then
+        [[ -f "${base_patch}" ]] || fail "Base patch not found: ${base_patch}"
+        base_patch="$(cd "$(dirname "${base_patch}")" && pwd)/$(basename "${base_patch}")"
+        git -C "${WORK}/${component}.git" checkout -q FETCH_HEAD -- "${CATALOG_REL}" \
+            || fail "Cannot check out ${CATALOG_REL} from ${repo}@${ref}"
+        git -C "${WORK}/${component}.git" apply --include="${CATALOG_REL}" --whitespace=nowarn "${base_patch}" \
+            || fail "Base patch ${base_patch} does not apply to ${CATALOG_REL} of ${repo}@${ref}"
+        cp "${WORK}/${component}.git/${CATALOG_REL}" "${cur}"
+        info "${component}: baseline includes catalog changes from $(basename "${base_patch}")."
+    fi
 
     mkdir -p "${OUTPUT_DIR}/${component}"
     for t in "${targets[@]}"; do

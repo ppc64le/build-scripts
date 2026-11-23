@@ -96,7 +96,6 @@ RUN groupadd -g $GID opensearch && \
 
 # Prepare working directory and copy artifacts
 COPY * $TEMP_DIR/
-COPY plugin-zips $TEMP_DIR/plugin-zips/
 RUN ls -l $TEMP_DIR && \
     tar -xzpf /tmp/opensearch/opensearch-ppc64le.tgz -C $OPENSEARCH_HOME --strip-components=1 && \
     MAJOR_VERSION_ENTRYPOINT=`echo $VERSION | cut -d. -f1` && \
@@ -108,8 +107,6 @@ RUN ls -l $TEMP_DIR && \
     cp -v $TEMP_DIR/opensearch-docker-entrypoint-$MAJOR_VERSION_ENTRYPOINT.x.sh $OPENSEARCH_HOME/opensearch-docker-entrypoint.sh && \
     cp -v $TEMP_DIR/opensearch-onetime-setup.sh $OPENSEARCH_HOME/ && \
     cp -v $TEMP_DIR/log4j2.properties $TEMP_DIR/opensearch.yml $OPENSEARCH_PATH_CONF/ && \
-    mkdir -p $OPENSEARCH_HOME/plugin-zips && \
-    (cp -v $TEMP_DIR/plugin-zips/*.zip $OPENSEARCH_HOME/plugin-zips/ 2>/dev/null || true) && \
     ls -l $OPENSEARCH_HOME && \
     rm -rf $TEMP_DIR
 

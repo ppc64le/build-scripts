@@ -1,4 +1,4 @@
-# PPC dependency version updates (OpenSearch 3.10.0)
+# PPC dependency version updates (OpenSearch 3.10.0 and 3.8.0)
 
 Change OpenSearch, Security or OpenSAML dependency versions with one flag.
 You do not edit upstream repositories and you do not regenerate the PPC source patches.
@@ -12,8 +12,12 @@ Two stages. Nothing is applied until the matching component is checked out.
 | A | `scripts/generate-dependency-patches.sh` | Host, in `build.sh` stage 4, after the base PPC patch | Fetches the upstream `gradle/libs.versions.toml` at the manifest ref, changes only the keys you selected, writes a patch per selected target. |
 | B | `scripts/apply-dependency-patches.sh` | Inside the build container, from `BuilderFromSource.checkout()` | Applies that component's patches right after its git checkout, before its `build.sh` runs `./gradlew`. |
 
-Stage B is wired in by `Dockerfiles/3.10.0_ubi9.7/ppc64le-3.10.0-dependency-patches.patch`.
-It is applied to opensearch-build right after `ppc64le-3.10.0-ai-services.patch`.
+Stage B is wired in by a per-release hook patch for opensearch-build:
+
+| Release | Hook patch | Applied after |
+|---------|------------|---------------|
+| 3.10.0 | `Dockerfiles/3.10.0_ubi9.7/ppc64le-3.10.0-dependency-patches.patch` | `ppc64le-3.10.0-ai-services.patch` |
+| 3.8.0 | `Dockerfiles/3.8.0_ubi9.7/ppc64le-3.8.0-dependency-patches.patch` | `ppc64le-3.8.0-ai-services.patch` |
 
 Guarantees:
 
@@ -56,6 +60,23 @@ to the security checkout, as a second patch (`20-opensaml.patch`) after `10-secu
 
 With no updates selected, no patch is generated and the build is unchanged.
 
+## Base patches (3.8.0)
+
+The 3.8.0 base patch already edits OpenSearch's `gradle/libs.versions.toml`
+(`opensearch.patch`: jackson, netty, bouncycastle). A patch generated from the pristine
+upstream catalog would not apply on top of it. Pass `--base-patch <component>=<file>`
+to Stage A so it applies that patch's catalog hunk to the baseline first:
+
+```bash
+scripts/generate-dependency-patches.sh \
+  --base-patch OpenSearch=opensearch.patch \
+  --update opensearch:netty=4.1.130.Final ...
+```
+
+The component name must match the manifest name (`OpenSearch`, `security`).
+`security.patch` does not touch the catalog, so 3.8.0 needs a base patch for `OpenSearch` only.
+The 3.10.0 build does not need `--base-patch`.
+
 ## Verify the resolved version
 
 A changed catalog line is not proof. Check what Gradle resolves in the component checkout:
@@ -86,4 +107,5 @@ Regenerate by re-running the build; Stage A always rebuilds from the current man
 1. Copy `ppc64le-3.10.0-dependency-patches.patch` into the new `Dockerfiles/<version>/` directory.
 2. Regenerate it against the new opensearch-build tag if `builder_from_source.py` changed.
 3. Copy the `--update` / `DEPENDENCY_UPDATES` handling, `DEPS_PATCH_FILE`, and the stage 4 mounts from `Dockerfiles/3.10.0_ubi9.7/build.sh`.
-4. The two scripts are version independent. Do not copy them.
+4. If the new base patch edits a catalog, add `--base-patch` for that component.
+5. The two scripts are version independent. Do not copy them.
