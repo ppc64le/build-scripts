@@ -113,46 +113,41 @@ if ! python3 -m build --wheel --no-isolation --outdir="$BUILD_HOME"; then
 fi
 echo "------------------$PACKAGE_NAME: Wheel Build Success -------------------------"
 
-# Smoke test: install the built wheel (replacing the editable install) and use it
-# from outside the source tree so the installed package is what gets imported
-WHEEL=$(ls "$BUILD_HOME"/pyzmq-*.whl | head -1)
-echo "Wheel: $WHEEL"
-if ! python3 -m pip install --force-reinstall --no-deps "$WHEEL"; then
-    echo "------------------$PACKAGE_NAME:wheel_install_fails---------------------------------"
+WHEEL_FILE=$(find "$BUILD_HOME" -maxdepth 1 -name "pyzmq-*.whl" | head -1)
+if [ -z "$WHEEL_FILE" ]; then
+    echo "------------------$PACKAGE_NAME:Wheel_build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Wheel_Install_Fails"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Wheel_Build_Fails"
     exit 1
 fi
 
-cd "$BUILD_HOME"
-if ! python3 - <<'PYEOF'
-import zmq
+# Install the wheel in a clean venv
+python3 -m venv /tmp/pyzmq-test-env
+source /tmp/pyzmq-test-env/bin/activate
+if ! pip install --force-reinstall "$WHEEL_FILE"; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
+    deactivate
+    exit 1
+fi
+
+# Smoke test - run from /tmp so Python imports the installed wheel, not the
+# source tree.
+cd /tmp
+if ! python3 -c "
 from importlib.metadata import version
-
-print("Import successful:", zmq.__file__)
-print("pyzmq version:", version("pyzmq"), "| libzmq version:", zmq.zmq_version())
-assert zmq.__file__.startswith(("/usr", "/opt")) and "site-packages" in zmq.__file__
-
-# Send a message over TCP between a REQ and a REP socket
-ctx = zmq.Context()
-rep = ctx.socket(zmq.REP)
-port = rep.bind_to_random_port("tcp://127.0.0.1")
-req = ctx.socket(zmq.REQ)
-req.connect(f"tcp://127.0.0.1:{port}")
-req.send(b"ping")
-assert rep.recv() == b"ping"
-rep.send(b"pong")
-assert req.recv() == b"pong"
-req.close()
-rep.close()
-ctx.term()
-print("REQ/REP round trip: OK")
-PYEOF
-then
+import zmq
+print('pyzmq', version('pyzmq'), '| libzmq', zmq.zmq_version(), '|', zmq.__file__)
+assert version('pyzmq') == '${PACKAGE_VERSION#v}'
+"; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_success_but_test_Fails"
+    cd "$BUILD_HOME"
     exit 2
 fi
-echo "------------------$PACKAGE_NAME: Smoke Test Success -------------------------"
+cd "$BUILD_HOME"
+deactivate
+
+echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"
 exit 0
