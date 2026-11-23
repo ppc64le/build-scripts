@@ -40,7 +40,7 @@ yum install -y python3.14 python3.14-devel python3.14-pip \
     git gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ \
     gcc-toolset-15-gcc-gfortran gcc-toolset-15-libatomic-devel \
     cmake ninja-build make \
-    openblas-devel libjpeg-turbo-devel pkg-config \
+    libjpeg-turbo-devel pkg-config \
     openssl-devel libffi-devel zlib-devel \
     wget xz-devel bzip2-devel lz4-devel \
     libevent libtool patch tzdata binutils \
@@ -61,6 +61,39 @@ fi
 
 export CC="$(which gcc)"
 export CXX="$(which g++)"
+
+# ---------------------------------------------------------------------------
+# Build and install OpenBLAS v0.3.33 from source
+# ---------------------------------------------------------------------------
+OPENBLAS_VERSION=v0.3.33
+OPENBLAS_URL=https://github.com/OpenMathLib/OpenBLAS
+OPENBLAS_PREFIX="${CURRENT_DIR}/openblas_install"
+
+git clone "${OPENBLAS_URL}"
+cd OpenBLAS
+git checkout "${OPENBLAS_VERSION}"
+git submodule update --init
+
+export CF="${CFLAGS:-} -Wno-unused-parameter -Wno-old-style-declaration"
+unset CFLAGS
+export LDFLAGS="$(echo "${LDFLAGS:-}" | sed 's/-Wl,--gc-sections//g')"
+
+if [ -n "${FFLAGS:-}" ]; then
+    export FFLAGS="${FFLAGS/-fopenmp/ }"
+    export FFLAGS="${FFLAGS} -frecursive"
+    export LAPACK_FFLAGS="${FFLAGS}"
+fi
+
+make -j"$(nproc)" TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 \
+    USE_THREAD=1 NUM_THREADS=8 DYNAMIC_ARCH=1 INTERFACE64=0 NO_AFFINITY=1 \
+    CFLAGS="${CF}" FFLAGS="${FFLAGS:-}"
+make install PREFIX="${OPENBLAS_PREFIX}"
+
+export LD_LIBRARY_PATH="${OPENBLAS_PREFIX}/lib:${OPENBLAS_PREFIX}/lib64:${LD_LIBRARY_PATH:-}"
+export PKG_CONFIG_PATH="${OPENBLAS_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+pkg-config --modversion openblas
+
+cd "${CURRENT_DIR}"
 
 # ---------------------------------------------------------------------------
 # Python build tools and runtime dependencies
