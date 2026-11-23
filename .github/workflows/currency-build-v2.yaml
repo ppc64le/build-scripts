@@ -65,6 +65,8 @@ jobs:
   # ---------------------------------------------------------------------------
   build_info:
     runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
+    outputs:
+      runner_label: ${{ steps.resolve_runner.outputs.runner_label }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -80,6 +82,14 @@ jobs:
             '${{ inputs.v2_enabled }}' \
             '${{ inputs.trigger_all_python_builds }}' \
             '${{ inputs.build_docker }}'
+
+      - name: Resolve runner from resource_class
+        id: resolve_runner
+        run: |
+          chmod +x ./gha-script/v2-script/resolve-runner.sh
+          bash ./gha-script/v2-script/resolve-runner.sh \
+            '${{ inputs.package_json }}' \
+            '${{ inputs.large-runner-label }}'
 
       - name: Upload variable.sh as artifact
         uses: actions/upload-artifact@v4
@@ -163,188 +173,14 @@ jobs:
           path: powercore-config.env
 
   # ---------------------------------------------------------------------------
-  # Wheel build jobs — 5 for ubi9 (py310/311/312/313/314), 3 for ubi10
+  # Wheel build jobs — 4 for ubi9 (py311/312/313/314), 3 for ubi10
   # (py312/313/314), all parallel. UBI version is hardcoded per job; if
   # conditions gate which jobs run.
   # ---------------------------------------------------------------------------
-  wheel_build_ubi9_py310:
-    needs: prepare_shared_artifacts
-    if: ${{ (inputs.trigger_all_python_builds == 'true' && !contains(fromJson(inputs.package_json).ubi_version, 'ubi10')) || (inputs.trigger_all_python_builds == 'false' && (fromJson(inputs.package_json).ubi_version == '' || contains(fromJson(inputs.package_json).ubi_version, 'ubi9')) && contains(fromJson(inputs.package_json).technology_version, '3.10')) }}
-    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
-    env:
-      PYTHON_VERSION: "3.10"
-      UBI_VERSION: "ubi9"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download build-info artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-info
-
-      - name: Load variable.sh into job environment
-        run: |
-          chmod +x ./gha-script/v2-script/load_variable.sh
-          bash ./gha-script/v2-script/load_variable.sh
-
-      - name: Install system dependencies
-        run: sudo apt update -y && sudo apt install -y wget curl tar jq git
-
-      - name: Download powercore-wheels artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: powercore-wheels
-          path: powercore-wheels/
-
-      - name: Download powercore-config artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: powercore-config
-          path: .
-
-      - name: Install IBM Cloud CLI
-        run: |
-          echo "--- Installing IBM Cloud CLI ---"
-          curl -fsSL https://clis.cloud.ibm.com/install/linux | sudo sh
-          ibmcloud version
-          echo "--- Installing plugins ---"
-          ibmcloud plugin install cloud-object-storage -f
-          ibmcloud plugin install container-registry -f
-          ibmcloud plugin list
-
-      - name: Install PowerCore wheels
-        run: |
-          chmod +x ./gha-script/v2-script/install-powercore.sh
-          bash ./gha-script/v2-script/install-powercore.sh "$(pwd)/powercore-config.env"
-
-      - name: Create PowerCore queue directories
-        run: |
-          chmod +x ./gha-script/v2-script/setup-queues.sh
-          bash ./gha-script/v2-script/setup-queues.sh
-
-      - name: Start PowerCore workers
-        run: |
-          POWERCORE_UID=$(id -u powercore)
-          if [ ! -d "/run/user/${POWERCORE_UID}" ]; then
-            echo "--- Creating /run/user/${POWERCORE_UID} ---"
-            sudo mkdir -p "/run/user/${POWERCORE_UID}"
-            sudo chown "${POWERCORE_UID}:${POWERCORE_UID}" "/run/user/${POWERCORE_UID}"
-            sudo chmod 700 "/run/user/${POWERCORE_UID}"
-            sudo loginctl enable-linger powercore || true
-            sleep 3
-          fi
-          echo "--- /run/user/${POWERCORE_UID} ready ---"
-          sudo ls -la "/run/user/${POWERCORE_UID}"
-          chmod +x ./gha-script/v2-script/start-workers.sh
-          bash ./gha-script/v2-script/start-workers.sh
-
-      - name: Drop CSV into PowerCore inbox
-        id: drop_csv
-        run: |
-          chmod +x ./gha-script/v2-script/drop-csv.sh
-          bash ./gha-script/v2-script/drop-csv.sh \
-            "$POWERCORE_RUNTIME" \
-            "${{ github.run_id }}" \
-            "$PACKAGE_NAME" \
-            "$PACKAGE_VERSION" \
-            "$TECHNOLOGY" \
-            "${{ env.PYTHON_VERSION }}" \
-            "${{ env.UBI_VERSION }}" \
-            "false"
-
-      - name: Wait for PowerCore pipeline to complete
-        timeout-minutes: 180
-        run: |
-          chmod +x ./gha-script/v2-script/poll-pipeline.sh
-          bash ./gha-script/v2-script/poll-pipeline.sh \
-            "${{ steps.drop_csv.outputs.powercore_runtime }}" \
-            "${{ steps.drop_csv.outputs.csv_name }}" \
-            "$PACKAGE_NAME"
-
-      - name: Package build logs
-        if: always()
-        run: |
-          chmod +x ./gha-script/v2-script/print-build-log.sh
-          bash ./gha-script/v2-script/print-build-log.sh \
-            "$POWERCORE_RUNTIME"
-
-      - name: Verify V2 wheel was produced
-        run: |
-          chmod +x ./gha-script/v2-script/verify-wheel.sh
-          bash ./gha-script/v2-script/verify-wheel.sh \
-            "$POWERCORE_RUNTIME" \
-            "$PACKAGE_NAME"
-
-      - name: Install system scanner packages
-        run: |
-          sudo apt update -y
-          sudo apt install -y file git jq unzip python3.12 python3.12-venv python3-pip build-essential patch wget tar libffi-dev zlib1g-dev libssl-dev libxml2-dev libxslt1-dev libicu-dev pkg-config
-
-      - name: Download scan-tools artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: scan-tools
-
-      - name: Prepare scan tools
-        run: |
-          chmod +x scan-tools-bin/grype
-          tar -xzf scancode-toolkit-src.tar.gz
-
-      - name: Prepare V2 scan workspace
-        run: |
-          chmod +x ./gha-script/v2-script/prepare_scan_workspace.sh
-          bash ./gha-script/v2-script/prepare_scan_workspace.sh \
-            "$POWERCORE_RUNTIME" \
-            "$PACKAGE_NAME" \
-            "$GITHUB_WORKSPACE/v2-scan-workspace"
-
-      - name: Run V2 source scans
-        run: |
-          if [ -d "$GITHUB_WORKSPACE/v2-scan-workspace/package-cache/source" ]; then
-            chmod +x ./gha-script/v2-script/scan_source.sh
-            GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype" \
-              bash ./gha-script/v2-script/scan_source.sh "$GITHUB_WORKSPACE/v2-scan-workspace" "$GITHUB_WORKSPACE"
-          else
-            echo "No source directory was preserved by PowerCore; source scans skipped."
-          fi
-
-      - name: Run V2 wheel scans
-        run: |
-          if find "$GITHUB_WORKSPACE/v2-scan-workspace/wheels" -maxdepth 1 -name '*.whl' -print -quit | grep -q .; then
-            chmod +x ./gha-script/v2-script/scan_wheel.sh
-            GRYPE_BIN="$GITHUB_WORKSPACE/scan-tools-bin/grype" \
-              bash ./gha-script/v2-script/scan_wheel.sh "$GITHUB_WORKSPACE/v2-scan-workspace" "$GITHUB_WORKSPACE"
-          else
-            echo "No wheel was preserved by PowerCore; wheel scans skipped."
-          fi
-
-      - name: Remove scanner installation files
-        run: |
-          rm -rf "$GITHUB_WORKSPACE/v2-scan-workspace/scancode-toolkit"
-          rm -f "$GITHUB_WORKSPACE/v2-scan-workspace/package-cache"/*.tar.gz
-          rm -f "$GITHUB_WORKSPACE/v2-scan-workspace/package-cache"/*checksums.txt
-
-      - name: Archive and upload V2 scan results to COS
-        env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
-          GHA_RUN_ID: ${{ github.run_id }}
-        run: |
-          ARTIFACT_NAME="${PACKAGE_NAME}-${PACKAGE_VERSION}-v2-scan-result-${{ env.UBI_VERSION }}-${{ env.PYTHON_VERSION }}"
-          tar -czf "${ARTIFACT_NAME}.tar.gz" v2-scan-workspace
-          chmod +x ./gha-script/v2-script/upload_to_cos.sh
-          bash ./gha-script/v2-script/upload_to_cos.sh "${ARTIFACT_NAME}.tar.gz"
-
-      - name: Cleanup — teardown PowerCore and remove downloaded files
-        if: always()
-        run: |
-          chmod +x ./gha-script/v2-script/cleanup-powercore.sh
-          bash ./gha-script/v2-script/cleanup-powercore.sh
-
   wheel_build_ubi9_py311:
-    needs: prepare_shared_artifacts
+    needs: [build_info, prepare_shared_artifacts]
     if: ${{ (inputs.trigger_all_python_builds == 'true' && !contains(fromJson(inputs.package_json).ubi_version, 'ubi10')) || (inputs.trigger_all_python_builds == 'false' && (fromJson(inputs.package_json).ubi_version == '' || contains(fromJson(inputs.package_json).ubi_version, 'ubi9')) && contains(fromJson(inputs.package_json).technology_version, '3.11')) }}
-    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
+    runs-on: ${{ needs.build_info.outputs.runner_label }}
     env:
       PYTHON_VERSION: "3.11"
       UBI_VERSION: "ubi9"
@@ -516,9 +352,9 @@ jobs:
           bash ./gha-script/v2-script/cleanup-powercore.sh
 
   wheel_build_ubi9_py312:
-    needs: prepare_shared_artifacts
+    needs: [build_info, prepare_shared_artifacts]
     if: ${{ (inputs.trigger_all_python_builds == 'true' && !contains(fromJson(inputs.package_json).ubi_version, 'ubi10')) || (inputs.trigger_all_python_builds == 'false' && (fromJson(inputs.package_json).ubi_version == '' || contains(fromJson(inputs.package_json).ubi_version, 'ubi9')) && contains(fromJson(inputs.package_json).technology_version, '3.12')) }}
-    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
+    runs-on: ${{ needs.build_info.outputs.runner_label }}
     env:
       PYTHON_VERSION: "3.12"
       UBI_VERSION: "ubi9"
@@ -690,9 +526,9 @@ jobs:
           bash ./gha-script/v2-script/cleanup-powercore.sh
 
   wheel_build_ubi9_py313:
-    needs: prepare_shared_artifacts
+    needs: [build_info, prepare_shared_artifacts]
     if: ${{ (inputs.trigger_all_python_builds == 'true' && !contains(fromJson(inputs.package_json).ubi_version, 'ubi10')) || (inputs.trigger_all_python_builds == 'false' && (fromJson(inputs.package_json).ubi_version == '' || contains(fromJson(inputs.package_json).ubi_version, 'ubi9')) && contains(fromJson(inputs.package_json).technology_version, '3.13')) }}
-    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
+    runs-on: ${{ needs.build_info.outputs.runner_label }}
     env:
       PYTHON_VERSION: "3.13"
       UBI_VERSION: "ubi9"
@@ -864,9 +700,9 @@ jobs:
           bash ./gha-script/v2-script/cleanup-powercore.sh
 
   wheel_build_ubi9_py314:
-    needs: prepare_shared_artifacts
+    needs: [build_info, prepare_shared_artifacts]
     if: ${{ (inputs.trigger_all_python_builds == 'true' && !contains(fromJson(inputs.package_json).ubi_version, 'ubi10')) || (inputs.trigger_all_python_builds == 'false' && (fromJson(inputs.package_json).ubi_version == '' || contains(fromJson(inputs.package_json).ubi_version, 'ubi9')) && contains(fromJson(inputs.package_json).technology_version, '3.14')) }}
-    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
+    runs-on: ${{ needs.build_info.outputs.runner_label }}
     env:
       PYTHON_VERSION: "3.14"
       UBI_VERSION: "ubi9"
@@ -1043,9 +879,9 @@ jobs:
   # UBI and the matching technology_version is selected.
   # ---------------------------------------------------------------------------
   wheel_build_ubi10_py312:
-    needs: prepare_shared_artifacts
+    needs: [build_info, prepare_shared_artifacts]
     if: ${{ (inputs.trigger_all_python_builds == 'true' && contains(fromJson(inputs.package_json).ubi_version, 'ubi10')) || (inputs.trigger_all_python_builds == 'false' && contains(fromJson(inputs.package_json).ubi_version, 'ubi10') && contains(fromJson(inputs.package_json).technology_version, '3.12')) }}
-    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
+    runs-on: ${{ needs.build_info.outputs.runner_label }}
     env:
       PYTHON_VERSION: "3.12"
       UBI_VERSION: "ubi10"
@@ -1217,9 +1053,9 @@ jobs:
           bash ./gha-script/v2-script/cleanup-powercore.sh
 
   wheel_build_ubi10_py313:
-    needs: prepare_shared_artifacts
+    needs: [build_info, prepare_shared_artifacts]
     if: ${{ (inputs.trigger_all_python_builds == 'true' && contains(fromJson(inputs.package_json).ubi_version, 'ubi10')) || (inputs.trigger_all_python_builds == 'false' && contains(fromJson(inputs.package_json).ubi_version, 'ubi10') && contains(fromJson(inputs.package_json).technology_version, '3.13')) }}
-    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
+    runs-on: ${{ needs.build_info.outputs.runner_label }}
     env:
       PYTHON_VERSION: "3.13"
       UBI_VERSION: "ubi10"
@@ -1391,9 +1227,9 @@ jobs:
           bash ./gha-script/v2-script/cleanup-powercore.sh
 
   wheel_build_ubi10_py314:
-    needs: prepare_shared_artifacts
+    needs: [build_info, prepare_shared_artifacts]
     if: ${{ (inputs.trigger_all_python_builds == 'true' && contains(fromJson(inputs.package_json).ubi_version, 'ubi10')) || (inputs.trigger_all_python_builds == 'false' && contains(fromJson(inputs.package_json).ubi_version, 'ubi10') && contains(fromJson(inputs.package_json).technology_version, '3.14')) }}
-    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
+    runs-on: ${{ needs.build_info.outputs.runner_label }}
     env:
       PYTHON_VERSION: "3.14"
       UBI_VERSION: "ubi10"
@@ -1573,9 +1409,9 @@ jobs:
   # as-is.
   # ---------------------------------------------------------------------------
   build_package_ubi9:
-    needs: prepare_shared_artifacts
+    needs: [build_info, prepare_shared_artifacts]
     if: ${{ fromJson(inputs.package_json).technology != 'python' && (fromJson(inputs.package_json).ubi_version == '' || contains(fromJson(inputs.package_json).ubi_version, 'ubi9')) }}
-    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
+    runs-on: ${{ needs.build_info.outputs.runner_label }}
     env:
       UBI_VERSION: "ubi9"
     steps:
@@ -1754,9 +1590,9 @@ jobs:
   # as-is.
   # ---------------------------------------------------------------------------
   build_package_ubi10:
-    needs: prepare_shared_artifacts
+    needs: [build_info, prepare_shared_artifacts]
     if: ${{ fromJson(inputs.package_json).technology != 'python' && contains(fromJson(inputs.package_json).ubi_version, 'ubi10') }}
-    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le' }}
+    runs-on: ${{ needs.build_info.outputs.runner_label }}
     env:
       UBI_VERSION: "ubi10"
     steps:
@@ -1953,7 +1789,7 @@ jobs:
           docker images
       - name: Upload Docker Image
         env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          GHA_CURRENCY_SERVICE_ID_API_KEY_V2: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY_V2 }}
         run: |
           set -a
           source variable.sh
@@ -2055,7 +1891,6 @@ jobs:
   # ---------------------------------------------------------------------------
   v2_license_extraction:
     needs:
-      - wheel_build_ubi9_py310
       - wheel_build_ubi9_py311
       - wheel_build_ubi9_py312
       - wheel_build_ubi9_py313
@@ -2067,8 +1902,7 @@ jobs:
       - build_package_ubi10
     if: |
       always() &&
-      (needs.wheel_build_ubi9_py310.result == 'success' ||
-       needs.wheel_build_ubi9_py311.result == 'success' ||
+      (needs.wheel_build_ubi9_py311.result == 'success' ||
        needs.wheel_build_ubi9_py312.result == 'success' ||
        needs.wheel_build_ubi9_py313.result == 'success' ||
        needs.wheel_build_ubi9_py314.result == 'success' ||
@@ -2103,7 +1937,6 @@ jobs:
 
       - name: Write per-job build statuses for downstream summary
         env:
-          STATUS_UBI9_PY310: ${{ needs.wheel_build_ubi9_py310.result }}
           STATUS_UBI9_PY311: ${{ needs.wheel_build_ubi9_py311.result }}
           STATUS_UBI9_PY312: ${{ needs.wheel_build_ubi9_py312.result }}
           STATUS_UBI9_PY313: ${{ needs.wheel_build_ubi9_py313.result }}
@@ -2116,7 +1949,6 @@ jobs:
           NON_PYTHON_TECHNOLOGY: ${{ fromJson(inputs.package_json).technology }}
         run: |
           printf '%s\n' \
-            "STATUS_UBI9_PY310=${STATUS_UBI9_PY310}" \
             "STATUS_UBI9_PY311=${STATUS_UBI9_PY311}" \
             "STATUS_UBI9_PY312=${STATUS_UBI9_PY312}" \
             "STATUS_UBI9_PY313=${STATUS_UBI9_PY313}" \
@@ -2153,7 +1985,6 @@ jobs:
   # ---------------------------------------------------------------------------
   cleanup_artifacts:
     needs:
-      - wheel_build_ubi9_py310
       - wheel_build_ubi9_py311
       - wheel_build_ubi9_py312
       - wheel_build_ubi9_py313
