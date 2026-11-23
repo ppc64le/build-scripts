@@ -53,7 +53,7 @@ export CXX="$(which g++)"
 # ---------------------------------------------------------------------------
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
-git checkout v0.3.29
+git checkout v0.3.33
 git submodule update --init
 
 
