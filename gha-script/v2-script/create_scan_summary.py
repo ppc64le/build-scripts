@@ -42,7 +42,6 @@ package_version = sys.argv[3] if len(sys.argv) > 3 else os.environ.get("PACKAGE_
 
 # Per-job statuses injected from workflow needs context
 job_statuses = {
-    ("ubi9",  "3.10"): os.environ.get("STATUS_UBI9_PY310",  "skipped"),
     ("ubi9",  "3.11"): os.environ.get("STATUS_UBI9_PY311",  "skipped"),
     ("ubi9",  "3.12"): os.environ.get("STATUS_UBI9_PY312",  "skipped"),
     ("ubi9",  "3.13"): os.environ.get("STATUS_UBI9_PY313",  "skipped"),

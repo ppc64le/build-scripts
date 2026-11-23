@@ -72,7 +72,7 @@ for UBI_VER in ubi9 ubi10; do
   if [[ -n "${NON_PYTHON_TECH}" ]]; then
     PY_VERS="${NON_PYTHON_TECH}"
   elif [[ "${UBI_VER}" == "ubi9" ]]; then
-    PY_VERS="3.10 3.11 3.12 3.13 3.14"
+    PY_VERS="3.11 3.12 3.13 3.14"
   else
     PY_VERS="3.12 3.13 3.14"
   fi
