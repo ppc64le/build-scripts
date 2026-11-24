@@ -1,15 +1,19 @@
 {
-    "maintainer": "stutiibm",
+    "maintainer": "Shivender-Singh",
     "package_name": "json",
-    "github_url": "https://github.com/makamaka/JSON.git",
-    "version": "4.10",
-    "default_branch": "master",
+    "github_url": "https://github.com/nlohmann/json",
+    "version": "v3.12.0",
+    "default_branch": "main",
     "package_dir": "j/json",
-    "build_script": "json_ubi_9.3.sh",
-    "docker_build": false,
+    "build_script": "json_ubi_10.2.sh",
     "validate_build_script": true,
     "use_non_root_user": false,
-    "4.*": {  
-        "build_script": "json_ubi_9.3.sh"
-     }
+    "docker_build": false,
+    "wheel_build": true,
+    "v3.12.0": {
+        "build_script": "json_ubi_10.2.sh"
+    },
+    "*": {
+        "build_script": "json_ubi_10.2.sh"
+    }
 }
