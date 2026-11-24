@@ -5,7 +5,7 @@
   "v2-enabled": true,
   "language": "Python",
   "github_url": "https://github.com/pytorch/pytorch",
-  "version": "v2.6.0",
+  "version": "v2.15.0",
   "wheel_build": true,
   "resource_class": "heavy",
   "default_branch": "main",

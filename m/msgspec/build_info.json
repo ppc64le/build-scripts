@@ -2,7 +2,7 @@
   "maintainer": "Harithanagothu2",
   "package_name": "msgspec",
   "github_url": "https://github.com/jcrist/msgspec",
-  "version": "0.19.0",
+  "version": "0.22.0",
   "language": "Python",
   "default_branch": "main",
   "build_script": "msgspec.sh",

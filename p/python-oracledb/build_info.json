@@ -3,7 +3,7 @@
   "package_name": "python-oracledb",
   "wheel_name": "oracledb",
   "github_url": "https://github.com/oracle/python-oracledb",
-  "version": "v2.5.1",
+  "version": "v26.1.0",
   "language": "Python",
   "wheel_build": true,
   "default_branch": "main",

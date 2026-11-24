@@ -2,7 +2,7 @@
   "maintainer": "chandan-abhyankar",
   "package_name": "shapely",
   "github_url": "https://github.com/shapely/shapely",
-  "version": "2.0.6",
+  "version": "2.2.0",
   "language": "Python",
   "v2-enabled": true,
   "wheel_build": true,

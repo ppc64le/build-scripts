@@ -2,7 +2,7 @@
   "maintainer": "kiranNukal",
   "package_name": "matplotlib",
   "github_url": "https://github.com/matplotlib/matplotlib",
-  "version": "v3.10.3",
+  "version": "v3.11.2",
   "wheel_build": true,
   "default_branch": "main",
   "package_dir": "m/matplotlib",

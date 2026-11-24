@@ -2,7 +2,7 @@
   "maintainer": "kiranNukal",
   "package_name": "tesserocr",
   "github_url": "https://github.com/sirfz/tesserocr",
-  "version": "v2.9.1",
+  "version": "v2.12.0",
   "wheel_build": true,
   "language": "Python",
   "package_dir": "t/tesserocr",

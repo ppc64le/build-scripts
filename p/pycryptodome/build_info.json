@@ -3,7 +3,7 @@
   "package_name": "pycryptodome",
   "language": "Python",
   "github_url": "https://github.com/Legrandin/pycryptodome",
-  "version": "v3.21.0",
+  "version": "v4.3.0",
   "default_branch": "master",
   "build_script": "pycryptodome.sh",
   "package_dir": "p/pycryptodome",

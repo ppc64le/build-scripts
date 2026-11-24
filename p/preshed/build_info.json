@@ -2,7 +2,7 @@
   "maintainer": "bhagyashrigais",
   "package_name": "preshed",
   "github_url": "https://github.com/explosion/preshed",
-  "version": "release-v3.0.13",
+  "version": "release-v3.0.15",
   "default_branch": "master",
   "build_script": "preshed.sh",
   "package_dir": "p/preshed",

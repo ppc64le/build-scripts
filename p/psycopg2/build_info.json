@@ -2,7 +2,7 @@
   "maintainer": "viveksharma20ibm",
   "package_name": "psycopg2",
   "github_url": "https://github.com/psycopg/psycopg2",
-  "version": "2.9.10",
+  "version": "2.9.13",
   "language": "Python",
   "default_branch": "master",
   "build_script": "psycopg2.sh",

@@ -3,7 +3,7 @@
   "package_name": "xgboost",
   "wheel_name": "xgboost-cpu",
   "github_url": "https://github.com/dmlc/xgboost",
-  "version": "v3.1.3",
+  "version": "v3.4.2",
   "default_branch": "master",
   "package_dir": "x/xgboost",
   "build_script": "xgboost.sh",

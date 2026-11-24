@@ -2,14 +2,22 @@
   "maintainer": "akash-kaothalkar",
   "package_name": "vllm",
   "github_url": "https://github.com/vllm-project/vllm",
-  "version": "v0.30.0",
+  "version": "v0.33.0",
   "wheel_build": true,
   "default_branch": "main",
-  "build_script": "vllm_v0.27.0_ubi_9.5.sh",
+  "build_script": "vllm_v0.33.0_ubi_9.6.sh",
   "package_dir": "v/vllm",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "required_versions": {
+    "Releases": [
+      "*"
+    ],
+    "Tags": [
+      "v0.33.0"
+    ]
+  },
   "auditwheel_exclude": [
     "libc10.so",
     "libtorch.so",
@@ -56,10 +64,7 @@
   "v0.26.0": {
     "build_script": "vllm_v0.25.1_ubi_9.5.sh"
   },
-  "v0.27.0": {
-    "build_script": "vllm_v0.27.0_ubi_9.5.sh"
-  },
-  "v0.27.1": {
+  "v0.27.*": {
     "build_script": "vllm_v0.27.0_ubi_9.5.sh"
   },
   "v0.28.0": {
@@ -71,7 +76,13 @@
   "v0.30.0": {
     "build_script": "vllm_v0.27.0_ubi_9.5.sh"
   },
+  "v0.33.*": {
+    "build_script": "vllm_v0.33.0_ubi_9.6.sh"
+  },
+  "v0.33.0": {
+    "build_script": "vllm_v0.33.0_ubi_9.6.sh"
+  },
   "*": {
-    "build_script": "vllm_v0.27.0_ubi_9.5.sh"
+    "build_script": "vllm_v0.33.0_ubi_9.6.sh"
   }
 }

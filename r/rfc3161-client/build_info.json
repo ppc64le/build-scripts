@@ -2,7 +2,7 @@
    "maintainer": "bhagyashrigais",
    "package_name": "rfc3161-client",
    "github_url": "https://github.com/trailofbits/rfc3161-client",
-   "version": "v1.0.6",
+   "version": "v1.0.9",
    "default_branch": "main",
    "build_script": "rfc3161-client.sh",
    "package_dir": "r/rfc3161-client",
