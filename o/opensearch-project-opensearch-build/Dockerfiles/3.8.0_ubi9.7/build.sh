@@ -236,9 +236,20 @@ if stage_should_run 4; then
         "${BUILD_ENV_IMAGE}" \
         bash -c 'set -euo pipefail && \
             ./build.sh \
-                manifests/3.8.0/opensearch-3.8.0.yml \
+                manifests/'"${OPENSEARCH_VERSION}"'/opensearch-'"${OPENSEARCH_VERSION}"'.yml \
                 --platform '"${PLATFORM}"' \
-                --architecture '"${ARCHITECTURE}"' && \
+                --architecture '"${ARCHITECTURE}"' \
+                --component OpenSearch \
+                    common-utils \
+                    opensearch-remote-metadata-sdk \
+                    job-scheduler \
+                    security \
+                    custom-codecs \
+                    k-NN \
+                    ml-commons \
+                    neural-search \
+                    opensearch-observability \
+                    index-management && \
             ./assemble.sh tar/builds/opensearch/manifest.yml'
 
     log "  Copying assembled tar to host..."
