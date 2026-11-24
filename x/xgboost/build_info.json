@@ -1,12 +1,12 @@
 {
-  "maintainer": "Siddesh-Sangodkar1",
+  "maintainer": "vrushanaik",
   "package_name": "xgboost",
   "github_url": "https://github.com/dmlc/xgboost",
-  "version": "v3.4.0",
+  "version": "v3.4.2",
   "wheel_build" : true,
   "default_branch": "master",
   "package_dir": "x/xgboost",
-  "build_script": "xgboost_3.4.0_ubi_10.2.sh",
+  "build_script": "xgboost_3.4.2_ubi_10.2.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
@@ -20,7 +20,16 @@
   "v3.4.0": {
     "build_script": "xgboost_3.4.0_ubi_10.2.sh"
    },
+  "v3.4.2": {
+    "build_script": [
+      "xgboost_3.4.2_ubi_9.3.sh",
+      "xgboost_3.4.2_ubi_10.2.sh"
+    ]
+   },
   "*": {
-    "build_script": "xgboost_3.4.0_ubi_10.2.sh"
-    }
+    "build_script": [
+      "xgboost_3.4.2_ubi_9.3.sh",
+      "xgboost_3.4.2_ubi_10.2.sh"
+    ]
+   }
 }
