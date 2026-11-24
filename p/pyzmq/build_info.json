@@ -1,13 +1,13 @@
 {
   "maintainer": "tejasBadjateIBM",
   "package_name": "pyzmq",
-  "github_url": "https://github.com/zeromq/pyzmq.git",
-  "required_versions":{"Releases": ["*"], "Tags": ["v25.1.2","v27.2.0"]}, 
-  "version": "v27.2.0",
+  "github_url": "https://github.com/zeromq/pyzmq",
+  "required_versions":{"Releases": ["*"], "Tags": ["v25.1.2","v27.2.0","v27.3.0"]}, 
+  "version": "v27.3.0",
   "wheel_build" : true,
   "package_dir": "p/pyzmq",
   "default_branch": "main",
-  "build_script": "pyzmq_v27.2.0_ubi_10.2.sh",
+  "build_script": "pyzmq_v27.3.0_ubi_10.2.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
@@ -17,10 +17,14 @@
   "v27.2.0": {
     "build_script": "pyzmq_v27.2.0_ubi_10.2.sh"
   },
+  "v27.3.0": {
+    "build_script": "pyzmq_v27.3.0_ubi_10.2.sh"
+  },
   "*": {
     "build_script": [ 
       "pyzmq_v25.1.2_ubi_9.3.sh",
-      "pyzmq_v27.2.0_ubi_10.2.sh"
+      "pyzmq_v27.2.0_ubi_10.2.sh",
+      "pyzmq_v27.3.0_ubi_10.2.sh"
     ]
   }
 }
