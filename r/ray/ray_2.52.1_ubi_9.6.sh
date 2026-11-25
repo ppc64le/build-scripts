@@ -100,7 +100,7 @@ export RAY_INSTALL_JAVA=1
 
 pip install Cython
 #Installing ray-cpp
-pip install . 
+pip install .
 
 unset RAY_INSTALL_CPP
 #Build package
