@@ -1,0 +1,16 @@
+{
+  "maintainer": "Veenious",
+  "package_name": "jupyter_enterprise_gateway",
+  "github_url": "https://github.com/jupyter-server/enterprise_gateway",
+  "version": "v3.2.2",
+  "default_branch": "main",
+  "package_dir": "j/jupyter_enterprise_gateway",
+  "build_script": "jupyter_enterprise_gateway_v3.2.2_ubi_10.2.sh",
+  "wheel_build": true,
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "jupyter_enterprise_gateway_v3.2.2_ubi_10.2.sh"
+  }
+}
