@@ -2,13 +2,17 @@
     "maintainer": "prachi-gaonkar",
     "package_name": "kubernetes-ingress",
     "github_url": "https://github.com/nginx/kubernetes-ingress",
-    "version": "v5.6.3",
+    "version": "v5.8.0",
     "default_branch": "main",
-    "build_script": "kubernetes-ingress_v5.6.3_ubi10.2.sh",
+    "build_script": "kubernetes-ingress_v5.8.0_ubi10.2.sh",
     "package_dir": "k/kubernetes-ingress",
     "docker_build": true,
     "validate_build_script": true,
     "use_non_root_user": false,
+    "v5.8.0": {
+        "dir": "5.8.0_ubi_10.2",
+        "build_script": "kubernetes-ingress_v5.8.0_ubi10.2.sh"
+    },
     "v5.6.3": {
         "dir": "5.6.3_ubi_10.2",
         "build_script": "kubernetes-ingress_v5.6.3_ubi10.2.sh"

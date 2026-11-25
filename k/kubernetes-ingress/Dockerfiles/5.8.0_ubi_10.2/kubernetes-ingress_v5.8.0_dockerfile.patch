@@ -1,0 +1,39 @@
+diff --git a/internal/configs/config_params.go b/internal/configs/config_params.go
+index 3bdc5af39..b1b6e0245 100644
+--- a/internal/configs/config_params.go
++++ b/internal/configs/config_params.go
+@@ -254,7 +254,7 @@ type MGMTConfigParams struct {
+ 
+ // NewDefaultConfigParams creates a ConfigParams with default values.
+ func NewDefaultConfigParams(ctx context.Context, isPlus bool) *ConfigParams {
+-	upstreamZoneSize := "256k"
++	upstreamZoneSize := "2m"
+ 	if isPlus {
+ 		upstreamZoneSize = "512k"
+ 	}
+diff --git a/internal/configs/ingress.go b/internal/configs/ingress.go
+index b5dea2a33..ca0127052 100644
+--- a/internal/configs/ingress.go
++++ b/internal/configs/ingress.go
+@@ -968,7 +968,7 @@ func createExternalAuthUpstream(name string, endpoints []string, cfgParams *Conf
+ 	ups := version1.Upstream{
+ 		Name:             name,
+ 		UpstreamServers:  upsServers,
+-		UpstreamZoneSize: "256k",
++		UpstreamZoneSize: "2m",
+ 	}
+ 	if cfgParams.Keepalive > 0 {
+ 		ups.Keepalive = fmt.Sprint(cfgParams.Keepalive)
+diff --git a/internal/configs/version1/config.go b/internal/configs/version1/config.go
+index 8a2c4d701..2e5652e9c 100644
+--- a/internal/configs/version1/config.go
++++ b/internal/configs/version1/config.go
+@@ -421,7 +421,7 @@ type MainConfig struct {
+ func NewUpstreamWithDefaultServer(name string) Upstream {
+ 	return Upstream{
+ 		Name:             name,
+-		UpstreamZoneSize: "256k",
++		UpstreamZoneSize: "2m",
+ 		UpstreamServers: []UpstreamServer{
+ 			{
+ 				Address:     "127.0.0.1:8181",
