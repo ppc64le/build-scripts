@@ -1,19 +1,3 @@
-From 9c11857530538d63b3cb863d873de9d237fc359b Mon Sep 17 00:00:00 2001
-From: Rushikesh Sathe <Rushikesh.Sathe@ibm.com>
-Date: Mon, 14 Jul 2025 11:09:58 +0000
-Subject: [PATCH] Fix for CVE-2025-2953
-
----
- aten/src/ATen/native/LossCTC.cpp             |  1 +
- aten/src/ATen/native/cpu/BinaryOpsKernel.cpp | 22 ++++++++++++++++++--
- aten/src/ATen/native/cuda/LossCTC.cu         |  1 +
- aten/src/ATen/native/mkldnn/Utils.cpp        |  1 +
- cmake/Dependencies.cmake                     |  2 ++
- test/test_mkldnn.py                          |  5 +++++
- test/test_nn.py                              |  8 +++++++
- tools/setup_helpers/cmake.py                 |  7 ++++++-
- 8 files changed, 44 insertions(+), 3 deletions(-)
-
 diff --git a/aten/src/ATen/native/LossCTC.cpp b/aten/src/ATen/native/LossCTC.cpp
 index 530f3cf066e..96c2cf86cd2 100644
 --- a/aten/src/ATen/native/LossCTC.cpp
@@ -26,22 +10,89 @@ index 530f3cf066e..96c2cf86cd2 100644
    // log_probs: input_len x batch_size x num_labels
    // targets [int64]: batch_size x target_length OR sum(target_lengths)
    constexpr scalar_t neginf = -std::numeric_limits<scalar_t>::infinity();
+diff --git a/aten/src/ATen/native/PackedSequence.cpp b/aten/src/ATen/native/PackedSequence.cpp
+index d069108348d..be7961b2a24 100644
+--- a/aten/src/ATen/native/PackedSequence.cpp
++++ b/aten/src/ATen/native/PackedSequence.cpp
+@@ -142,6 +142,7 @@ Tensor _pack_padded_sequence_backward_symint(const Tensor& grad, c10::SymIntArra
+ std::tuple<Tensor, Tensor> _pad_packed_sequence(const Tensor& data, const Tensor& _batch_sizes, bool batch_first, const Scalar& padding_value, int64_t total_length) {
+   auto batch_sizes_t = _batch_sizes.contiguous();
+   checkLongTensor(batch_sizes_t);
++  TORCH_CHECK(batch_sizes_t.numel() > 0, "batch_sizes can not be empty");
+ 
+   int64_t * batch_sizes = batch_sizes_t.data_ptr<int64_t>();
+   int64_t max_batch_size = batch_sizes[0];
+diff --git a/aten/src/ATen/native/RNN.cpp b/aten/src/ATen/native/RNN.cpp
+index eee703ce473..19e20c80a64 100644
+--- a/aten/src/ATen/native/RNN.cpp
++++ b/aten/src/ATen/native/RNN.cpp
+@@ -689,6 +689,15 @@ void check_rnn_cell_forward_hidden(const Tensor& input, const Tensor& hx, const
+     "hidden", hidden_label, " has inconsistent hidden_size: got ", hx.sym_size(1), ", expected ", hidden_size);
+ }
+ 
++template<int64_t gate_count>
++inline void check_rnn_cell_forward_weights(const Tensor& w_ih, const Tensor& w_hh, const c10::SymInt& hidden_size){
++    TORCH_CHECK(w_ih.size(0) == gate_count * hidden_size, "weight_ih first dim must be ", gate_count, " * hidden_size = ",
++        gate_count * hidden_size, ", but got ", w_ih.size(0));
++    TORCH_CHECK(w_hh.size(0) == gate_count * hidden_size, "weight_hh first dim must be ", gate_count, " * hidden_size = ",
++        gate_count * hidden_size, ", but got ", w_hh.size(0));
++}
++
++
+ template<typename hidden_type_tmpl, typename cell_params_tmpl>
+ struct Cell {
+   using hidden_type = hidden_type_tmpl;
+@@ -1531,8 +1540,9 @@ std::tuple<Tensor, Tensor> lstm_cell(
+   const Tensor& b_hh = b_hh_opt.value_or(Tensor());
+ 
+   TORCH_CHECK(hx.size() == 2, "lstm_cell expects two hidden states");
+-  check_rnn_cell_forward_input(input, w_ih.sym_size(1));
+   auto hidden_size = w_hh.sym_size(1);
++  check_rnn_cell_forward_input(input, w_ih.sym_size(1));
++  check_rnn_cell_forward_weights<4>(w_ih, w_hh, hidden_size);
+   check_rnn_cell_forward_hidden(input, hx[0], hidden_size, 0);
+   check_rnn_cell_forward_hidden(input, hx[1], std::move(hidden_size), 1);
+   static at::Tensor undefined;
+@@ -1646,6 +1656,7 @@ Tensor gru_cell(
+ 
+   check_rnn_cell_forward_input(input, w_ih.size(1));
+   check_rnn_cell_forward_hidden(input, hx, w_hh.size(1), 0);
++  check_rnn_cell_forward_weights<3>(w_ih, w_hh, w_hh.size(1));
+   static at::Tensor undefined;
+   return GRUCell<CellParams>{}(input, hx, CellParams{w_ih, w_hh, b_ih, b_hh, undefined});
+ }
+@@ -1659,6 +1670,7 @@ Tensor rnn_tanh_cell(
+   const Tensor& b_hh = b_hh_opt.value_or(Tensor());
+ 
+   static at::Tensor undefined;
++  check_rnn_cell_forward_weights<1>(w_ih, w_hh, w_hh.size(1));
+   check_rnn_cell_forward_input(input, w_ih.size(1));
+   check_rnn_cell_forward_hidden(input, hx, w_hh.size(1), 0);
+   return SimpleCell<tanh_f, CellParams>{}(input, hx, CellParams{w_ih, w_hh, b_ih, b_hh, undefined});
+@@ -1673,6 +1685,7 @@ Tensor rnn_relu_cell(
+   const Tensor& b_hh = b_hh_opt.value_or(Tensor());
+ 
+   static at::Tensor undefined;
++  check_rnn_cell_forward_weights<1>(w_ih, w_hh, w_hh.size(1));
+   check_rnn_cell_forward_input(input, w_ih.size(1));
+   check_rnn_cell_forward_hidden(input, hx, w_hh.size(1), 0);
+   return SimpleCell<relu_f, CellParams>{}(input, hx, CellParams{w_ih, w_hh, b_ih, b_hh, undefined});
 diff --git a/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp b/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp
-index 42a4d0b564b..c653d724503 100644
+index 42a4d0b564b..009f77809f8 100644
 --- a/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp
 +++ b/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp
 @@ -428,6 +428,14 @@ void bitwise_xor_kernel(TensorIteratorBase& iter) {
  }
-
+ 
  void lshift_kernel(TensorIteratorBase& iter) {
-+ #if defined(__VSX__)  || defined(CPU_CAPABILITY_VSX)
-+   AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "lshift_cpu", [&]() {
-+     cpu_kernel(iter,
-+       [](scalar_t a, scalar_t b) -> scalar_t {
-+         return static_cast<std::make_unsigned_t<scalar_t>>(a) << b;
-+     });
-+  });
-+ #else
++#if defined(__VSX__)  || defined(CPU_CAPABILITY_VSX)
++  AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "lshift_cpu", [&]() {
++    cpu_kernel(iter,
++      [](scalar_t a, scalar_t b) -> scalar_t {
++        return static_cast<std::make_unsigned_t<scalar_t>>(a) << b;
++    });
++ });
++#else
    AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "lshift_cpu", [&]() {
      cpu_kernel_vec(
          iter,
@@ -49,36 +100,32 @@ index 42a4d0b564b..c653d724503 100644
          },
          [](Vectorized<scalar_t> a, Vectorized<scalar_t> b) { return a << b; });
    });
-+  #endif
++#endif
  }
-
+ 
  void logical_and_kernel(TensorIterator& iter) {
-@@ -499,8 +508,16 @@ void logical_xor_kernel(TensorIterator& iter) {
+@@ -499,6 +508,14 @@ void logical_xor_kernel(TensorIterator& iter) {
  }
-
+ 
  void rshift_kernel(TensorIteratorBase& iter) {
--  AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
--    cpu_kernel_vec(
-+ #if defined(__VSX__)  || defined(CPU_CAPABILITY_VSX)
-+   AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
-+     cpu_kernel(iter,
-+       [](scalar_t a, scalar_t b) -> scalar_t {
-+         return a >> b;
-+       });
-+   });
-+ #else
-+   AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
-+     cpu_kernel_vec(
++#if defined(__VSX__)  || defined(CPU_CAPABILITY_VSX)
++  AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
++    cpu_kernel(iter,
++      [](scalar_t a, scalar_t b) -> scalar_t {
++        return a >> b;
++      });
++  });
++#else
+   AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
+     cpu_kernel_vec(
          iter,
-         [](scalar_t a, scalar_t b) -> scalar_t {
-           // right shift value to retain sign bit for signed and no bits for
 @@ -515,6 +532,7 @@ void rshift_kernel(TensorIteratorBase& iter) {
          },
          [](Vectorized<scalar_t> a, Vectorized<scalar_t> b) { return a >> b; });
    });
-+ #endif
++#endif
  }
-
+ 
  void lt_kernel(TensorIteratorBase& iter) {
 diff --git a/aten/src/ATen/native/cuda/LossCTC.cu b/aten/src/ATen/native/cuda/LossCTC.cu
 index 759955dc62f..5ec51970683 100644
@@ -98,7 +145,7 @@ index 8c74d23e936..561193a959a 100644
 +++ b/aten/src/ATen/native/mkldnn/Utils.cpp
 @@ -19,6 +19,7 @@ std::vector<int64_t> pool_output_sizes(
    output_size[1] = input_size[1];
-
+ 
    for (const auto i : c10::irange(2, input_size.size())) {
 +    TORCH_CHECK_VALUE(stride[i -2] > 0, "Strides must be positive!");
      output_size[i] = pooling_output_shape_pad_lr<int64_t>(
@@ -117,60 +164,136 @@ index 1813f4418a2..7b9a555cee3 100644
      add_compile_options(-DTORCH_USE_LIBUV)
      include_directories(BEFORE SYSTEM ${CMAKE_CURRENT_LIST_DIR}/../third_party/tensorpipe/third_party/libuv/include)
      set(TP_STATIC_OR_SHARED STATIC CACHE STRING "" FORCE)
+diff --git a/test/nn/test_packed_sequence.py b/test/nn/test_packed_sequence.py
+index 8bb6ff64e4f..4db9ce58ad3 100644
+--- a/test/nn/test_packed_sequence.py
++++ b/test/nn/test_packed_sequence.py
+@@ -494,6 +494,36 @@ class PackedSequenceTest(TestCase):
+                 torch.randn([0, 1, 10]), torch.randn([11, 14, 14, 2]), True
+             )
+ 
++    def test_empty_packed_sequence(self):
++        """
++        Regression test for https://github.com/pytorch/pytorch/issues/149622
++        Tests that pad_packed_sequence and unpack_sequence handle empty tensors
++        without segmentation fault (CVE-2025-2998, CVE-2025-2999)
++        """
++        # Test case 1: pad_packed_sequence with empty tensors
++        # Previously caused segmentation fault
++        empty_data = torch.randn(0, 5)
++        empty_batch_sizes = torch.tensor([], dtype=torch.int64)
++        empty_packed = rnn_utils.PackedSequence(
++            empty_data, empty_batch_sizes, None, None
++        )
++
++        # Should not crash - either return empty result or raise informative error
++        with self.assertRaises(RuntimeError):
++            rnn_utils.pad_packed_sequence(empty_packed, batch_first=True)
++
++        # Test case 2: unpack_sequence with empty tensors
++        # Previously caused segmentation fault
++        empty_data = torch.tensor([])
++        empty_batch_sizes = torch.tensor([], dtype=torch.int64)
++        packed = rnn_utils.PackedSequence(
++            data=empty_data, batch_sizes=empty_batch_sizes
++        )
++
++        # Should not crash - either return empty list or raise informative error
++        with self.assertRaises(RuntimeError):
++            rnn_utils.unpack_sequence(packed)
++
+ 
+ if __name__ == "__main__":
+     run_tests()
 diff --git a/test/test_mkldnn.py b/test/test_mkldnn.py
-index 5f192d7c349..94f0f3e9e43 100644
+index 5f192d7c349..d92ee09af99 100644
 --- a/test/test_mkldnn.py
 +++ b/test/test_mkldnn.py
 @@ -1612,6 +1612,11 @@ class TestMkldnn(TestCase):
              ]:
                  common(self, shape1, shape2, op, dtype)
-
+ 
 +    def test_mkldnn_error_on_zero_stride(self, device):
-+       # Regression test for https://github.com/pytorch/pytorch/issues/149274
-+       x = torch.rand(1, 2, 3, 3).to_mkldnn()
-+       with self.assertRaises(ValueError):
-+           torch.mkldnn_max_pool2d(x, kernel_size=3, stride=0)
-
++        # Regression test for https://github.com/pytorch/pytorch/issues/149274
++        x = torch.rand(1, 2, 3, 3).to_mkldnn()
++        with self.assertRaises(ValueError):
++            torch.mkldnn_max_pool2d(x, kernel_size=3, stride=0)
+ 
  instantiate_device_type_tests(TestMkldnn, globals(), only_for=('cpu',))
-
+ 
 diff --git a/test/test_nn.py b/test/test_nn.py
-index 0af76d427e2..47ccf6f3cca 100644
+index 0af76d427e2..f0a35a8035f 100644
 --- a/test/test_nn.py
 +++ b/test/test_nn.py
-@@ -11334,6 +11334,14 @@ class TestNNDeviceType(NNTestCase):
+@@ -7175,6 +7175,39 @@ tensor(..., device='meta', size=(1,), requires_grad=True)""")
+             pickle.loads(pickle.dumps(torch.nn.Linear(10, 10)))
+         self.assertEqual(len(w), 0)
+ 
++    def test_rnn_cell_gate_weights_size(self):
++        def test_rnn_cell(cell_fn, gate_count):
++            input_size = 8
++            hidden_size = 16
++            x = torch.randn(4, input_size)
++            hx = torch.randn(4, hidden_size)
++            cx = torch.randn(4, hidden_size)
++
++            w_ih_invalid = torch.randn((gate_count * hidden_size) + 1, 8)
++            w_ih = torch.randn(gate_count * hidden_size, 8)
++            w_hh_invalid = torch.randn((gate_count * hidden_size) + 1, 16)
++            w_hh = torch.randn(gate_count * hidden_size, 16)
++            b_ih = torch.randn(gate_count * hidden_size)
++            b_hh = torch.randn(gate_count * hidden_size)
++
++            if cell_fn is torch.lstm_cell:
++                state = (hx, cx)
++            else:
++                state = hx
++
++            with self.assertRaisesRegex(RuntimeError, "weight_ih"):
++                cell_fn(x, state, w_ih_invalid, w_hh, b_ih, b_hh)
++
++            with self.assertRaisesRegex(RuntimeError, "weight_hh"):
++                cell_fn(x, state, w_ih, w_hh_invalid, b_ih, b_hh)
++        for cell_fn, gate_count in [
++            (torch.lstm_cell, 4),
++            (torch.gru_cell, 3),
++            (torch.rnn_relu_cell, 1),
++            (torch.rnn_tanh_cell, 1),
++        ]:
++            test_rnn_cell(cell_fn, gate_count)
++
+ class TestFusionEval(TestCase):
+     @set_default_dtype(torch.double)
+     @given(X=hu.tensor(shapes=((5, 3, 5, 5),), dtype=np.double),
+@@ -11334,6 +11367,15 @@ class TestNNDeviceType(NNTestCase):
          grad_cudnn, = torch.autograd.grad(loss_cudnn, log_probs, grad_out)
          self.assertEqual(grad_cudnn, grad_native, atol=1e-4, rtol=0)
-
+ 
 +    @expectedFailureMPS
 +    def test_ctc_loss_error(self, device):
 +        log_probs = torch.rand(0, 0, 4, device=device)
-+        targets = torch.tensor([], device=device, dtype=torch.long)Add commentMore actions
++        targets = torch.tensor([], device=device, dtype=torch.long)
 +        input_lengths = torch.tensor([], device=device, dtype=torch.long)
 +        target_lengths = torch.tensor([], device=device, dtype=torch.long)
 +        with self.assertRaisesRegex(RuntimeError, "log_probs tensor must not be empty"):
 +            F.ctc_loss(log_probs, targets, input_lengths, target_lengths, reduction='none')
++
      @expectedFailureMPS  # RuntimeError: LSTM with projections is not currently supported with MPS.
      @dtypesIfCUDA(torch.half, torch.float, torch.double)
      @dtypes(torch.float)
 diff --git a/tools/setup_helpers/cmake.py b/tools/setup_helpers/cmake.py
-index 84e4dad32d3..6109aee8810 100644
+index 84e4dad32d3..5768fa92cd5 100644
 --- a/tools/setup_helpers/cmake.py
 +++ b/tools/setup_helpers/cmake.py
-@@ -190,7 +190,12 @@ class CMake:
+@@ -190,6 +190,11 @@ class CMake:
              # Key: environment variable name. Value: Corresponding variable name to be passed to CMake. If you are
              # adding a new build option to this block: Consider making these two names identical and adding this option
              # in the block below.
--            "_GLIBCXX_USE_CXX11_ABI": "GLIBCXX_USE_CXX11_ABI",
 +            "Protobuf_INCLUDE_DIR" : "Protobuf_INCLUDE_DIR",
 +            "Protobuf_LIBRARIES" : "Protobuf_LIBRARIES",
 +            "Protobuf_LIBRARY": "Protobuf_LIBRARY",
 +            "Protobuf_LITE_LIBRARY" : "Protobuf_LITE_LIBRARY",
 +            "Protobuf_PROTOC_EXECUTABLE": "Protobuf_PROTOC_EXECUTABLE",
-+           "_GLIBCXX_USE_CXX11_ABI": "GLIBCXX_USE_CXX11_ABI",
+             "_GLIBCXX_USE_CXX11_ABI": "GLIBCXX_USE_CXX11_ABI",
              "CUDNN_LIB_DIR": "CUDNN_LIBRARY",
              "USE_CUDA_STATIC_LINK": "CAFFE2_STATIC_LINK_CUDA",
-         }
---
-2.43.5
-
-
