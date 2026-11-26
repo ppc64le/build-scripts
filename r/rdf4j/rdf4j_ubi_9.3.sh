@@ -59,7 +59,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 # Apply patches
-wget https://raw.githubusercontent.com/sid226/build-scripts/refs/heads/sid226_rd/r/rdf4j/patch/patch_5.x.diff
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/r/rdf4j/patch/patch_5.x.diff
 git apply patch_5.x.diff
 
 
