@@ -1330,6 +1330,8 @@ jobs:
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v6
+      - name: Install Python dependencies
+        run: pip install --quiet PyGithub requests
       - name: Download updated package-cache (UBI8)
         uses: actions/download-artifact@v4
         with:
@@ -1395,6 +1397,8 @@ jobs:
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v6
+      - name: Install Python dependencies
+        run: pip install --quiet PyGithub requests
       - name: Download updated package-cache (UBI9)
         uses: actions/download-artifact@v4
         with:
@@ -1460,6 +1464,8 @@ jobs:
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v6
+      - name: Install Python dependencies
+        run: pip install --quiet PyGithub requests
       - name: Download updated package-cache (UBI10)
         uses: actions/download-artifact@v4
         with:
@@ -1564,6 +1570,8 @@ jobs:
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v6
+      - name: Install Python dependencies
+        run: pip install --quiet PyGithub requests
       - name: Download package-cache
         uses: actions/download-artifact@v4
         with:
