@@ -1,0 +1,112 @@
+diff --git a/src/build_workflow/builder_from_source.py b/src/build_workflow/builder_from_source.py
+index da593ad..5e04a5f 100644
+--- a/src/build_workflow/builder_from_source.py
++++ b/src/build_workflow/builder_from_source.py
+@@ -7,6 +7,8 @@
+ 
+ import os
+ import logging
++import re
++import shlex
+ 
+ from build_workflow.build_recorder import BuildRecorder
+ from build_workflow.builder import Builder
+@@ -28,10 +30,98 @@ class BuilderFromSource(Builder):
+             self.component.working_directory,
+         )
+ 
++        self._apply_dependency_patches()
++        self._apply_cve_fixes()
+         self._apply_ppc64le_gradle_fix()
+         self._apply_kotlin_version_fix()
+         self._apply_security_non_fips_fix()
+ 
++    def _apply_cve_fixes(self) -> None:
++        """
++        Trivy findings that no catalog key can fix because the version is hardcoded in the
++        component's own build files. Runs right after the dependency patches.
++          - ml-commons: guava 32.1.x -> 33.7.2-jre in every build.gradle (shipped plugin jar and
++            the root force), plus the transitive versions guava 33.7.2 needs (failureaccess 1.0.3,
++            j2objc-annotations 3.1) so the fail-on-version-conflict check passes, and
++            jline 3.21.0 -> 3.30.15 (CVE-2026-77422).
++          - security: libs/opensaml resolves guava 33.0.0-jre transitively and its -all jar carries
++            that metadata; make it follow the security catalog's guava.
++        """
++        working_dir = self.git_repo.working_directory
++        if self.component.name == "ml-commons":
++            for root, _, files in os.walk(working_dir):
++                if "build.gradle" not in files:
++                    continue
++                path = os.path.join(root, "build.gradle")
++                with open(path, "r") as f:
++                    content = f.read()
++                updated = re.sub(r"32\.1\.[23]-jre", "33.7.2-jre", content)
++                if updated != content:
++                    with open(path, "w") as f:
++                        f.write(updated)
++                    logging.info(f"Updated guava to 33.7.2-jre in {path}")
++            with open(os.path.join(working_dir, "build.gradle"), "a") as f:
++                f.write(
++                    "\n// CVE-2026-102554 / CVE-2026-77422: guava 33.7.2 transitives and jline 3.30.15\n"
++                    "allprojects {\n"
++                    "    configurations.all {\n"
++                    "        resolutionStrategy {\n"
++                    "            force \"com.google.guava:failureaccess:1.0.3\"\n"
++                    "            force \"com.google.j2objc:j2objc-annotations:3.1\"\n"
++                    "            force \"org.jline:jline-builtins:3.30.15\"\n"
++                    "            force \"org.jline:jline-reader:3.30.15\"\n"
++                    "            force \"org.jline:jline-terminal:3.30.15\"\n"
++                    "        }\n"
++                    "    }\n"
++                    "}\n"
++                )
++            logging.info("Forced jline to 3.30.15 in build.gradle for ml-commons")
++            # guava 33.x adds org.jspecify:jspecify; common's shadow jar would bundle it and clash
++            # with jspecify-1.0.1.jar in the plugin (jar hell), so exclude it like the other transitives.
++            common_path = os.path.join(working_dir, "common", "build.gradle")
++            with open(common_path, "r") as f:
++                content = f.read()
++            anchor = "exclude group: 'com.google.j2objc', module: 'j2objc-annotations'"
++            if anchor not in content:
++                raise RuntimeError(f"jspecify exclude anchor not found in {common_path}")
++            with open(common_path, "w") as f:
++                f.write(content.replace(anchor, anchor + "\n        exclude group: 'org.jspecify', module: 'jspecify'", 1))
++            logging.info("Excluded jspecify from the shaded guava in common/build.gradle")
++        elif self.component.name == "security":
++            path = os.path.join(working_dir, "libs", "opensaml", "build.gradle")
++            with open(path, "r") as f:
++                content = f.read()
++            anchor = 'force "org.apache.commons:commons-lang3:${versions.commonslang}"'
++            if anchor not in content:
++                raise RuntimeError(f"guava force anchor not found in {path}")
++            with open(path, "w") as f:
++                f.write(content.replace(anchor, anchor + "\n        force libs.google.guava", 1))
++            logging.info("Forced guava to the security catalog version in libs/opensaml/build.gradle")
++
++    def _apply_dependency_patches(self) -> None:
++        """
++        Deferred application of the dependency patches generated up front (generate-dependency-patches.sh).
++        Runs for this component only, right after its checkout and before its build script runs
++        ./gradlew, so Gradle reads the patched gradle/libs.versions.toml. Components without a
++        generated patch are left unchanged. A failure raises and stops this component's build.
++        """
++        patches_dir = os.environ.get("PPC_DEPENDENCY_PATCHES_DIR")
++        if not patches_dir:
++            logging.info(f"PPC_DEPENDENCY_PATCHES_DIR not set; no dependency patches for {self.component.name}")
++            return
++
++        script = os.environ.get("PPC_APPLY_DEPENDENCY_PATCHES")
++        if not script:
++            raise RuntimeError("PPC_DEPENDENCY_PATCHES_DIR is set but PPC_APPLY_DEPENDENCY_PATCHES is not")
++
++        command = " ".join([
++            "bash", shlex.quote(script),
++            "--patches-dir", shlex.quote(patches_dir),
++            "--component", shlex.quote(self.component.name),
++            "--repo-dir", shlex.quote(self.git_repo.dir),
++        ])
++        self.git_repo.execute(command)
++
+     def _apply_ppc64le_gradle_fix(self) -> None:
+         """
+         Apply ppc64le architecture fix for Gradle builds.
