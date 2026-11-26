@@ -26,7 +26,7 @@ PACKAGE_DIR=./arrow/python
 CURRENT_DIR="${PWD}"
  
 # Install necessary dependencies
-yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake openblas openblas-devel
+yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel zlib-devel cmake openblas openblas-devel
 
  
 echo "Dependencies installed."
@@ -64,16 +64,15 @@ sed -i '/cdef object alloc_c_array(ArrowArray\*\* c_array)/s/ noexcept//' python
 sed -i '/cdef object alloc_c_stream(ArrowArrayStream\*\* c_stream)/s/ noexcept//' python/pyarrow/types.pxi
 echo "Fixes applied."
 
-PYTHON_EXEC=$(which python3)
-$PYTHON_EXEC -m pip install -U pip
-$PYTHON_EXEC -m pip install -r python/requirements-build.txt
-$PYTHON_EXEC -m pip install "Cython<3.1,!=3.0.9" "setuptools>=70.1" wheel numpy==1.26.4 setuptools-scm
-
+PYTHON_EXEC=$(which python3) 
+pip install cython wheel numpy==2.0.2 setuptools-scm
+pip install -r python/requirements-build.txt
 NUMPY_INCLUDE=$($PYTHON_EXEC - <<EOF
 import numpy; print(numpy.get_include())
 EOF
 )
  
+echo "Preparing for build..."
 mkdir cpp/build
 cd cpp/build
  
@@ -96,6 +95,7 @@ cmake -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
       -DARROW_WITH_SNAPPY=ON \
       -DARROW_WITH_ZLIB=ON \
       -DARROW_WITH_ZSTD=ON \
+      -DARROW_FLIGHT=ON \
       -DPARQUET_REQUIRE_ENCRYPTION=ON \
       -DBUILD_SHARED_LIBS=ON \
       ..
@@ -109,6 +109,8 @@ export PYARROW_WITH_DATASET=1
 export PYARROW_PARALLEL=4
 export PYARROW_BUILD_TYPE="release"
 export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
+export PYARROW_WITH_FLIGHT=1
+
 
 version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
 export SETUPTOOLS_SCM_PRETEND_VERSION=$version
