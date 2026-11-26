@@ -166,7 +166,7 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o
 git clone https://github.com/deepjavalibrary/djl
 cd djl/
 git checkout $DJL_VERSION
-git apply $BUILD_HOME/djl_$DJL_VERSION.patch
+git apply $BUILD_HOME/djl_$DJL_VERSION_updated.patch
 wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-${PYTORCH_VERSION}%2Bcpu.zip
 unzip libtorch-cxx11-abi-shared-with-deps-${PYTORCH_VERSION}+cpu.zip -d $BUILD_HOME/djl/engines/pytorch/pytorch-native 
 rm -rf libtorch-cxx11-abi-shared-with-deps-${PYTORCH_VERSION}+cpu.zip
@@ -249,7 +249,7 @@ git apply ${SCRIPT_PATH}/ml-commons_$SCRIPT_PACKAGE_VERSION.patch
 # Build
 # --------
 ret=0
-./gradlew build -x test -x integTest -Dbuild.snapshot=false|| ret=$?
+./gradlew build -x test -x integTest || ret=$?
 if [ $ret -ne 0 ]; then
         set +ex
 	echo "------------------ ${PACKAGE_NAME}: Build Failed ------------------"
