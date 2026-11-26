@@ -43,6 +43,21 @@ fi
 
 echo "Using gcc: $(gcc --version | head -1)"
 
+# -----------------------------------------------------------------------------
+# CPU optimization flags
+# -----------------------------------------------------------------------------
+if grep -q "POWER10" /proc/cpuinfo 2>/dev/null; then
+    CPU_FLAGS="-mcpu=power10 -mtune=power10"
+    echo "Detected POWER10 - applying power10 optimization flags"
+else
+    CPU_FLAGS=""
+    echo "POWER10 not detected - no arch-specific flags applied"
+fi
+
+# Picked up by the LLVM cmake configure below
+export CFLAGS="${CPU_FLAGS}"
+export CXXFLAGS="${CPU_FLAGS}"
+
 # Upgrade pip and install build tools
 python3.14 -m pip install --upgrade pip setuptools wheel ninja
 
@@ -83,7 +98,7 @@ cd llvmlite
 git checkout $LLVMLITE_VERSION
 
 export CMAKE_PREFIX_PATH=$LLVM_INSTALL_DIR/lib/cmake/llvm
-export CXXFLAGS="-fPIC"
+export CXXFLAGS="-fPIC ${CPU_FLAGS}"
 python3.14 -m pip install --no-build-isolation .
 
 echo "-------------------Successfully installed llvmlite----------------------"
@@ -112,7 +127,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-export CXXFLAGS=-I/usr/include
+export CXXFLAGS="-I/usr/include ${CPU_FLAGS}"
 
 # Install numba
 if ! python3.14 -m pip install . ; then
