@@ -1,0 +1,17 @@
+{
+  "maintainer": "rusiyamanya",
+  "package_name": "redis-operator",
+  "github_url": "https://github.com/OT-CONTAINER-KIT/redis-operator",
+  "version": "v0.24.0",
+  "default_branch": "main",
+  "package_dir": "r/redis-operator",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "build_script": "redis-operator_ubi_9.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "true",
+  "docker_build": "true",
+  "v0.24.0": {
+      "dir": "v0.24.0_ubi9.7",
+      "build_script": "redis-operator_ubi_9.7.sh"
+    }
+}
