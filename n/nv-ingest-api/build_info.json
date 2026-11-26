@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "nv-ingest-api",
+   "github_url": "https://github.com/NVIDIA/nv-ingest",
+   "version": "25.6.2",
+   "default_branch": "main",
+   "build_script": "nv-ingest-api_ubi_9.3.sh",
+   "package_dir": "n/nv-ingest-api",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
