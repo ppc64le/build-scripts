@@ -132,6 +132,7 @@ else
     exit 1
 fi
 
+export CMAKE_PREFIX_PATH="/root/json/local/nlohmann_json;${CMAKE_PREFIX_PATH}"
 # Build opentelemetry-cpp using existing build script
 
 if wget -q \
@@ -151,6 +152,7 @@ else
     exit 1
 fi
 
+export CMAKE_PREFIX_PATH="/root/opentelemetry-cpp/build/cmake;${CMAKE_PREFIX_PATH}"
 # Clone source
 rm -rf "$PACKAGE_DIR"
 if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
@@ -186,6 +188,18 @@ find $(echo "${DEP_PREFIXES}" | tr ';' ' ') \( -name '*Config.cmake' -o -name '*
 # Local prefix used for wheel packaging
 mkdir -p local/libgoogle_cloud
 PREFIX="${SOURCE_DIR}/local/libgoogle_cloud"
+
+echo "===== CMAKE_PREFIX_PATH ====="
+echo "${CMAKE_PREFIX_PATH}"
+
+find /root/json -name "nlohmann_jsonConfig.cmake" 2>/dev/null
+find /root/opentelemetry-cpp \( -name "*opentelemetry*Config.cmake" -o -name "*opentelemetry*config.cmake" \)
+
+echo "===== VERIFY JSON ====="
+find /root/json/local/nlohmann_json -name "nlohmann_jsonConfig.cmake"
+
+echo "===== VERIFY OTEL ====="
+find /root/opentelemetry-cpp -name "opentelemetry-cpp-config.cmake"
 
 # Build and install (default google-cloud-cpp component set)
 if ! (cmake -S . -B build \
