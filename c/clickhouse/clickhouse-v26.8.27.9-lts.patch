@@ -1,0 +1,96 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 68b194ad6..50842ed17 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -31,6 +31,8 @@ else()
+     set(RECONFIGURE_MESSAGE_LEVEL WARNING)
+ endif()
+ 
++add_compile_options(-Wframe-larger-than=131072)
++
+ include (cmake/arch.cmake)
+ include (cmake/target.cmake)
+ include (cmake/tools.cmake)
+@@ -171,7 +173,9 @@ if (OS_LINUX)
+     #   and whatever is poisoning it by LD_PRELOAD should not link to our symbols.
+     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-export-dynamic -Wl,--gc-sections")
+ 
+-    if (LINKER_NAME MATCHES "lld" AND NOT SANITIZE AND NOT SANITIZE_COVERAGE AND NOT WITH_COVERAGE)
++    # On ppc64le lld ICF leaves some __toc_save_* call stubs pointing 64 KB off (e.g. the Rust
++    # allocator call in prql_to_sql jumps into read-only memory), so do not fold there.
++    if (LINKER_NAME MATCHES "lld" AND NOT ARCH_PPC64LE AND NOT SANITIZE AND NOT SANITIZE_COVERAGE AND NOT WITH_COVERAGE)
+         # Fold identical code and data sections to reduce binary size.
+         # `safe` keeps address-taken functions distinct, as C and C++ require.
+         set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--icf=safe")
+diff --git a/cmake/cpu_features.cmake b/cmake/cpu_features.cmake
+index 3b1e94bc5..80fed44e7 100644
+--- a/cmake/cpu_features.cmake
++++ b/cmake/cpu_features.cmake
+@@ -76,13 +76,20 @@ elseif (ARCH_PPC64LE)
+     # Note that gcc and clang have support for x86 SSE2 intrinsics when building for PowerPC
+     option (POWER9 "Build for Power 9 CPU and above" 0)
+     if(POWER9)
+-        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power9 -D__SSE2__=1 -DNO_WARN_X86_INTRINSICS")
++        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power9 -mabi=ibmlongdouble")
+         list(APPEND RUSTFLAGS_CPU "-C" "target_feature=+power9-altivec")
+     else ()
+-        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power8 -D__SSE2__=1 -DNO_WARN_X86_INTRINSICS")
++        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power8 -mabi=ibmlongdouble")
+         list(APPEND RUSTFLAGS_CPU "-C" "target_feature=+power8-altivec")
+     endif ()
+ 
++    # Optionally build for Power10 (pass -DPOWER10=1 to cmake)
++    option (POWER10 "Build for Power 10 CPU and above" 0)
++    if (POWER10)
++        set (COMPILER_FLAGS "${COMPILER_FLAGS} -mcpu=power10 -mtune=power10")
++        list(APPEND RUSTFLAGS_CPU "-C" "target-cpu=pwr10")
++    endif ()
++
+ elseif (ARCH_AMD64)
+     # x86-64 microarchitecture levels (https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels):
+     #   1 - SSE2 baseline, maximum compatibility with older/embedded hardware
+diff --git a/src/AggregateFunctions/CMakeLists.txt b/src/AggregateFunctions/CMakeLists.txt
+index fc4fa8fcc..088f65805 100644
+--- a/src/AggregateFunctions/CMakeLists.txt
++++ b/src/AggregateFunctions/CMakeLists.txt
+@@ -27,6 +27,19 @@ if (ARCH_AMD64 AND X86_ARCH_LEVEL VERSION_GREATER_EQUAL 3)
+     set_source_files_properties(AggregateFunctionUniq.cpp PROPERTIES COMPILE_FLAGS "-mno-bmi -mno-bmi2")
+ endif()
+ 
++# On ppc64le, boost::math::students_t_distribution and cdf instantiate large template trees
++# that cause Clang to spend 5+ hours compiling these TUs at -O3/-O2.  Drop to -O1 for
++# the three affected files only; correctness is unaffected because these are pure
++# floating-point computations with no hot inner loop that needs aggressive vectorisation.
++if (ARCH_PPC64LE)
++    set_source_files_properties(
++        AggregateFunctionStudentTTest.cpp
++        AggregateFunctionStudentTTestOneSample.cpp
++        AggregateFunctionWelchTTest.cpp
++        PROPERTIES COMPILE_FLAGS "-O1"
++    )
++endif()
++
+ add_library(clickhouse_aggregate_functions ${clickhouse_aggregate_functions_headers} ${clickhouse_aggregate_functions_sources})
+ target_link_libraries(clickhouse_aggregate_functions PRIVATE dbms PUBLIC ch_contrib::cityhash)
+ 
+diff --git a/src/Common/tests/gtest_find_symbols.cpp b/src/Common/tests/gtest_find_symbols.cpp
+index 7aab9f581..b7c968989 100644
+--- a/src/Common/tests/gtest_find_symbols.cpp
++++ b/src/Common/tests/gtest_find_symbols.cpp
+@@ -138,15 +138,8 @@ TEST(FindSymbols, RunTimeNeedle)
+     }
+ 
+     const std::string excessively_long_needle = "ABCDEFIJKLMNOPQRSTUVWXYZacfghijkmnpqstuvxz";
+-#if defined (__SSE4_2__)
+-    // Only x86 & SSE4.2: Assert big haystack is not accepted and exception is thrown
++    // SearchSymbols accepts at most 16 symbols on every platform (see its constructor).
+     ASSERT_ANY_THROW(find_first_symbols(long_haystack, SearchSymbols(excessively_long_needle)));
+-#else
+-    // On other platforms, this should work fine:
+-    const char * long_haystack_cstr = long_haystack.c_str();
+-    const char * res = find_first_symbols(long_haystack_cstr, SearchSymbols(excessively_long_needle));
+-    ASSERT_NE(res, nullptr);
+-#endif
+ }
+ 
+ TEST(FindNotSymbols, AllSymbolsPresent)
