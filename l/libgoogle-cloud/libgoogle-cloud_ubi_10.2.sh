@@ -115,28 +115,22 @@ git clone --depth 1 --branch "${BENCHMARK_VERSION}" \
     https://github.com/google/benchmark.git
 	
 # Build json using existing build script
-if ! find /usr/local -name "nlohmann_jsonConfig.cmake" | grep -q .; then
-    if wget -q \
-        "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/j/json/${JSON_SCRIPT}"
-    then
-        echo "Building json using ${JSON_SCRIPT}"
+if wget -q \
+    "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/j/json/${JSON_SCRIPT}"
+then
+    echo "Building json using ${JSON_SCRIPT}"
 
-        if ! bash "${JSON_SCRIPT}" "${JSON_VERSION}"
-        then
-            echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-            echo "$PACKAGE_URL $PACKAGE_NAME"
-            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
-            exit 1
-        fi
-    else
-        echo "Failed to download ${JSON_SCRIPT}"
+    if ! bash "${JSON_SCRIPT}" "${JSON_VERSION}"
+    then
+        echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
         exit 1
     fi
+else
+    echo "Failed to download ${JSON_SCRIPT}"
+    exit 1
 fi
-
-echo "===== JSON CMAKE FILES ====="
-find /usr/local -name "*nlohmann*Config.cmake" 2>/dev/null
-find /usr/local -name "*nlohmann*config.cmake" 2>/dev/null
 
 # Build opentelemetry-cpp using existing build script
 
