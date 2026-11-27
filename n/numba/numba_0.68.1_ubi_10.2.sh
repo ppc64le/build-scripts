@@ -54,10 +54,6 @@ else
     echo "POWER10 not detected - no arch-specific flags applied"
 fi
 
-# Picked up by the LLVM cmake configure below
-export CFLAGS="${CPU_FLAGS}"
-export CXXFLAGS="${CPU_FLAGS}"
-
 # Upgrade pip and install build tools
 python3.14 -m pip install --upgrade pip setuptools wheel ninja
 
@@ -98,7 +94,7 @@ cd llvmlite
 git checkout $LLVMLITE_VERSION
 
 export CMAKE_PREFIX_PATH=$LLVM_INSTALL_DIR/lib/cmake/llvm
-export CXXFLAGS="-fPIC ${CPU_FLAGS}"
+export CXXFLAGS="-fPIC"
 python3.14 -m pip install --no-build-isolation .
 
 echo "-------------------Successfully installed llvmlite----------------------"
@@ -127,6 +123,9 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
+# CPU_FLAGS are applied only to the numba build. Exporting them earlier breaks
+# the numpy source build (highway VSX2 dispatch needs -mcpu=power9 + -mvsx).
+export CFLAGS="${CPU_FLAGS}"
 export CXXFLAGS="-I/usr/include ${CPU_FLAGS}"
 
 # Install numba
