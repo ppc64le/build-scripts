@@ -104,6 +104,8 @@ read -r DEP_PREFIXES DEP_LIBS DEP_RPATH <<< "${DEP_INFO}"
 DEP_BINS=$(echo "${DEP_PREFIXES}" | sed 's#;#/bin:#g;s#$#/bin#')
 export PATH="${DEP_BINS}:${PATH}"
 export LD_LIBRARY_PATH="${DEP_LIBS}:${LD_LIBRARY_PATH:-}"
+ldconfig
+export CMAKE_PREFIX_PATH="${DEP_PREFIXES};/usr/local;/usr/local/lib64/cmake;/usr/local/lib/cmake;/usr/local/share/cmake"
 
 # Build dependencies that have no wheel: googletest, benchmark
 git clone --depth 1 --branch "${GTEST_VERSION}" \
@@ -113,7 +115,7 @@ git clone --depth 1 --branch "${BENCHMARK_VERSION}" \
     https://github.com/google/benchmark.git
 	
 # Build json using existing build script
-if [ ! -f /usr/local/include/nlohmann/json.hpp ]; then
+if ! find /usr/local -name "nlohmann_jsonConfig.cmake" | grep -q .; then
     if wget -q \
         "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/j/json/${JSON_SCRIPT}"
     then
@@ -132,8 +134,13 @@ if [ ! -f /usr/local/include/nlohmann/json.hpp ]; then
     fi
 fi
 
+echo "===== JSON CMAKE FILES ====="
+find /usr/local -name "*nlohmann*Config.cmake" 2>/dev/null
+find /usr/local -name "*nlohmann*config.cmake" 2>/dev/null
+
 # Build opentelemetry-cpp using existing build script
-if [ ! -f /usr/local/include/opentelemetry/version.h ]; then
+
+if ! find /usr/local \( -name "*opentelemetry*Config.cmake" -o -name "*opentelemetry*config.cmake" \) | grep -q .; then
     if wget -q \
         "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/opentelemetry-cpp/${OPENTELEMETRY_CPP_SCRIPT}"
     then
@@ -151,6 +158,16 @@ if [ ! -f /usr/local/include/opentelemetry/version.h ]; then
         exit 1
     fi
 fi
+
+echo "===== OPENTELEMETRY CMAKE FILES ====="
+find /usr/local -name "*opentelemetry*Config.cmake" 2>/dev/null
+find /usr/local -name "*opentelemetry*config.cmake" 2>/dev/null
+
+echo "===== NLOHMANN HEADER ====="
+find /usr/local/include -name json.hpp
+
+echo "===== OPENTELEMETRY HEADER ====="
+find /usr/local/include -name version.h | grep opentelemetry
 
 # Clone source
 rm -rf "$PACKAGE_DIR"
@@ -192,7 +209,7 @@ PREFIX="${SOURCE_DIR}/local/libgoogle_cloud"
 if ! (cmake -S . -B build \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_CXX_FLAGS="${CPU_FLAGS}" \
-        -DCMAKE_PREFIX_PATH="${DEP_PREFIXES}" \
+        -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH}" \
         -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
         -DCMAKE_INSTALL_LIBDIR=lib64 \
         -DCMAKE_INSTALL_RPATH="\$ORIGIN:${DEP_RPATH}" \
