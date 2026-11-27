@@ -140,34 +140,22 @@ find /usr/local -name "*nlohmann*config.cmake" 2>/dev/null
 
 # Build opentelemetry-cpp using existing build script
 
-if ! find /usr/local \( -name "*opentelemetry*Config.cmake" -o -name "*opentelemetry*config.cmake" \) | grep -q .; then
-    if wget -q \
-        "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/opentelemetry-cpp/${OPENTELEMETRY_CPP_SCRIPT}"
-    then
-        echo "Building opentelemetry-cpp using ${OPENTELEMETRY_CPP_SCRIPT}"
+if wget -q \
+    "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/opentelemetry-cpp/${OPENTELEMETRY_CPP_SCRIPT}"
+then
+    echo "Building opentelemetry-cpp using ${OPENTELEMETRY_CPP_SCRIPT}"
 
-        if ! bash "${OPENTELEMETRY_CPP_SCRIPT}" "${OPENTELEMETRY_CPP_VERSION}"
-        then
-            echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-            echo "$PACKAGE_URL $PACKAGE_NAME"
-            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
-            exit 1
-        fi
-    else
-        echo "Failed to download ${OPENTELEMETRY_CPP_SCRIPT}"
+    if ! bash "${OPENTELEMETRY_CPP_SCRIPT}" "${OPENTELEMETRY_CPP_VERSION}"
+    then
+        echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
         exit 1
     fi
+else
+    echo "Failed to download ${OPENTELEMETRY_CPP_SCRIPT}"
+    exit 1
 fi
-
-echo "===== OPENTELEMETRY CMAKE FILES ====="
-find /usr/local -name "*opentelemetry*Config.cmake" 2>/dev/null
-find /usr/local -name "*opentelemetry*config.cmake" 2>/dev/null
-
-echo "===== NLOHMANN HEADER ====="
-find /usr/local/include -name json.hpp
-
-echo "===== OPENTELEMETRY HEADER ====="
-find /usr/local/include -name version.h | grep opentelemetry
 
 # Clone source
 rm -rf "$PACKAGE_DIR"
