@@ -127,12 +127,21 @@ then
         echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
         exit 1
     fi
+	cd "${WORKING_DIR}"
 else
     echo "Failed to download ${JSON_SCRIPT}"
     exit 1
 fi
+JSON_PREFIX=$(find / -name nlohmann_jsonConfig.cmake 2>/dev/null | head -1)
 
-export CMAKE_PREFIX_PATH="/root/json/local/nlohmann_json;${CMAKE_PREFIX_PATH}"
+if [ -n "${JSON_PREFIX}" ]; then
+    JSON_PREFIX=$(dirname "$(dirname "$(dirname "$(dirname "${JSON_PREFIX}")")")")
+    export CMAKE_PREFIX_PATH="${JSON_PREFIX};${CMAKE_PREFIX_PATH}"
+fi
+if [ -z "${JSON_PREFIX}" ]; then
+    echo "ERROR: nlohmann_jsonConfig.cmake not found"
+    exit 1
+fi
 # Build opentelemetry-cpp using existing build script
 
 if wget -q \
@@ -147,12 +156,22 @@ then
         echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
         exit 1
     fi
+	cd "${WORKING_DIR}"
 else
     echo "Failed to download ${OPENTELEMETRY_CPP_SCRIPT}"
     exit 1
 fi
 
-export CMAKE_PREFIX_PATH="/root/opentelemetry-cpp/build/cmake;${CMAKE_PREFIX_PATH}"
+OTEL_CONFIG=$(find / -name opentelemetry-cpp-config.cmake 2>/dev/null | head -1)
+
+if [ -n "${OTEL_CONFIG}" ]; then
+    OTEL_PREFIX=$(dirname "$(dirname "${OTEL_CONFIG}")")
+    export CMAKE_PREFIX_PATH="${OTEL_PREFIX};${CMAKE_PREFIX_PATH}"
+fi
+if [ -z "${OTEL_CONFIG}" ]; then
+    echo "ERROR: opentelemetry-cpp-config.cmake not found"
+    exit 1
+fi
 # Clone source
 rm -rf "$PACKAGE_DIR"
 if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
@@ -191,15 +210,6 @@ PREFIX="${SOURCE_DIR}/local/libgoogle_cloud"
 
 echo "===== CMAKE_PREFIX_PATH ====="
 echo "${CMAKE_PREFIX_PATH}"
-
-find /root/json -name "nlohmann_jsonConfig.cmake" 2>/dev/null
-find /root/opentelemetry-cpp \( -name "*opentelemetry*Config.cmake" -o -name "*opentelemetry*config.cmake" \)
-
-echo "===== VERIFY JSON ====="
-find /root/json/local/nlohmann_json -name "nlohmann_jsonConfig.cmake"
-
-echo "===== VERIFY OTEL ====="
-find /root/opentelemetry-cpp -name "opentelemetry-cpp-config.cmake"
 
 # Build and install (default google-cloud-cpp component set)
 if ! (cmake -S . -B build \
